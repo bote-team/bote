@@ -1815,16 +1815,16 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 								// Systemansicht anzeigen
 								if (pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
 								{
-									resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
+									resources::pMainFrame->SelectMainView(VIEWS::SYSTEM_VIEW, pMajor->GetRaceID());
 									resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetFlag());
 								}
 								// Galaxiekarte anzeigen
 								else
 								{
-									resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+									resources::pMainFrame->SelectMainView(VIEWS::GALAXY_VIEW, pMajor->GetRaceID());
 								}
 
-								resources::pMainFrame->SelectBottomView(PLANET_BOTTOM_VIEW);
+								resources::pMainFrame->SelectBottomView(VIEWS::PLANET_BOTTOM_VIEW);
 								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 							}
@@ -1843,24 +1843,24 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 								// Systemansicht anzeigen
 								if (pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetFlag() == 1 && pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
 								{
-									resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
+									resources::pMainFrame->SelectMainView(VIEWS::SYSTEM_VIEW, pMajor->GetRaceID());
 									resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), 0);
 								}
 								// Galaxiekarte anzeigen
 								else
 								{
-									resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+									resources::pMainFrame->SelectMainView(VIEWS::GALAXY_VIEW, pMajor->GetRaceID());
 								}
 
 								// Befinden sich Schiffe im System, dann Schiffsansicht zeigen, sonst Planetenansicht
 								if (pDoc->GetSector(p.x, p.y).GetIsShipInSector())
 								{
-									resources::pMainFrame->SelectBottomView(SHIP_BOTTOM_VIEW);
+									resources::pMainFrame->SelectBottomView(VIEWS::SHIP_BOTTOM_VIEW);
 									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 								}
 								else
 								{
-									resources::pMainFrame->SelectBottomView(PLANET_BOTTOM_VIEW);
+									resources::pMainFrame->SelectBottomView(VIEWS::PLANET_BOTTOM_VIEW);
 									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 								}
 
@@ -1869,19 +1869,19 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 						}
 						else if (pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType() == EMPIRE_NEWS_TYPE::RESEARCH)
 						{
-							resources::pMainFrame->SelectMainView(RESEARCH_VIEW, pMajor->GetRaceID());
+							resources::pMainFrame->SelectMainView(VIEWS::RESEARCH_VIEW, pMajor->GetRaceID());
 							resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CResearchMenuView), pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetFlag());
 							resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 						}
 						else if (pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType() == EMPIRE_NEWS_TYPE::SECURITY)
 						{
-							resources::pMainFrame->SelectMainView(INTEL_VIEW, pMajor->GetRaceID());
+							resources::pMainFrame->SelectMainView(VIEWS::INTEL_VIEW, pMajor->GetRaceID());
 							resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CIntelMenuView), pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetFlag());
 							resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 						}
 						else if (pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType() == EMPIRE_NEWS_TYPE::DIPLOMACY)
 						{
-							resources::pMainFrame->SelectMainView(DIPLOMACY_VIEW, pMajor->GetRaceID());
+							resources::pMainFrame->SelectMainView(VIEWS::DIPLOMACY_VIEW, pMajor->GetRaceID());
 							// bei Angeboten an uns direkt in das Eingangmenü schalten
 							resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CDiplomacyMenuView), pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetFlag());
 							resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
@@ -1901,7 +1901,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		{
 			CPoint ko = pMajor->GetEmpire()->GetSystemList()->GetAt(m_iClickedSystem).ko;
 			pDoc->SetKO(ko.x, ko.y);
-			resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
+			resources::pMainFrame->SelectMainView(VIEWS::SYSTEM_VIEW, pMajor->GetRaceID());
 			CSystemMenuView::SetMarkedBuildListEntry(0);
 			Invalidate(FALSE);
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
@@ -1932,7 +1932,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				{
 					pDoc->SetKO(pt.x, pt.y);
 					pView->ScrollToSector(pt);
-					resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+					resources::pMainFrame->SelectMainView(VIEWS::GALAXY_VIEW, pMajor->GetRaceID());
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 					return;
 				}

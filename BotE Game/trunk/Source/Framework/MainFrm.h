@@ -23,6 +23,7 @@
 
 #include "MultiSplitterView.h"
 #include "PPTooltip.h"
+#include "Constants.h"
 
 class CMainFrame : public CFrameWnd
 {
@@ -64,15 +65,15 @@ public:
 	/// Funktion legt die View für jede Rasse fest, also in welchem Menü man sich gerade befindet.
 	/// @param whichView Nummer (ID) der View
 	/// @param sRace auf welche Hauptrasse bezieht sich die Änderung
-	void SelectMainView(USHORT whichView, const CString& sRace);
+	void SelectMainView(VIEWS::MAIN_VIEWS whichView, const CString& sRace);
 
 	/// Funktion legt die View fest, also in welchem Menü man sich gerade befindet.
 	/// @param whichView Nummer (ID) der View
-	void SelectMainView(USHORT whichView);
+	void SelectStartMenuView(VIEWS::START_MENU_VIEWS whichView);
 
 	/// Funktion wählt eine View für den unteren View-Bereich aus.
 	/// @param viewID View-ID der gewünschten View
-	void SelectBottomView(USHORT viewID);
+	void SelectBottomView(VIEWS::BOTTOM_VIEWS viewID);
 
 	/// Funktion setzt das Splitterwindow mit der MainView auf die volle Fenstergröße.
 	/// @param fullScrenn <code>true</code> für Fullscreenmodus, <code>false</code> für normalen Modus.

@@ -184,20 +184,20 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 			m_Buttons.GetAt(i)->SetState(BUTTON_STATE::NORMAL);
 
 	int nActiveMainView = resources::pMainFrame->GetActiveView(0, 1);
-	if (nActiveMainView >= GALAXY_VIEW && nActiveMainView <= EMPIRE_VIEW)
+	if (nActiveMainView >= VIEWS::GALAXY_VIEW && nActiveMainView <= VIEWS::EMPIRE_VIEW)
 		m_Buttons.GetAt(nActiveMainView - 1)->SetState(BUTTON_STATE::DEACTIVATED);
 
 	// Geheimdienstbutton deaktivieren, solange keine anderen Majors bekannt sind
 	// Diplomatiebutton deaktivieren, solange gar keine anderen Rassen bekannt sind
 	if (!m_bKnowOtherRaces)
-		m_Buttons.GetAt(DIPLOMACY_VIEW - 1)->SetState(BUTTON_STATE::DEACTIVATED);
-	else if (m_Buttons.GetAt(DIPLOMACY_VIEW - 1)->GetState() != BUTTON_STATE::DEACTIVATED)
-		m_Buttons.GetAt(DIPLOMACY_VIEW - 1)->SetState(BUTTON_STATE::NORMAL);
+		m_Buttons.GetAt(VIEWS::DIPLOMACY_VIEW - 1)->SetState(BUTTON_STATE::DEACTIVATED);
+	else if (m_Buttons.GetAt(VIEWS::DIPLOMACY_VIEW - 1)->GetState() != BUTTON_STATE::DEACTIVATED)
+		m_Buttons.GetAt(VIEWS::DIPLOMACY_VIEW - 1)->SetState(BUTTON_STATE::NORMAL);
 
 	if (!m_bKnowOtherMajors)
-		m_Buttons.GetAt(INTEL_VIEW - 1)->SetState(BUTTON_STATE::DEACTIVATED);
-	else if (m_Buttons.GetAt(INTEL_VIEW - 1)->GetState() != BUTTON_STATE::DEACTIVATED)
-		m_Buttons.GetAt(INTEL_VIEW - 1)->SetState(BUTTON_STATE::NORMAL);
+		m_Buttons.GetAt(VIEWS::INTEL_VIEW - 1)->SetState(BUTTON_STATE::DEACTIVATED);
+	else if (m_Buttons.GetAt(VIEWS::INTEL_VIEW - 1)->GetState() != BUTTON_STATE::DEACTIVATED)
+		m_Buttons.GetAt(VIEWS::INTEL_VIEW - 1)->SetState(BUTTON_STATE::NORMAL);
 
 	// Buttons zeichnen
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
@@ -426,7 +426,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 		}
 	// Galaxiebutton
 	if (button == 0)
-		resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+		resources::pMainFrame->SelectMainView(VIEWS::GALAXY_VIEW, pMajor->GetRaceID());
 	// Systembutton
 	else if (button == 1)
 	{
@@ -450,7 +450,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 		if (pDoc->CurrentSystem().GetOwnerOfSystem() == pMajor->GetRaceID() &&
 			pDoc->CurrentSector().GetSunSystem() == TRUE)
 		{
-			resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
+			resources::pMainFrame->SelectMainView(VIEWS::SYSTEM_VIEW, pMajor->GetRaceID());
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 			m_LastSystem = pDoc->GetKO();
 
@@ -462,19 +462,19 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 	}
 	// Forschungsbutton
 	else if (button == 2)
-		resources::pMainFrame->SelectMainView(RESEARCH_VIEW, pMajor->GetRaceID());
+		resources::pMainFrame->SelectMainView(VIEWS::RESEARCH_VIEW, pMajor->GetRaceID());
 	// Geheimdienstbutton
 	else if (button == 3)
-		resources::pMainFrame->SelectMainView(INTEL_VIEW, pMajor->GetRaceID());
+		resources::pMainFrame->SelectMainView(VIEWS::INTEL_VIEW, pMajor->GetRaceID());
 	// Diplomatiebutton
 	else if (button == 4)
-		resources::pMainFrame->SelectMainView(DIPLOMACY_VIEW, pMajor->GetRaceID());
+		resources::pMainFrame->SelectMainView(VIEWS::DIPLOMACY_VIEW, pMajor->GetRaceID());
 	// Handelsbutton
 	else if (button == 5)
-		resources::pMainFrame->SelectMainView(TRADE_VIEW, pMajor->GetRaceID());
+		resources::pMainFrame->SelectMainView(VIEWS::TRADE_VIEW, pMajor->GetRaceID());
 	// Imperiumsbutton
 	else if (button == 6)
-		resources::pMainFrame->SelectMainView(EMPIRE_VIEW, pMajor->GetRaceID());
+		resources::pMainFrame->SelectMainView(VIEWS::EMPIRE_VIEW, pMajor->GetRaceID());
 	CView::OnLButtonUp(nFlags, point);
 }
 

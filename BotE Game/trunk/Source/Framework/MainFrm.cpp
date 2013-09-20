@@ -246,35 +246,35 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/, CCreateContext* pContex
 
 	// Hauptmenü
 	m_wndSplitter.AddSwitchableView(m_wndSplitter.IdFromRowCol(0, 1), RUNTIME_CLASS(CStartMenuView),
-		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , true , START_VIEW);
-	m_wndSplitter.AddSwitchableView(NEWGAME_VIEW, RUNTIME_CLASS(CNewGameView),
-		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , NEWGAME_VIEW);
-	m_wndSplitter.AddSwitchableView(CHOOSERACE_VIEW, RUNTIME_CLASS(CChooseRaceView),
-		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , CHOOSERACE_VIEW);
-	m_wndSplitter.AddSwitchableView(GALAXY_VIEW, RUNTIME_CLASS(CGalaxyMenuView),
-		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , GALAXY_VIEW);
-	m_wndSplitter.AddSwitchableView(SYSTEM_VIEW, RUNTIME_CLASS(CSystemMenuView),
-		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , SYSTEM_VIEW);
-	m_wndSplitter.AddSwitchableView(RESEARCH_VIEW, RUNTIME_CLASS(CResearchMenuView),
-		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , RESEARCH_VIEW);
-	m_wndSplitter.AddSwitchableView(INTEL_VIEW, RUNTIME_CLASS(CIntelMenuView),
-		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , INTEL_VIEW);
-	m_wndSplitter.AddSwitchableView(DIPLOMACY_VIEW, RUNTIME_CLASS(CDiplomacyMenuView),
-		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , DIPLOMACY_VIEW);
-	m_wndSplitter.AddSwitchableView(TRADE_VIEW, RUNTIME_CLASS(CTradeMenuView),
-		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , TRADE_VIEW);
-	m_wndSplitter.AddSwitchableView(EMPIRE_VIEW, RUNTIME_CLASS(CEmpireMenuView),
-		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , EMPIRE_VIEW);
-	m_wndSplitter.AddSwitchableView(FLEET_VIEW, RUNTIME_CLASS(CFleetMenuView),
-		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , FLEET_VIEW);
-	m_wndSplitter.AddSwitchableView(SHIPDESIGN_VIEW, RUNTIME_CLASS(CShipDesignMenuView),
-		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , SHIPDESIGN_VIEW);
-	m_wndSplitter.AddSwitchableView(TRANSPORT_VIEW, RUNTIME_CLASS(CTransportMenuView),
-		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , TRANSPORT_VIEW);
-	m_wndSplitter.AddSwitchableView(EVENT_VIEW, RUNTIME_CLASS(CEventMenuView),
-		pContext, CRect(r.right, 0, r.Width(), r.bottom) , false , EVENT_VIEW);
-	m_wndSplitter.AddSwitchableView(COMBAT_VIEW, RUNTIME_CLASS(CCombatMenuView),
-		pContext, CRect(r.right, 0, r.Width(), r.bottom) , false , COMBAT_VIEW);
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , true , VIEWS::START_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::NEWGAME_VIEW, RUNTIME_CLASS(CNewGameView),
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , VIEWS::NEWGAME_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::CHOOSERACE_VIEW, RUNTIME_CLASS(CChooseRaceView),
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , VIEWS::CHOOSERACE_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::GALAXY_VIEW, RUNTIME_CLASS(CGalaxyMenuView),
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , VIEWS::GALAXY_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::SYSTEM_VIEW, RUNTIME_CLASS(CSystemMenuView),
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , VIEWS::SYSTEM_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::RESEARCH_VIEW, RUNTIME_CLASS(CResearchMenuView),
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , VIEWS::RESEARCH_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::INTEL_VIEW, RUNTIME_CLASS(CIntelMenuView),
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , VIEWS::INTEL_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::DIPLOMACY_VIEW, RUNTIME_CLASS(CDiplomacyMenuView),
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , VIEWS::DIPLOMACY_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::TRADE_VIEW, RUNTIME_CLASS(CTradeMenuView),
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , VIEWS::TRADE_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::EMPIRE_VIEW, RUNTIME_CLASS(CEmpireMenuView),
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , VIEWS::EMPIRE_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::FLEET_VIEW, RUNTIME_CLASS(CFleetMenuView),
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , VIEWS::FLEET_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::SHIPDESIGN_VIEW, RUNTIME_CLASS(CShipDesignMenuView),
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , VIEWS::SHIPDESIGN_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::TRANSPORT_VIEW, RUNTIME_CLASS(CTransportMenuView),
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , VIEWS::TRANSPORT_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::EVENT_VIEW, RUNTIME_CLASS(CEventMenuView),
+		pContext, CRect(r.right, 0, r.Width(), r.bottom) , false , VIEWS::EVENT_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::COMBAT_VIEW, RUNTIME_CLASS(CCombatMenuView),
+		pContext, CRect(r.right, 0, r.Width(), r.bottom) , false , VIEWS::COMBAT_VIEW);
 
 	// kleine View unten/links
 	m_wndSplitter.AddSwitchableView(m_wndSplitter.IdFromRowCol(1, 0), RUNTIME_CLASS(CSmallInfoView),
@@ -282,23 +282,23 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/, CCreateContext* pContex
 
 	// Planeten/Schiffsansichtsmenü
 	m_wndSplitter.AddSwitchableView(m_wndSplitter.IdFromRowCol(1, 1), RUNTIME_CLASS(CPlanetBottomView),
-		pContext, CRect(0, 0, r.Width(), r.Height()) , true, PLANET_BOTTOM_VIEW);
-	m_wndSplitter.AddSwitchableView(SHIP_BOTTOM_VIEW, RUNTIME_CLASS(CShipBottomView),
-		pContext, CRect(0, 0, r.Width(), r.Height()) , false , SHIP_BOTTOM_VIEW);
-	m_wndSplitter.AddSwitchableView(RESEARCH_BOTTOM_VIEW, RUNTIME_CLASS(CResearchBottomView),
-		pContext, CRect(0, 0, r.Width(), r.Height()) , false , RESEARCH_BOTTOM_VIEW);
-	m_wndSplitter.AddSwitchableView(INTEL_BOTTOM_VIEW, RUNTIME_CLASS(CIntelBottomView),
-		pContext, CRect(0, 0, r.Width(), r.Height()) , false , INTEL_BOTTOM_VIEW);
-	m_wndSplitter.AddSwitchableView(DIPLOMACY_BOTTOM_VIEW, RUNTIME_CLASS(CDiplomacyBottomView),
-		pContext, CRect(0, 0, r.Width(), r.Height()) , false , DIPLOMACY_BOTTOM_VIEW);
-	m_wndSplitter.AddSwitchableView(TRADE_BOTTOM_VIEW, RUNTIME_CLASS(CTradeBottomView),
-		pContext, CRect(0, 0, r.Width(), r.Height()) , false , TRADE_BOTTOM_VIEW);
-	m_wndSplitter.AddSwitchableView(SHIPDESIGN_BOTTOM_VIEW, RUNTIME_CLASS(CShipDesignBottomView),
-		pContext, CRect(0, 0, r.Width(), r.Height()) , false , SHIPDESIGN_BOTTOM_VIEW);
+		pContext, CRect(0, 0, r.Width(), r.Height()) , true, VIEWS::PLANET_BOTTOM_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::SHIP_BOTTOM_VIEW, RUNTIME_CLASS(CShipBottomView),
+		pContext, CRect(0, 0, r.Width(), r.Height()) , false , VIEWS::SHIP_BOTTOM_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::RESEARCH_BOTTOM_VIEW, RUNTIME_CLASS(CResearchBottomView),
+		pContext, CRect(0, 0, r.Width(), r.Height()) , false , VIEWS::RESEARCH_BOTTOM_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::INTEL_BOTTOM_VIEW, RUNTIME_CLASS(CIntelBottomView),
+		pContext, CRect(0, 0, r.Width(), r.Height()) , false , VIEWS::INTEL_BOTTOM_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::DIPLOMACY_BOTTOM_VIEW, RUNTIME_CLASS(CDiplomacyBottomView),
+		pContext, CRect(0, 0, r.Width(), r.Height()) , false , VIEWS::DIPLOMACY_BOTTOM_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::TRADE_BOTTOM_VIEW, RUNTIME_CLASS(CTradeBottomView),
+		pContext, CRect(0, 0, r.Width(), r.Height()) , false , VIEWS::TRADE_BOTTOM_VIEW);
+	m_wndSplitter.AddSwitchableView(VIEWS::SHIPDESIGN_BOTTOM_VIEW, RUNTIME_CLASS(CShipDesignBottomView),
+		pContext, CRect(0, 0, r.Width(), r.Height()) , false , VIEWS::SHIPDESIGN_BOTTOM_VIEW);
 
 	// linke Menüleiste
 	m_wndSplitter.AddSwitchableView(m_wndSplitter.IdFromRowCol(0, 0), RUNTIME_CLASS(CMenuChooseView),
-		pContext, CRect(0, 0, r.Width(), r.Height()) , true, MENUCHOOSE_VIEW);
+		pContext, CRect(0, 0, r.Width(), r.Height()) , true, VIEWS::MENU_CHOOSE_VIEW);
 
 	//FullScreenMainView(true);
 
@@ -306,10 +306,12 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/, CCreateContext* pContex
 //	return CFrameWnd::OnCreateClient(lpcs, pContext);
 }
 
-void CMainFrame::SelectMainView(USHORT whichView, const CString& sRace)
+void CMainFrame::SelectMainView(VIEWS::MAIN_VIEWS whichView, const CString& sRace)
 {
 	if (sRace.IsEmpty())
 		return;
+
+	assert(VIEWS::NULL_VIEW <= whichView && whichView <= VIEWS::COMBAT_VIEW);
 
 	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
@@ -323,20 +325,20 @@ void CMainFrame::SelectMainView(USHORT whichView, const CString& sRace)
 		{
 			switch (whichView)
 			{
-			case SYSTEM_VIEW:		SelectBottomView(PLANET_BOTTOM_VIEW);		break;
-			case RESEARCH_VIEW:		SelectBottomView(RESEARCH_BOTTOM_VIEW);		break;
-			case INTEL_VIEW:		SelectBottomView(INTEL_BOTTOM_VIEW);		break;
-			case DIPLOMACY_VIEW:	SelectBottomView(DIPLOMACY_BOTTOM_VIEW);	break;
-			case TRADE_VIEW:		SelectBottomView(TRADE_BOTTOM_VIEW);		break;
-			case SHIPDESIGN_VIEW:	SelectBottomView(SHIPDESIGN_BOTTOM_VIEW);	break;
-			case FLEET_VIEW:		SelectBottomView(SHIP_BOTTOM_VIEW);			break;
-			case TRANSPORT_VIEW:	SelectBottomView(SHIP_BOTTOM_VIEW);			break;
-			default:				SelectBottomView(PLANET_BOTTOM_VIEW);		break;
+			case VIEWS::SYSTEM_VIEW:		SelectBottomView(VIEWS::PLANET_BOTTOM_VIEW);		break;
+			case VIEWS::RESEARCH_VIEW:		SelectBottomView(VIEWS::RESEARCH_BOTTOM_VIEW);		break;
+			case VIEWS::INTEL_VIEW:		SelectBottomView(VIEWS::INTEL_BOTTOM_VIEW);		break;
+			case VIEWS::DIPLOMACY_VIEW:	SelectBottomView(VIEWS::DIPLOMACY_BOTTOM_VIEW);	break;
+			case VIEWS::TRADE_VIEW:		SelectBottomView(VIEWS::TRADE_BOTTOM_VIEW);		break;
+			case VIEWS::SHIPDESIGN_VIEW:	SelectBottomView(VIEWS::SHIPDESIGN_BOTTOM_VIEW);	break;
+			case VIEWS::FLEET_VIEW:		SelectBottomView(VIEWS::SHIP_BOTTOM_VIEW);			break;
+			case VIEWS::TRANSPORT_VIEW:	SelectBottomView(VIEWS::SHIP_BOTTOM_VIEW);			break;
+			default:				SelectBottomView(VIEWS::PLANET_BOTTOM_VIEW);		break;
 			}
 
 			// Wenn wir irgendwie in eine andere View, außer der Galaxieansicht gelangen, dann dürfen wir keine Handelsroute
 			// oder Ressourcenroute mehr zeichnen
-			if (whichView != GALAXY_VIEW)
+			if (whichView != VIEWS::GALAXY_VIEW)
 			{
 				CGalaxyMenuView::IsDrawResourceRoute(false);
 				CGalaxyMenuView::IsDrawTradeRoute(false);
@@ -345,13 +347,15 @@ void CMainFrame::SelectMainView(USHORT whichView, const CString& sRace)
 	}
 }
 
-void CMainFrame::SelectMainView(USHORT whichView)
+void CMainFrame::SelectStartMenuView(VIEWS::START_MENU_VIEWS whichView)
 {
+	assert(VIEWS::START_VIEW <= whichView && whichView <= VIEWS::NEWGAME_VIEW);
 	m_wndSplitter.SwitchView(whichView, 0, 1);
 }
 
-void CMainFrame::SelectBottomView(USHORT viewID)
+void CMainFrame::SelectBottomView(VIEWS::BOTTOM_VIEWS viewID)
 {
+	assert(VIEWS::PLANET_BOTTOM_VIEW <= viewID && viewID <= VIEWS::SHIPDESIGN_BOTTOM_VIEW);
 	m_wndSplitter.SwitchView(viewID, 1, 1);
 }
 
@@ -495,7 +499,7 @@ LRESULT CMainFrame::ShowCombatView(WPARAM /*wParam*/, LPARAM /*lParam*/)
 
 	// Combat View anzeigen
 	FullScreenMainView(true);
-	SelectMainView(COMBAT_VIEW, pDoc->GetPlayersRaceID());
+	SelectMainView(VIEWS::COMBAT_VIEW, pDoc->GetPlayersRaceID());
 	// wurde Rundenende geklickt zurücksetzen
 	resources::pClientWorker->SetToEmpireViewFor(*pDoc->GetPlayersRace());
 	pDoc->m_bRoundEndPressed = false;

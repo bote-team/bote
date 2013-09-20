@@ -3440,7 +3440,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			CGalaxyMenuView::IsDrawTradeRoute(TRUE);
 			CGalaxyMenuView::GetDrawnTradeRoute()->GenerateTradeRoute(pDoc->GetKO());
-			resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+			resources::pMainFrame->SelectMainView(VIEWS::GALAXY_VIEW, pMajor->GetRaceID());
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 		}
 		// Button zum Anlegen einer Ressourcenroute
@@ -3448,7 +3448,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			CGalaxyMenuView::IsDrawResourceRoute(TRUE);
 			CGalaxyMenuView::GetDrawnResourceRoute()->GenerateResourceRoute(pDoc->GetKO(), m_byResourceRouteRes);
-			resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+			resources::pMainFrame->SelectMainView(VIEWS::GALAXY_VIEW, pMajor->GetRaceID());
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 		}
 		// Button zum Ändern der Ressource einer Ressourcenroute

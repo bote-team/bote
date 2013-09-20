@@ -546,8 +546,8 @@ void CFleetMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	// Das hier alles nur machen, wenn wir in der Flotten-Ansicht sind
 	CGalaxyMenuView::SetMoveShip(FALSE);
 	pDoc->SetCurrentShip(pDoc->FleetShip());
-	resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
-	resources::pMainFrame->SelectBottomView(SHIP_BOTTOM_VIEW);
+	resources::pMainFrame->SelectMainView(VIEWS::GALAXY_VIEW, pMajor->GetRaceID());
+	resources::pMainFrame->SelectBottomView(VIEWS::SHIP_BOTTOM_VIEW);
 	CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 	resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 	resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));

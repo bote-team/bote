@@ -12,7 +12,7 @@ CClientWorker::CClientWorker(void)
 {
 	resources::pClientWorker = this;
 
-	memset(m_iSelectedView, START_VIEW, sizeof(m_iSelectedView));
+	memset(m_iSelectedView, VIEWS::NULL_VIEW, sizeof(m_iSelectedView));
 }
 
 CClientWorker::~CClientWorker(void)
@@ -28,11 +28,16 @@ CClientWorker* CClientWorker::GetInstance() {
 void CClientWorker::Serialize(CArchive& ar) {
 	if(ar.IsStoring()) {
 		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
-			ar << m_iSelectedView[i];
+			ar << static_cast<unsigned short>(m_iSelectedView[i]);
 	}
 	else {
 		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
-			ar >> m_iSelectedView[i];
+		{
+			unsigned short value;
+			ar >> value;
+			assert(VIEWS::NULL_VIEW <= value && value <= VIEWS::COMBAT_VIEW);
+			m_iSelectedView[i] = static_cast<VIEWS::MAIN_VIEWS>(value);
+		}
 	}
 }
 
@@ -68,7 +73,8 @@ unsigned short CClientWorker::GetSelectedViewFor(const CString& sRaceID)
 
 void CClientWorker::SetSelectedViewForTo(network::RACE race, unsigned short to)
 {
-	m_iSelectedView[race] = to;
+	assert(VIEWS::NULL_VIEW <= to && to <= VIEWS::COMBAT_VIEW);
+	m_iSelectedView[race] = static_cast<VIEWS::MAIN_VIEWS>(to);
 }
 
 void CClientWorker::SetToEmpireViewFor(const CMajor& major)
@@ -76,7 +82,7 @@ void CClientWorker::SetToEmpireViewFor(const CMajor& major)
 	if(!major.IsHumanPlayer())
 		return;
 	const network::RACE client = GetMappedClientID(major.GetRaceID());
-	m_iSelectedView[client] = EMPIRE_VIEW;
+	m_iSelectedView[client] = VIEWS::EMPIRE_VIEW;
 }
 
 void CClientWorker::DoViewWorkOnNewRound(const CMajor& PlayersRace)
@@ -88,19 +94,19 @@ void CClientWorker::DoViewWorkOnNewRound(const CMajor& PlayersRace)
 	if (PlayersRace.GetEmpire()->GetEvents()->GetSize() > 0)
 	{
 		resources::pMainFrame->FullScreenMainView(true);
-		resources::pMainFrame->SelectMainView(EVENT_VIEW, PlayersRace.GetRaceID());
+		resources::pMainFrame->SelectMainView(VIEWS::EVENT_VIEW, PlayersRace.GetRaceID());
 	}
 	else
 	{
 		resources::pMainFrame->FullScreenMainView(false);
 		resources::pMainFrame->SelectMainView(m_iSelectedView[client], PlayersRace.GetRaceID());
-		m_iSelectedView[client] = NULL_VIEW;
+		m_iSelectedView[client] = VIEWS::NULL_VIEW;
 	}
 }
 
 void CClientWorker::ResetViews()
 {
 	for (int i = network::RACE_1; i < network::RACE_ALL; i++)
-	if (m_iSelectedView[i] == FLEET_VIEW)
-		m_iSelectedView[i] = GALAXY_VIEW;
+	if (m_iSelectedView[i] == VIEWS::FLEET_VIEW)
+		m_iSelectedView[i] = VIEWS::GALAXY_VIEW;
 }

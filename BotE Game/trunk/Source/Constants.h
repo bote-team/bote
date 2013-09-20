@@ -38,43 +38,65 @@ extern double STARMAP_ZOOM_MAX;				///< maximaler Zoom-Faktor
 
 
 // ------------- View-IDs ------------------------------------------------------
-// Mainview
-#define NULL_VIEW				0
-#define GALAXY_VIEW				1
-#define SYSTEM_VIEW				2
-#define RESEARCH_VIEW			3
-#define INTEL_VIEW				4
-#define DIPLOMACY_VIEW			5
-#define TRADE_VIEW				6
-#define EMPIRE_VIEW				7
-#define FLEET_VIEW				8
-#define SHIPDESIGN_VIEW			9
-#define TRANSPORT_VIEW			10
-#define EVENT_VIEW				11
-#define COMBAT_VIEW				12
+
+namespace VIEWS
+{
+	// Mainview
+	enum MAIN_VIEWS
+	{
+		NULL_VIEW				= 0,
+		GALAXY_VIEW				= 1,
+		SYSTEM_VIEW				= 2,
+		RESEARCH_VIEW			= 3,
+		INTEL_VIEW				= 4,
+		DIPLOMACY_VIEW			= 5,
+		TRADE_VIEW				= 6,
+		EMPIRE_VIEW				= 7,
+		FLEET_VIEW				= 8,
+		SHIPDESIGN_VIEW			= 9,
+		TRANSPORT_VIEW			= 10,
+		EVENT_VIEW				= 11,
+		COMBAT_VIEW				= 12
+	};
+}
 
 #define IS_MAIN_VIEW(id) \
-	((id) >= GALAXY_VIEW && (id) <= COMBAT_VIEW)
+	((id) >= VIEWS::GALAXY_VIEW && (id) <= VIEWS::COMBAT_VIEW)
 
-// Startmenü
-#define START_VIEW				50
-#define CHOOSERACE_VIEW			51
-#define NEWGAME_VIEW			52
+namespace VIEWS
+{
+	// Startmenü
+	enum START_MENU_VIEWS
+	{
+		START_VIEW				= 50,
+		CHOOSERACE_VIEW			= 51,
+		NEWGAME_VIEW			= 52
+	};
 
-// Planetenview (unten)
-#define PLANET_BOTTOM_VIEW		101
-#define SHIP_BOTTOM_VIEW		102
-#define RESEARCH_BOTTOM_VIEW	103
-#define INTEL_BOTTOM_VIEW		104
-#define DIPLOMACY_BOTTOM_VIEW	105
-#define TRADE_BOTTOM_VIEW		106
-#define SHIPDESIGN_BOTTOM_VIEW	109
+	// Planetenview (unten)
+	enum BOTTOM_VIEWS
+	{
+		PLANET_BOTTOM_VIEW		= 101,
+		SHIP_BOTTOM_VIEW		= 102,
+		RESEARCH_BOTTOM_VIEW	= 103,
+		INTEL_BOTTOM_VIEW		= 104,
+		DIPLOMACY_BOTTOM_VIEW	= 105,
+		TRADE_BOTTOM_VIEW		= 106,
+		SHIPDESIGN_BOTTOM_VIEW	= 109
+	};
+}
 
 #define IS_BOTTOM_VIEW(id) \
-	((id) >= PLANET_BOTTOM_VIEW && (id) <= SHIPDESIGN_BOTTOM_VIEW)
+	((id) >= VIEWS::PLANET_BOTTOM_VIEW && (id) <= VIEWS::SHIPDESIGN_BOTTOM_VIEW)
 
-// Menüauswahlview
-#define MENUCHOOSE_VIEW			200
+namespace VIEWS
+{
+	// Menüauswahlview
+	enum MENU_CHOOSE_VIEWS
+	{
+		MENU_CHOOSE_VIEW = 200
+	};
+}
 
 // ------------- Spielerrassen -------------------------------------------------
 #define NOBODY				0

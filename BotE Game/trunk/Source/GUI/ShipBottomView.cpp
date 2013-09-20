@@ -282,7 +282,7 @@ void CShipBottomView::DrawShipContent()
 	if (counter == 1 && !m_bShowStation	&& oneShip->second->GetOwnerOfShip() == pMajor->GetRaceID() && oneShip->second != m_dc.pDoc->CurrentShip()->second)
 	{
 		// Wenn wenn wir auf der Galaxiekarte sind
-		if (resources::pMainFrame->GetActiveView(0, 1) == GALAXY_VIEW)
+		if (resources::pMainFrame->GetActiveView(0, 1) == VIEWS::GALAXY_VIEW)
 		{
 			SHIP_ORDER::Typ nOrder = oneShip->second->GetCurrentOrder();
 			bool bDirectMove = true;
@@ -831,7 +831,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				return;
 
 			// Wenn wir in der MainView nicht im Flottenmenü sind
-			if (resources::pMainFrame->GetActiveView(0, 1) != FLEET_VIEW)
+			if (resources::pMainFrame->GetActiveView(0, 1) != VIEWS::FLEET_VIEW)
 			{
 				ActivateShip(pDoc->CurrentShip());
 				return;
@@ -976,7 +976,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				if (nOrder == SHIP_ORDER::CREATE_FLEET)
 				{
 					pDoc->SetFleetShip(pDoc->CurrentShip()); // Dieses Schiff soll die Flotte beinhalten
-					resources::pMainFrame->SelectMainView(FLEET_VIEW, pMajor->GetRaceID());		// Flottenansicht in der MainView anzeigen
+					resources::pMainFrame->SelectMainView(VIEWS::FLEET_VIEW, pMajor->GetRaceID());		// Flottenansicht in der MainView anzeigen
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				}
 				else if (nOrder == SHIP_ORDER::ASSIGN_FLAGSHIP)
@@ -996,7 +996,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				// Bei einem Transportbefehl muss in der MainView auch die Transportansicht angeblendet werden
 				else if (nOrder == SHIP_ORDER::TRANSPORT)
 				{
-					resources::pMainFrame->SelectMainView(TRANSPORT_VIEW, pMajor->GetRaceID());	// Transportansicht in der MainView anzeigen
+					resources::pMainFrame->SelectMainView(VIEWS::TRANSPORT_VIEW, pMajor->GetRaceID());	// Transportansicht in der MainView anzeigen
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				}
 				else if (nOrder == SHIP_ORDER::TERRAFORM) {
@@ -1016,7 +1016,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				// bei Terraforming wird die Planetenansicht eingeblendet
 				if (nOrder == SHIP_ORDER::TERRAFORM)
 				{
-					resources::pMainFrame->SelectBottomView(PLANET_BOTTOM_VIEW);
+					resources::pMainFrame->SelectBottomView(VIEWS::PLANET_BOTTOM_VIEW);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 					CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_TERRAFORM_SELECT, SNDMGR_PRIO_HIGH, 1.0f, client);
 				}
@@ -1051,7 +1051,7 @@ void CShipBottomView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		return;
 
 	// keinen Doppelklick zulassen wenn in der Flottenansicht
-	if (resources::pMainFrame->GetActiveView(0, 1) == FLEET_VIEW)
+	if (resources::pMainFrame->GetActiveView(0, 1) == VIEWS::FLEET_VIEW)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -1079,7 +1079,7 @@ void CShipBottomView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		this->KillTimer(1);
 		m_iTimeCounter = 0;
 		pDoc->SetFleetShip(pDoc->CurrentShip()); // Dieses Schiff soll die Flotte beinhalten
-		resources::pMainFrame->SelectMainView(FLEET_VIEW, pMajor->GetRaceID());	// Flottenansicht in der MainView anzeigen
+		resources::pMainFrame->SelectMainView(VIEWS::FLEET_VIEW, pMajor->GetRaceID());	// Flottenansicht in der MainView anzeigen
 		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 		Invalidate(FALSE);
 		return;
@@ -1136,7 +1136,7 @@ void CShipBottomView::OnRButtonDown(UINT nFlags, CPoint point)
 		CGalaxyMenuView::SetMoveShip(FALSE);
 		this->KillTimer(1);
 		m_iTimeCounter = 0;
-		if (resources::pMainFrame->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW)	// Wenn wir kolon oder terraformen abbrechen wollen, zurück zum Schiffsmenü
+		if (resources::pMainFrame->GetActiveView(1, 1) == VIEWS::PLANET_BOTTOM_VIEW)	// Wenn wir kolon oder terraformen abbrechen wollen, zurück zum Schiffsmenü
 		{
 			pDoc->CurrentShip()->second->UnsetCurrentOrder();
 			pDoc->CurrentShip()->second->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);

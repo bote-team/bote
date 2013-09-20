@@ -1,6 +1,7 @@
 #pragma once
 
 #include "network.h"
+#include "Constants.h"
 
 class CMajor;
 
@@ -9,7 +10,7 @@ class CClientWorker
 private:
 
 	//Welche View soll in der MainView angezeigt werden? z.B. Galaxie oder System
-	unsigned short m_iSelectedView[network::RACE_ALL];
+	VIEWS::MAIN_VIEWS m_iSelectedView[network::RACE_ALL];
 
 	CClientWorker(void);
 	CClientWorker(const CClientWorker& o);

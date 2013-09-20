@@ -776,7 +776,7 @@ void CTransportMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
-	resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+	resources::pMainFrame->SelectMainView(VIEWS::GALAXY_VIEW, pMajor->GetRaceID());
 	resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 
 	CMainBaseView::OnRButtonDown(nFlags, point);

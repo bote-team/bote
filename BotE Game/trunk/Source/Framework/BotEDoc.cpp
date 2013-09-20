@@ -606,7 +606,7 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 
 		pPlayer->Serialize(ar);
 		// aktuelle View mit zum Server senden
-		ar << m_pClientWorker->GetSelectedViewFor(pPlayer->GetRaceID());
+		ar << static_cast<unsigned short>(m_pClientWorker->GetSelectedViewFor(pPlayer->GetRaceID()));
 	}
 	else
 	{
@@ -739,7 +739,7 @@ void CBotEDoc::SetKO(int x, int y)
 	m_ptKO = CPoint(x, y);
 	CSmallInfoView::SetPlanet(NULL);
 
-	if (resources::pMainFrame->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW)
+	if (resources::pMainFrame->GetActiveView(1, 1) == VIEWS::PLANET_BOTTOM_VIEW)
 		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 }
 
@@ -775,9 +775,9 @@ void CBotEDoc::LoadViewGraphics(void)
 	std::map<CWnd *, UINT>* views = &resources::pMainFrame->GetSplitterWindow()->views;
 	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); ++it)
 	{
-		if (it->second == GALAXY_VIEW)
+		if (it->second == VIEWS::GALAXY_VIEW)
 			((CGalaxyMenuView*)(it->first))->LoadRaceGraphics();
-		else if (it->second == MENUCHOOSE_VIEW)
+		else if (it->second == VIEWS::MENU_CHOOSE_VIEW)
 			((CMenuChooseView*)(it->first))->LoadRaceGraphics();
 		else if (IS_MAIN_VIEW(it->second))
 			((CMainBaseView*)(it->first))->LoadRaceGraphics();
@@ -795,10 +795,10 @@ void CBotEDoc::LoadViewGraphics(void)
 	DoViewWorkOnNewRound();
 
 	// wenn neues Spiel gestartet wurde, dann initial auf die Galaxiekarte stellen
-	if (m_pClientWorker->GetSelectedViewFor(pPlayersRace->GetRaceID()) == NULL_VIEW)
+	if (m_pClientWorker->GetSelectedViewFor(pPlayersRace->GetRaceID()) == VIEWS::NULL_VIEW)
 	{
 		// zum Schluss die Galxieview auswählen (nicht eher, da gibts manchmal Probleme beim Scrollen ganz nach rechts)
-		resources::pMainFrame->SelectMainView(GALAXY_VIEW, pPlayersRace->GetRaceID());
+		resources::pMainFrame->SelectMainView(VIEWS::GALAXY_VIEW, pPlayersRace->GetRaceID());
 	}
 
 	// Menü anzeigen bzw. verstecken
@@ -830,13 +830,13 @@ void CBotEDoc::DoViewWorkOnNewRound()
 	std::map<CWnd *, UINT>* views = &resources::pMainFrame->GetSplitterWindow()->views;
 	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); ++it)
 	{
-		if (it->second == GALAXY_VIEW)
+		if (it->second == VIEWS::GALAXY_VIEW)
 			((CGalaxyMenuView*)(it->first))->OnNewRound();
 		else if (IS_MAIN_VIEW(it->second))
 			((CMainBaseView*)(it->first))->OnNewRound();
 		else if (IS_BOTTOM_VIEW(it->second))
 			((CBottomBaseView*)(it->first))->OnNewRound();
-		else if (it->second == MENUCHOOSE_VIEW)
+		else if (it->second == VIEWS::MENU_CHOOSE_VIEW)
 			((CMenuChooseView*)(it->first))->OnNewRound();
 	}
 
@@ -2520,7 +2520,7 @@ void CBotEDoc::CalcPreDataForNextRound()
 		network::RACE client = m_pClientWorker->GetMappedClientID(it->first);
 		if (pMajor->DecrementAgreementsDuration(pmMajors))
 			if (pMajor->IsHumanPlayer())
-				m_pClientWorker->SetSelectedViewForTo(client, EMPIRE_VIEW);
+				m_pClientWorker->SetSelectedViewForTo(client, VIEWS::EMPIRE_VIEW);
 		// wird das Imperium von einem Menschen oder vom Computer gespielt
 		if (client != network::RACE_NONE && server.IsPlayedByClient(client))
 			pMajor->SetHumanPlayer(true);

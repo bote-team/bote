@@ -784,7 +784,7 @@ void CResearchMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// Haben wir auf den Schiffsdesign Button geklickt
 		if (m_bySubMenu == 2)
 		{
-			resources::pMainFrame->SelectMainView(9, pMajor->GetRaceID());	// Schiffsdesignansicht zeichnen
+			resources::pMainFrame->SelectMainView(VIEWS::SHIPDESIGN_VIEW, pMajor->GetRaceID());	// Schiffsdesignansicht zeichnen
 			Invalidate(FALSE);
 			m_bySubMenu = 0;
 			return;

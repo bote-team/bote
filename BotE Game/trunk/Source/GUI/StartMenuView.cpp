@@ -302,7 +302,7 @@ void CStartMenuView::OnBnClickedMultiplayer()
 void CStartMenuView::OnBnClickedCreateMP()
 {
 	// Umschalten zur Spiel starten Ansicht
-	resources::pMainFrame->SelectMainView(NEWGAME_VIEW);
+	resources::pMainFrame->SelectStartMenuView(VIEWS::NEWGAME_VIEW);
 	m_pNewGameView->SetMode(MODE_SERVER);
 
 	ShowMPButtons(false);
@@ -311,7 +311,7 @@ void CStartMenuView::OnBnClickedCreateMP()
 void CStartMenuView::OnBnClickedJoinMP()
 {
 	// Umschalten zur Spiel starten Ansicht
-	resources::pMainFrame->SelectMainView(NEWGAME_VIEW);
+	resources::pMainFrame->SelectStartMenuView(VIEWS::NEWGAME_VIEW);
 	m_pNewGameView->SetMode(MODE_CLIENT);
 
 	ShowMPButtons(false);
@@ -391,7 +391,7 @@ void CStartMenuView::OnClientDisconnected()
 		if (!pDoc->m_bDontExit)
 		{
 			MessageBox(CLoc::GetString("SERVERERROR1"), CLoc::GetString("ERROR"), MB_ICONEXCLAMATION | MB_OK);
-			resources::pMainFrame->SelectMainView(CHOOSERACE_VIEW);
+			resources::pMainFrame->SelectStartMenuView(VIEWS::CHOOSERACE_VIEW);
 		}
 		else
 		{

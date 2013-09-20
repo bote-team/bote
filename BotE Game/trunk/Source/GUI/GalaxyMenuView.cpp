@@ -849,7 +849,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 						bShowPlanetBottomView = false;
 						CShipBottomView::SetShowStation(false);
-						resources::pMainFrame->SelectBottomView(SHIP_BOTTOM_VIEW);
+						resources::pMainFrame->SelectBottomView(VIEWS::SHIP_BOTTOM_VIEW);
 						resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 						break;
 					}
@@ -873,7 +873,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					bShowPlanetBottomView = false;
 					CShipBottomView::SetShowStation(true);
-					resources::pMainFrame->SelectBottomView(SHIP_BOTTOM_VIEW);
+					resources::pMainFrame->SelectBottomView(VIEWS::SHIP_BOTTOM_VIEW);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 				}
 			}
@@ -881,7 +881,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (bShowPlanetBottomView)
 			{
 				// Planetenansicht in View3 des angeklickten Sektors zeigen
-				resources::pMainFrame->SelectBottomView(PLANET_BOTTOM_VIEW);
+				resources::pMainFrame->SelectBottomView(VIEWS::PLANET_BOTTOM_VIEW);
 				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 			}
 
@@ -1097,7 +1097,7 @@ void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				// falls ein Schiff markiert war wird dieses abgewählt
 				SetMoveShip(FALSE);
 				pDoc->SetKO(sector.x,sector.y);
-				resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
+				resources::pMainFrame->SelectMainView(VIEWS::SYSTEM_VIEW, pMajor->GetRaceID());
 				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 			}
 	}
@@ -1463,11 +1463,11 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotEDoc* pDoc, SHIP_ORDER::
 				}
 				m_PreviouslyJumpedToShip = RememberedShip(i->second->GetShipName(), i->second->Key());
 				m_pPlayersRace->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view
-				pDoc->SetKO(sector.x,sector.y);//neccessary for that the ship is selected for SHIP_BOTTOM_VIEW
+				pDoc->SetKO(sector.x,sector.y);//neccessary for that the ship is selected for VIEWS::SHIP_BOTTOM_VIEW
 				ScrollToSector(coords);
 
 				CShipBottomView::SetShowStation(false);
-				resources::pMainFrame->SelectBottomView(SHIP_BOTTOM_VIEW);
+				resources::pMainFrame->SelectBottomView(VIEWS::SHIP_BOTTOM_VIEW);
 				if (CShipBottomView* pView = dynamic_cast<CShipBottomView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CShipBottomView))))
 				{
 					// zuvor neuzeichnen, falls sich der Sektor geändert hat (sonst klappt die Logik

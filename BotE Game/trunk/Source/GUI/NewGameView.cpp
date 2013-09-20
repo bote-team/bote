@@ -564,14 +564,14 @@ void CNewGameView::OnBnClickedBack()
 	if (!pDoc)
 		return;
 
-	resources::pMainFrame->SelectMainView(START_VIEW);
+	resources::pMainFrame->SelectStartMenuView(VIEWS::START_VIEW);
 }
 
 void CNewGameView::ShowChooseRaceView(bool bIsServer) const
 {
 	// Umschalten zur Rassenauswahlansicht
 
-	resources::pMainFrame->SelectMainView(CHOOSERACE_VIEW);
+	resources::pMainFrame->SelectStartMenuView(VIEWS::CHOOSERACE_VIEW);
 
 	CChooseRaceView* m_pChooseRaceView = dynamic_cast<CChooseRaceView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CChooseRaceView)));
 	ASSERT(m_pChooseRaceView);
