@@ -211,3 +211,13 @@ void CClientWorker::CalcContact(CMajor& Major, const CRace& ContactedRace) {
 	else
 		AddSoundMessage(SNDMGR_MSG_ALIENCONTACT, Major, 1);
 }
+
+void CClientWorker::CalcStationReady(const SHIP_TYPE::Typ typ, const CMajor& race) {
+	if(!race.IsHumanPlayer())
+		return;
+	SNDMGR_VALUE value = SNDMGR_MSG_OUTPOST_READY;
+	if(typ == SHIP_TYPE::STARBASE)
+		value = SNDMGR_MSG_STARBASE_READY;
+	AddSoundMessage(value, race, 0);
+	SetToEmpireViewFor(race);
+}

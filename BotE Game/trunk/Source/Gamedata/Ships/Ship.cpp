@@ -13,6 +13,7 @@
 #include "Races/major.h"
 #include "General/Loc.h"
 #include "Ships/Ships.h"
+#include "clientWorker.h"
 
 #include <cassert>
 
@@ -1507,7 +1508,7 @@ bool CShip::BuildStation(SHIP_TYPE::Typ type, CSector& sector, CMajor& major, sh
 	CBotEDoc* pDoc = resources::pDoc;
 	major.AddToLostShipHistory(CShips(*this), CLoc::GetString(s2),
 		CLoc::GetString("DESTROYED"), pDoc->GetCurrentRound());
-	pDoc->CalcShipOrdersClientWork(type, major);
+	resources::pClientWorker->CalcStationReady(type, major);
 	pDoc->BuildShip(id, sector.GetKO(), m_sOwnerOfShip);
 	// Wenn hier ein Au?enposten gebaut wurde den Befehl f?r die Flotte auf Meiden stellen
 	UnsetCurrentOrder();

@@ -66,5 +66,5 @@ public:
 	void AddSoundMessage(SNDMGR_VALUE type, const CMajor& major, int priority);
 
 	void CalcContact(CMajor& Major, const CRace& ContactedRace);
-
+	void CalcStationReady(const SHIP_TYPE::Typ typ, const CMajor& race);
 };

@@ -3669,15 +3669,6 @@ void CBotEDoc::CalcTrade()
 }
 
 /////BEGIN: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
-void CBotEDoc::CalcShipOrdersClientWork(const SHIP_TYPE::Typ typ, const CMajor& race) {
-	if(!race.IsHumanPlayer())
-		return;
-	SNDMGR_VALUE value = SNDMGR_MSG_OUTPOST_READY;
-	if(typ == SHIP_TYPE::STARBASE)
-		value = SNDMGR_MSG_STARBASE_READY;
-	m_pClientWorker->AddSoundMessage(value, race, 0);
-	m_pClientWorker->SetToEmpireViewFor(race);
-}
 
 bool CBotEDoc::BuildStation(SHIP_TYPE::Typ type, CShips& ship, CSector& sector) {
 	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(ship.GetOwnerOfShip()));
