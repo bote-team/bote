@@ -2,8 +2,8 @@
 
 #include <cassert>
 
-#include "resources.h"
 #include "ClientWorker.h"
+#include "resources.h"
 #include "Constants.h"
 #include "Races/Major.h"
 #include "MainFrm.h"
@@ -13,8 +13,9 @@ CClientWorker::CClientWorker(void) :
 {
 	resources::pClientWorker = this;
 
-	//entry .at(0) is unused
+	//entries .at(0) are unused
 	m_SelectedView.resize(network::RACE_ALL, VIEWS::NULL_VIEW);
+	//memset(m_SoundMessages, CArray<SNDMGR_MESSAGEENTRY>(), sizeof(m_SoundMessages))
 }
 
 CClientWorker::~CClientWorker(void)
@@ -27,7 +28,14 @@ CClientWorker* CClientWorker::GetInstance() {
 	return &instance;
 }
 
-void CClientWorker::Serialize(CArchive& ar) {
+void CClientWorker::Serialize(CArchive& ar, bool sounds)
+{
+	if(sounds)
+	{
+		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
+			m_SoundMessages[i].Serialize(ar);
+	}
+
 	if(ar.IsStoring()) {
 		for (std::vector<VIEWS::MAIN_VIEWS>::const_iterator it = m_SelectedView.begin();
 			it != m_SelectedView.end(); ++it)
@@ -109,6 +117,12 @@ void CClientWorker::SetSelectedViewForTo(network::RACE race, unsigned short to)
 	m_SelectedView[race] = static_cast<VIEWS::MAIN_VIEWS>(to);
 }
 
+void CClientWorker::SetSelectedViewForTo(const CMajor& major, unsigned short to)
+{
+	const network::RACE client = GetMappedClientID(major.GetRaceID());
+	SetSelectedViewForTo(client, to);
+}
+
 void CClientWorker::SetToEmpireViewFor(const CMajor& major)
 {
 	if(!major.IsHumanPlayer())
@@ -142,4 +156,42 @@ void CClientWorker::ResetViews()
 			it != m_SelectedView.end(); ++it)
 		if (*it == VIEWS::FLEET_VIEW)
 			*it = VIEWS::GALAXY_VIEW;
+}
+
+void CClientWorker::CommitSoundMessages(CSoundManager* pSoundManager, const CMajor& player) const
+{
+	assert(pSoundManager);
+	const network::RACE client = GetMappedClientID(player.GetRaceID());
+
+	pSoundManager->ClearMessages();
+	for (int i = 0; i < m_SoundMessages[client].GetSize(); i++)
+	{
+		const SNDMGR_MESSAGEENTRY& entry = m_SoundMessages[client].GetAt(i);
+		pSoundManager->AddMessage(entry.nMessage, entry.nRace, entry.nPriority, entry.fVolume);
+	}
+}
+
+void CClientWorker::ClearSoundMessages(network::RACE client)
+{
+	m_SoundMessages[client].RemoveAll();
+}
+
+void CClientWorker::ClearSoundMessages()
+{
+	for (int i = network::RACE_1; i < network::RACE_ALL; i++)
+		ClearSoundMessages(static_cast<network::RACE>(i));
+}
+
+void CClientWorker::ClearSoundMessages(const CMajor& race)
+{
+	ClearSoundMessages(GetMappedClientID(race.GetRaceID()));
+}
+
+void CClientWorker::AddSoundMessage(SNDMGR_VALUE type, const CMajor& major, int priority)
+{
+	if(!major.IsHumanPlayer())
+		return;
+	const network::RACE client = GetMappedClientID(major.GetRaceID());
+	const SNDMGR_MESSAGEENTRY entry = {type, client, priority, 1.0f};
+	m_SoundMessages[client].Add(entry);
 }

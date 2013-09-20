@@ -235,8 +235,6 @@ void CBotEDoc::Serialize(CArchive& ar)
 		for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); ++it)
 			ar << it->first << it->second.first << it->second.second;
 
-		m_pClientWorker->Serialize(ar);
-
 		ar << m_ShipInfoArray.GetSize();
 		for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
 			m_ShipInfoArray.GetAt(i).Serialize(ar);
@@ -282,8 +280,6 @@ void CBotEDoc::Serialize(CArchive& ar)
 			ar >> value.second;
 			m_mRaceKO[key] = value;
 		}
-
-		m_pClientWorker->Serialize(ar);
 
 		ar >> number;
 		m_ShipInfoArray.RemoveAll();
@@ -333,6 +329,7 @@ void CBotEDoc::Serialize(CArchive& ar)
 	m_Statistics.Serialize(ar);
 
 	m_pRaceCtrl->Serialize(ar);
+	m_pClientWorker->Serialize(ar, false);
 
 	if (ar.IsLoading())
 	{
@@ -458,7 +455,6 @@ void CBotEDoc::SerializeNextRoundData(CArchive &ar)
 		// ZU ERLEDIGEN: Hier Code zum Speichern einfügen
 		ar << m_iRound;
 		ar << m_fStardate;
-		m_pClientWorker->Serialize(ar);
 		ar << m_ShipInfoArray.GetSize();
 		for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
 			m_ShipInfoArray.GetAt(i).Serialize(ar);
@@ -490,7 +486,6 @@ void CBotEDoc::SerializeNextRoundData(CArchive &ar)
 		// ZU ERLEDIGEN: Hier Code zum Laden einfügen
 		ar >> m_iRound;
 		ar >> m_fStardate;
-		m_pClientWorker->Serialize(ar);
 		ar >> number;
 		m_ShipInfoArray.RemoveAll();
 		m_ShipInfoArray.SetSize(number);
@@ -520,10 +515,7 @@ void CBotEDoc::SerializeNextRoundData(CArchive &ar)
 	SerializeSectorsAndSystems(ar);
 
 	m_pRaceCtrl->Serialize(ar);
-
-	for (int i = MAJOR1; i <= MAJOR6; i++)
-		m_SoundMessages[i].Serialize(ar);
-
+	m_pClientWorker->Serialize(ar, true);
 
 	m_GenShipName.Serialize(ar);
 	m_GlobalBuildings.Serialize(ar);
@@ -545,17 +537,8 @@ void CBotEDoc::SerializeNextRoundData(CArchive &ar)
 			return;
 		}
 
-		const network::RACE client = m_pClientWorker->GetMappedClientID(pPlayer->GetRaceID());
-
 		// Sprachmeldungen an den Soundmanager schicken
-		CSoundManager* pSoundManager = CSoundManager::GetInstance();
-		ASSERT(pSoundManager);
-		pSoundManager->ClearMessages();
-		for (int i = 0; i < m_SoundMessages[client].GetSize(); i++)
-		{
-			SNDMGR_MESSAGEENTRY* entry = &m_SoundMessages[client].GetAt(i);
-			pSoundManager->AddMessage(entry->nMessage, entry->nRace, entry->nPriority, entry->fVolume);
-		}
+		m_pClientWorker->CommitSoundMessages(CSoundManager::GetInstance(), *pPlayer);
 
 		// Systemliste der Imperien erstellen
 		map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
@@ -569,6 +552,7 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 {
 	if (ar.IsStoring())
 	{
+		CMajor* pPlayer = GetPlayersRace();
 		if (m_bCombatCalc)
 		{
 			MYTRACE("general")(MT::LEVEL_INFO, "Client %d sending CombatData to server...\n", race);
@@ -579,7 +563,6 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 		}
 
 		MYTRACE("general")(MT::LEVEL_INFO, "Client %d sending EndOfRoundData to server...\n", race);
-		CMajor* pPlayer = GetPlayersRace();
 		// Client-Dokument
 		// Anzahl der eigenen Schiffsinfoobjekte ermitteln
 		for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
@@ -612,6 +595,8 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 	{
 		// vom Client gespielte Majorrace-ID ermitteln
 		const CString& sMajorID = m_pClientWorker->GetMappedRaceID(race);
+		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sMajorID));
+		assert(pMajor);
 
 		if (m_bCombatCalc)
 		{
@@ -629,8 +614,6 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 
 		MYTRACE("general")(MT::LEVEL_INFO, "Server receiving EndOfRoundData from client %d...\n", race);
 		// Server-Dokument
-		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sMajorID));
-		ASSERT(pMajor);
 		for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
 			if (m_ShipInfoArray.GetAt(i).GetRace() == pMajor->GetRaceShipNumber())
 			{
@@ -650,11 +633,9 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 		}
 
 		pMajor->Serialize(ar);
-
-		assert(m_pClientWorker->GetMappedClientID(sMajorID) == race);
 		unsigned short view;
 		ar >> view;
-		m_pClientWorker->SetSelectedViewForTo(race, view);
+		m_pClientWorker->SetSelectedViewForTo(*pMajor, view);
 	}
 	MYTRACE("general")(MT::LEVEL_INFO, "... serialization of RoundEndData succesfull\n", race);
 }
@@ -1329,8 +1310,7 @@ void CBotEDoc::NextRound()
 		RandomSeed();
 
 		// Soundnachrichten aus alter Runde löschen
-		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
-			m_SoundMessages[i].RemoveAll();
+		m_pClientWorker->ClearSoundMessages();
 
 		// ausgelöschte Rassen gleich zu Beginn der neuen Runde entfernen. Menschliche Spieler sollten jetzt schon disconnected sein!!!
 		vector<CString> vDelMajors;
@@ -3244,9 +3224,7 @@ void CBotEDoc::CalcIntelligence()
 				message.CreateNews(CLoc::GetString("WE_HAVE_NEW_INTELREPORTS"), EMPIRE_NEWS_TYPE::SECURITY, 4);
 				it->second->GetEmpire()->AddMsg(message);
 
-				const network::RACE client = m_pClientWorker->GetMappedClientID(it->first);
-				SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_INTELNEWS, client, 0, 1.0f};
-				m_SoundMessages[client].Add(entry);
+				m_pClientWorker->AddSoundMessage(SNDMGR_MSG_INTELNEWS, *it->second, 0);
 
 				BOOLEAN addSpy = FALSE;
 				BOOLEAN addSab = FALSE;
@@ -3310,7 +3288,6 @@ void CBotEDoc::CalcResearch()
 
 		pMajor->GetEmpire()->GetResearch()->SetResearchBoni(researchBoni[it->first].nBoni);
 		const CString* news = pMajor->GetEmpire()->GetResearch()->CalculateResearch(pMajor->GetEmpire()->GetFP());
-		const network::RACE client = m_pClientWorker->GetMappedClientID(pMajor->GetRaceID());
 
 		for (int j = 0; j < 8; j++)		// aktuell 8 verschiedene Nachrichten mgl, siehe CResearch Klasse
 		{
@@ -3323,20 +3300,15 @@ void CBotEDoc::CalcResearch()
 				if (j == 7)
 				{
 					// Spezialforschung kann erforscht werden
-					if (pMajor->IsHumanPlayer())
-					{
-						SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_SCIENTISTNEWS, client, 0, 1.0f};
-						m_SoundMessages[client].Add(entry);
-						m_pClientWorker->SetToEmpireViewFor(*pMajor);
-					}
+					m_pClientWorker->AddSoundMessage(SNDMGR_MSG_SCIENTISTNEWS, *pMajor, 0);
+					m_pClientWorker->SetToEmpireViewFor(*pMajor);
 					message.CreateNews(news[j], EMPIRE_NEWS_TYPE::RESEARCH, 1);
 				}
 				else
 				{
 					if (pMajor->IsHumanPlayer())
 					{
-						SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_NEWTECHNOLOGY, client, 0, 1.0f};
-						m_SoundMessages[client].Add(entry);
+						m_pClientWorker->AddSoundMessage(SNDMGR_MSG_NEWTECHNOLOGY, *pMajor, 0);
 						m_pClientWorker->SetToEmpireViewFor(*pMajor);
 
 						// Eventscreen für Forschung erstellen
@@ -3361,8 +3333,6 @@ void CBotEDoc::CalcResearch()
 /// Majorraces abgeben.
 void CBotEDoc::CalcDiplomacy()
 {
-	using namespace network;
-
 	// zuerst alle Angebote senden
 	CDiplomacyController::Send();
 
@@ -3374,11 +3344,9 @@ void CBotEDoc::CalcDiplomacy()
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
-		if (pMajor->IsHumanPlayer() && pMajor->GetIncomingDiplomacyNews()->size() > 0)
+		if (pMajor->GetIncomingDiplomacyNews()->size() > 0)
 		{
-			const network::RACE client = m_pClientWorker->GetMappedClientID(it->first);
-			SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_DIPLOMATICNEWS, client, 0, 1.0f};
-			m_SoundMessages[client].Add(entry);
+			m_pClientWorker->AddSoundMessage(SNDMGR_MSG_DIPLOMATICNEWS, *pMajor, 0);
 			m_pClientWorker->SetToEmpireViewFor(*pMajor);
 		}
 	}
@@ -3701,12 +3669,10 @@ void CBotEDoc::CalcTrade()
 void CBotEDoc::CalcShipOrdersClientWork(const SHIP_TYPE::Typ typ, const CMajor& race) {
 	if(!race.IsHumanPlayer())
 		return;
-	const network::RACE client = m_pClientWorker->GetMappedClientID(race.GetRaceID());
 	SNDMGR_VALUE value = SNDMGR_MSG_OUTPOST_READY;
 	if(typ == SHIP_TYPE::STARBASE)
 		value = SNDMGR_MSG_STARBASE_READY;
-	const SNDMGR_MESSAGEENTRY entry = {value, client, 0, 1.0f};
-	m_SoundMessages[client].Add(entry);
+	m_pClientWorker->AddSoundMessage(value, race, 0);
 	m_pClientWorker->SetToEmpireViewFor(race);
 }
 
@@ -3878,7 +3844,6 @@ void CBotEDoc::CalcShipOrders()
 				CString s;
 				CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(y->second->GetOwnerOfShip()));
 				ASSERT(pMajor);
-				const network::RACE client = m_pClientWorker->GetMappedClientID(pMajor->GetRaceID());
 
 				// Gebäude bauen, wenn wir das System zum ersten Mal kolonisieren, sprich das System noch niemanden gehört
 				if (pSystem->GetOwnerOfSystem() == "")
@@ -3901,8 +3866,7 @@ void CBotEDoc::CalcShipOrders()
 					pMajor->GetEmpire()->AddMsg(message);
 					if (pMajor->IsHumanPlayer())
 					{
-						SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_CLAIMSYSTEM, client, 0, 1.0f};
-						m_SoundMessages[client].Add(entry);
+						m_pClientWorker->AddSoundMessage(SNDMGR_MSG_CLAIMSYSTEM, *pMajor , 0);
 						m_pClientWorker->SetToEmpireViewFor(*pMajor);
 
 
@@ -3947,7 +3911,6 @@ void CBotEDoc::CalcShipOrders()
 			assert(y->second->GetTerraform() != -1);
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(y->second->GetOwnerOfShip()));
 			ASSERT(pMajor);
-			const network::RACE client = m_pClientWorker->GetMappedClientID(pMajor->GetRaceID());
 
 			if (pSector->GetPlanet(y->second->GetTerraform())->GetTerraformed() == FALSE)
 			{
@@ -3960,12 +3923,8 @@ void CBotEDoc::CalcShipOrders()
 					CEmpireNews message;
 					message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO());
 					pMajor->GetEmpire()->AddMsg(message);
-					if (pMajor->IsHumanPlayer())
-					{
-						SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_TERRAFORM_COMPLETE, client, 0, 1.0f};
-						m_SoundMessages[client].Add(entry);
-						m_pClientWorker->SetToEmpireViewFor(*pMajor);
-					}
+					m_pClientWorker->AddSoundMessage(SNDMGR_MSG_TERRAFORM_COMPLETE, *pMajor, 0);
+					m_pClientWorker->SetToEmpireViewFor(*pMajor);
 					// Wenn wir einer Rasse beim Terraformen helfen, so gibt es einen Beziehungsboost
 					if (pSector->GetOwnerOfSector() != "" && pSector->GetMinorRace() == TRUE && pSystem->GetOwnerOfSystem() == "")
 					{
@@ -4003,12 +3962,8 @@ void CBotEDoc::CalcShipOrders()
 							CEmpireNews message;
 							message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO());
 							pMajor->GetEmpire()->AddMsg(message);
-							if (pMajor->IsHumanPlayer())
-							{
-								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_TERRAFORM_COMPLETE, client, 0, 1.0f};
-								m_SoundMessages[client].Add(entry);
-								m_pClientWorker->SetToEmpireViewFor(*pMajor);
-							}
+							m_pClientWorker->AddSoundMessage(SNDMGR_MSG_TERRAFORM_COMPLETE, *pMajor, 0);
+							m_pClientWorker->SetToEmpireViewFor(*pMajor);
 							// Wenn wir einer Rasse beim Terraformen helfen, so gibt es einen Beziehungsboost
 							if (pSector->GetOwnerOfSector() != "" && pSector->GetMinorRace() == TRUE && pSystem->GetOwnerOfSystem() == "")
 							{
@@ -4828,16 +4783,12 @@ void CBotEDoc::CalcShipEffects()
 void CBotEDoc::CalcContactClientWork(CMajor& Major, const CRace& ContactedRace) {
 	if(!Major.IsHumanPlayer())
 		return;
-	const network::RACE client = m_pClientWorker->GetMappedClientID(Major.GetRaceID());
 	m_pClientWorker->SetToEmpireViewFor(Major);
 	// Audiovorstellung der kennengelernten race
-	SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_ALIENCONTACT, client, 1, 1.0f};
-	if(ContactedRace.IsMajor()) {
-		entry.nMessage = SNDMGR_MSG_FIRSTCONTACT;
-		entry.nRace = m_pClientWorker->GetMappedClientID(ContactedRace.GetRaceID());
-		entry.nPriority = 2;
-	}
-	m_SoundMessages[client].Add(entry);
+	if(ContactedRace.IsMajor())
+		m_pClientWorker->AddSoundMessage(SNDMGR_MSG_FIRSTCONTACT, dynamic_cast<const CMajor&>(ContactedRace), 2);
+	else
+		m_pClientWorker->AddSoundMessage(SNDMGR_MSG_ALIENCONTACT, Major, 1);
 }
 
 void CBotEDoc::CalcContactShipToMajorShip(CRace& Race, const CSector& sector, const CPoint& p) {
@@ -5046,8 +4997,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 
 			pMajor->GetEmpire()->GetEvents()->RemoveAll();
 			pMajor->GetEmpire()->GetMsgs()->RemoveAll();
-			const network::RACE client = m_pClientWorker->GetMappedClientID(pMajor->GetRaceID());
-			m_SoundMessages[client].RemoveAll();
+			m_pClientWorker->ClearSoundMessages(*pMajor);
 
 			// alle anderen Rassen durchgehen und die vernichtete Rasse aus deren Maps entfernen
 			map<CString, CRace*>* mRaces = m_pRaceCtrl->GetRaces();
@@ -5300,8 +5250,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 
 			pMajor->GetEmpire()->GetEvents()->RemoveAll();
 			pMajor->GetEmpire()->GetMsgs()->RemoveAll();
-			const network::RACE client = m_pClientWorker->GetMappedClientID(pMajor->GetRaceID());
-			m_SoundMessages[client].RemoveAll();
+			m_pClientWorker->ClearSoundMessages(*pMajor);
 
 			// Wenn es ein menschlicher Spieler ist, so bekommt er den Eventscreen für den Sieg angezeigt
 			if (pMajor->IsHumanPlayer())

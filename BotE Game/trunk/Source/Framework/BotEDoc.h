@@ -54,8 +54,6 @@ protected: // Nur aus Serialisierung erzeugen
 	bool m_bDontExit;					///< hartes Exit verhindern, wenn Spiel beginnt
 	bool m_bGameLoaded;					///< wurde im Dialog ein zu ladendes Spiel ausgewählt
 
-	CArray<SNDMGR_MESSAGEENTRY> m_SoundMessages[7];	///< Die einzelnen Sprachmitteilungen zur neuen Runde
-
 	CRaceController* m_pRaceCtrl;		///< Rassencontroller für alle Rassen des Spiels
 	CClientWorker* m_pClientWorker;
 	CSectorAI*		 m_pSectorAI;		///< Informationen zu allen Sektoren, welche die KI benötigt.

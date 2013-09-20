@@ -1,7 +1,10 @@
 #pragma once
 
+#include "StdAfx.h"
+
 #include "network.h"
 #include "Constants.h"
+#include "SoundManager.h"
 
 #include <vector>
 
@@ -14,6 +17,11 @@ private:
 	//Welche View soll in der MainView angezeigt werden? z.B. Galaxie oder System
 	std::vector<VIEWS::MAIN_VIEWS> m_SelectedView;
 
+	///< Die einzelnen Sprachmitteilungen zur neuen Runde
+	CArray<SNDMGR_MESSAGEENTRY> m_SoundMessages[network::RACE_ALL];
+
+	void ClearSoundMessages(network::RACE client);
+
 	CClientWorker(void);
 	CClientWorker(const CClientWorker& o);
 
@@ -22,7 +30,7 @@ public:
 
 	~CClientWorker(void);
 
-	void Serialize(CArchive& ar);
+	void Serialize(CArchive& ar, bool sounds);
 
 	/// Funktion gibt die zu einer Majorrace zugehörige Netzwerkclient-ID zurück.
 	/// Maximal können sechs Clients bestehen. Jede Majorrace benötigt eine eindeutige
@@ -42,11 +50,17 @@ public:
 
 	unsigned short GetSelectedViewFor(const CString& sRaceID);
 	void SetSelectedViewForTo(network::RACE race, unsigned short to);
+	void SetSelectedViewForTo(const CMajor& major, unsigned short to);
 
 	void SetToEmpireViewFor(const CMajor& major);
 
 	void DoViewWorkOnNewRound(const CMajor& PlayersRace);
 
 	void ResetViews();
+
+	void CommitSoundMessages(CSoundManager* pSoundManager, const CMajor& player) const;
+	void ClearSoundMessages();
+	void ClearSoundMessages(const CMajor& race);
+	void AddSoundMessage(SNDMGR_VALUE type, const CMajor& major, int priority);
 
 };
