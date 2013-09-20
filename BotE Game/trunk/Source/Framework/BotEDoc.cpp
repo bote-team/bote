@@ -760,9 +760,9 @@ void CBotEDoc::LoadViewGraphics(void)
 			((CGalaxyMenuView*)(it->first))->LoadRaceGraphics();
 		else if (it->second == VIEWS::MENU_CHOOSE_VIEW)
 			((CMenuChooseView*)(it->first))->LoadRaceGraphics();
-		else if (IS_MAIN_VIEW(it->second))
+		else if (VIEWS::is_main_view(it->second))
 			((CMainBaseView*)(it->first))->LoadRaceGraphics();
-		else if (IS_BOTTOM_VIEW(it->second))
+		else if (VIEWS::is_bottom_view(it->second))
 			((CBottomBaseView*)(it->first))->LoadRaceGraphics();
 	}
 
@@ -813,9 +813,9 @@ void CBotEDoc::DoViewWorkOnNewRound()
 	{
 		if (it->second == VIEWS::GALAXY_VIEW)
 			((CGalaxyMenuView*)(it->first))->OnNewRound();
-		else if (IS_MAIN_VIEW(it->second))
+		else if (VIEWS::is_main_view(it->second))
 			((CMainBaseView*)(it->first))->OnNewRound();
-		else if (IS_BOTTOM_VIEW(it->second))
+		else if (VIEWS::is_bottom_view(it->second))
 			((CBottomBaseView*)(it->first))->OnNewRound();
 		else if (it->second == VIEWS::MENU_CHOOSE_VIEW)
 			((CMenuChooseView*)(it->first))->OnNewRound();

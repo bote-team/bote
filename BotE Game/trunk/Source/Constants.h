@@ -58,10 +58,12 @@ namespace VIEWS
 		EVENT_VIEW				= 11,
 		COMBAT_VIEW				= 12
 	};
-}
 
-#define IS_MAIN_VIEW(id) \
-	((id) >= VIEWS::GALAXY_VIEW && (id) <= VIEWS::COMBAT_VIEW)
+	inline bool is_main_view(int id)
+	{
+		return VIEWS::GALAXY_VIEW <= id && id <= VIEWS::COMBAT_VIEW;
+	}
+}
 
 namespace VIEWS
 {
@@ -84,10 +86,12 @@ namespace VIEWS
 		TRADE_BOTTOM_VIEW		= 106,
 		SHIPDESIGN_BOTTOM_VIEW	= 109
 	};
-}
 
-#define IS_BOTTOM_VIEW(id) \
-	((id) >= VIEWS::PLANET_BOTTOM_VIEW && (id) <= VIEWS::SHIPDESIGN_BOTTOM_VIEW)
+	inline bool is_bottom_view(int id)
+	{
+		return VIEWS::PLANET_BOTTOM_VIEW <= id && id <=VIEWS::SHIPDESIGN_BOTTOM_VIEW;
+	}
+}
 
 namespace VIEWS
 {
