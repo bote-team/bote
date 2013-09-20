@@ -847,6 +847,7 @@ void CBotEDoc::PrepareData()
 		{
 			const network::RACE client = m_pClientWorker->GetMappedClientID(it->first);
 			// wird das Imperium von einem Menschen oder vom Computer gespielt
+			assert(client != network::RACE_NONE);
 			if (client != network::RACE_NONE && server.IsPlayedByClient(client))
 				it->second->SetHumanPlayer(true);
 			else
@@ -936,6 +937,7 @@ void CBotEDoc::PrepareData()
 		{
 			const network::RACE client = m_pClientWorker->GetMappedClientID(it->first);
 			// wird das Imperium von einem Menschen oder vom Computer gespielt
+			assert(client != network::RACE_NONE);
 			if (client != network::RACE_NONE && server.IsPlayedByClient(client))
 				it->second->SetHumanPlayer(true);
 			else
@@ -2502,6 +2504,7 @@ void CBotEDoc::CalcPreDataForNextRound()
 			if (pMajor->IsHumanPlayer())
 				m_pClientWorker->SetSelectedViewForTo(client, VIEWS::EMPIRE_VIEW);
 		// wird das Imperium von einem Menschen oder vom Computer gespielt
+		assert(client != network::RACE_NONE);
 		if (client != network::RACE_NONE && server.IsPlayedByClient(client))
 			pMajor->SetHumanPlayer(true);
 		else

@@ -318,8 +318,7 @@ void CMainFrame::SelectMainView(VIEWS::MAIN_VIEWS whichView, const CString& sRac
 
 	if (pDoc->GetPlayersRaceID() == sRace)
 	{
-		const network::RACE client = resources::pClientWorker->GetMappedClientID(sRace);
-		resources::pClientWorker->SetSelectedViewForTo(client, whichView);
+		resources::pClientWorker->SetSelectedViewForTo(sRace, whichView);
 		// konnte in die neue View gewechselt werden
 		if (m_wndSplitter.SwitchView(whichView, 0, 1))
 		{

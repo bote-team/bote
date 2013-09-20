@@ -16,6 +16,7 @@
 
 #include "Graphic\memdc.h"
 #include "GraphicPool.h"
+#include <cassert>
 
 #define BTN_STARTGEAME	WM_USERMSG + 1
 #define	BTN_CANCEL		WM_USERMSG + 2
@@ -229,8 +230,9 @@ void CChooseRaceView::OnInitialUpdate()
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		const network::RACE nRace = resources::pClientWorker->GetMappedClientID(it->first);
-		if (nRace == network::RACE_NONE)
-			continue;
+		assert(nRace != network::RACE_NONE);
+		//if (nRace == network::RACE_NONE)
+		//	continue;
 
 		CRoundButton2* pBtn = new CRoundButton2();
 		pBtn->Create(it->second->GetEmpiresName(), WS_CHILD|WS_VISIBLE|BS_PUSHLIKE, CRect(), this, nRace);

@@ -51,6 +51,7 @@ public:
 	unsigned short GetSelectedViewFor(const CString& sRaceID);
 	void SetSelectedViewForTo(network::RACE race, unsigned short to);
 	void SetSelectedViewForTo(const CMajor& major, unsigned short to);
+	void SetSelectedViewForTo(const CString& major, unsigned short to);
 
 	void SetToEmpireViewFor(const CMajor& major);
 

@@ -119,7 +119,12 @@ void CClientWorker::SetSelectedViewForTo(network::RACE race, unsigned short to)
 
 void CClientWorker::SetSelectedViewForTo(const CMajor& major, unsigned short to)
 {
-	const network::RACE client = GetMappedClientID(major.GetRaceID());
+	SetSelectedViewForTo(major.GetRaceID(), to);
+}
+
+void CClientWorker::SetSelectedViewForTo(const CString& major, unsigned short to)
+{
+	const network::RACE client = GetMappedClientID(major);
 	SetSelectedViewForTo(client, to);
 }
 

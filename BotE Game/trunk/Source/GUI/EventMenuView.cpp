@@ -237,7 +237,7 @@ void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 	{
 		resources::pMainFrame->FullScreenMainView(false);
 		resources::pMainFrame->SelectMainView(VIEWS::EMPIRE_VIEW, pMajor->GetRaceID());
-		resources::pClientWorker->SetSelectedViewForTo(resources::pClientWorker->GetMappedClientID(pMajor->GetRaceID()), VIEWS::NULL_VIEW);
+		resources::pClientWorker->SetSelectedViewForTo(*pMajor, VIEWS::NULL_VIEW);
 	}
 	else
 		Invalidate(false);
