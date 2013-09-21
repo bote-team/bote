@@ -219,7 +219,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 //////////////////////////////////////////////////////////////////////
 void CShipAI::CalculateAlienShipOrders(CShips& ship)
 {
-	if (ship.GetOwnerOfShip() == MIDWAY_ZEITREISENDE)
+	if (ship.GetOwnerOfShip() == StrToCStr(MIDWAY_ZEITREISENDE))
 	{
 		const CPoint& co = ship.GetKO();
 		const CSector& sector = m_pDoc->GetSector(co.x, co.y);
@@ -227,7 +227,7 @@ void CShipAI::CalculateAlienShipOrders(CShips& ship)
 		{
 			const CSystem& system = m_pDoc->GetSystemForSector(sector);
 			const CRace* owner = m_pDoc->GetRaceCtrl()->GetRace(system.GetOwnerOfSystem());
-			if (owner && owner->IsMajor() && owner->GetAgreement(MIDWAY_ZEITREISENDE) == DIPLOMATIC_AGREEMENT::WAR)
+			if (owner && owner->IsMajor() && owner->GetAgreement(StrToCStr(MIDWAY_ZEITREISENDE)) == DIPLOMATIC_AGREEMENT::WAR)
 			{
 				// Damit irgendwann auch einmal der Angriffsbegehl zurückgenommen wird und das Midwayschiff nicht
 				// ewig ein und dasselbe System bombardiert, hier etwas Zufall (80% wird bombardiert)

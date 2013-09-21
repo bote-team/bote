@@ -157,7 +157,7 @@ void CNewGameView::OnDraw(CDC* dc)
 	format.SetLineAlignment(StringAlignmentFar);
 
 	CString sVersion = "Birth of the Empires Alpha7 V";
-	sVersion += VERSION_INFORMATION;
+	sVersion += CString(VERSION_INFORMATION.c_str());
 	sVersion += "\n© by Sir Pustekuchen 2013";
 	g.DrawString(CComBSTR(sVersion), -1, &font2, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
 

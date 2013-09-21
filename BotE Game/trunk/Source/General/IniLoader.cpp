@@ -22,7 +22,7 @@ CIniLoader::CIniLoader(void)
 
 	CFileFind fileFind;
 	// wenn es die Datei noch nicht gibt oder die Versionsnummer stimmt nicht überein
-	if (sVersion != VERSION_INFORMATION || !fileFind.FindFile(m_sIniPath))
+	if (sVersion != CString(VERSION_INFORMATION.c_str()) || !fileFind.FindFile(m_sIniPath))
 	{
 		// Werte schreiben
 		WriteValue("General", "AUTOSAVE", "ON");
@@ -44,7 +44,7 @@ CIniLoader::CIniLoader(void)
 		WriteValue("Control", "INVERTMOUSE", "OFF");
 		WriteValue("Control", "HIDEMENUBAR", "OFF");
 
-		WriteValue("Special", "VERSION", VERSION_INFORMATION);
+		WriteValue("Special", "VERSION", CString(VERSION_INFORMATION.c_str()));
 		WriteValue("Special", "RANDOMSEED", "-1");
 		WriteValue("Special", "STARDENSITY", "35");
 		WriteValue("Special", "MINORDENSITY", "30");

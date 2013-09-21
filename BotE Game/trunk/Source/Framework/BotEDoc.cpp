@@ -1595,11 +1595,11 @@ void CBotEDoc::ApplyShipsAtStartup()
 			for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
 			{
 				CShipInfo* pShipInfo = &m_ShipInfoArray.GetAt(i);
-				if (pShipInfo->GetOnlyInSystem() != KAMPFSTATION)
+				if (pShipInfo->GetOnlyInSystem() != StrToCStr(KAMPFSTATION))
 					continue;
 
 				// Kampfstation platzieren und abbrechen
-				BuildShip(m_ShipInfoArray.GetAt(i).GetID(), p, KAMPFSTATION);
+				BuildShip(m_ShipInfoArray.GetAt(i).GetID(), p, StrToCStr(KAMPFSTATION));
 				break;
 			}
 
@@ -4258,7 +4258,7 @@ void CBotEDoc::CalcShipMovement()
 						continue;
 
 					// Anaerobe Makroben fliegen nur im freien Raum oder in Sektoren mit grünen Sonnen
-					if (y->second->GetOwnerOfShip() == ANAEROBE_MAKROBE)
+					if (y->second->GetOwnerOfShip() == StrToCStr(ANAEROBE_MAKROBE))
 					{
 						if (GetSector(targetKO.x, targetKO.y).GetSunSystem() && GetSector(targetKO.x, targetKO.y).GetSunColor() != 1)
 							continue;
@@ -4288,7 +4288,7 @@ void CBotEDoc::CalcShipMovement()
 				CStarmap* pStarmap = new CStarmap(0);
 				vector<Sector> vExceptions;
 				// Anaerobe Makroben fliegen nur im freien Raum oder in Sektoren mit grünen Sonnen
-				if (y->second->GetOwnerOfShip() == ANAEROBE_MAKROBE)
+				if (y->second->GetOwnerOfShip() == StrToCStr(ANAEROBE_MAKROBE))
 				{
 					for (std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
 					{
@@ -4594,7 +4594,7 @@ void CBotEDoc::CalcShipCombat()
 		for (map<CShips*, std::set<const CShips*> >::const_iterator it = pmKilledShips->begin(); it != pmKilledShips->end(); ++it)
 		{
 			CShips* pBoseaner = it->first;
-			if (!pBoseaner || pBoseaner->GetOwnerOfShip() != BOSEANER || !pBoseaner->IsAlive())
+			if (!pBoseaner || pBoseaner->GetOwnerOfShip() != StrToCStr(BOSEANER) || !pBoseaner->IsAlive())
 				continue;
 
 			int nCount = it->second.size();
@@ -5280,7 +5280,7 @@ void CBotEDoc::CalcRandomAlienEntities()
 			}
 
 			// Keine Alien-Kampfstation erneut bauen
-			if (pAlien->GetRaceID() == KAMPFSTATION)
+			if (pAlien->GetRaceID() == StrToCStr(KAMPFSTATION))
 				continue;
 
 			// Prüfen ob das Alienschiff zum Galaxieweiten technologischen Fortschritt passt
@@ -5327,19 +5327,19 @@ void CBotEDoc::CalcRandomAlienEntities()
 				{
 					CShipMap::iterator pShip = BuildShip(pShipInfo->GetID(), p, pAlien->GetRaceID());
 					// unterschiedliche Aliens unterschieden und Schiffseigenschaften festlegen
-					if (pAlien->GetRaceID() == IONISIERENDES_GASWESEN)
+					if (pAlien->GetRaceID() == StrToCStr(IONISIERENDES_GASWESEN))
 					{
 						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 					}
-					else if (pAlien->GetRaceID() == GABALLIANER_SEUCHENSCHIFF)
+					else if (pAlien->GetRaceID() == StrToCStr(GABALLIANER_SEUCHENSCHIFF))
 					{
 						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 					}
-					else if (pAlien->GetRaceID() == BLIZZARD_PLASMAWESEN)
+					else if (pAlien->GetRaceID() == StrToCStr(BLIZZARD_PLASMAWESEN))
 					{
 						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 					}
-					else if (pAlien->GetRaceID() == MORLOCK_RAIDER)
+					else if (pAlien->GetRaceID() == StrToCStr(MORLOCK_RAIDER))
 					{
 						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 						// zufällig gleich mehrere Raider bauen. Umso höher der technische Durchschnitt
@@ -5363,22 +5363,22 @@ void CBotEDoc::CalcRandomAlienEntities()
 							MYTRACE("general")(MT::LEVEL_DEBUG, "new MORLOCK RAIDER: Amount: %d\n", nCount);
 						}
 					}
-					else if (pAlien->GetRaceID() == BOSEANER)
+					else if (pAlien->GetRaceID() == StrToCStr(BOSEANER))
 					{
 						MYTRACE("general")(MT::LEVEL_DEBUG, "new BOSEAN is ingame\n");
 						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 					}
-					else if (pAlien->GetRaceID() == KRYONITWESEN)
+					else if (pAlien->GetRaceID() == StrToCStr(KRYONITWESEN))
 					{
 						MYTRACE("general")(MT::LEVEL_DEBUG, "new Kryonit Entity is ingame\n");
 						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 					}
-					else if (pAlien->GetRaceID() == MIDWAY_ZEITREISENDE)
+					else if (pAlien->GetRaceID() == StrToCStr(MIDWAY_ZEITREISENDE))
 					{
 						MYTRACE("general")(MT::LEVEL_DEBUG, "new MIDWAY BATTLESHIP is ingame\n");
 						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 					}
-					else if (pAlien->GetRaceID() == ANAEROBE_MAKROBE)
+					else if (pAlien->GetRaceID() == StrToCStr(ANAEROBE_MAKROBE))
 					{
 						MYTRACE("general")(MT::LEVEL_DEBUG, "new ANAEROBE_MAKROBE is ingame\n");
 						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
@@ -5403,7 +5403,7 @@ void CBotEDoc::CalcRandomAlienEntities()
 							}
 						}
 					}
-					else if (pAlien->GetRaceID() == ISOTOPOSPHAERISCHES_WESEN)
+					else if (pAlien->GetRaceID() == StrToCStr(ISOTOPOSPHAERISCHES_WESEN))
 					{
 						MYTRACE("general")(MT::LEVEL_DEBUG, "new Isotopospheric Entity is ingame\n");
 						// 50% auf Meiden, zu 50% auf angreifen
@@ -5440,7 +5440,7 @@ void CBotEDoc::CalcAlienShipEffects()
 		const CPoint& co = ship->second->GetKO();
 
 		// verschiedene Alienrassen unterscheiden
-		if (pAlien->GetRaceID() == IONISIERENDES_GASWESEN)
+		if (pAlien->GetRaceID() == StrToCStr(IONISIERENDES_GASWESEN))
 		{
 			// Aliens mit Rückzugsbefehl machen nix
 			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
@@ -5471,7 +5471,7 @@ void CBotEDoc::CalcAlienShipEffects()
 				}
 			}
 		}
-		else if (pAlien->GetRaceID() == GABALLIANER_SEUCHENSCHIFF)
+		else if (pAlien->GetRaceID() == StrToCStr(GABALLIANER_SEUCHENSCHIFF))
 		{
 			// Aliens mit Rückzugsbefehl machen nix
 			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
@@ -5548,7 +5548,7 @@ void CBotEDoc::CalcAlienShipEffects()
 				}
 			}
 		}
-		else if (pAlien->GetRaceID() == BLIZZARD_PLASMAWESEN)
+		else if (pAlien->GetRaceID() == StrToCStr(BLIZZARD_PLASMAWESEN))
 		{
 			// Aliens mit Rückzugsbefehl machen nix
 			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
@@ -5579,7 +5579,7 @@ void CBotEDoc::CalcAlienShipEffects()
 				}
 			}
 		}
-		else if (pAlien->GetRaceID() == MORLOCK_RAIDER)
+		else if (pAlien->GetRaceID() == StrToCStr(MORLOCK_RAIDER))
 		{
 			// Aliens mit Rückzugsbefehl machen nix
 			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
@@ -5619,18 +5619,18 @@ void CBotEDoc::CalcAlienShipEffects()
 				m_pClientWorker->SetToEmpireViewFor(*pOwner);
 			}
 		}
-		else if (pAlien->GetRaceID() == BOSEANER)
+		else if (pAlien->GetRaceID() == StrToCStr(BOSEANER))
 		{
 			// zufällig die anfangs auf Meiden gestellten Boseaner auf Angreifen stellen
 			// Sie sind auf der Suche nach Nahrung ;-)
 			if (rand()%10 == 0)
 				ship->second->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 		}
-		else if (pAlien->GetRaceID() == KAMPFSTATION)
+		else if (pAlien->GetRaceID() == StrToCStr(KAMPFSTATION))
 		{
 			bBattleStationIngame = true;
 		}
-		else if (pAlien->GetRaceID() == MIDWAY_ZEITREISENDE)
+		else if (pAlien->GetRaceID() == StrToCStr(MIDWAY_ZEITREISENDE))
 		{
 			// Aliens mit Rückzugsbefehl machen nix
 			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
@@ -5654,7 +5654,7 @@ void CBotEDoc::CalcAlienShipEffects()
 				}
 			}
 		}
-		else if (pAlien->GetRaceID() == ISOTOPOSPHAERISCHES_WESEN)
+		else if (pAlien->GetRaceID() == StrToCStr(ISOTOPOSPHAERISCHES_WESEN))
 		{
 			// Aliens mit Rückzugsbefehl machen nix
 			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
@@ -5746,7 +5746,7 @@ void CBotEDoc::CalcAlienShipEffects()
 	// über deren Vernichtung erstellen
 	if (!bBattleStationIngame)
 	{
-		if (CMinor* pBattleStation = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(KAMPFSTATION)))
+		if (CMinor* pBattleStation = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(StrToCStr(KAMPFSTATION))))
 		{
 			CalcEffectsMinorEleminated(pBattleStation);
 			m_pRaceCtrl->RemoveRace(pBattleStation->GetRaceID());

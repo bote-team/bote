@@ -15,7 +15,7 @@
 /// haben.
 static const int DOCUMENT_VERSION = 10;		///< Alpha 7 Version
 static const double VERSION = 0.9;		///< benötigte Version in Datafiles
-static const CString VERSION_INFORMATION("0.9");	///< anzuzeigende Versionsinformation
+static const std::string VERSION_INFORMATION("0.9");	///< anzuzeigende Versionsinformation
 
 // Konsistenzchecks ein/ausschalten (nicht für Release!)
 #define CONSISTENCY_CHECKS					///< anschalten wenn Konsistenzchecks durchgeführt werden sollen
@@ -197,17 +197,20 @@ namespace RACE_PROPERTY
 }
 
 // ------------- Namen der Weltraummonster (Aliens) ----------------------------
-static const CString IONISIERENDES_GASWESEN		("Ionisierendes Gaswesen");
-static const CString GABALLIANER_SEUCHENSCHIFF	("Gaballianer");
-static const CString BLIZZARD_PLASMAWESEN		("Blizzard-Plasmawesen");
-static const CString MORLOCK_RAIDER				("Morlock-Raider");
-static const CString EELEN_GUARD				("Ehlen");
-static const CString BOSEANER					("Boseaner");
-static const CString KAMPFSTATION				("Kampfstation");
-static const CString KRYONITWESEN				("Kryonitwesen");
-static const CString MIDWAY_ZEITREISENDE		("Midway-Zeitreisende");
-static const CString ANAEROBE_MAKROBE			("Anaerobe Makrobe");
-static const CString ISOTOPOSPHAERISCHES_WESEN	("Isotoposphärisches Wesen");
+static const std::string IONISIERENDES_GASWESEN		("Ionisierendes Gaswesen");
+static const std::string GABALLIANER_SEUCHENSCHIFF	("Gaballianer");
+static const std::string BLIZZARD_PLASMAWESEN		("Blizzard-Plasmawesen");
+static const std::string MORLOCK_RAIDER				("Morlock-Raider");
+static const std::string EELEN_GUARD				("Ehlen");
+static const std::string BOSEANER					("Boseaner");
+static const std::string KAMPFSTATION				("Kampfstation");
+static const std::string KRYONITWESEN				("Kryonitwesen");
+static const std::string MIDWAY_ZEITREISENDE		("Midway-Zeitreisende");
+static const std::string ANAEROBE_MAKROBE			("Anaerobe Makrobe");
+static const std::string ISOTOPOSPHAERISCHES_WESEN	("Isotoposphärisches Wesen");
+
+#define StrToCStr(str) \
+	CString(str.c_str())
 
 // ------------- Planeteneigenschaften -----------------------------------------
 // Zonen
