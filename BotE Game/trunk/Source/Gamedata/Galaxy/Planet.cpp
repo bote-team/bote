@@ -6,6 +6,8 @@
 #include "Planet.h"
 #include "GraphicPool.h"
 
+#include <cassert>
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -586,4 +588,9 @@ void CPlanet::Reset(void)
 	m_bHasIndividualGraphic = false;
 	for (int i = 0; i < 8; i++)
 		m_bBoni[i] = FALSE;
+}
+
+bool CPlanet::IsColonizable() const
+{
+	return m_bTerraformed && !m_bColonisized;
 }

@@ -134,6 +134,7 @@ public:
 		USHORT GetScanPower() const {return m_Leader.GetScanPower(); }
 		BYTE GetScanRange() const {return m_Leader.GetScanRange(); }
 		BYTE GetColonizePoints() const {return m_Leader.GetColonizePoints(); }
+		float GetStartHabitants() const { return GetColonizePoints() * 4; }
 		BYTE GetStationBuildPoints() const {return m_Leader.GetStationBuildPoints(); }
 		SHIP_ORDER::Typ GetCurrentOrder() const {return m_Leader.GetCurrentOrder(); }
 		short GetTerraform() const {return m_Leader.GetTerraform(); }

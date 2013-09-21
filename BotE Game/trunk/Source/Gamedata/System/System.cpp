@@ -694,7 +694,7 @@ BOOLEAN CSystem::SetHabitants(double habitants)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 // Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der System-Klasse.
-void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo* ResearchInfo, const std::vector<CPlanet>& planets, CMajor* pOwner, const CString *sMonopolOwner)
+void CSystem::CalculateVariables(const BuildingInfoArray* buildingInfos, const CResearchInfo* ResearchInfo, const std::vector<CPlanet>& planets, const CMajor* pOwner, const CString *sMonopolOwner)
 {
 	int NumberOfBuildings;
 	NumberOfBuildings = m_Buildings.GetSize();
@@ -2124,7 +2124,7 @@ void CSystem::RemoveSpecialRaceBuildings(const BuildingInfoArray* pvBuildingInfo
 
 // Funktion berechnet und baut die Startgebäude in einem System, nachdem wir einen Planeten
 // in diesem kolonisiert haben.
-void CSystem::BuildBuildingsAfterColonization(CSector *sector, BuildingInfoArray *buildingInfo, USHORT colonizationPoints)
+void CSystem::BuildBuildingsAfterColonization(const CSector *sector, const BuildingInfoArray *buildingInfo, USHORT colonizationPoints)
 {
 	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);

@@ -12,6 +12,7 @@
 #include "Anomaly.h"
 #include "General/Loc.h"
 #include "Ships/ships.h"
+#include "ClientWorker.h"
 
 #include <cassert>
 
@@ -339,11 +340,11 @@ float CSector::GetCurrentHabitants() const
 
 /// Diese Funktion berechnet die vorhandenen Rohstoffe der Planeten im Sektor. Übergebn wird dafür ein Feld für
 /// die Ressourcen <code>res</code>.
-void CSector::GetAvailableResources(BOOLEAN bResources[RESOURCES::DERITIUM + 1], BOOLEAN bOnlyColonized/* = true */)
+void CSector::GetAvailableResources(BOOLEAN bResources[RESOURCES::DERITIUM + 1], BOOLEAN bOnlyColonized/* = true */) const
 {
 	for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
 	{
-		CPlanet* pPlanet = &m_Planets[i];
+		const CPlanet* pPlanet = &m_Planets[i];
 		if (!pPlanet->GetHabitable())
 			continue;
 
@@ -1045,4 +1046,104 @@ void CSector::BuildStation(SHIP_TYPE::Typ station, const CString& race) {
 	m_bIsStationBuild.clear();
 	m_iStartStationPoints.clear();
 	m_iNeededStationPoints.clear();
+}
+
+int CSector::CountOfTerraformedPlanets() const
+{
+	int count = 0;
+	for(std::vector<CPlanet>::const_iterator it = m_Planets.begin(); it != m_Planets.end(); ++it)
+		if(it->IsColonizable())
+			++count;
+	return count;
+}
+
+void CSector::DistributeColonists(const float colonists)
+{
+	//Die Bevölkerung, welche bei der Kolonisierung
+	// auf das System kommt, wird auf die einzelnen Planeten gleichmäßig aufgeteilt.
+	float oddHab = 0.0f;	// Überschüssige Kolonisten, wenn ein Planet zu klein ist
+	// Geterraformte Planeten durchgehen und die Bevölkerung auf diese verschieben
+	for(std::vector<CPlanet>::iterator it = m_Planets.begin(); it != m_Planets.end(); ++it)
+	{
+		if(!it->IsColonizable())
+			continue;
+		const float max_hab = it->GetMaxHabitant();
+		if (colonists > max_hab)
+		{
+			oddHab += colonists - max_hab;
+			it->SetCurrentHabitant(max_hab);
+		}
+		else
+			it->SetCurrentHabitant(colonists);
+		it->SetColonisized(TRUE);
+	}
+
+	if (oddHab <= 0.0f)
+		return;
+	// die übrigen Kolonisten auf die Planeten verteilen
+	for(std::vector<CPlanet>::iterator it = m_Planets.begin(); it != m_Planets.end(); ++it)
+	{
+		const float current_hab = it->GetCurrentHabitant();
+		const float max_hab = it->GetMaxHabitant();
+		if (!it->GetTerraformed() || current_hab <= 0.0f || current_hab >= max_hab)
+			continue;
+		const float try_new_hab = oddHab + current_hab;
+		oddHab -= max_hab - current_hab;
+		if (try_new_hab > max_hab)
+			it->SetCurrentHabitant(max_hab);
+		else {
+			it->SetCurrentHabitant(try_new_hab);
+			assert(oddHab <= 0);
+			break;
+		}
+	}
+}
+
+void CSector::Colonize(CSystem& sy, const CShips& ship, CMajor& major)
+{
+	const CString shipowner = ship.GetOwnerOfShip();
+	CEmpire* empire = major.GetEmpire();
+	// Gebäude bauen, wenn wir das System zum ersten Mal kolonisieren,
+	// sprich das System noch niemanden gehört
+	if (sy.GetOwnerOfSystem().IsEmpty())
+	{
+		// Sector- und Systemwerte ändern
+		SetOwned(TRUE);
+		m_sOwnerOfSector = shipowner;
+		m_sColonyOwner = shipowner;
+		sy.SetOwnerOfSystem(shipowner);
+		// Gebäude nach einer Kolonisierung bauen
+		sy.BuildBuildingsAfterColonization(this,resources::BuildingInfo,ship.GetColonizePoints());
+		// Nachricht an das Imperium senden, das ein System neu kolonisiert wurde
+		CString s = CLoc::GetString("FOUND_COLONY_MESSAGE",FALSE,GetName());
+		CEmpireNews message;
+		message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,GetName(),m_KO);
+		empire->AddMsg(message);
+
+		// zusätzliche Eventnachricht (Colonize a system #12) wegen der Moral an das Imperium
+		message.CreateNews(major.GetMoralObserver()->AddEvent(12, major.GetRaceMoralNumber(), GetName()), EMPIRE_NEWS_TYPE::SOMETHING, "", m_KO);
+		empire->AddMsg(message);
+		if (major.IsHumanPlayer())
+		{
+			resources::pClientWorker->AddSoundMessage(SNDMGR_MSG_CLAIMSYSTEM, major , 0);
+			resources::pClientWorker->SetToEmpireViewFor(major);
+			CEventColonization* eventScreen = new CEventColonization(major.GetRaceID(), CLoc::GetString("COLOEVENT_HEADLINE", FALSE, GetName()), CLoc::GetString("COLOEVENT_TEXT_" + major.GetRaceID(), FALSE, GetName()));
+			empire->GetEvents()->Add(eventScreen);
+			s.Format("Added Colonization-Eventscreen for Race %s in System %s", major.GetRaceName(), GetName());
+			MYTRACE("general")(MT::LEVEL_INFO, s);
+		}
+	}
+	else
+	{
+		// Nachricht an das Imperium senden, das ein Planet kolonisiert wurde
+		CString s = CLoc::GetString("NEW_PLANET_COLONIZED",FALSE,GetName());
+		CEmpireNews message;
+		message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,GetName(),m_KO);
+		empire->AddMsg(message);
+		resources::pClientWorker->SetToEmpireViewFor(major);
+	}
+	sy.SetHabitants(GetCurrentHabitants());
+
+	sy.CalculateNumberOfWorkbuildings(resources::BuildingInfo);
+	sy.CalculateVariables(resources::BuildingInfo, empire->GetResearch()->GetResearchInfo(), GetPlanets(), &major, CTrade::GetMonopolOwner());
 }

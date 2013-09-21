@@ -76,6 +76,7 @@ public:
 	BOOLEAN GetIsTerraforming() const {return m_bIsTerraforming;}
 	BOOLEAN GetHabitable() const {return m_bHabitable;}
 	BOOLEAN GetColonized() const {return m_bColonisized;}
+	bool IsColonizable() const;
 	BYTE GetNeededTerraformPoints() const {return m_iNeededTerraformPoints;}
 	BYTE GetStartdTerraformPoints() const {return m_iStartTerraformPoints;}
 	const BOOLEAN* GetBoni() const {return m_bBoni;}

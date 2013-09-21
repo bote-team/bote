@@ -26,6 +26,8 @@ class CBotEDoc;
 class CMajor;
 class CAnomaly;
 class CRace;
+class CSystem;
+class CShips;
 
 /// Liefert verschiedene Attributswerte der Sektorklasse.
 enum SectorAttributes
@@ -261,13 +263,16 @@ public:
 	std::vector<CPlanet>& GetPlanets() {
 		return m_Planets;
 	}
+	const std::vector<CPlanet>& GetPlanets() const {
+		return m_Planets;
+	}
 
 	/// Funktion gibt alle Einwohner aller Planeten in dem Sektor zurück.
 	float GetCurrentHabitants() const;
 
 	/// Diese Funktion berechnet die vorhandenen Rohstoffe der Planeten im Sektor. Übergebn wird dafür ein Feld für
 	/// die Ressourcen <code>res</code>.
-	void GetAvailableResources(BOOLEAN bResources[RESOURCES::DERITIUM + 1], BOOLEAN bOnlyColonized = true);
+	void GetAvailableResources(BOOLEAN bResources[RESOURCES::DERITIUM + 1], BOOLEAN bOnlyColonized = true) const;
 
 // zum Schreiben der Membervariablen
 	/// Diese Funktion setzt die Koordinaten des Sektors und übernimmt dabei die beiden Koordinatenwerte.
@@ -440,6 +445,12 @@ public:
 
 	//Sets whether to display planets as being terraformed based on all currently terraforming ships in this sector
 	void RecalcPlanetsTerraformingStatus();
+
+	int CountOfTerraformedPlanets() const;
+
+	void DistributeColonists(const float colonists);
+
+	void Colonize(CSystem& sy, const CShips& ship, CMajor& major);
 
 	void BuildStation(SHIP_TYPE::Typ station, const CString& race);
 

@@ -8,4 +8,5 @@ namespace resources {
 	const CCommandLineParameters* pClp = NULL;
 	CMainFrame* pMainFrame = NULL;
 	CClientWorker* pClientWorker = NULL;
+	const BuildingInfoArray* BuildingInfo = NULL;
 }

@@ -68,6 +68,7 @@ public:
 	BYTE GetNumberOfUniqueResearch() const {return m_iNumberOfUnique;}
 
 	CResearchInfo* GetResearchInfo() {return &ResearchInfo;}
+	const CResearchInfo* GetResearchInfo() const {return &ResearchInfo;}
 	// zum Schreiben der Membervariablen
 	void SetBioTech(BYTE BioTech) {m_iBioTech = BioTech;}
 	void SetEnergyTech(BYTE EnergyTech) {m_iEnergyTech = EnergyTech;}

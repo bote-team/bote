@@ -214,7 +214,7 @@ public:
 
 // sonstige Funktionen
 	// Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der Systemklasse.
-	void CalculateVariables(BuildingInfoArray*, CResearchInfo*, const std::vector<CPlanet>&, CMajor* pOwner, const CString*);
+	void CalculateVariables(const BuildingInfoArray*, const CResearchInfo*, const std::vector<CPlanet>&, const CMajor* pOwner, const CString*);
 
 	// Funktion berechnet die Lagerinhalte des Systems. Aufrufen bei Ende bzw. Beginn einer neuen Runde.
 	// Gibt die Funktion TRUE zurück hat sich das System Aufgrund zu schlechter Moral vom Besitzer losgesagt.
@@ -266,7 +266,7 @@ public:
 
 	// Funktion berechnet und baut die Startgebäude in einem System, nachdem wir einen Planeten
 	// in diesem kolonisiert haben.
-	void BuildBuildingsAfterColonization(CSector* sector, BuildingInfoArray* buildingInfo, USHORT ColonizationPoints);
+	void BuildBuildingsAfterColonization(const CSector* sector, const BuildingInfoArray* buildingInfo, USHORT ColonizationPoints);
 
 	/// Diese Funktion entfernt alle speziellen Gebäude aus der Gebäudeliste. Diese Funktion sollte nach Eroberung des Systems
 	/// aufgerufen werden. Danach sind keine Gebäude mehr vorhanden, die nur x mal pro Imperium baubar gewesen oder die nur die Rasse

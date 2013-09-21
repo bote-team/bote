@@ -100,6 +100,7 @@ CBotEDoc::CBotEDoc() :
 
 	m_pRaceCtrl = new CRaceController();
 	m_pClientWorker = CClientWorker::GetInstance();
+	resources::BuildingInfo = &BuildingInfo;
 
 	m_pAIPrios = new CAIPrios(this);
 	m_pSectorAI= new CSectorAI(this);
@@ -3731,6 +3732,11 @@ namespace //helpers for CBotEDoc::CalcShipOrders()
 		}
 		return true;
 	}
+
+	bool ColonizeStillValid(const CString& ownerofsector, const CShips& ship)
+	{
+		return  ownerofsector.IsEmpty() || ownerofsector == ship.GetOwnerOfShip();
+	}
 }
 
 /////END: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
@@ -3752,168 +3758,50 @@ void CBotEDoc::CalcShipOrders()
 		CSanity::GetInstance()->SanityCheckFleet(*y->second);
 #endif
 
-		CSector* pSector = &GetSector(y->second->GetKO().x, y->second->GetKO().y);
-  		CSystem* pSystem = &GetSystem(y->second->GetKO().x, y->second->GetKO().y);
+		const CPoint& co = y->second->GetKO();
+		const SHIP_ORDER::Typ current_order = y->second->GetCurrentOrder();
+		CSector* pSector = &GetSector(co.x, co.y);
+		CSystem* pSystem = &GetSystem(co.x, co.y);
 
 		// Alle Schiffe, welche einen Systemangriffsbefehl haben überprüfen, ob dieser Befehl noch gültig ist
-		if (y->second->GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
+		if (current_order == SHIP_ORDER::ATTACK_SYSTEM)
 			if(!AttackStillValid(*y->second, *m_pRaceCtrl, *pSector, *pSystem))
 				y->second->SetCurrentOrderAccordingToType();
 
+		CRace* pRace = m_pRaceCtrl->GetRace(y->second->GetOwnerOfShip());
+		if(pRace->IsMinor())
+			continue;//minors don't currently can do something else
+		CMajor* pMajor = dynamic_cast<CMajor*>(pRace);
+		assert(pMajor);
+
 		 // Planet soll kolonisiert werden
-		if (y->second->GetCurrentOrder() == SHIP_ORDER::COLONIZE)
+		if (current_order == SHIP_ORDER::COLONIZE)
 		{
+			const int terraformedPlanets = pSector->CountOfTerraformedPlanets();
 			// Überprüfen das der Sector auch nur mir oder niemandem geh?rt
-			if ((pSector->GetOwnerOfSector() == y->second->GetOwnerOfShip() || pSector->GetOwnerOfSector() == ""))
+			if(!ColonizeStillValid(pSector->GetOwnerOfSector(), *y->second) || terraformedPlanets <= 0)
 			{
-				// Wieviele Einwohner bekommen wir in dem System durch die Kolonisierung?
-				float startHabitants = (float)(y->second->GetColonizePoints() * 4);
-				// Wenn keine Nummer eines Planeten zum Kolonisieren angegeben ist, dann werden alle geterraformten
-				// Planeten kolonisiert. Dazu wird die Bevölkerung, welche bei der Kolonisierung auf das System kommt
-				// auf die einzelnen Planeten gleichmäßig aufgeteilt.
-				assert(y->second->GetTerraform() == -1);
-				if (y->second->GetTerraform() == -1)
-				{
-					BYTE terraformedPlanets = 0;
-					for (int i = 0; i < pSector->GetNumberOfPlanets(); i++)
-						if (pSector->GetPlanets().at(i).GetTerraformed() == TRUE
-							&& pSector->GetPlanets().at(i).GetColonized() == FALSE)
-							terraformedPlanets++;
-					if (terraformedPlanets > 0)
-					{
-						float tmpHab = startHabitants /= terraformedPlanets;
-						float tmpHab2 = 0.0f;
-						float oddHab = 0.0f;	// Überschüssige Kolonisten, wenn ein Planet zu klein ist
-						// Geterraformte Planeten durchgehen und die Bevölkerung auf diese verschieben
-						for (int i = 0; i < pSector->GetNumberOfPlanets(); i++)
-							if (pSector->GetPlanets().at(i).GetTerraformed() == TRUE
-								&& pSector->GetPlanets().at(i).GetColonized() == FALSE)
-							{
-								if (startHabitants > pSector->GetPlanet(i)->GetMaxHabitant())
-								{
-									oddHab += (startHabitants - pSector->GetPlanet(i)->GetMaxHabitant());
-									startHabitants = pSector->GetPlanet(i)->GetMaxHabitant();
-								}
-								tmpHab2 += startHabitants;
-								pSector->GetPlanet(i)->SetCurrentHabitant(startHabitants);
-								pSector->GetPlanet(i)->SetColonisized(TRUE);
-								startHabitants = tmpHab;
-							}
-						startHabitants = tmpHab2;
-						// die übrigen Kolonisten auf die Planeten verteilen
-						if (oddHab > 0.0f)
-							for (int i = 0; i < pSector->GetNumberOfPlanets(); i++)
-								if (pSector->GetPlanets().at(i).GetTerraformed() == TRUE
-									&& pSector->GetPlanets().at(i).GetCurrentHabitant() > 0.0f)
-								{
-									if ((oddHab + pSector->GetPlanets().at(i).GetCurrentHabitant())
-										> pSector->GetPlanet(i)->GetMaxHabitant())
-									{
-										oddHab -= (pSector->GetPlanet(i)->GetMaxHabitant()
-											- pSector->GetPlanets().at(i).GetCurrentHabitant());
-										pSector->GetPlanet(i)->SetCurrentHabitant(pSector->GetPlanet(i)->GetMaxHabitant());
-									}
-									else
-									{
-										pSector->GetPlanet(i)->SetCurrentHabitant(
-											pSector->GetPlanets().at(i).GetCurrentHabitant() + oddHab);
-										break;
-									}
-								}
-					}
-					else
-					{
-						y->second->UnsetCurrentOrder();
-						continue;
-					}
-				}
-				else
-				{
-					assert(false);
-					if (pSector->GetPlanet(y->second->GetTerraform())->GetColonized() == FALSE
-						&& pSector->GetPlanet(y->second->GetTerraform())->GetTerraformed() == TRUE)
-					{
-						if (startHabitants > pSector->GetPlanet(y->second->GetTerraform())->GetMaxHabitant())
-							startHabitants = pSector->GetPlanet(y->second->GetTerraform())->GetMaxHabitant();
-						pSector->GetPlanet(y->second->GetTerraform())->SetCurrentHabitant(startHabitants);
-						pSector->GetPlanet(y->second->GetTerraform())->SetColonisized(TRUE);
-					}
-					else
-					{
-						y->second->UnsetCurrentOrder();
-						continue;
-					}
-				}
-				CString s;
-				CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(y->second->GetOwnerOfShip()));
-				ASSERT(pMajor);
-
-				// Gebäude bauen, wenn wir das System zum ersten Mal kolonisieren, sprich das System noch niemanden gehört
-				if (pSystem->GetOwnerOfSystem() == "")
-				{
-					// Sector- und Systemwerte ändern
-					pSector->SetOwned(TRUE);
-					pSector->SetOwnerOfSector(y->second->GetOwnerOfShip());
-					pSector->SetColonyOwner(y->second->GetOwnerOfShip());
-					pSystem->SetOwnerOfSystem(y->second->GetOwnerOfShip());
-					// Gebäude nach einer Kolonisierung bauen
-					pSystem->BuildBuildingsAfterColonization(pSector,&BuildingInfo,y->second->GetColonizePoints());
-					// Nachricht an das Imperium senden, das ein System neu kolonisiert wurde
-					s = CLoc::GetString("FOUND_COLONY_MESSAGE",FALSE,pSector->GetName());
-					CEmpireNews message;
-					message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO());
-					pMajor->GetEmpire()->AddMsg(message);
-
-					// zusätzliche Eventnachricht (Colonize a system #12) wegen der Moral an das Imperium
-					message.CreateNews(pMajor->GetMoralObserver()->AddEvent(12, pMajor->GetRaceMoralNumber(), pSector->GetName()), EMPIRE_NEWS_TYPE::SOMETHING, "", pSector->GetKO());
-					pMajor->GetEmpire()->AddMsg(message);
-					if (pMajor->IsHumanPlayer())
-					{
-						m_pClientWorker->AddSoundMessage(SNDMGR_MSG_CLAIMSYSTEM, *pMajor , 0);
-						m_pClientWorker->SetToEmpireViewFor(*pMajor);
-
-
-						CEventColonization* eventScreen = new CEventColonization(pMajor->GetRaceID(), CLoc::GetString("COLOEVENT_HEADLINE", FALSE, pSector->GetName()), CLoc::GetString("COLOEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, pSector->GetName()));
-						pMajor->GetEmpire()->GetEvents()->Add(eventScreen);
-						s.Format("Added Colonization-Eventscreen for Race %s in System %s", pMajor->GetRaceName(), pSector->GetName());
-						MYTRACE("general")(MT::LEVEL_INFO, s);
-					}
-				}
-				else
-				{
-					// Nachricht an das Imperium senden, das ein Planet kolonisiert wurde
-					s = CLoc::GetString("NEW_PLANET_COLONIZED",FALSE,pSector->GetName());
-					CEmpireNews message;
-					message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO());
-					pMajor->GetEmpire()->AddMsg(message);
-					m_pClientWorker->SetToEmpireViewFor(*pMajor);
-				}
-				pSystem->SetHabitants(pSector->GetCurrentHabitants());
-
-				pSystem->CalculateNumberOfWorkbuildings(&this->BuildingInfo);
-				pSystem->CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), pSector->GetPlanets(), pMajor, CTrade::GetMonopolOwner());
-
-				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-				s.Format("%s %s",CLoc::GetString("COLONIZATION"), pSector->GetName());
-				pMajor->AddToLostShipHistory(*y->second, s, CLoc::GetString("DESTROYED"),
-					m_iRound);
-				// Schiff entfernen
 				y->second->UnsetCurrentOrder();
-				RemoveShip(y);
-				increment = false;
 				continue;
 			}
-			else
-			{
-				y->second->UnsetCurrentOrder();
-			}
+			assert(y->second->GetTerraform() == -1);
+			pSector->DistributeColonists(y->second->GetStartHabitants() / terraformedPlanets);
+			pSector->Colonize(*pSystem, *y->second, *pMajor);
+			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
+			CString s;
+			s.Format("%s %s",CLoc::GetString("COLONIZATION"), pSector->GetName());
+			pMajor->AddToLostShipHistory(*y->second, s, CLoc::GetString("DESTROYED"), m_iRound);
+			// Schiff entfernen
+			y->second->UnsetCurrentOrder();
+			RemoveShip(y);
+			increment = false;
+			continue;//neccessary since it can happen that y becomes the "end" iterator, being not dereferencable
+			//and there's y->second ... at the end
 		}
 		// hier wird ein Planet geterraformed
-		else if (y->second->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
+		else if (current_order == SHIP_ORDER::TERRAFORM)
 		{
 			assert(y->second->GetTerraform() != -1);
-			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(y->second->GetOwnerOfShip()));
-			ASSERT(pMajor);
 
 			if (pSector->GetPlanet(y->second->GetTerraform())->GetTerraformed() == FALSE)
 			{
@@ -4003,10 +3891,10 @@ void CBotEDoc::CalcShipOrders()
 			}
 		}
 		// hier wird ein Aussenposten/Sternbasis gebaut
-		else if (y->second->GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST
-			|| y->second->GetCurrentOrder() == SHIP_ORDER::BUILD_STARBASE)	// es soll eine Station gebaut werden
+		else if (current_order == SHIP_ORDER::BUILD_OUTPOST
+			|| current_order == SHIP_ORDER::BUILD_STARBASE)	// es soll eine Station gebaut werden
 		{
-			if(BuildStation(y->second->GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST ?
+			if(BuildStation(current_order == SHIP_ORDER::BUILD_OUTPOST ?
 				SHIP_TYPE::OUTPOST : SHIP_TYPE::STARBASE, *y->second, *pSector))
 			{
 				RemoveShip(y);
@@ -4015,12 +3903,8 @@ void CBotEDoc::CalcShipOrders()
 			}
 		}
 		// Wenn wir das Schiff abracken/zerst?ren/demontieren wollen
-		else if (y->second->GetCurrentOrder() == SHIP_ORDER::DESTROY_SHIP)	// das Schiff wird demontiert
+		else if (current_order == SHIP_ORDER::DESTROY_SHIP)	// das Schiff wird demontiert
 		{
-			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(y->second->GetOwnerOfShip()));
-			ASSERT(pMajor);
-			/*network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());*/
-
 			// wenn wir in dem Sector wo wir das Schiff demoniteren ein uns gehörendes System haben, dann bekommen wir
 			// teilweise Rohstoffe aus der Demontage zurück (vlt. auch ein paar Credits)
 			if (pSystem->GetOwnerOfSystem() == y->second->GetOwnerOfShip())
@@ -4068,16 +3952,16 @@ void CBotEDoc::CalcShipOrders()
 
 			m_ShipMap.EraseAt(y, true);
 			increment = false;
-			continue;	// continue, damit wir am Ende der Schleife nicht sagen, dass ein Schiff im Sektor ist
+			continue;
 		}
 
 		// Wenn wir ein Schiff zum Flagschiff ernennen wollen (nur ein Schiff pro Imperium kann ein Flagschiff sein!)
-		else if (y->second->GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
+		else if (current_order == SHIP_ORDER::ASSIGN_FLAGSHIP)
 		{
 			//SHIP_ORDER::ASSIGN_FLAGSHIP is executed immediately now as opposed to at turn change
 			assert(false);
 		}
-		else if (y->second->GetCurrentOrder() == SHIP_ORDER::TRAIN_SHIP)
+		else if (current_order == SHIP_ORDER::TRAIN_SHIP)
 		{
 			// Checken ob der Befehl noch Gültigkeit hat
 			if (pSector->GetSunSystem() == TRUE &&
@@ -4089,20 +3973,20 @@ void CBotEDoc::CalcShipOrders()
 				y->second->ApplyTraining(XP);
 			}
 		}
-		else if (y->second->GetCurrentOrder() == SHIP_ORDER::ENCLOAK)
+		else if (current_order == SHIP_ORDER::ENCLOAK)
 		{
 			assert(y->second->CanCloak(true));
 			y->second->SetCloak(true);
 			y->second->UnsetCurrentOrder();
 		}
-		else if (y->second->GetCurrentOrder() == SHIP_ORDER::DECLOAK)
+		else if (current_order == SHIP_ORDER::DECLOAK)
 		{
 			assert(y->second->CanCloak(true));
 			y->second->SetCloak(false);
 			y->second->UnsetCurrentOrder();
 		}
 		// Blockadebefehl
-		else if (y->second->GetCurrentOrder() == SHIP_ORDER::BLOCKADE_SYSTEM)
+		else if (current_order == SHIP_ORDER::BLOCKADE_SYSTEM)
 		{
 			BOOLEAN blockadeStillActive = FALSE;
 			// Überprüfen ob der Blockadebefehl noch Gültigkeit hat
@@ -4168,14 +4052,14 @@ void CBotEDoc::CalcShipOrders()
 				}
 			}
 		}
-		else if (y->second->GetCurrentOrder() == SHIP_ORDER::WAIT_SHIP_ORDER)
+		else if (current_order == SHIP_ORDER::WAIT_SHIP_ORDER)
 		{
 			//Do nothing, but only for this round.
 			y->second->UnsetCurrentOrder();
 		}
-		//else if (y->second->GetCurrentOrder() == SHIP_ORDER::SENTRY_SHIP_ORDER)
+		//else if (current_order == SHIP_ORDER::SENTRY_SHIP_ORDER)
 			//Do nothing for this and all following rounds until an explicit player input.
-		else if (y->second->GetCurrentOrder() == SHIP_ORDER::REPAIR)
+		else if (current_order == SHIP_ORDER::REPAIR)
 		{
 			//The actual Hull reparing is currenty done in CalcShipMovement(),
 			//after the call to this function.
