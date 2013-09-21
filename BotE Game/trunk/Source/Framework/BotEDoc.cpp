@@ -3706,6 +3706,33 @@ bool CBotEDoc::BuildStation(SHIP_TYPE::Typ type, CShips& ship, CSector& sector) 
 	return remove;
 }
 
+namespace //helpers for CBotEDoc::CalcShipOrders()
+{
+	bool AttackStillValid(const CShips& ship, const CRaceController& RaceCtrl,
+			const CSector& se, const CSystem& sy)
+	{
+		assert(se.GetSunSystem());
+		const CString& ownerofship = ship.GetOwnerOfShip();
+		const CString& ownerofsector = se.GetOwnerOfSector();
+		// Wenn die Bevölkerung komplett vernichtet wurde
+		// Wenn das System der angreifenden Rasse gehört
+		if (sy.GetHabitants() <= 0.000001 || sy.GetOwnerOfSystem() == ownerofship)
+			return false;
+		// Wenn eine Rasse in dem System lebt
+		else if (!ownerofsector.IsEmpty() && ownerofsector != ownerofship)
+		{
+			const CRace* pRace = RaceCtrl.GetRace(ownerofsector);
+			assert(pRace);
+			const CRace* pShipOwner = RaceCtrl.GetRace(ownerofship);
+			assert(pShipOwner);
+			if (pRace->GetAgreement(pShipOwner->GetRaceID()) != DIPLOMATIC_AGREEMENT::WAR &&
+				!pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
+				return false;
+		}
+		return true;
+	}
+}
+
 /////END: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
 
 /// Diese Funktion berechnet die Schiffsbefehle. Der Systemangriffsbefehl ist davon ausgenommen.
@@ -3728,28 +3755,10 @@ void CBotEDoc::CalcShipOrders()
 		CSector* pSector = &GetSector(y->second->GetKO().x, y->second->GetKO().y);
   		CSystem* pSystem = &GetSystem(y->second->GetKO().x, y->second->GetKO().y);
 
-		// Hier wird überprüft, ob der Systemattack-Befehl noch gültig ist
 		// Alle Schiffe, welche einen Systemangriffsbefehl haben überprüfen, ob dieser Befehl noch gültig ist
 		if (y->second->GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
-		{
-			assert(pSector->GetSunSystem());
-			// Wenn die Bevölkerung komplett vernichtet wurde
-			if (pSystem->GetHabitants() <= 0.000001)
+			if(!AttackStillValid(*y->second, *m_pRaceCtrl, *pSector, *pSystem))
 				y->second->SetCurrentOrderAccordingToType();
-			// Wenn das System der angreifenden Rasse gehört
-			else if (pSystem->GetOwnerOfSystem() == y->second->GetOwnerOfShip())
-				y->second->SetCurrentOrderAccordingToType();
-			// Wenn eine Rasse in dem System lebt
-			else if (!pSector->GetOwnerOfSector().IsEmpty()	&& pSector->GetOwnerOfSector() != y->second->GetOwnerOfShip())
-			{
-				CRace* pRace = m_pRaceCtrl->GetRace(pSector->GetOwnerOfSector());
-				assert(pRace);
-				CRace* pShipOwner = m_pRaceCtrl->GetRace(y->second->GetOwnerOfShip());
-				assert(pShipOwner);
-				if (pRace->GetAgreement(pShipOwner->GetRaceID()) != DIPLOMATIC_AGREEMENT::WAR && !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
-					y->second->SetCurrentOrderAccordingToType();
-			}
-		}
 
 		 // Planet soll kolonisiert werden
 		if (y->second->GetCurrentOrder() == SHIP_ORDER::COLONIZE)
