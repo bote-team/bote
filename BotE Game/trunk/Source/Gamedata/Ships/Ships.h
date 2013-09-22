@@ -345,6 +345,9 @@ public:
 
 	bool BuildStation(SHIP_TYPE::Typ type, CSector& sector, CMajor& major, short id);
 
+
+	void Scrap(CMajor& major, CSector& se, CSystem& sy);
+
 	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Auﬂer Erfahrung im Kampf, diese werden nach einem
 	/// Kampf direkt verteilt.
 	void CalcExp() { m_Leader.CalcExp(); };

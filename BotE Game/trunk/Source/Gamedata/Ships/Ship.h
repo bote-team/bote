@@ -35,6 +35,7 @@ class CGraphicPool;
 class CRace;
 class CBotEDoc;
 class CMajor;
+class CSystem;
 
 /// Klasse beschreibt ein Schiff in BotE
 class CShip : public CObject
@@ -271,6 +272,8 @@ public:
 
 	// @return true in case outpost/starbase was finished by this ship
 	bool BuildStation(SHIP_TYPE::Typ type, CSector& sector, CMajor& major,  short id);
+
+	void Scrap(CMajor& major, const CSector& se, CSystem& sy);
 
 	CString SanityCheckUniqueness(std::set<CString>& already_encountered) const;
 	bool SanityCheckOrdersConsistency(const CShip& with) const;

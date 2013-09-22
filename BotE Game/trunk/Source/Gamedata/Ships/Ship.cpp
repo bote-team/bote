@@ -1515,6 +1515,27 @@ bool CShip::BuildStation(SHIP_TYPE::Typ type, CSector& sector, CMajor& major, sh
 	return true;
 }
 
+void CShip::Scrap(CMajor& major, const CSector& se, CSystem& sy) {
+	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
+	major.GetShipHistory()->ModifyShip(&CShips(*this), se.GetName(TRUE),
+		resources::pDoc->GetCurrentRound(), CLoc::GetString("DISASSEMBLY"),	CLoc::GetString("DESTROYED"));
+	if(sy.GetOwnerOfSystem() != m_sOwnerOfShip)
+		return;
+	// wenn wir in dem Sector wo wir das Schiff demoniteren ein uns gehörendes System haben,
+	// dann bekommen wir teilweise Rohstoffe aus der Demontage zurück (vlt. auch ein paar Credits)
+	double proz = rand()%26 + 50;	// Wert zwischen 50 und 75 ausw?hlen
+	// Wenn in dem System Gebäude stehen, wodurch der Prozentsatz erhöht wird, dann hier addieren
+	proz += sy.GetProduction()->GetShipRecycling();
+	USHORT id = m_iID - 10000;
+	const CShipInfo& si = resources::pDoc-> m_ShipInfoArray.GetAt(id);
+	GameResources res = si.GetNeededResources();
+	const double factor = static_cast<double>(proz) / 100;
+	res.Deritium = 0;
+	res *= factor;
+	sy.SetStores(res);
+	major.GetEmpire()->SetCredits(si.GetNeededIndustry() * factor);
+}
+
 CString CShip::SanityCheckUniqueness(std::set<CString>& already_encountered) const {
 	const std::set<CString>::const_iterator found = already_encountered.find(m_strShipName);
 	if(found == already_encountered.end()) {

@@ -526,6 +526,18 @@ bool CShipInfo::IsThisShipBuildableNow(const BYTE reserachLevels[6]) const
 	return true;
 }
 
+GameResources CShipInfo::GetNeededResources() const
+{
+	return GameResources(
+		0,
+		m_iNeededTitan,
+		m_iNeededDeuterium,
+		m_iNeededDuranium,
+		m_iNeededCrystal,
+		m_iNeededIridium,
+		m_iNeededDeritium);
+}
+
 USHORT CShipInfo::GetNeededResource(BYTE res) const
 {
 	switch (res)

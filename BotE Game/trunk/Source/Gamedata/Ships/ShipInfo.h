@@ -17,6 +17,7 @@
 #endif // _MSC_VER > 1000
 
 #include "Ship.h"
+#include "General/GlobalTypes.h"
 
 // forward declaration
 class CResearch;
@@ -54,6 +55,7 @@ public:
 	USHORT GetNeededCrystal() const {return m_iNeededCrystal;}
 	USHORT GetNeededIridium() const {return m_iNeededIridium;}
 	USHORT GetNeededDeritium() const {return m_iNeededDeritium;}
+	GameResources GetNeededResources() const;
 	USHORT GetNeededResource(BYTE res) const;
 	const CString& GetOnlyInSystem() const {return m_strOnlyInSystem;}
 	const CString& GetObsoleteShipClass() const {return m_strObsoletesClass;}

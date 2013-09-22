@@ -21,6 +21,7 @@
 #include "SystemProd.h"
 #include "Trade/TradeRoute.h"
 #include "array_sort.h"
+#include "General/GlobalTypes.h"
 
 // forward declaration
 class CMajor;
@@ -110,13 +111,13 @@ public:
 	const bool* GetDisabledProductions() const { return m_bDisabledProductions; }
 
 	// Funktionen geben die einzelnen Lagerinhalte des Systems zurück.
-	long GetFoodStore() const {return m_iFoodStore;}
-	UINT GetTitanStore() const {return m_iTitanStore;}
-	UINT GetDeuteriumStore() const {return m_iDeuteriumStore;}
-	UINT GetDuraniumStore() const {return m_iDuraniumStore;}
-	UINT GetCrystalStore() const {return m_iCrystalStore;}
-	UINT GetIridiumStore() const {return m_iIridiumStore;}
-	UINT GetDeritiumStore() const {return m_iDeritiumStore;}
+	long GetFoodStore() const {return m_Store.Food;}
+	UINT GetTitanStore() const {return m_Store.Titan;}
+	UINT GetDeuteriumStore() const {return m_Store.Deuterium;}
+	UINT GetDuraniumStore() const {return m_Store.Duranium;}
+	UINT GetCrystalStore() const {return m_Store.Crystal;}
+	UINT GetIridiumStore() const {return m_Store.Iridium;}
+	UINT GetDeritiumStore() const {return m_Store.Deritium;}
 
 	// Funktionen geben die jeweiligen maximalen Lagerinhalte zurück
 	long GetFoodStoreMax() const {return MAX_FOOD_STORE;}
@@ -131,7 +132,7 @@ public:
 	UINT GetResourceStore(USHORT res) const;
 
 	// Funktion gibt einen Zeiger auf den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
-	UINT* GetResourceStorages(USHORT res);
+	int* GetResourceStorages(USHORT res);
 
 	// Funktion gibt die Anzahl der Gebäude mit der übergebenen RunningNumber wieder, welche nächste Runde
 	// abgerissen werden sollen
@@ -191,15 +192,16 @@ public:
 	void SetDisabledProduction(int nType) { m_bDisabledProductions[nType] = true; }
 
 	// Funktion setzt das Nahrungslager des Systems auf den Parameterwert "food".
-	void SetFoodStore(ULONG food) {m_iFoodStore = food;}
+	void SetFoodStore(ULONG food) {m_Store.Food = food;}
 
 	// Funktionen addieren den übergebenen Paramterwert auf das jeweilige Ressourcenlager.
-	void SetTitanStore(int titanAdd) {m_iTitanStore += titanAdd;}
-	void SetDeuteriumStore(int deuteriumAdd) {m_iDeuteriumStore += deuteriumAdd;}
-	void SetDuraniumStore(int duraniumAdd) {m_iDuraniumStore += duraniumAdd;}
-	void SetCrystalStore(int crystalAdd) {m_iCrystalStore += crystalAdd;}
-	void SetIridiumStore(int iridiumAdd) {m_iIridiumStore += iridiumAdd;}
-	void SetDeritiumStore(int deritiumAdd) {m_iDeritiumStore += deritiumAdd;}
+	void SetTitanStore(int titanAdd) {m_Store.Titan += titanAdd;}
+	void SetDeuteriumStore(int deuteriumAdd) {m_Store.Deuterium += deuteriumAdd;}
+	void SetDuraniumStore(int duraniumAdd) {m_Store.Duranium += duraniumAdd;}
+	void SetCrystalStore(int crystalAdd) {m_Store.Crystal += crystalAdd;}
+	void SetIridiumStore(int iridiumAdd) {m_Store.Iridium += iridiumAdd;}
+	void SetDeritiumStore(int deritiumAdd) {m_Store.Deritium += deritiumAdd;}
+	void SetStores(const GameResources& add);
 
 	// Funktion addiert resAdd zur Ressource res.
 	void SetResourceStore(USHORT res, int resAdd);
@@ -375,13 +377,7 @@ private:
 	bool m_bDisabledProductions[WORKER::IRIDIUM_WORKER + 1];
 
 	// Die Lagerinhalt der einzelnen Rohstoffe und der Nahrung
-	int  m_iFoodStore;					// Lager für Nahrung
-	UINT m_iTitanStore;					// Lager für Titan
-	UINT m_iDeuteriumStore;				// Lager für Deuterium
-	UINT m_iDuraniumStore;				// Lager für Duranium
-	UINT m_iCrystalStore;				// Lager für Kristalle
-	UINT m_iIridiumStore;				// Lager für Iridium
-	UINT m_iDeritiumStore;				// Lager für Deritium
+	GameResources m_Store; //store for resources food, titan, deuterium, duranium, crystal, iridium, deritium
 
 	// Variable zum Abreißen von Gebäuden
 	CArray<USHORT,USHORT> m_BuildingDestroy;

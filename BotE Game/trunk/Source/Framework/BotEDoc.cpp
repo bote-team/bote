@@ -3905,52 +3905,8 @@ void CBotEDoc::CalcShipOrders()
 		// Wenn wir das Schiff abracken/zerst?ren/demontieren wollen
 		else if (current_order == SHIP_ORDER::DESTROY_SHIP)	// das Schiff wird demontiert
 		{
-			// wenn wir in dem Sector wo wir das Schiff demoniteren ein uns gehörendes System haben, dann bekommen wir
-			// teilweise Rohstoffe aus der Demontage zurück (vlt. auch ein paar Credits)
-			if (pSystem->GetOwnerOfSystem() == y->second->GetOwnerOfShip())
-			{
-				USHORT proz = rand()%26 + 50;	// Wert zwischen 50 und 75 ausw?hlen
-				// Wenn in dem System Gebäude stehen, wodurch der Prozentsatz erhöht wird, dann hier addieren
-				proz += pSystem->GetProduction()->GetShipRecycling();
-				USHORT id = y->second->GetID() - 10000;
-				pSystem->SetTitanStore((int)(m_ShipInfoArray.GetAt(id).GetNeededTitan() * proz / 100));
-				pSystem->SetDeuteriumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDeuterium() * proz / 100));
-				pSystem->SetDuraniumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDuranium() * proz / 100));
-				pSystem->SetCrystalStore((int)(m_ShipInfoArray.GetAt(id).GetNeededCrystal() * proz / 100));
-				pSystem->SetIridiumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededIridium() * proz / 100));
-				pMajor->GetEmpire()->SetCredits((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));
-			}
-			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-			pMajor->GetShipHistory()->ModifyShip(y->second, pSector->GetName(TRUE), m_iRound, CLoc::GetString("DISASSEMBLY"),	CLoc::GetString("DESTROYED"));
-
-			// Wenn das Schiff eine Flotte anf?hrt, dann auch die Schiffe in der Flotte demontieren
-			for(CShips::const_iterator x = y->second->begin(); x != y->second->end(); ++x)
-			{
-				if (pSystem->GetOwnerOfSystem() == y->second->GetOwnerOfShip())
-				{
-					USHORT proz = rand()%26 + 50;	// Wert zwischen 50 und 75 ausw?hlen
-					// Wenn in dem System Gebäude stehen, wodurch der Prozentsatz erhöht wird, dann hier addieren
-					proz += pSystem->GetProduction()->GetShipRecycling();
-					USHORT id = x->second->GetID() - 10000;
-					pSystem->SetTitanStore((int)(m_ShipInfoArray.GetAt(id).GetNeededTitan() * proz / 100));
-					pSystem->SetDeuteriumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDeuterium() * proz / 100));
-					pSystem->SetDuraniumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDuranium() * proz / 100));
-					pSystem->SetCrystalStore((int)(m_ShipInfoArray.GetAt(id).GetNeededCrystal() * proz / 100));
-					pSystem->SetIridiumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededIridium() * proz / 100));
-					pMajor->GetEmpire()->SetCredits((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));
-				}
-				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-				pMajor->GetShipHistory()->ModifyShip(x->second, pSector->GetName(TRUE), m_iRound, CLoc::GetString("DISASSEMBLY"), CLoc::GetString("DESTROYED"));
-			}
-
-			// Wenn es ein Au?enposten oder eine Sternbasis ist, dann dem Sektor bekanntgeben, dass in ihm keine Station mehr ist
-			if (y->second->IsStation())
-			{
-				pSector->UnsetOutpost(y->second->GetOwnerOfShip());
-				pSector->UnsetStarbase(y->second->GetOwnerOfShip());
-			}
-
-			m_ShipMap.EraseAt(y, true);
+			y->second->Scrap(*pMajor, *pSector, *pSystem);
+			m_ShipMap.EraseAt(y, true);//no memory leak for fleet ships due to Reset() call in CShips::~CShips()
 			increment = false;
 			continue;
 		}

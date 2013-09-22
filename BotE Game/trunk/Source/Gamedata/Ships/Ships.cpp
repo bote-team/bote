@@ -6,6 +6,7 @@
 #include "Ships.h"
 #include "Races/race.h"
 #include "Loc.h"
+#include "Galaxy/Sector.h"
 
 #include <cassert>
 
@@ -560,6 +561,21 @@ bool CShips::BuildStation(SHIP_TYPE::Typ type, CSector& sector, CMajor& major, s
 		}
 	}
 	return m_Leader.BuildStation(type, sector, major, id);
+}
+
+void CShips::Scrap(CMajor& major, CSector& se, CSystem& sy)
+{
+	for(CShips::const_iterator x = begin(); x != end(); ++x)
+		x->second->Scrap(major, se, sy);
+	m_Leader.Scrap(major, se, sy);
+
+	// Wenn es ein Au?enposten oder eine Sternbasis ist,
+	// dann dem Sektor bekanntgeben, dass in ihm keine Station mehr ist
+	if (IsStation())
+	{
+		se.UnsetOutpost(GetOwnerOfShip());
+		se.UnsetStarbase(GetOwnerOfShip());
+	}
 }
 
 CString CShips::SanityCheckUniqueness(std::set<CString>& already_encountered) const {

@@ -682,6 +682,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Source\Gamedata\General\GlobalTypes.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Source\Gamedata\General\Statistics.cpp"
 						>
 					</File>
@@ -1408,6 +1412,10 @@
 					>
 					<File
 						RelativePath=".\Source\Gamedata\General\EmpireNews.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\General\GlobalTypes.h"
 						>
 					</File>
 					<File

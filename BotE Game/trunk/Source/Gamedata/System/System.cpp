@@ -48,13 +48,7 @@ CSystem::CSystem(const CSystem &other) :
 	m_Workers(other.m_Workers),
 	m_iMoral(other.m_iMoral),
 	m_byBlockade(other.m_byBlockade),
-	m_iFoodStore(other.m_iFoodStore),
-	m_iTitanStore(other.m_iTitanStore),
-	m_iDeuteriumStore(other.m_iDeuteriumStore),
-	m_iDuraniumStore(other.m_iDuraniumStore),
-	m_iCrystalStore(other.m_iCrystalStore),
-	m_iIridiumStore(other.m_iIridiumStore),
-	m_iDeritiumStore(other.m_iDeritiumStore),
+	m_Store(other.m_Store),
 	m_iFoodBuildings(other.m_iFoodBuildings),
 	m_iIndustryBuildings(other.m_iIndustryBuildings),
 	m_iEnergyBuildings(other.m_iEnergyBuildings),
@@ -83,32 +77,6 @@ CSystem::CSystem(const CSystem &other) :
 	for(unsigned i = 0; i < size; ++i)
 		m_bDisabledProductions[i] = other.m_bDisabledProductions[i];
 
-	/*m_AssemblyList=other.m_AssemblyList;
-	m_Production=other.m_Production;
-	m_Workers=other.m_Workers;
-	m_sOwnerOfSystem=other.m_sOwnerOfSystem;
-	m_dHabitants=other.m_dHabitants;
-	m_iMoral=other.m_iMoral;
-	m_byBlockade=other.m_byBlockade;
-	m_iFoodStore=other.m_iFoodStore;
-	m_iTitanStore=other.m_iTitanStore;
-	m_iDeuteriumStore=other.m_iDeuteriumStore;
-	m_iDuraniumStore=other.m_iDuraniumStore;
-		ar << m_iCrystalStore;
-		ar << m_iIridiumStore;
-		ar << m_iDeritiumStore;
-		ar << m_iFoodBuildings;
-		ar << m_iIndustryBuildings;
-		ar << m_iEnergyBuildings;
-		ar << m_iSecurityBuildings;
-		ar << m_iResearchBuildings;
-		ar << m_iTitanMines;
-		ar << m_iDeuteriumMines;
-		ar << m_iDuraniumMines;
-		ar << m_iIridiumMines;
-		ar << m_iCrystalMines;*/
-
-
 }
 
 
@@ -121,13 +89,7 @@ CSystem& CSystem::operator=(const CSystem& other)
 	m_Workers = other.m_Workers;
 	m_iMoral = other.m_iMoral;
 	m_byBlockade = other.m_byBlockade;
-	m_iFoodStore = other.m_iFoodStore;
-	m_iTitanStore = other.m_iTitanStore;
-	m_iDeuteriumStore = other.m_iDeuteriumStore;
-	m_iDuraniumStore = other.m_iDuraniumStore;
-	m_iCrystalStore = other.m_iCrystalStore;
-	m_iIridiumStore = other.m_iIridiumStore;
-	m_iDeritiumStore = other.m_iDeritiumStore;
+	m_Store = other.m_Store;
 	m_iFoodBuildings = other.m_iFoodBuildings;
 	m_iIndustryBuildings = other.m_iIndustryBuildings;
 	m_iEnergyBuildings = other.m_iEnergyBuildings;
@@ -169,6 +131,7 @@ void CSystem::Serialize(CArchive &ar)
 	m_AssemblyList.Serialize(ar);
 	m_Production.Serialize(ar);
 	m_Workers.Serialize(ar);
+	m_Store.Serialize(ar);
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -176,13 +139,6 @@ void CSystem::Serialize(CArchive &ar)
 		ar << m_dHabitants;
 		ar << m_iMoral;
 		ar << m_byBlockade;
-		ar << m_iFoodStore;
-		ar << m_iTitanStore;
-		ar << m_iDeuteriumStore;
-		ar << m_iDuraniumStore;
-		ar << m_iCrystalStore;
-		ar << m_iIridiumStore;
-		ar << m_iDeritiumStore;
 		ar << m_iFoodBuildings;
 		ar << m_iIndustryBuildings;
 		ar << m_iEnergyBuildings;
@@ -225,13 +181,6 @@ void CSystem::Serialize(CArchive &ar)
 		ar >> m_dHabitants;
 		ar >> m_iMoral;
 		ar >> m_byBlockade;
-		ar >> m_iFoodStore;
-		ar >> m_iTitanStore;
-		ar >> m_iDeuteriumStore;
-		ar >> m_iDuraniumStore;
-		ar >> m_iCrystalStore;
-		ar >> m_iIridiumStore;
-		ar >> m_iDeritiumStore;
 		ar >> m_iFoodBuildings;
 		ar >> m_iIndustryBuildings;
 		ar >> m_iEnergyBuildings;
@@ -498,16 +447,16 @@ UINT CSystem::GetResourceStore(USHORT res) const
 }
 
 // Funktion gibt einen Zeiger auf den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
-UINT* CSystem::GetResourceStorages(USHORT res)
+int* CSystem::GetResourceStorages(USHORT res)
 {
 	switch (res)
 	{
-	case RESOURCES::TITAN: {return &m_iTitanStore;}
-	case RESOURCES::DEUTERIUM: {return &m_iDeuteriumStore;}
-	case RESOURCES::DURANIUM: {return &m_iDuraniumStore;}
-	case RESOURCES::CRYSTAL: {return &m_iCrystalStore;}
-	case RESOURCES::IRIDIUM: {return &m_iIridiumStore;}
-	case RESOURCES::DERITIUM: {return &m_iDeritiumStore;}
+	case RESOURCES::TITAN: {return &m_Store.Titan;}
+	case RESOURCES::DEUTERIUM: {return &m_Store.Deuterium;}
+	case RESOURCES::DURANIUM: {return &m_Store.Duranium;}
+	case RESOURCES::CRYSTAL: {return &m_Store.Crystal;}
+	case RESOURCES::IRIDIUM: {return &m_Store.Iridium;}
+	case RESOURCES::DERITIUM: {return &m_Store.Deritium;}
 	}
 	return 0;
 }
@@ -628,6 +577,11 @@ void CSystem::SetWorkersIntoBuildings()
 	}
 }
 
+void CSystem::SetStores(const GameResources& add)
+{
+	m_Store += add;
+}
+
 // Funktion addiert resAdd zum Lagerinhalt der jeweiligen Ressource.
 void CSystem::SetResourceStore(USHORT res, int resAdd)
 {
@@ -638,12 +592,12 @@ void CSystem::SetResourceStore(USHORT res, int resAdd)
 	// zum Lager hinzufügen/entfernen
 	switch (res)
 	{
-	case RESOURCES::TITAN:		{m_iTitanStore += resAdd; break;}
-	case RESOURCES::DEUTERIUM: {m_iDeuteriumStore += resAdd; break;}
-	case RESOURCES::DURANIUM:	{m_iDuraniumStore += resAdd; break;}
-	case RESOURCES::CRYSTAL:	{m_iCrystalStore += resAdd; break;}
-	case RESOURCES::IRIDIUM:	{m_iIridiumStore += resAdd; break;}
-	case RESOURCES::DERITIUM:	{m_iDeritiumStore += resAdd; break;}
+	case RESOURCES::TITAN:		{m_Store.Titan += resAdd; break;}
+	case RESOURCES::DEUTERIUM: {m_Store.Deuterium += resAdd; break;}
+	case RESOURCES::DURANIUM:	{m_Store.Duranium += resAdd; break;}
+	case RESOURCES::CRYSTAL:	{m_Store.Crystal += resAdd; break;}
+	case RESOURCES::IRIDIUM:	{m_Store.Iridium += resAdd; break;}
+	case RESOURCES::DERITIUM:	{m_Store.Deritium += resAdd; break;}
 	}
 }
 
@@ -1010,35 +964,24 @@ BOOLEAN CSystem::CalculateStorages(CResearchInfo* researchInfo, int diliAdd)
 {
 	// wie oben gesagt, noch überarbeiten, wenn negatives Lager sein würdem dann darf das System nicht mehr wachsen
 	// bzw. wird kleiner!!!
-	m_iFoodStore += m_Production.m_iFoodProd;
-	m_iTitanStore += m_Production.m_iTitanProd;
-	m_iDeuteriumStore += m_Production.m_iDeuteriumProd;
-	m_iDuraniumStore += m_Production.m_iDuraniumProd;
-	m_iCrystalStore += m_Production.m_iCrystalProd;
-	m_iIridiumStore += m_Production.m_iIridiumProd;
-	m_iDeritiumStore += m_Production.m_iDeritiumProd + diliAdd;
+	m_Store.Food += m_Production.m_iFoodProd;
+	m_Store.Titan += m_Production.m_iTitanProd;
+	m_Store.Deuterium += m_Production.m_iDeuteriumProd;
+	m_Store.Duranium += m_Production.m_iDuraniumProd;
+	m_Store.Crystal += m_Production.m_iCrystalProd;
+	m_Store.Iridium += m_Production.m_iIridiumProd;
+	m_Store.Deritium += m_Production.m_iDeritiumProd + diliAdd;
 
 	// Lagerobergrenzen
-	if (m_iFoodStore > MAX_FOOD_STORE)
-		m_iFoodStore = MAX_FOOD_STORE;
-	if (m_iTitanStore > MAX_RES_STORE)
-		m_iTitanStore = MAX_RES_STORE;
-	if (m_iDeuteriumStore > MAX_RES_STORE)
-		m_iDeuteriumStore = MAX_RES_STORE;
-	if (m_iDuraniumStore > MAX_RES_STORE)
-		m_iDuraniumStore = MAX_RES_STORE;
-	if (m_iCrystalStore > MAX_RES_STORE)
-		m_iCrystalStore = MAX_RES_STORE;
-	if (m_iIridiumStore > MAX_RES_STORE)
-		m_iIridiumStore = MAX_RES_STORE;
+	m_Store.Cap();
 
 	short multi = 1;
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> doppeltes Deritiumlager
 	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 		multi = researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(1);
-	if ((int)m_iDeritiumStore > MAX_DERITIUM_STORE * multi)
-		m_iDeritiumStore = MAX_DERITIUM_STORE * multi;
+	if ((int)m_Store.Deritium > MAX_DERITIUM_STORE * multi)
+		m_Store.Deritium = MAX_DERITIUM_STORE * multi;
 
 	m_iMoral += (short)m_Production.m_iMoralProd;
 
@@ -1078,8 +1021,8 @@ BOOLEAN CSystem::CalculateStorages(CResearchInfo* researchInfo, int diliAdd)
 			m_Production.m_iFoodProd = 10;
 			m_Production.m_iIndustryProd = 5;
 			m_iMoral = 65;
-			if (m_iFoodStore < 0)
-				m_iFoodStore = 0;
+			if (m_Store.Food < 0)
+				m_Store.Food = 0;
 			return TRUE;		// Das System hat sich losgesagt
 		}
 	}
@@ -2565,13 +2508,7 @@ void CSystem::ResetSystem()
 	m_iIridiumMines = 0;			// Anzahl der Iridiumminen in dem System
 	m_iCrystalMines = 0;			// Anzahl der Crystalminen in dem System
 	// Lagerkapazitäten
-	m_iFoodStore = 1000;
-	m_iTitanStore = 0;
-	m_iDeuteriumStore = 0;
-	m_iDuraniumStore = 0;
-	m_iCrystalStore = 0;
-	m_iIridiumStore = 0;
-	m_iDeritiumStore = 0;
+	m_Store.Reset();
 	m_BuildingDestroy.RemoveAll();
 	m_Production.Reset();
 	m_AssemblyList.Reset();
