@@ -63,7 +63,7 @@ public:
 	void CommitSoundMessages(CSoundManager* pSoundManager, const CMajor& player) const;
 	void ClearSoundMessages();
 	void ClearSoundMessages(const CMajor& race);
-	void AddSoundMessage(SNDMGR_VALUE type, const CMajor& major, int priority);
+	void AddSoundMessage(SNDMGR_VALUE type, const CMajor& major, int priority, const CRace* contacted = NULL);
 
 	void CalcContact(CMajor& Major, const CRace& ContactedRace);
 	void CalcStationReady(const SHIP_TYPE::Typ typ, const CMajor& race);
