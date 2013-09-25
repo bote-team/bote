@@ -2986,3 +2986,10 @@ int CSystem::CalcIPProd(const CArray<CBuildingInfo, CBuildingInfo>& BuildingInfo
 
 	return IPProd;
 }
+
+void CSystem::TrainTroops()
+{
+	const int xp = m_Production.GetTroopTraining();
+	for(int i = 0; i < m_Troops.GetSize(); ++i)
+		m_Troops.GetAt(i).AddExperiancePoints(xp);
+}

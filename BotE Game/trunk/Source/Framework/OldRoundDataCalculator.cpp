@@ -255,4 +255,6 @@ void COldRoundDataCalculator::Build(const CSector& sector, CSystem& system, CMaj
 		}
 		assembly_list->CalculateNeededRessourcesForUpdate(&BuildingInfo, system.GetAllBuildings(), pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 	}
+
+	system.TrainTroops();
 }
