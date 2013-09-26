@@ -3671,33 +3671,33 @@ void CBotEDoc::CalcTrade()
 
 /////BEGIN: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
 
-bool CBotEDoc::BuildStation(SHIP_TYPE::Typ type, CShips& ship, CSector& sector) {
+bool CBotEDoc::BuildStation(SHIP_TYPE::Typ type, CShips& ship, CSector& sector, SHIP_ORDER::Typ order) {
 	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(ship.GetOwnerOfShip()));
 	assert(pMajor);
 	const CString& owner = ship.GetOwnerOfShip();
+
 	const short id = pMajor->BestBuildableVariant(type, m_ShipInfoArray);
 	assert(id != -1);
 	bool remove = false;
-	if (sector.IsStationBuildable(type, pMajor->GetRaceID()))
-	{
+	if (sector.IsStationBuildable(order, pMajor->GetRaceID())) {
 		sector.SetIsStationBuilding(TRUE, owner);
 		if (sector.GetStartStationPoints(owner) == 0)
 			sector.SetStartStationPoints(m_ShipInfoArray.GetAt((id-10000)).
 					GetBaseIndustry(),owner);
-		if(ship.BuildStation(type, sector, *pMajor, id))
+		if(ship.BuildStation(order, sector, *pMajor, id))
 			remove = true;
 	}
 	else
 		ship.UnsetCurrentOrder();
 
-	if(sector.GetStarbase(owner))
-	{
-		// Wenn wir jetzt die Sternbasis gebaut haben, dann müssen wir den alten Aussenposten aus der
+	if(order != SHIP_ORDER::BUILD_OUTPOST && remove == TRUE) {
+		// Wenn wir jetzt die Station gebaut haben, dann müssen wir die alten Station aus der
 		// Schiffsliste nehmen
 		for(CShipMap::iterator k = m_ShipMap.begin(); k != m_ShipMap.end(); ++k)
-			if (k->second->GetShipType() == SHIP_TYPE::OUTPOST && k->second->GetKO() == sector.GetKO())
-			{
-				// ebenfalls muss der Au?enposten aus der Shiphistory der aktuellen Schiffe entfernt werden
+			if ((k->second->GetShipType() == SHIP_TYPE::OUTPOST 
+				|| k->second->GetShipType() == SHIP_TYPE::STARBASE) 
+				&& k->second->GetKO() == sector.GetKO()) {
+				// ebenfalls muss die Station aus der Shiphistory der aktuellen Schiffe entfernt werden
 				pMajor->GetShipHistory()->RemoveShip(k->second);
 				assert(k->second->Key() != ship.Key());
 				m_ShipMap.EraseAt(k, true);
@@ -3890,13 +3890,14 @@ void CBotEDoc::CalcShipOrders()
 				}
 			}
 		}
-		// hier wird ein Aussenposten/Sternbasis gebaut
-		else if (current_order == SHIP_ORDER::BUILD_OUTPOST
-			|| current_order == SHIP_ORDER::BUILD_STARBASE)	// es soll eine Station gebaut werden
-		{
-			if(BuildStation(current_order == SHIP_ORDER::BUILD_OUTPOST ?
-				SHIP_TYPE::OUTPOST : SHIP_TYPE::STARBASE, *y->second, *pSector))
-			{
+		// hier wird ein Aussenposten/Sternbasis gebaut/geupgradet
+		else if (current_order == SHIP_ORDER::BUILD_OUTPOST 
+			|| current_order == SHIP_ORDER::BUILD_STARBASE 
+			|| current_order == SHIP_ORDER::UPGRADE_OUTPOST 
+			|| current_order == SHIP_ORDER::UPGRADE_STARBASE) {
+			if(BuildStation((current_order == SHIP_ORDER::BUILD_OUTPOST 
+				|| current_order == SHIP_ORDER::UPGRADE_OUTPOST) 
+				? SHIP_TYPE::OUTPOST : SHIP_TYPE::STARBASE, *y->second, *pSector, current_order)) {
 				RemoveShip(y);
 				increment = false;
 				continue;
@@ -4060,26 +4061,38 @@ void CBotEDoc::CalcShipMovement()
 #ifdef CONSISTENCY_CHECKS
 		CSanity::GetInstance()->CheckShipUniqueness(*y->second, already_encountered_ships_for_sanity_check);
 #endif
-
+		const CPoint& p = y->second->GetKO();
 		// Prüfen, dass ein Terraformbefehl noch gültig ist
 		if (y->second->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 		{
-			const CPoint& p = y->second->GetKO();
 			if (GetSector(p.x, p.y).GetPlanet(y->second->GetTerraform())->GetTerraformed())
 				y->second->SetTerraform(-1);
 		}
 		// Prüfen, dass ein Aussenpostenbaubefehl noch gültig ist
 		else if (y->second->GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST)
 		{
-			if (GetSector(y->second->GetKO().x, y->second->GetKO().y).GetOutpost(y->second->GetOwnerOfShip()) == TRUE)
+			if (GetSector(p.x, p.y).GetIsStationInSector() == TRUE)
 				y->second->UnsetCurrentOrder();
 		}
 		// Prüfen, dass ein Sternbasenbaubefehl noch gültig ist
 		else if (y->second->GetCurrentOrder() == SHIP_ORDER::BUILD_STARBASE)
 		{
-			if (GetSector(y->second->GetKO().x, y->second->GetKO().y).GetStarbase(y->second->GetOwnerOfShip()) == TRUE)
+			if (GetSector(p.x, p.y).GetStarbase(y->second->GetOwnerOfShip()) == TRUE)
 				y->second->UnsetCurrentOrder();
 		}
+		// Prüfen, dass ein Aussenposten-Upgradebefehl noch gültig ist
+		else if (y->second->GetCurrentOrder() == SHIP_ORDER::UPGRADE_OUTPOST) {
+			if (GetSector(p.x, p.y).IsStationBuildable(SHIP_ORDER::UPGRADE_OUTPOST, 
+				y->second->GetOwnerOfShip()) == FALSE)
+				y->second->UnsetCurrentOrder();
+		}
+		// Prüfen, dass ein Sternbasen-Upgradebefehl noch gültig ist
+		else if (y->second->GetCurrentOrder() == SHIP_ORDER::UPGRADE_STARBASE) {
+			if (GetSector(p.x, p.y).IsStationBuildable(SHIP_ORDER::UPGRADE_STARBASE, 
+				y->second->GetOwnerOfShip()) == FALSE)
+				y->second->UnsetCurrentOrder();
+		}
+
 		// weiter mit Schiffsbewegung
 		Sector shipKO((char)y->second->GetKO().x,(char)y->second->GetKO().y);
 		Sector targetKO((char)y->second->GetTargetKO().x,(char)y->second->GetTargetKO().y);

@@ -47,7 +47,7 @@ CShipBottomView::CShipBottomView() :
 {
 	m_pShipOrderButton = NULL;
 	m_vMainShipOrders.reserve(MAIN_BUTTON_CANCEL);
-	m_vSecondaryShipOrders.resize(SHIP_ORDER::IMPROVE_SHIELDS + 1);
+	m_vSecondaryShipOrders.resize(SHIP_ORDER::UPGRADE_STARBASE + 1);
 }
 
 CShipBottomView::~CShipBottomView()
@@ -474,7 +474,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 		// hier schauen, ob ich in der Schiffsinfoliste schon einen Außenposten habe den ich bauen kann, wenn in dem
 		// Sector noch kein Außenposten steht und ob ich diesen in dem Sector überhaupt bauen kann. Das geht nur
 		// wenn der Sektor mir oder niemanden gehört
-		if(csec.IsStationBuildable(SHIP_TYPE::OUTPOST, pShip.GetOwnerOfShip()))
+		if(csec.IsStationBuildable(SHIP_ORDER::BUILD_OUTPOST, pShip.GetOwnerOfShip()))
 		{
 			// Hier überprüfen, ob ich einen Außenposten technologisch überhaupt bauen kann
 			for (int l = 0; l < m_dc.pDoc->m_ShipInfoArray.GetSize(); l++)
@@ -487,7 +487,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 				}
 		}
 		// Wenn hier schon ein Außenposten steht, können wir vielleicht auch eine Sternbasis bauen
-		else if (csec.IsStationBuildable(SHIP_TYPE::STARBASE, pShip.GetOwnerOfShip()))
+		if (csec.IsStationBuildable(SHIP_ORDER::BUILD_STARBASE, pShip.GetOwnerOfShip()))
 		{
 			// Hier überprüfen, ob ich eine Sternbasis technologisch überhaupt bauen kann
 			for (int l = 0; l < m_dc.pDoc->m_ShipInfoArray.GetSize(); l++)
@@ -498,6 +498,16 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 					counter++;
 					break;
 				}
+		}
+		// If a better outpost is available and buildable in this sector draw the upgrade button
+		if (csec.IsStationBuildable(SHIP_ORDER::UPGRADE_OUTPOST, pShip.GetOwnerOfShip())) {
+			DrawSmallButton("BTN_UPGRADE_OUTPOST",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::UPGRADE_OUTPOST);
+			counter++;
+		}
+		// If a better starbase is available and buildable in this sector draw the upgrade button
+		if (csec.IsStationBuildable(SHIP_ORDER::UPGRADE_STARBASE, pShip.GetOwnerOfShip())) {
+			DrawSmallButton("BTN_UPGRADE_STARBASE",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::UPGRADE_STARBASE);
+			counter++;
 		}
 	}
 	// shield improvement
@@ -612,13 +622,7 @@ void CShipBottomView::DrawStationData() {
 	// von jeder der Rasse den Fortschritt beim Stationsbau angeben
 	map<CString, CMajor*>* pmMajors = m_dc.pDoc->GetRaceCtrl()->GetMajors();
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-		if (csec.GetIsStationBuilding(it->first) == TRUE)
-		{
-			CString station;
-			if (csec.GetOutpost(it->first) == FALSE)
-				station = CLoc::GetString("OUTPOST");
-			else
-				station = CLoc::GetString("STARBASE");
+		if (csec.GetIsStationBuilding(it->first) == TRUE) {
 			m_dc.fontBrush->SetColor(Color(170,170,170));
 			CString percent;
 			percent.Format("%d",((csec.GetStartStationPoints(it->first)
@@ -631,10 +635,19 @@ void CShipBottomView::DrawStationData() {
 			else
 				sRaceName = CLoc::GetString("UNKNOWN");
 
-			CString s = station + CLoc::GetString("STATION_BUILDING", FALSE, sRaceName, percent);
+			CString station;
+			// If an outpost is under construction
+			if (csec.GetOutpost(it->first) == FALSE && csec.GetStarbase(it->first) == FALSE)
+				station = CLoc::GetString("OUTPOST") + CLoc::GetString("STATION_BUILDING", FALSE, sRaceName, percent);
+			// If a starbase is under construction
+			else if (csec.GetOutpost(it->first) == TRUE && csec.GetStarbase(it->first) == FALSE)
+				station = CLoc::GetString("STARBASE") + CLoc::GetString("STATION_BUILDING", FALSE, sRaceName, percent);
+			// If a starbase gets upgraded
+			else if (csec.GetOutpost(it->first) == FALSE && csec.GetStarbase(it->first) == TRUE)
+				station = CLoc::GetString("STARBASE") + CLoc::GetString("STATION_UPGRADING", FALSE, sRaceName, percent);
 			m_dc.fontFormat.SetAlignment(StringAlignmentCenter);
 			m_dc.fontFormat.SetLineAlignment(StringAlignmentCenter);
-			m_dc.g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(m_dc.fontName), m_dc.fontSize), PointF(250, 30+count*25), &m_dc.fontFormat, m_dc.fontBrush);
+			m_dc.g->DrawString(CComBSTR(station), -1, &Gdiplus::Font(CComBSTR(m_dc.fontName), m_dc.fontSize), PointF(250, 30+count*25), &m_dc.fontFormat, m_dc.fontBrush);
 			count++;
 		}
 }
@@ -1024,9 +1037,9 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					if (nOrder == SHIP_ORDER::COLONIZE)
 						CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_COLONIZING, SNDMGR_PRIO_HIGH, 1.0f, client);
-					else if (nOrder == SHIP_ORDER::BUILD_OUTPOST)
+					else if (nOrder == SHIP_ORDER::BUILD_OUTPOST || nOrder == SHIP_ORDER::UPGRADE_OUTPOST)
 						CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_OUTPOST_CONSTRUCT, SNDMGR_PRIO_HIGH, 1.0f, client);
-					else if (nOrder == SHIP_ORDER::BUILD_STARBASE)
+					else if (nOrder == SHIP_ORDER::BUILD_STARBASE || nOrder == SHIP_ORDER::UPGRADE_STARBASE)
 						CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_STARBASE_CONSTRUCT, SNDMGR_PRIO_HIGH, 1.0f, client);
 					CGalaxyMenuView::SetMoveShip(FALSE);
 					CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);

@@ -208,7 +208,7 @@ public:
 	}
 
 	//is station buildable in this sector by race according to whatever station exists ?
-	bool IsStationBuildable(SHIP_TYPE::Typ station, const CString& race) const;
+	bool IsStationBuildable(SHIP_ORDER::Typ order, const CString& race) const;
 
 	/// Diese Funktion gibt die Scanpower zurück, die die Majorrace <code>Race</code> in diesem Sektor hat.
 	short GetScanPower(const CString& sRace, bool bWith_ships = true) const;

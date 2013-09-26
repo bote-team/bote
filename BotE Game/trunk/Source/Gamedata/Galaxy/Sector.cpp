@@ -981,18 +981,27 @@ static bool StationBuildContinuable(const CString& race, const CSector& sector) 
 	return owner.IsEmpty() || owner == race || sector.GetIsStationBuilding(race);
 }
 
-bool CSector::IsStationBuildable(SHIP_TYPE::Typ station, const CString& race) const {
-	if(HasStarbase())
-		return false;
-	if(station == SHIP_TYPE::OUTPOST) {
-		if(HasOutpost())
-			return false;
+bool CSector::IsStationBuildable(SHIP_ORDER::Typ order, const CString& race) const {
+	if(order == SHIP_ORDER::BUILD_OUTPOST && !GetIsStationInSector())
 		return StationBuildContinuable(race, *this);
+	if(order == SHIP_ORDER::BUILD_STARBASE && GetOutpost(race))
+		return StationBuildContinuable(race, *this);
+	if(order == SHIP_ORDER::UPGRADE_OUTPOST && GetOutpost(race) 
+		|| order == SHIP_ORDER::UPGRADE_STARBASE && GetStarbase(race)) {
+		const CBotEDoc* pDoc = resources::pDoc;
+		CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(race));
+		SHIP_TYPE::Typ type = (order == SHIP_ORDER::UPGRADE_OUTPOST) 
+			? SHIP_TYPE::OUTPOST : SHIP_TYPE::STARBASE;
+		USHORT bestbuildableID = pMajor->BestBuildableVariant(type, pDoc->m_ShipInfoArray);
+		for(CShipMap::const_iterator k = pDoc->m_ShipMap.begin(); k != pDoc->m_ShipMap.end(); ++k)
+			if (k->second->GetShipType() == type && k->second->GetKO() == m_KO) {
+				if (k->second->GetID() < bestbuildableID) {
+					return StationBuildContinuable(race, *this);
+				}
+				break;
+			}
 	}
-	assert(station == SHIP_TYPE::STARBASE);
-	if(!GetOutpost(race))
-		return false;
-	return StationBuildContinuable(race, *this);
+	return false;
 }
 
 void CSector::RecalcPlanetsTerraformingStatus() {

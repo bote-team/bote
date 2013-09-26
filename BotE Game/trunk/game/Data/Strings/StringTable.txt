@@ -216,6 +216,10 @@ Terraforming
 Aussenposten
 [BTN_BUILD_STARBASE]
 Sternenbasis
+[BTN_UPGRADE_OUTPOST]
+Upgrade
+[BTN_UPGRADE_STARBASE]
+Upgrade
 [BTN_ASSIGN_FLAGSHIP]
 Flaggschiff
 [BTN_CREATE_FLEET]
@@ -439,6 +443,8 @@ ome_
 // Meldungen
 [STATION_BUILDING]
 bau der § zu §% abgeschlossen
+[STATION_UPGRADING]
+upgrade der § zu §% abgeschlossen
 [NO_DIPLOMATIC_NEWS]
 keine diplomatischen Nachrichten vorhanden
 [BUILDING_TURN_OFF]
@@ -483,10 +489,18 @@ Im §-System werden voraussichtlich Terraformpunkte verschwendet
 Ein neuer Aussenposten wurde errichtet
 [STARBASE_FINISHED]
 Eine neue Sternbasis wurde errichtet
+[OUTPOST_UPGRADE_FINISHED]
+Ein Aussenpostenupgrade wurde fertiggestellt
+[STARBASE_UPGRADE_FINISHED]
+Ein Sternbasisupgrade wurde fertiggestellt
 [OUTPOST_CONSTRUCTION]
 Aussenpostenbau
 [STARBASE_CONSTRUCTION]
 Sternbasisbau
+[OUTPOST_UPGRADE]
+Aussenpostenupgrade
+[STARBASE_UPGRADE]
+Sternbasisupgrade
 [ASSIGN_FLAGSHIP_MESSAGE]
 Die § (§) wurde zum Flaggschiff ernannt
 [GET_CONTACT_TO_MINOR]
@@ -1229,6 +1243,10 @@ Terraforming
 Aussenposten
 [BUILD_STARBASE_ORDER]
 Sternbasis
+[UPGRADE_OUTPOST_ORDER]
+Upgrade
+[UPGRADE_STARBASE_ORDER]
+Upgrade
 [ASSIGN_FLAGSHIP_ORDER]
 Flaggschiff
 [CREATE_FLEET_ORDER]

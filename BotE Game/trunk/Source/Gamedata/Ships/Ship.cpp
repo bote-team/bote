@@ -362,6 +362,8 @@ CString CShip::GetCurrentOrderAsString() const
 	case SHIP_ORDER::TERRAFORM: order = CLoc::GetString("TERRAFORM_ORDER"); break;
 	case SHIP_ORDER::BUILD_OUTPOST: order = CLoc::GetString("BUILD_OUTPOST_ORDER"); break;
 	case SHIP_ORDER::BUILD_STARBASE: order = CLoc::GetString("BUILD_STARBASE_ORDER"); break;
+	case SHIP_ORDER::UPGRADE_OUTPOST: order = CLoc::GetString("UPGRADE_OUTPOST_ORDER"); break;
+	case SHIP_ORDER::UPGRADE_STARBASE: order = CLoc::GetString("UPGRADE_STARBASE_ORDER"); break;
 	case SHIP_ORDER::ASSIGN_FLAGSHIP: order = CLoc::GetString("ASSIGN_FLAGSHIP_ORDER"); break;
 	case SHIP_ORDER::CREATE_FLEET: order = CLoc::GetString("CREATE_FLEET_ORDER"); break;
 	case SHIP_ORDER::TRANSPORT: order = CLoc::GetString("TRANSPORT_ORDER"); break;
@@ -518,6 +520,8 @@ static bool ShouldUnsetOrder(SHIP_ORDER::Typ order) {
 		case SHIP_ORDER::TERRAFORM:
 		case SHIP_ORDER::BUILD_OUTPOST:
 		case SHIP_ORDER::BUILD_STARBASE:
+		case SHIP_ORDER::UPGRADE_OUTPOST:
+		case SHIP_ORDER::UPGRADE_STARBASE:
 		case SHIP_ORDER::TRAIN_SHIP:
 		case SHIP_ORDER::WAIT_SHIP_ORDER:
 		case SHIP_ORDER::SENTRY_SHIP_ORDER:
@@ -880,9 +884,17 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
 		case SHIP_ORDER::TERRAFORM:
 			return GetColonizePoints() >= 1;
 		case SHIP_ORDER::BUILD_OUTPOST:
-			return m_iStationBuildPoints >= 1 && m_iCurrentOrder != SHIP_ORDER::BUILD_STARBASE;
+			return m_iStationBuildPoints >= 1 && m_iCurrentOrder != SHIP_ORDER::BUILD_STARBASE 
+				&& m_iCurrentOrder != SHIP_ORDER::UPGRADE_OUTPOST && m_iCurrentOrder != SHIP_ORDER::UPGRADE_STARBASE;
 		case SHIP_ORDER::BUILD_STARBASE:
-			return m_iStationBuildPoints >= 1 && m_iCurrentOrder != SHIP_ORDER::BUILD_OUTPOST;
+			return m_iStationBuildPoints >= 1 && m_iCurrentOrder != SHIP_ORDER::BUILD_OUTPOST 
+				&& m_iCurrentOrder != SHIP_ORDER::UPGRADE_OUTPOST && m_iCurrentOrder != SHIP_ORDER::UPGRADE_STARBASE;
+		case SHIP_ORDER::UPGRADE_OUTPOST:
+			return m_iStationBuildPoints >= 1 && m_iCurrentOrder != SHIP_ORDER::BUILD_OUTPOST 
+				&& m_iCurrentOrder != SHIP_ORDER::BUILD_STARBASE && m_iCurrentOrder != SHIP_ORDER::UPGRADE_STARBASE;
+		case SHIP_ORDER::UPGRADE_STARBASE:
+			return m_iStationBuildPoints >= 1 && m_iCurrentOrder != SHIP_ORDER::BUILD_OUTPOST 
+				&& m_iCurrentOrder != SHIP_ORDER::BUILD_STARBASE && m_iCurrentOrder != SHIP_ORDER::UPGRADE_OUTPOST;
 		case SHIP_ORDER::BLOCKADE_SYSTEM:
 			return HasSpecial(SHIP_SPECIAL::BLOCKADESHIP);
 		case SHIP_ORDER::ATTACK_SYSTEM:
@@ -1466,7 +1478,8 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 	if(!fleetship) {
 		// Wenn das Schiff gerade eine Station baut, so dies dem Sektor mitteilen
 		const SHIP_ORDER::Typ current_order = GetCurrentOrder();
-		if (current_order == SHIP_ORDER::BUILD_OUTPOST || current_order == SHIP_ORDER::BUILD_STARBASE)
+		if (current_order == SHIP_ORDER::BUILD_OUTPOST || current_order == SHIP_ORDER::BUILD_STARBASE 
+			|| current_order == SHIP_ORDER::UPGRADE_OUTPOST || current_order == SHIP_ORDER::UPGRADE_STARBASE)
 			sector.SetIsStationBuilding(TRUE, sRace);
 		// Wenn das Schiff gerade Terraform, so dies dem Planeten mitteilen
 		else if (current_order == SHIP_ORDER::TERRAFORM) {
@@ -1490,21 +1503,24 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 	CalcExp();
 }
 
-bool CShip::BuildStation(SHIP_TYPE::Typ type, CSector& sector, CMajor& major, short id) {
-	assert(!sector.HasStarbase());
-	if(type == SHIP_TYPE::OUTPOST)
-		assert(!sector.HasOutpost());
-	else
-		assert(sector.HasOutpost());
+bool CShip::BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major, short id) {
 	if(!sector.SetNeededStationPoints(m_iStationBuildPoints, m_sOwnerOfShip))
 		return false;
+	SHIP_TYPE::Typ type = (order == SHIP_ORDER::BUILD_OUTPOST 
+		|| order == SHIP_ORDER::UPGRADE_OUTPOST) ? SHIP_TYPE::OUTPOST : SHIP_TYPE::STARBASE;
 	sector.BuildStation(type, m_sOwnerOfShip);
 	CEmpireNews message;
-	const CString& s1 = (type == SHIP_TYPE::OUTPOST) ? "OUTPOST_FINISHED" : "STARBASE_FINISHED";
+	const CString& s1 = (order == SHIP_ORDER::BUILD_OUTPOST) ? "OUTPOST_FINISHED" 
+		: ((order == SHIP_ORDER::BUILD_STARBASE) ? "STARBASE_FINISHED" 
+		: ((order == SHIP_ORDER::UPGRADE_OUTPOST) ? "OUTPOST_UPGRADE_FINISHED" 
+		: "STARBASE_UPGRADE_FINISHED" ));
 	message.CreateNews(CLoc::GetString(s1),EMPIRE_NEWS_TYPE::MILITARY,"",sector.GetKO());
 	major.GetEmpire()->AddMsg(message);
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-	const CString& s2 = (type == SHIP_TYPE::OUTPOST) ? "OUTPOST_CONSTRUCTION" : "STARBASE_CONSTRUCTION";
+	const CString& s2 = (order == SHIP_ORDER::BUILD_OUTPOST) ? "OUTPOST_CONSTRUCTION" 
+		: ((order == SHIP_ORDER::BUILD_STARBASE) ? "STARBASE_CONSTRUCTION" 
+		: ((order == SHIP_ORDER::UPGRADE_OUTPOST) ? "OUTPOST_UPGRADE" 
+		: "STARBASE_UPGRADE" ));
 	CBotEDoc* pDoc = resources::pDoc;
 	major.AddToLostShipHistory(CShips(*this), CLoc::GetString(s2),
 		CLoc::GetString("DESTROYED"), pDoc->GetCurrentRound());
