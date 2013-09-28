@@ -47,7 +47,7 @@ CSector::CSector(const CSector& other) :
 	m_Starbase(other.m_Starbase),
 	m_bWhoIsOwnerOfShip(other.m_bWhoIsOwnerOfShip),
 	m_mNumbersOfShips(other.m_mNumbersOfShips),
-	m_bIsStationBuild(other.m_bIsStationBuild),
+	m_IsStationBuild(other.m_IsStationBuild),
 	m_iScanPower(other.m_iScanPower),
 	m_iNeededScanPower(other.m_iNeededScanPower),
 	m_iNeededStationPoints(other.m_iNeededStationPoints),
@@ -71,7 +71,7 @@ CSector& CSector::operator=(const CSector& other){
 	m_Starbase = other.m_Starbase;
 	m_bWhoIsOwnerOfShip = other.m_bWhoIsOwnerOfShip;
 	m_mNumbersOfShips = other.m_mNumbersOfShips;
-	m_bIsStationBuild = other.m_bIsStationBuild;
+	m_IsStationBuild = other.m_IsStationBuild;
 	m_iScanPower = other.m_iScanPower;
 	m_iNeededScanPower = other.m_iNeededScanPower;
 	m_iNeededStationPoints = other.m_iNeededStationPoints;
@@ -117,9 +117,10 @@ void CSector::Serialize(CArchive &ar)
 			ar << *it;
 		ar << m_Outpost;
 		ar << m_Starbase;
-		ar << m_bIsStationBuild.size();
-		for (set<CString>::const_iterator it = m_bIsStationBuild.begin(); it != m_bIsStationBuild.end(); ++it)
-			ar << *it;
+		ar << m_IsStationBuild.size();
+		for (std::map<CString, SHIP_ORDER::Typ>::const_iterator it = m_IsStationBuild.begin();
+				it != m_IsStationBuild.end(); ++it)
+			ar << it->first << static_cast<unsigned>(it->second);
 		ar << m_bWhoIsOwnerOfShip.size();
 		for (set<CString>::const_iterator it = m_bWhoIsOwnerOfShip.begin(); it != m_bWhoIsOwnerOfShip.end(); ++it)
 			ar << *it;
@@ -188,14 +189,16 @@ void CSector::Serialize(CArchive &ar)
 		ar >> m_Outpost;
 		m_Starbase.Empty();
 		ar >> m_Starbase;
-		m_bIsStationBuild.clear();
+		m_IsStationBuild.clear();
 		mapSize = 0;
 		ar >> mapSize;
 		for (size_t i = 0; i < mapSize; i++)
 		{
-			CString value;
+			CString key;
+			ar >> key;
+			unsigned value;
 			ar >> value;
-			m_bIsStationBuild.insert(value);
+			m_IsStationBuild.insert(std::pair<CString, SHIP_ORDER::Typ>(key, static_cast<SHIP_ORDER::Typ>(value)));
 		}
 		m_bWhoIsOwnerOfShip.clear();
 		mapSize = 0;
@@ -647,7 +650,7 @@ void CSector::ClearAllPoints()
 	// nun können alle StartStationPoint die auf 0 stehen in der Map gelöscht werden
 	for (map<CString, short>::iterator it = m_iStartStationPoints.begin(); it != m_iStartStationPoints.end(); )
 	{
-		if (m_bIsStationBuild.find(it->first) == m_bIsStationBuild.end())
+		if (m_IsStationBuild.find(it->first) == m_IsStationBuild.end())
 			it->second = 0;
 
 		if (it->second == 0)
@@ -655,7 +658,7 @@ void CSector::ClearAllPoints()
 		else
 			++it;
 	}
-	m_bIsStationBuild.clear();
+	m_IsStationBuild.clear();
 
 	m_bWhoIsOwnerOfShip.clear();
 	m_mNumbersOfShips.clear();
@@ -740,7 +743,7 @@ void CSector::Reset()
 	m_mNumbersOfShips.clear();
 	m_Outpost.Empty();
 	m_Starbase.Empty();
-	m_bIsStationBuild.clear();
+	m_IsStationBuild.clear();
 	m_iStartStationPoints.clear();
 	m_iNeededStationPoints.clear();
 	m_byOwnerPoints.clear();
@@ -1052,7 +1055,7 @@ void CSector::BuildStation(SHIP_TYPE::Typ station, const CString& race) {
 	SetShipPort(TRUE, race);
 
 	// Wenn eine Station fertig wurde für alle Rassen die Punkte wieder canceln
-	m_bIsStationBuild.clear();
+	m_IsStationBuild.clear();
 	m_iStartStationPoints.clear();
 	m_iNeededStationPoints.clear();
 }

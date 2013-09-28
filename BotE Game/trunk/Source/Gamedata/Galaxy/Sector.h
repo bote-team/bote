@@ -14,6 +14,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <cassert>
 
 #include "resources.h"
 #include "CommandLineParameters.h"
@@ -202,9 +203,13 @@ public:
 	/// gerade eine Station in diesem Sektor baut.
 	BOOLEAN GetIsStationBuilding(const CString& sRace) const
 	{
-		if (m_bIsStationBuild.find(sRace) != m_bIsStationBuild.end())
-			return true;
-		return false;
+		return m_IsStationBuild.find(sRace) != m_IsStationBuild.end();
+	}
+	SHIP_ORDER::Typ StationWork(const CString& sRace) const
+	{
+		const std::map<CString, SHIP_ORDER::Typ>::const_iterator result = m_IsStationBuild.find(sRace);
+		assert(result != m_IsStationBuild.end());
+		return result->second;
 	}
 
 	//is station buildable in this sector by race according to whatever station exists ?
@@ -355,12 +360,12 @@ public:
 	void IncrementNumberOfShips(const CString& race);
 
 	/// Funktion legt fest, ob die Majorrace <code>Race</code> gerade eine Station in diesem Sektor baut.
-	void SetIsStationBuilding(BOOLEAN is, const CString& Race)
+	void SetIsStationBuilding(SHIP_ORDER::Typ type, const CString& Race)
 	{
-		if (is)
-			m_bIsStationBuild.insert(Race);
+		if (type != SHIP_ORDER::NONE)
+			m_IsStationBuild.insert(std::pair<CString, SHIP_ORDER::Typ>(Race, type));
 		else
-			m_bIsStationBuild.erase(Race);
+			m_IsStationBuild.erase(Race);
 	}
 
 	/// Funktion legt die Scanpower <code>scanpower</code>, welche die Majorrace <code>Race</code>
@@ -519,7 +524,7 @@ private:
 	std::map<CString, unsigned> m_mNumbersOfShips;
 
 	/// Baut eine bestimmte Majorrasse gerade eine Station in dem Sektor?
-	set<CString> m_bIsStationBuild;
+	std::map<CString, SHIP_ORDER::Typ> m_IsStationBuild;
 
 	/// Scanstärke der jeweiligen Major/Minorrace in dem Sektor
 	map<CString, short> m_iScanPower;

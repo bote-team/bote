@@ -3680,7 +3680,7 @@ bool CBotEDoc::BuildStation(SHIP_TYPE::Typ type, CShips& ship, CSector& sector, 
 	assert(id != -1);
 	bool remove = false;
 	if (sector.IsStationBuildable(order, pMajor->GetRaceID())) {
-		sector.SetIsStationBuilding(TRUE, owner);
+		sector.SetIsStationBuilding(order, owner);
 		if (sector.GetStartStationPoints(owner) == 0)
 			sector.SetStartStationPoints(m_ShipInfoArray.GetAt((id-10000)).
 					GetBaseIndustry(),owner);
@@ -4923,7 +4923,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 				// se->SetColonyOwner("");
 
 				// in allen Sektoren alle Schiffe aus den Sektoren nehmen
-				se->SetIsStationBuilding(false, ID);
+				se->SetIsStationBuilding(SHIP_ORDER::NONE, ID);
 				se->UnsetOutpost(ID);
 				se->SetOwnerOfShip(false, ID);
 				se->SetShipPort(false, ID);

@@ -1480,7 +1480,7 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 		const SHIP_ORDER::Typ current_order = GetCurrentOrder();
 		if (current_order == SHIP_ORDER::BUILD_OUTPOST || current_order == SHIP_ORDER::BUILD_STARBASE 
 			|| current_order == SHIP_ORDER::UPGRADE_OUTPOST || current_order == SHIP_ORDER::UPGRADE_STARBASE)
-			sector.SetIsStationBuilding(TRUE, sRace);
+			sector.SetIsStationBuilding(current_order, sRace);
 		// Wenn das Schiff gerade Terraform, so dies dem Planeten mitteilen
 		else if (current_order == SHIP_ORDER::TERRAFORM) {
 			const short nPlanet = GetTerraform();

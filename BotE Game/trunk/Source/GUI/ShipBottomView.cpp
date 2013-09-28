@@ -637,13 +637,17 @@ void CShipBottomView::DrawStationData() {
 
 			CString station;
 			// If an outpost is under construction
-			if (csec.GetOutpost(it->first) == FALSE && csec.GetStarbase(it->first) == FALSE)
+			const SHIP_ORDER::Typ type = csec.StationWork(it->first);
+			if (type == SHIP_ORDER::BUILD_OUTPOST)
 				station = CLoc::GetString("OUTPOST") + CLoc::GetString("STATION_BUILDING", FALSE, sRaceName, percent);
 			// If a starbase is under construction
-			else if (csec.GetOutpost(it->first) == TRUE && csec.GetStarbase(it->first) == FALSE)
+			else if (type == SHIP_ORDER::BUILD_STARBASE)
 				station = CLoc::GetString("STARBASE") + CLoc::GetString("STATION_BUILDING", FALSE, sRaceName, percent);
+			// If an outpost gets upgraded
+			else if (type == SHIP_ORDER::UPGRADE_OUTPOST)
+				station = CLoc::GetString("OUTPOST") + CLoc::GetString("STATION_UPGRADING", FALSE, sRaceName, percent);
 			// If a starbase gets upgraded
-			else if (csec.GetOutpost(it->first) == FALSE && csec.GetStarbase(it->first) == TRUE)
+			else if (type == SHIP_ORDER::UPGRADE_STARBASE)
 				station = CLoc::GetString("STARBASE") + CLoc::GetString("STATION_UPGRADING", FALSE, sRaceName, percent);
 			m_dc.fontFormat.SetAlignment(StringAlignmentCenter);
 			m_dc.fontFormat.SetLineAlignment(StringAlignmentCenter);
