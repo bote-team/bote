@@ -960,7 +960,6 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 
 		// Ab jetzt die kleinen Buttons für die einzelnen genauen Schiffsbefehle
-		const network::RACE client = resources::pClientWorker->GetMappedClientID(pMajor->GetRaceID());
 		for(std::vector<SecondaryButtonInfo>::const_iterator i = m_vSecondaryShipOrders.begin(); i != m_vSecondaryShipOrders.end(); ++i)
 			if (i->rect.PtInRect(point))
 			{
@@ -1018,16 +1017,17 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					resources::pMainFrame->SelectBottomView(VIEWS::PLANET_BOTTOM_VIEW);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
-					CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_TERRAFORM_SELECT, SNDMGR_PRIO_HIGH, 1.0f, client);
+					resources::pClientWorker->PlaySound(SNDMGR_MSG_TERRAFORM_SELECT, pMajor->GetRaceID());
 				}
 				else
 				{
 					if (nOrder == SHIP_ORDER::COLONIZE)
-						CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_COLONIZING, SNDMGR_PRIO_HIGH, 1.0f, client);
+						resources::pClientWorker->PlaySound(SNDMGR_MSG_COLONIZING, pMajor->GetRaceID());
 					else if (nOrder == SHIP_ORDER::BUILD_OUTPOST)
-						CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_OUTPOST_CONSTRUCT, SNDMGR_PRIO_HIGH, 1.0f, client);
+						resources::pClientWorker->PlaySound(SNDMGR_MSG_OUTPOST_CONSTRUCT, pMajor->GetRaceID());
 					else if (nOrder == SHIP_ORDER::BUILD_STARBASE)
-						CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_STARBASE_CONSTRUCT, SNDMGR_PRIO_HIGH, 1.0f, client);
+						resources::pClientWorker->PlaySound(SNDMGR_MSG_STARBASE_CONSTRUCT, pMajor->GetRaceID());
+
 					CGalaxyMenuView::SetMoveShip(FALSE);
 					CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));

@@ -6,6 +6,10 @@
 #include "resources.h"
 #include "Constants.h"
 #include "Races/Major.h"
+#include "BotEServer.h"
+#include "SoundManager.h"
+#include "IniLoader.h"
+#include "CRoundButton2/RoundButton2.h"
 #include "MainFrm.h"
 
 CClientWorker::CClientWorker(void) :
@@ -62,7 +66,7 @@ void CClientWorker::Serialize(CArchive& ar, bool sounds)
 /// @param sRaceID Rassen-ID einer Majorrace
 /// @return Netzwerk-Client-ID
 /// ALPHA5 -> noch fest!
-network::RACE CClientWorker::GetMappedClientID(const CString& sRaceID)
+static network::RACE GetMappedClientID(const CString& sRaceID)
 {
 	if (sRaceID == "MAJOR1")
 		return network::RACE_1;
@@ -222,4 +226,47 @@ void CClientWorker::CalcStationReady(const SHIP_TYPE::Typ typ, const CMajor& rac
 		value = SNDMGR_MSG_STARBASE_READY;
 	AddSoundMessage(value, race, 0);
 	SetToEmpireViewFor(race);
+}
+
+void CClientWorker::SetMajorToHumanOrAi(CMajor& major) const
+{
+	const network::RACE client = GetMappedClientID(major.GetRaceID());
+	// wird das Imperium von einem Menschen oder vom Computer gespielt
+	assert(client != network::RACE_NONE);
+	major.SetHumanPlayer(server.IsPlayedByClient(client) ? true : false);
+}
+
+void CClientWorker::SetMajorsToHumanOrAi(const std::map<CString, CMajor*>& Majors) const
+{
+	// Spieler den Majors zuweisen
+	for (std::map<CString, CMajor*>::const_iterator it = Majors.begin(); it != Majors.end(); ++it)
+		SetMajorToHumanOrAi(*it->second);
+}
+
+void CClientWorker::StartMusic(const CIniLoader& ini, CSoundManager& sm, const CMajor& player) const
+{
+	const network::RACE client = GetMappedClientID(player.GetRaceID());
+
+	float fMusicVolume;
+	ini.ReadValue("Audio", "MUSICVOLUME", fMusicVolume);
+	sm.StartMusic(client, fMusicVolume);
+}
+
+void CClientWorker::PlaySound(SNDMGR_VALUE type, const CString& major) const
+{
+	const network::RACE client = GetMappedClientID(major);
+	CSoundManager::GetInstance()->PlaySound(type, SNDMGR_PRIO_HIGH, 1.0f, client);
+}
+
+void CClientWorker::CreateButtons(std::vector<std::pair<CRoundButton2*, CString>>& MajorBtns,
+	const std::map<CString, CMajor*>& majors, CWnd* parent) const
+{
+	for (std::map<CString, CMajor*>::const_iterator it = majors.begin(); it != majors.end(); ++it)
+	{
+		const network::RACE nRace = GetMappedClientID(it->first);
+
+		CRoundButton2* pBtn = new CRoundButton2();
+		pBtn->Create(it->second->GetEmpiresName(), WS_CHILD|WS_VISIBLE|BS_PUSHLIKE, CRect(), parent, nRace);
+		MajorBtns.push_back(pair<CRoundButton2*, CString>(pBtn, ""));
+	}
 }

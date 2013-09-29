@@ -226,19 +226,7 @@ void CChooseRaceView::OnInitialUpdate()
 
 	// Create a push button.
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-	int nRaceCount = 0;
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-	{
-		const network::RACE nRace = resources::pClientWorker->GetMappedClientID(it->first);
-		assert(nRace != network::RACE_NONE);
-		//if (nRace == network::RACE_NONE)
-		//	continue;
-
-		CRoundButton2* pBtn = new CRoundButton2();
-		pBtn->Create(it->second->GetEmpiresName(), WS_CHILD|WS_VISIBLE|BS_PUSHLIKE, CRect(), this, nRace);
-		m_vMajorBtns.push_back(pair<CRoundButton2*, CString>(pBtn, ""));
-		nRaceCount++;
-	}
+	resources::pClientWorker->CreateButtons(m_vMajorBtns, *pmMajors, this);
 
 	// Create Edit Control (Chat)
 	m_edtChat.Create(WS_CHILD|WS_VISIBLE|ES_AUTOVSCROLL|ES_LEFT|ES_MULTILINE|ES_READONLY|WS_BORDER|WS_VSCROLL, CRect(), this, IDC_CHAT);

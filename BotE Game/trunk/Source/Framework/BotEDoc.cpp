@@ -209,6 +209,7 @@ CMajor* CBotEDoc::GetPlayersRace(void) const
 	// die Rassen-ID.
 	const CString& s = GetPlayersRaceID();
 	CMajor* pPlayersRace = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(s));
+	assert(pPlayersRace);
 
 	return pPlayersRace;
 }
@@ -675,15 +676,7 @@ void CBotEDoc::ResetIniSettings(void)
 	bool bUseMusic;
 	pIni->ReadValue("Audio", "MUSIC", bUseMusic);
 	if (bUseMusic)
-	{
-		CMajor* pPlayer = GetPlayersRace();
-		ASSERT(pPlayer);
-		const network::RACE client = m_pClientWorker->GetMappedClientID(pPlayer->GetRaceID());
-
-		float fMusicVolume;
-		pIni->ReadValue("Audio", "MUSICVOLUME", fMusicVolume);
-		pSoundManager->StartMusic(client, fMusicVolume);
-	}
+		m_pClientWorker->StartMusic(*pIni, *pSoundManager, *GetPlayersRace());
 	else
 		pSoundManager->StopMusic();
 
@@ -842,18 +835,7 @@ void CBotEDoc::PrepareData()
 			AfxMessageBox("CBotEDoc::PrepareData(): Could not initiate races!");
 			exit(1);
 		}
-		// Spieler den Majors zuweisen
-		map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-		{
-			const network::RACE client = m_pClientWorker->GetMappedClientID(it->first);
-			// wird das Imperium von einem Menschen oder vom Computer gespielt
-			assert(client != network::RACE_NONE);
-			if (client != network::RACE_NONE && server.IsPlayedByClient(client))
-				it->second->SetHumanPlayer(true);
-			else
-				it->second->SetHumanPlayer(false);
-		}
+		m_pClientWorker->SetMajorsToHumanOrAi(*m_pRaceCtrl->GetMajors());
 
 		// ALPHA6 DEBUG alle Rassen untereinander bekanntgeben
 		const CCommandLineParameters* const clp = resources::pClp;
@@ -931,20 +913,7 @@ void CBotEDoc::PrepareData()
 	}
 	// wenn geladen wird
 	else
-	{
-		// Spieler den Majors zuweisen
-		map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-		{
-			const network::RACE client = m_pClientWorker->GetMappedClientID(it->first);
-			// wird das Imperium von einem Menschen oder vom Computer gespielt
-			assert(client != network::RACE_NONE);
-			if (client != network::RACE_NONE && server.IsPlayedByClient(client))
-				it->second->SetHumanPlayer(true);
-			else
-				it->second->SetHumanPlayer(false);
-		}
-	}
+		m_pClientWorker->SetMajorsToHumanOrAi(*m_pRaceCtrl->GetMajors());
 }
 
 /// Funktion generiert die Galaxiemap inkl. der ganzen Systeme und Planeten zu Beginn eines neuen Spiels.
@@ -2500,16 +2469,9 @@ void CBotEDoc::CalcPreDataForNextRound()
 		// Bevölkerungsunterstützungskosten auf NULL setzen
 		pMajor->GetEmpire()->SetPopSupportCosts(0);
 		// verbleibende Vertragsdauer mit anderen Majorraces berechnen und gegebenenfalls Nachrichten und diplomatische Auswirkungen anwenden
-		network::RACE client = m_pClientWorker->GetMappedClientID(it->first);
 		if (pMajor->DecrementAgreementsDuration(pmMajors))
-			if (pMajor->IsHumanPlayer())
-				m_pClientWorker->SetSelectedViewForTo(client, VIEWS::EMPIRE_VIEW);
-		// wird das Imperium von einem Menschen oder vom Computer gespielt
-		assert(client != network::RACE_NONE);
-		if (client != network::RACE_NONE && server.IsPlayedByClient(client))
-			pMajor->SetHumanPlayer(true);
-		else
-			pMajor->SetHumanPlayer(false);
+			m_pClientWorker->SetToEmpireViewFor(*it->second);
+		m_pClientWorker->SetMajorToHumanOrAi(*it->second);
 	}
 
 	// Schiffe, welche nur auf einem bestimmten System baubar sind, z.B. Schiffe von Minorraces, den Besitzer wieder

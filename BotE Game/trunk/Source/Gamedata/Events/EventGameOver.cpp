@@ -27,8 +27,6 @@ void CEventGameOver::Create(void)
 	if (m_pBGImage != NULL)
 		return;
 
-	/*network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(m_sRace);*/
-
 	CIniLoader* pIni = CIniLoader::GetInstance();
 	ASSERT(pIni);
 

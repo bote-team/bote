@@ -7,9 +7,13 @@
 #include "SoundManager.h"
 
 #include <vector>
+#include <map>
 
 class CMajor;
 class CRace;
+class CIniLoader;
+class CSoundManager;
+class CRoundButton2;
 
 class CClientWorker
 {
@@ -32,14 +36,6 @@ public:
 	~CClientWorker(void);
 
 	void Serialize(CArchive& ar, bool sounds);
-
-	/// Funktion gibt die zu einer Majorrace zugehörige Netzwerkclient-ID zurück.
-	/// Maximal können sechs Clients bestehen. Jede Majorrace benötigt eine eindeutige
-	/// Client-ID.
-	/// @param sRaceID Rassen-ID einer Majorrace
-	/// @return Netzwerk-Client-ID
-	/// ALPHA5 -> noch fest!
-	static network::RACE GetMappedClientID(const CString& sRaceID);
 
 	/// Funktion gibt die zu einer Client-ID zugehörige Major-ID zurück.
 	/// Maximal können sechs Clients bestehen. Jede Majorrace benötigt eine eindeutige
@@ -67,4 +63,14 @@ public:
 
 	void CalcContact(CMajor& Major, const CRace& ContactedRace);
 	void CalcStationReady(const SHIP_TYPE::Typ typ, const CMajor& race);
+
+	void SetMajorToHumanOrAi(CMajor& major) const;
+	void SetMajorsToHumanOrAi(const std::map<CString, CMajor*>& Majors) const;
+
+	void StartMusic(const CIniLoader& ini, CSoundManager& sm, const CMajor& player) const;
+	void PlaySound(SNDMGR_VALUE type, const CString& major) const;
+	void CreateButtons(std::vector<std::pair<CRoundButton2*, CString>>& MajorBtns,
+		const std::map<CString, CMajor*>& majors, CWnd* parent) const;
+
+
 };
