@@ -1147,3 +1147,52 @@ void CSector::Colonize(CSystem& sy, const CShips& ship, CMajor& major)
 	sy.CalculateNumberOfWorkbuildings(resources::BuildingInfo);
 	sy.CalculateVariables(resources::BuildingInfo, empire->GetResearch()->GetResearchInfo(), GetPlanets(), &major, CTrade::GetMonopolOwner());
 }
+
+void CSector::SystemEventPlanetMovement(CString& message)
+{
+	const int nSize = m_Planets.size();
+	assert(nSize >= 1);
+	int nPlanet=rand()%nSize;
+	while(!(m_Planets.at(nPlanet).GetHabitable()))
+		nPlanet=rand()%nSize;
+	CPlanet& planet = m_Planets.at(nPlanet);
+	const float old_habitants = planet.GetMaxHabitant();
+	const float habitants_change = old_habitants * ((rand() % 11) / 10.0f) * ((rand() % 2 == 1) ? 1 : -1);
+	const float new_habitants = min(max(old_habitants + habitants_change, 1),100);
+	if(old_habitants != new_habitants)
+	{
+		planet.SetMaxHabitant(new_habitants);
+		CString habitants_change_string;
+		habitants_change_string.Format("%.3f", habitants_change);
+		message=CLoc::GetString("SYSTEMEVENTPLANETMOVEMENT",false,planet.GetPlanetName(), habitants_change_string);
+	}
+}
+
+void CSector::SystemEventDemographic(CString& message, CMajor& major)
+{
+	// Es sollte hier immer mindestens 1 habitabler bewohnter Planet im System sein...
+	for(int i = 0; i < 100; ++i) {
+		CPlanet& planet = m_Planets.at(rand()%m_Planets.size());
+		if(planet.GetHabitable() && planet.GetCurrentHabitant() > 1) {
+			const float old_habitants = planet.GetCurrentHabitant();
+			const float habitants_change = old_habitants * ((rand() % 11) / 10.0f) * -1;
+			const float new_habitants = max(old_habitants + habitants_change, 1);
+			if(old_habitants != new_habitants)
+			{
+				planet.SetCurrentHabitant(new_habitants);
+				CString habitants_change_string;
+				habitants_change_string.Format("%.3f", habitants_change * -1);
+				message=CLoc::GetString("SYSTEMEVENTPLANETDEMOGRAPHICLONG",false,planet.GetPlanetName(), habitants_change_string);
+
+				if (major.IsHumanPlayer())
+				{
+					resources::pClientWorker->SetToEmpireViewFor(major);
+
+					CEventRandom* EmpireEvent=new CEventRandom(major.GetRaceID(),"demographic",CLoc::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),message);
+					major.GetEmpire()->GetEvents()->Add(EmpireEvent);
+				}
+			}
+			break;
+		}
+	}
+}

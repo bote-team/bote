@@ -483,6 +483,9 @@ public:
 	/// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
 	void DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlayer);
 
+	void SystemEventPlanetMovement(CString& message);
+	void SystemEventDemographic(CString& message, CMajor& major);
+
 private:
 	/// Die Koordinate des Sektors auf der Map
 	CPoint m_KO;

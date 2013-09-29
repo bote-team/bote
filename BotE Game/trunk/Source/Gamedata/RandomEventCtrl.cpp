@@ -95,7 +95,6 @@ bool CRandomEventCtrl::SystemEvent(const CPoint &ko, CMajor* pRace)
 	ASSERT(pDoc);
 	//ko= Systemkoordinate
 	CString sMsgText;//Nachrichtentext
-	bool bSuccess=true;
 	int nEventNumber=rand()%4;
 
 	if(nEventNumber==SYSTEMEVENTMORALBOOST)//If abfrage mit allen möglichen Randomevents; evtl. hier bedingungen einfügen
@@ -109,69 +108,17 @@ bool CRandomEventCtrl::SystemEvent(const CPoint &ko, CMajor* pRace)
 		pDoc->GetSystem(ko.x, ko.y).SetMoral(-10);
 	}
 	else if(nEventNumber==SYSTEMEVENTPLANETMOVEMENT)//Planetenveränderung
-	{
-		std::vector<CPlanet>& vPlanets = pDoc->GetSector(ko.x, ko.y).GetPlanets();
-		const int nSize = vPlanets.size();
-		assert(nSize >= 1);
-		int nPlanet=rand()%nSize;
-		while(!(vPlanets.at(nPlanet).GetHabitable()))
-			nPlanet=rand()%nSize;
-		const float old_habitants = vPlanets.at(nPlanet).GetMaxHabitant();
-		const float habitants_change = old_habitants * ((rand() % 11) / 10.0f) * ((rand() % 2 == 1) ? 1 : -1);
-		const float new_habitants = min(max(old_habitants + habitants_change, 1),100);
-		bSuccess = old_habitants != new_habitants;
-		if(bSuccess)
-		{
-			vPlanets.at(nPlanet).SetMaxHabitant(new_habitants);
-			CString habitants_change_string;
-			habitants_change_string.Format("%.3f", habitants_change);
-			sMsgText=CLoc::GetString("SYSTEMEVENTPLANETMOVEMENT",false,vPlanets.at(nPlanet).GetPlanetName(), habitants_change_string);
-		}
-	}
+		pDoc->GetSector(ko.x, ko.y).SystemEventPlanetMovement(sMsgText);
 	else if(nEventNumber==SYSTEMEVENTDEMOGRAPHIC)
-	{
-		std::vector<CPlanet>& planets = pDoc->GetSector(ko.x, ko.y).GetPlanets();
-		int planet = 0;
-		// Es sollte hier immer mindestens 1 habitabler bewohnter Planet im System sein...
-		bSuccess = false;
-		for(int i = 0; i < 100; ++i) {
-			planet = rand()%planets.size();
-			if(planets.at(planet).GetHabitable() && planets.at(planet).GetCurrentHabitant() > 1) {
-				bSuccess = true;
-				break;
-			}
-		}
-		if(bSuccess) {
-			const float old_habitants = planets.at(planet).GetCurrentHabitant();
-			const float habitants_change = old_habitants * ((rand() % 11) / 10.0f) * -1;
-			const float new_habitants = max(old_habitants + habitants_change, 1);
-			bSuccess = old_habitants != new_habitants;
-			if(bSuccess)
-			{
-				planets.at(planet).SetCurrentHabitant(new_habitants);
-				CString habitants_change_string;
-				habitants_change_string.Format("%.3f", habitants_change * -1);
-				sMsgText=CLoc::GetString("SYSTEMEVENTPLANETDEMOGRAPHICLONG",false,planets.at(planet).GetPlanetName(), habitants_change_string);
-
-				if (pRace->IsHumanPlayer())
-				{
-					resources::pClientWorker->SetToEmpireViewFor(*pRace);
-
-					CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"demographic",CLoc::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),sMsgText);
-					pRace->GetEmpire()->GetEvents()->Add(EmpireEvent);
-				}
-			}
-		}
-	}
-
-	if(bSuccess && !sMsgText.IsEmpty())
+		pDoc->GetSector(ko.x, ko.y).SystemEventDemographic(sMsgText, *pRace);
+	if(!sMsgText.IsEmpty())
 	{
 		CEmpireNews message;
 		message.CreateNews(sMsgText,EMPIRE_NEWS_TYPE::SOMETHING,"",ko);//Nachricht über Randomevent erstellen
 		pRace->GetEmpire()->AddMsg(message);
 		resources::pClientWorker->SetToEmpireViewFor(*pRace);
 	}
-	return bSuccess;
+	return sMsgText.IsEmpty();
 }
 
 void CRandomEventCtrl::GlobalEventResearch(CMajor *pRace)
