@@ -133,42 +133,7 @@ bool CMinor::PerhapsExtend(CBotEDoc* pDoc)
 	if (pDoc->GetSector(m_ptKO.x, m_ptKO.y).GetOwnerOfSector() != m_sID)
 		return false;
 
-	std::vector<CPlanet>& planets = pDoc->GetSector(m_ptKO.x, m_ptKO.y).GetPlanets();
-	bool bColonized = false;
-	for (int i = 0; i < static_cast<int>(planets.size()); i++)
-	{
-		// ist der Planet noch nicht geterraformt
-		if (planets.at(i).GetColonized() == FALSE && planets.at(i).GetHabitable() == TRUE && planets.at(i).GetTerraformed() == FALSE)
-		{
-			// mit einer gewissen Wahrscheinlichkeit wird der Planet geterraformt und kolonisiert
-			if (rand()%200 >= (200 - (m_iTechnologicalProgress+1)))
-			{
-				bColonized = true;
-				planets.at(i).SetNeededTerraformPoints(planets.at(i).GetNeededTerraformPoints());
-				planets.at(i).SetTerraformed(TRUE);
-				planets.at(i).SetColonisized(TRUE);
-				planets.at(i).SetIsTerraforming(FALSE);
-				if (planets.at(i).GetMaxHabitant() < 1.0f)
-					planets.at(i).SetCurrentHabitant(planets.at(i).GetMaxHabitant());
-				else
-					planets.at(i).SetCurrentHabitant(1.0f);
-			}
-		}
-		// ist der Planet schon geterraformt
-		else if (planets.at(i).GetColonized() == FALSE && planets.at(i).GetTerraformed() == TRUE)
-		{
-			// dann wird mit einer größeren Wahrscheinlichkeit kolonisiert
-			if (rand()%200 >= (200 - 3*(m_iTechnologicalProgress+1)))
-			{
-				bColonized = true;
-				planets.at(i).SetColonisized(TRUE);
-				if (planets.at(i).GetMaxHabitant() < 1.0f)
-					planets.at(i).SetCurrentHabitant(planets.at(i).GetMaxHabitant());
-				else
-					planets.at(i).SetCurrentHabitant(1.0f);
-			}
-		}
-	}
+	bool bColonized = pDoc->GetSector(m_ptKO.x, m_ptKO.y).PerhapsMinorExtends(m_iTechnologicalProgress);
 
 	if (bColonized)
 		// dann sind im System auch weitere Einwohner hinzugekommen

@@ -28,6 +28,7 @@ class CAnomaly;
 class CRace;
 class CSystem;
 class CShips;
+class CShip;
 
 /// Liefert verschiedene Attributswerte der Sektorklasse.
 enum SectorAttributes
@@ -70,6 +71,17 @@ public:
 
 	/// Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
+
+private:
+	//iterators
+	typedef std::vector<CPlanet>::const_iterator const_iterator;
+	const_iterator begin() const;
+	const_iterator end() const;
+
+	typedef std::vector<CPlanet>::iterator iterator;
+	iterator begin();
+	iterator end();
+public:
 
 // Zugriffsfunktionen zum Lesen der Membervariablen
 	/// Diese Funktion gibt die Koordinaten des Sektors zurück.
@@ -260,9 +272,6 @@ public:
 	CAnomaly* GetAnomaly(void) const {return m_pAnomaly;}
 
 	/// Diese Funktion gibt eine Referenz auf das Feld mit den Planeten in diesem System zurück.
-	std::vector<CPlanet>& GetPlanets() {
-		return m_Planets;
-	}
 	const std::vector<CPlanet>& GetPlanets() const {
 		return m_Planets;
 	}
@@ -485,6 +494,8 @@ public:
 
 	void SystemEventPlanetMovement(CString& message);
 	void SystemEventDemographic(CString& message, CMajor& major);
+	void Terraforming(CShip& ship);
+	bool PerhapsMinorExtends(BYTE TechnologicalProgress);
 
 private:
 	/// Die Koordinate des Sektors auf der Map

@@ -1469,15 +1469,8 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 		if (current_order == SHIP_ORDER::BUILD_OUTPOST || current_order == SHIP_ORDER::BUILD_STARBASE)
 			sector.SetIsStationBuilding(TRUE, sRace);
 		// Wenn das Schiff gerade Terraform, so dies dem Planeten mitteilen
-		else if (current_order == SHIP_ORDER::TERRAFORM) {
-			const short nPlanet = GetTerraform();
-			std::vector<CPlanet>& planets = sector.GetPlanets();
-			assert(-1 <= nPlanet && nPlanet < static_cast<int>(planets.size()));
-			if (nPlanet != -1)
-				planets.at(nPlanet).SetIsTerraforming(TRUE);
-			else
-				SetTerraform(-1);
-		}
+		else if (current_order == SHIP_ORDER::TERRAFORM)
+			sector.Terraforming(*this);
 	}
 	if (major) {
 		CMajor* pMajor = dynamic_cast<CMajor*>(pRace);

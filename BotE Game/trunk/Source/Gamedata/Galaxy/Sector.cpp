@@ -306,6 +306,24 @@ void CSector::Serialize(CArchive &ar)
 	}
 }
 
+CSector::const_iterator CSector::begin() const
+{
+	return m_Planets.begin();
+}
+CSector::const_iterator CSector::end() const
+{
+	return m_Planets.end();
+}
+
+CSector::iterator CSector::begin()
+{
+	return m_Planets.begin();
+}
+CSector::iterator CSector::end()
+{
+	return m_Planets.end();
+}
+
 //////////////////////////////////////////////////////////////////
 // Zugriffsfunktionen
 //////////////////////////////////////////////////////////////////
@@ -1195,4 +1213,54 @@ void CSector::SystemEventDemographic(CString& message, CMajor& major)
 			break;
 		}
 	}
+}
+
+void CSector::Terraforming(CShip& ship)
+{
+	const short nPlanet = ship.GetTerraform();
+	assert(-1 <= nPlanet && nPlanet < static_cast<int>(m_Planets.size()));
+	if (nPlanet != -1)
+		m_Planets.at(nPlanet).SetIsTerraforming(TRUE);
+	else
+		ship.SetTerraform(-1);
+}
+
+bool CSector::PerhapsMinorExtends(BYTE TechnologicalProgress)
+{
+	bool bColonized = false;
+	for(CSector::iterator it = begin(); it != end(); ++it)
+	{
+		// ist der Planet noch nicht geterraformt
+		if (it->GetColonized() == FALSE && it->GetHabitable() == TRUE && it->GetTerraformed() == FALSE)
+		{
+			// mit einer gewissen Wahrscheinlichkeit wird der Planet geterraformt und kolonisiert
+			if (rand()%200 >= (200 - (TechnologicalProgress+1)))
+			{
+				bColonized = true;
+				it->SetNeededTerraformPoints(it->GetNeededTerraformPoints());
+				it->SetTerraformed(TRUE);
+				it->SetColonisized(TRUE);
+				it->SetIsTerraforming(FALSE);
+				if (it->GetMaxHabitant() < 1.0f)
+					it->SetCurrentHabitant(it->GetMaxHabitant());
+				else
+					it->SetCurrentHabitant(1.0f);
+			}
+		}
+		// ist der Planet schon geterraformt
+		else if (it->GetColonized() == FALSE && it->GetTerraformed() == TRUE)
+		{
+			// dann wird mit einer größeren Wahrscheinlichkeit kolonisiert
+			if (rand()%200 >= (200 - 3*(TechnologicalProgress+1)))
+			{
+				bColonized = true;
+				it->SetColonisized(TRUE);
+				if (it->GetMaxHabitant() < 1.0f)
+					it->SetCurrentHabitant(it->GetMaxHabitant());
+				else
+					it->SetCurrentHabitant(1.0f);
+			}
+		}
+	}
+	return bColonized;
 }
