@@ -216,6 +216,10 @@ Terraform
 Outpost
 [BTN_BUILD_STARBASE]
 Starbase
+[BTN_UPGRADE_OUTPOST]
+Upgrade
+[BTN_UPGRADE_STARBASE]
+Upgrade
 [BTN_ASSIGN_FLAGSHIP]
 Flagship
 [BTN_CREATE_FLEET]
@@ -439,6 +443,8 @@ ome_
 // news reports
 [STATION_BUILDING]
  construction of § is §% completed
+[STATION_UPGRADING]
+ upgrade of § is §% completed
 [NO_DIPLOMATIC_NEWS]
 No diplomatic news
 [BUILDING_TURN_OFF]
@@ -483,10 +489,18 @@ In the § system terraforming points will supposedly be wasted
 A new outpost has been constructed
 [STARBASE_FINISHED]
 A new starbase has been constructed
+[OUTPOST_UPGRADE_FINISHED]
+An outpost upgrade has been completed
+[STARBASE_UPGRADE_FINISHED]
+A starbase upgrade has been completed
 [OUTPOST_CONSTRUCTION]
 Outpost construction
 [STARBASE_CONSTRUCTION]
 Starbase construction
+[OUTPOST_UPGRADE]
+Outpost upgrade
+[STARBASE_UPGRADE]
+Starbase upgrade
 [ASSIGN_FLAGSHIP_MESSAGE]
 The § (§) has been assigned as flagship
 [GET_CONTACT_TO_MINOR]
@@ -1229,6 +1243,10 @@ Terraform
 Build outpost
 [BUILD_STARBASE_ORDER]
 Build starbase
+[UPGRADE_OUTPOST_ORDER]
+Upgrade
+[UPGRADE_STARBASE_ORDER]
+Upgrade
 [ASSIGN_FLAGSHIP_ORDER]
 Assign flagship
 [CREATE_FLEET_ORDER]

@@ -271,7 +271,7 @@ public:
 			bool bDeactivatedShipScanner, bool bBetterScanner, bool fleetship);
 
 	// @return true in case outpost/starbase was finished by this ship
-	bool BuildStation(SHIP_TYPE::Typ type, CSector& sector, CMajor& major,  short id);
+	bool BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major,  short id);
 
 	void Scrap(CMajor& major, const CSector& se, CSystem& sy);
 
