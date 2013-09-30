@@ -107,7 +107,7 @@ void COldRoundDataCalculator::ExecuteRebellion(CSector& sector, CSystem& system,
 	system.SetOwnerOfSystem("");
 }
 
-void COldRoundDataCalculator::ExecuteFamine(CSector& sector, CSystem& system, CMajor* pMajor) const
+void COldRoundDataCalculator::ExecuteFamine(CSector& sector, CSystem& system, CMajor* pMajor)
 {
 	const CPoint& co = sector.GetKO();
 	CEmpire* pEmpire = pMajor->GetEmpire();
@@ -125,7 +125,7 @@ void COldRoundDataCalculator::ExecuteFamine(CSector& sector, CSystem& system, CM
 }
 
 void COldRoundDataCalculator::SystemMessage(const CSector& sector, CMajor* pMajor, const CString& key,
-		EMPIRE_NEWS_TYPE::Typ message_typ, BYTE byFlag) const {
+		EMPIRE_NEWS_TYPE::Typ message_typ, BYTE byFlag) {
 	const CString& news = CLoc::GetString(key, FALSE, sector.GetName());
 	CEmpireNews message;
 	message.CreateNews(news, message_typ, "", sector.GetKO(), false, byFlag);
@@ -133,7 +133,7 @@ void COldRoundDataCalculator::SystemMessage(const CSector& sector, CMajor* pMajo
 	resources::pClientWorker->SetToEmpireViewFor(*pMajor);
 }
 
-void COldRoundDataCalculator::HandlePopulationEffects(const CSector& sector, CSystem& system, CMajor* pMajor) const {
+void COldRoundDataCalculator::HandlePopulationEffects(const CSector& sector, CSystem& system, CMajor* pMajor) {
 	const float fCurrentHabitants = sector.GetCurrentHabitants();
 	CEmpire* pEmpire = pMajor->GetEmpire();
 	pEmpire->AddPopSupportCosts((UINT)fCurrentHabitants * POPSUPPORT_MULTI);

@@ -492,7 +492,7 @@ public:
 	//only for outposts/starbases
 	bool ShouldDrawOutpost(const CMajor& our_race, const CString& their_race_id) const;
 	/// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
-	void DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlayer);
+	void DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlayer) const;
 
 	void SystemEventPlanetMovement(CString& message);
 	void SystemEventDemographic(CString& message, CMajor& major);

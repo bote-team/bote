@@ -64,11 +64,11 @@ public:
 	void CalcContact(CMajor& Major, const CRace& ContactedRace);
 	void CalcStationReady(const SHIP_TYPE::Typ typ, const CMajor& race);
 
-	void SetMajorToHumanOrAi(CMajor& major) const;
-	void SetMajorsToHumanOrAi(const std::map<CString, CMajor*>& Majors) const;
+	static void SetMajorToHumanOrAi(CMajor& major);
+	static void SetMajorsToHumanOrAi(const std::map<CString, CMajor*>& Majors);
 
-	void StartMusic(const CIniLoader& ini, CSoundManager& sm, const CMajor& player) const;
-	void PlaySound(SNDMGR_VALUE type, const CString& major) const;
+	static void StartMusic(const CIniLoader& ini, CSoundManager& sm, const CMajor& player);
+	static void PlaySound(SNDMGR_VALUE type, const CString& major);
 	void CreateButtons(std::vector<std::pair<CRoundButton2*, CString>>& MajorBtns,
 		const std::map<CString, CMajor*>& majors, CWnd* parent) const;
 

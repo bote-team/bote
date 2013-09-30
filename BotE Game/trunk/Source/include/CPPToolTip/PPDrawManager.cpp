@@ -1449,7 +1449,7 @@ void CPPDrawManager::DrawRectangle(HDC hDC, int left, int top, int right, int bo
 void CPPDrawManager::DrawLine(HDC hDC,
 							  int xStart, int yStart, int xEnd, int yEnd,
 							  COLORREF color, int nStyle /* = PEN_SOLID */,
-							  int nSize /* = 1 */) const
+							  int nSize /* = 1 */)
 {
 	if ((PEN_NULL == nStyle) || (nSize < 1))
 		return;

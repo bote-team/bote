@@ -1067,6 +1067,97 @@ bool CSystem::DestroyBuildings(void)
 	return destroy;
 }
 
+namespace //helpers for CalculateBuildableBuildings()
+{
+	BOOLEAN CheckTech(CBuildingInfo* building, CResearch* research)
+	{
+		// nötige Forschungsstufen checken
+		if (research->GetBioTech() <  building->GetBioTech())
+			return 0;
+		if (research->GetEnergyTech() < building->GetEnergyTech())
+			return 0;
+		if (research->GetCompTech() < building->GetCompTech())
+			return 0;
+		if (research->GetPropulsionTech() < building->GetPropulsionTech())
+			return 0;
+		if (research->GetConstructionTech() < building->GetConstructionTech())
+			return 0;
+		if (research->GetWeaponTech() < building->GetWeaponTech())
+			return 0;
+		return 1;
+	}
+
+	BOOLEAN CheckPlanet(CBuildingInfo* building, CSector* sector)
+	{
+		BOOLEAN Ok = FALSE;
+		BOOLEAN deritium = FALSE;
+		int number = sector->GetNumberOfPlanets();
+		CPlanet planet;
+		for (int i = 0; i < number && Ok == FALSE; i++)
+		{
+			planet = *sector->GetPlanet(i);
+			if (planet.GetColonized())
+			{
+				//{M,O,L,P,H,Q,K,G,R,F,C,N,A,B,E,Y,I,J,S,T}
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_A) == 1 && planet.GetClass() == 'A' && Ok == FALSE)	// nach A suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_B) == 1 && planet.GetClass() == 'B' && Ok == FALSE)	// nach B suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_C) == 1 && planet.GetClass() == 'C' && Ok == FALSE)	// nach C suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_E) == 1 && planet.GetClass() == 'E' && Ok == FALSE)	// nach E suchen
+					Ok = TRUE;	// D fehlt wieder, weil ja Asteroid
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_F) == 1 && planet.GetClass() == 'F' && Ok == FALSE)	// nach F suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_G) == 1 && planet.GetClass() == 'G' && Ok == FALSE)	// nach G suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_H) == 1 && planet.GetClass() == 'H' && Ok == FALSE)	// nach H suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_I) == 1 && planet.GetClass() == 'I' && Ok == FALSE)	// nach I suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_J) == 1 && planet.GetClass() == 'J' && Ok == FALSE)	// nach J suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_K) == 1 && planet.GetClass() == 'K' && Ok == FALSE)	// nach K suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_L) == 1 && planet.GetClass() == 'L' && Ok == FALSE)	// nach L suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_M) == 1 && planet.GetClass() == 'M' && Ok == FALSE)	// nach M suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_N) == 1 && planet.GetClass() == 'N' && Ok == FALSE)	// nach N suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_O) == 1 && planet.GetClass() == 'O' && Ok == FALSE)	// nach O suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_P) == 1 && planet.GetClass() == 'P' && Ok == FALSE)	// nach P suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_Q) == 1 && planet.GetClass() == 'Q' && Ok == FALSE)	// nach Q suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_R) == 1 && planet.GetClass() == 'R' && Ok == FALSE)	// nach R suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_S) == 1 && planet.GetClass() == 'S' && Ok == FALSE)	// nach S suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_T) == 1 && planet.GetClass() == 'T' && Ok == FALSE)	// nach T suchen
+					Ok = TRUE;
+				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_Y) == 1 && planet.GetClass() == 'Y' && Ok == FALSE)	// nach Y suchen
+					Ok = TRUE;
+			}
+		}
+
+		// Wenn das Gebäude Deritium produziert, so muss auf einem kolonisierten Planeten auch Deritium vorhanden sein
+		if (building->GetDeritiumProd() > 0)
+		{
+			for (int i = 0; i < sector->GetNumberOfPlanets(); i++)
+				if (sector->GetPlanet(i)->GetColonized())
+					deritium |= sector->GetPlanet(i)->GetBoni()[RESOURCES::DERITIUM];
+			if (!deritium || !Ok)
+				return 0;
+		}
+		if (Ok == FALSE)	// Haben also kein Planet im System gefunden, auf dem wir das Gebäude bauen könnten
+			return 0;
+		else
+			return 1;
+	}
+}
+
 // Funktion berechnet die baubaren Gebäude und Gebäudeupdates in dem System.
 void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* buildingInfo, CMajor* pMajor, CGlobalBuildings* globals)
 {
@@ -2530,93 +2621,6 @@ void CSystem::ResetSystem()
 //////////////////////////////////////////////////////////////////////
 // Hilfsfunktionen
 //////////////////////////////////////////////////////////////////////
-BOOLEAN CSystem::CheckTech(CBuildingInfo* building, CResearch* research)
-{
-	// nötige Forschungsstufen checken
-	if (research->GetBioTech() <  building->GetBioTech())
-		return 0;
-	if (research->GetEnergyTech() < building->GetEnergyTech())
-		return 0;
-	if (research->GetCompTech() < building->GetCompTech())
-		return 0;
-	if (research->GetPropulsionTech() < building->GetPropulsionTech())
-		return 0;
-	if (research->GetConstructionTech() < building->GetConstructionTech())
-		return 0;
-	if (research->GetWeaponTech() < building->GetWeaponTech())
-		return 0;
-	return 1;
-}
-
-BOOLEAN CSystem::CheckPlanet(CBuildingInfo* building, CSector* sector)
-{
-	BOOLEAN Ok = FALSE;
-	BOOLEAN deritium = FALSE;
-	int number = sector->GetNumberOfPlanets();
-	CPlanet planet;
-	for (int i = 0; i < number && Ok == FALSE; i++)
-	{
-		planet = *sector->GetPlanet(i);
-		if (planet.GetColonized())
-		{
-			//{M,O,L,P,H,Q,K,G,R,F,C,N,A,B,E,Y,I,J,S,T}
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_A) == 1 && planet.GetClass() == 'A' && Ok == FALSE)	// nach A suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_B) == 1 && planet.GetClass() == 'B' && Ok == FALSE)	// nach B suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_C) == 1 && planet.GetClass() == 'C' && Ok == FALSE)	// nach C suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_E) == 1 && planet.GetClass() == 'E' && Ok == FALSE)	// nach E suchen
-				Ok = TRUE;	// D fehlt wieder, weil ja Asteroid
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_F) == 1 && planet.GetClass() == 'F' && Ok == FALSE)	// nach F suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_G) == 1 && planet.GetClass() == 'G' && Ok == FALSE)	// nach G suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_H) == 1 && planet.GetClass() == 'H' && Ok == FALSE)	// nach H suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_I) == 1 && planet.GetClass() == 'I' && Ok == FALSE)	// nach I suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_J) == 1 && planet.GetClass() == 'J' && Ok == FALSE)	// nach J suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_K) == 1 && planet.GetClass() == 'K' && Ok == FALSE)	// nach K suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_L) == 1 && planet.GetClass() == 'L' && Ok == FALSE)	// nach L suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_M) == 1 && planet.GetClass() == 'M' && Ok == FALSE)	// nach M suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_N) == 1 && planet.GetClass() == 'N' && Ok == FALSE)	// nach N suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_O) == 1 && planet.GetClass() == 'O' && Ok == FALSE)	// nach O suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_P) == 1 && planet.GetClass() == 'P' && Ok == FALSE)	// nach P suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_Q) == 1 && planet.GetClass() == 'Q' && Ok == FALSE)	// nach Q suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_R) == 1 && planet.GetClass() == 'R' && Ok == FALSE)	// nach R suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_S) == 1 && planet.GetClass() == 'S' && Ok == FALSE)	// nach S suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_T) == 1 && planet.GetClass() == 'T' && Ok == FALSE)	// nach T suchen
-				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_Y) == 1 && planet.GetClass() == 'Y' && Ok == FALSE)	// nach Y suchen
-				Ok = TRUE;
-		}
-	}
-
-	// Wenn das Gebäude Deritium produziert, so muss auf einem kolonisierten Planeten auch Deritium vorhanden sein
-	if (building->GetDeritiumProd() > 0)
-	{
-		for (int i = 0; i < sector->GetNumberOfPlanets(); i++)
-			if (sector->GetPlanet(i)->GetColonized())
-				deritium |= sector->GetPlanet(i)->GetBoni()[RESOURCES::DERITIUM];
-		if (!deritium || !Ok)
-			return 0;
-	}
-	if (Ok == FALSE)	// Haben also kein Planet im System gefunden, auf dem wir das Gebäude bauen könnten
-		return 0;
-	else
-		return 1;
-}
 
 BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector, CGlobalBuildings* globals, CMajor* pMajor)
 {

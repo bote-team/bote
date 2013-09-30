@@ -119,13 +119,13 @@ public:
 	UINT GetDeritiumStore() const {return m_Store.Deritium;}
 
 	// Funktionen geben die jeweiligen maximalen Lagerinhalte zurück
-	long GetFoodStoreMax() const {return MAX_FOOD_STORE;}
-	UINT GetTitanStoreMax() const {return MAX_RES_STORE;}
-	UINT GetDeuteriumStoreMax() const {return MAX_RES_STORE;}
-	UINT GetDuraniumStoreMax() const {return MAX_RES_STORE;}
-	UINT GetCrystalStoreMax() const {return MAX_RES_STORE;}
-	UINT GetIridiumStoreMax() const {return MAX_RES_STORE;}
-	UINT GetDeritiumStoreMax() const {return MAX_RES_STORE;}
+	static long GetFoodStoreMax() {return MAX_FOOD_STORE;}
+	static UINT GetTitanStoreMax() {return MAX_RES_STORE;}
+	static UINT GetDeuteriumStoreMax() {return MAX_RES_STORE;}
+	static UINT GetDuraniumStoreMax() {return MAX_RES_STORE;}
+	static UINT GetCrystalStoreMax() {return MAX_RES_STORE;}
+	static UINT GetIridiumStoreMax() {return MAX_RES_STORE;}
+	static UINT GetDeritiumStoreMax() {return MAX_RES_STORE;}
 
 	// Funktion gibt den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
 	UINT GetResourceStore(USHORT res) const;
@@ -409,8 +409,6 @@ private:
 	BOOLEAN m_bAutoBuild;
 
 	// private Hilfsfunktionen (mal schauen ob wir die direkt in die cpp-Datei schreiben können)
-	BOOLEAN CheckTech(CBuildingInfo* building, CResearch* research);
-	BOOLEAN CheckPlanet(CBuildingInfo* building, CSector* sector);
 	BOOLEAN CheckGeneralConditions(CBuildingInfo* building, CSector* sector, CGlobalBuildings* globals, CMajor* pMajor);
 	BOOLEAN CheckFollower(BuildingInfoArray* buildings, USHORT ID, BOOLEAN flag = 0, BOOLEAN equivalence = 0);
 

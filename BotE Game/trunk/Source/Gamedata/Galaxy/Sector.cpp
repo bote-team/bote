@@ -841,7 +841,7 @@ bool CSector::ShouldDrawOutpost(const CMajor& our_race, const CString& their_rac
 }
 
 /// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
-void CSector::DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlayer)
+void CSector::DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlayer) const
 {
 	ASSERT(g);
 	ASSERT(pDoc);

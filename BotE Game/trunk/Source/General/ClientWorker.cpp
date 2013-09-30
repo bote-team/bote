@@ -228,7 +228,7 @@ void CClientWorker::CalcStationReady(const SHIP_TYPE::Typ typ, const CMajor& rac
 	SetToEmpireViewFor(race);
 }
 
-void CClientWorker::SetMajorToHumanOrAi(CMajor& major) const
+void CClientWorker::SetMajorToHumanOrAi(CMajor& major)
 {
 	const network::RACE client = GetMappedClientID(major.GetRaceID());
 	// wird das Imperium von einem Menschen oder vom Computer gespielt
@@ -236,14 +236,14 @@ void CClientWorker::SetMajorToHumanOrAi(CMajor& major) const
 	major.SetHumanPlayer(server.IsPlayedByClient(client) ? true : false);
 }
 
-void CClientWorker::SetMajorsToHumanOrAi(const std::map<CString, CMajor*>& Majors) const
+void CClientWorker::SetMajorsToHumanOrAi(const std::map<CString, CMajor*>& Majors)
 {
 	// Spieler den Majors zuweisen
 	for (std::map<CString, CMajor*>::const_iterator it = Majors.begin(); it != Majors.end(); ++it)
 		SetMajorToHumanOrAi(*it->second);
 }
 
-void CClientWorker::StartMusic(const CIniLoader& ini, CSoundManager& sm, const CMajor& player) const
+void CClientWorker::StartMusic(const CIniLoader& ini, CSoundManager& sm, const CMajor& player)
 {
 	const network::RACE client = GetMappedClientID(player.GetRaceID());
 
@@ -252,7 +252,7 @@ void CClientWorker::StartMusic(const CIniLoader& ini, CSoundManager& sm, const C
 	sm.StartMusic(client, fMusicVolume);
 }
 
-void CClientWorker::PlaySound(SNDMGR_VALUE type, const CString& major) const
+void CClientWorker::PlaySound(SNDMGR_VALUE type, const CString& major)
 {
 	const network::RACE client = GetMappedClientID(major);
 	CSoundManager::GetInstance()->PlaySound(type, SNDMGR_PRIO_HIGH, 1.0f, client);
