@@ -270,7 +270,7 @@ public:
 	BYTE GetNumberOfPlanets(void) const {return m_Planets.size();}
 
 	/// Diese Funktion gibt einen Zeiger auf einen Planeten in diesem System zurück.
-	CPlanet* GetPlanet(BYTE nPlanetIndex) {return &m_Planets[nPlanetIndex];}
+	const CPlanet* GetPlanet(BYTE nPlanetIndex) const {return &m_Planets[nPlanetIndex];}
 
 	/// Diese Funktion gibt einen Zeiger auf eine eventuell vorhandene Anomalie zurück (<code>NULL</code> wenn kein vorhanden)
 	CAnomaly* GetAnomaly(void) const {return m_pAnomaly;}
@@ -501,6 +501,8 @@ public:
 	void Terraforming(CShip& ship);
 	bool PerhapsMinorExtends(BYTE TechnologicalProgress);
 	void CreateDeritiumForSpaceflightMinor();
+	bool Terraform(const CShips& ship);
+
 
 private:
 	/// Die Koordinate des Sektors auf der Map

@@ -23,7 +23,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSmallInfoView
-CPlanet* CSmallInfoView::m_pPlanet = NULL;
+const CPlanet* CSmallInfoView::m_pPlanet = NULL;
 CSmallInfoView::DISPLAY_MODE CSmallInfoView::m_DisplayMode = CSmallInfoView::DISPLAY_MODE_ICON;
 
 IMPLEMENT_DYNCREATE(CSmallInfoView, CView)

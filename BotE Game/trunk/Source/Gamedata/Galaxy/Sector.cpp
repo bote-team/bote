@@ -1294,3 +1294,8 @@ void CSector::CreateDeritiumForSpaceflightMinor()
 		}
 	}
 }
+
+bool CSector::Terraform(const CShips& ship)
+{
+	return m_Planets.at(ship.GetTerraform()).SetNeededTerraformPoints(ship.GetColonizePoints()) ? true : false;
+}

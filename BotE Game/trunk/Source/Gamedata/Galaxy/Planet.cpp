@@ -355,7 +355,7 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 	return nZone;
 }
 
-void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPool)
+void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPool) const
 {
 	Gdiplus::PixelOffsetMode oldPixelOffsetMode = g.GetPixelOffsetMode();
 

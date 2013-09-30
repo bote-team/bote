@@ -92,7 +92,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	{
 		for (int i = 0; i < pDoc->GetSector(KO.x, KO.y).GetNumberOfPlanets(); i++)
 		{
-			CPlanet* planet = pDoc->GetSector(KO.x, KO.y).GetPlanet(i);
+			const CPlanet* planet = pDoc->GetSector(KO.x, KO.y).GetPlanet(i);
 			maxHabitants += planet->GetMaxHabitant();
 
 			CRect rect;
@@ -419,7 +419,7 @@ void CPlanetBottomView::OnMouseMove(UINT nFlags, CPoint point)
 	for (UINT i = 0; i < m_vPlanetRects.size(); i++)
 		if (m_vPlanetRects[i].PtInRect(point))
 		{
-			CPlanet* pPlanet = pDoc->GetSector(KO.x, KO.y).GetPlanet(i);
+			const CPlanet* pPlanet = pDoc->GetSector(KO.x, KO.y).GetPlanet(i);
 			if (pPlanet != CSmallInfoView::GetPlanet())
 			{
 				CSmallInfoView::SetPlanet(pPlanet);
@@ -552,7 +552,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 				short nBonus = 0;
 				for (int i = 0; i < pDoc->GetSector(KO.x, KO.y).GetNumberOfPlanets(); i++)
 				{
-					CPlanet* pPlanet = pDoc->GetSector(KO.x, KO.y).GetPlanet(i);
+					const CPlanet* pPlanet = pDoc->GetSector(KO.x, KO.y).GetPlanet(i);
 					ASSERT(pPlanet);
 					if (pPlanet->GetBoni()[j])
 						if (j != RESOURCES::DERITIUM)
@@ -590,7 +590,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 		// wurde die Maus über einen der Planeten gehalten oder über die Planetenboni?
 		for (UINT i = 0; i < m_vPlanetRects.size(); i++)
 		{
-			CPlanet* pPlanet = pDoc->GetSector(KO.x, KO.y).GetPlanet(i);
+			const CPlanet* pPlanet = pDoc->GetSector(KO.x, KO.y).GetPlanet(i);
 			ASSERT(pPlanet);
 
 			// wurde auf den Planeten gezeigt

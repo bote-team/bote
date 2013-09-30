@@ -39,7 +39,7 @@ protected:
 
 // Attribute
 	CSize m_TotalSize;					///< Größe der View in logischen Koordinaten
-	static CPlanet* m_pPlanet;			///< Planet über den Informationen bzw. Statistiken angezeigt werden sollen
+	static const CPlanet* m_pPlanet;			///< Planet über den Informationen bzw. Statistiken angezeigt werden sollen
 	int	m_nTimer;						///< Variable welche per Timerbefehl hochgezählt wird
 	bool m_bAnimatedIcon;				///< soll das Rassensymbol animiert werden
 	static CSmallInfoView::DISPLAY_MODE m_DisplayMode;
@@ -54,7 +54,7 @@ public:
 
 	/// Funktion legt den anzuzeigenden Planeten fest.
 	/// @param planet Zeiger auf den anzuzeigenden Planeten
-	static void SetPlanet(CPlanet* planet) { m_pPlanet = planet; }
+	static void SetPlanet(const CPlanet* planet) { m_pPlanet = planet; }
 
 	/// Funktion liefert einen Zeiger auf den aktuell angezeigten Planeten.
 	/// @return Zeiger auf Planeten

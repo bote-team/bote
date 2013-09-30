@@ -3752,7 +3752,7 @@ void CBotEDoc::CalcShipOrders()
 
 			if (pSector->GetPlanet(y->second->GetTerraform())->GetTerraformed() == FALSE)
 			{
-				if (pSector->GetPlanet(y->second->GetTerraform())->SetNeededTerraformPoints(y->second->GetColonizePoints()))
+				if(pSector->Terraform(*y->second))
 				{
 					// Hier wurde ein Planet erfolgreich geterraformt
 					y->second->UnsetCurrentOrder();
@@ -3792,7 +3792,7 @@ void CBotEDoc::CalcShipOrders()
 					{
 						const unsigned colonize_points = x->second->GetColonizePoints();
 						colonize_points_sum += colonize_points;
-						if (pSector->GetPlanet(x->second->GetTerraform())->SetNeededTerraformPoints(colonize_points))
+						if(pSector->Terraform(*x->second))
 						{
 							y->second->UnsetCurrentOrder();
 							// Nachricht generieren, dass Terraforming abgeschlossen wurde
