@@ -60,6 +60,22 @@ CAnomaly::CAnomaly(void) :
 	rand()%2 == 1 ? m_bFlipHorz = true : m_bFlipHorz = false;
 }
 
+CAnomaly::CAnomaly(const CAnomaly& other) :
+	m_sImageFile(other.m_sImageFile),
+	m_bFlipHorz(other.m_bFlipHorz),
+	m_byType(other.m_byType)
+{
+}
+
+CAnomaly& CAnomaly::operator=(const CAnomaly& other)
+{
+	m_sImageFile = other.m_sImageFile;
+	m_bFlipHorz = other.m_bFlipHorz;
+	m_byType = other.m_byType;
+
+	return *this;
+}
+
 CAnomaly::~CAnomaly(void)
 {
 }

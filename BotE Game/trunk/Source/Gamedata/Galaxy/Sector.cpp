@@ -55,29 +55,36 @@ CSector::CSector(const CSector& other) :
 	m_Planets(other.m_Planets)
 {
 	m_pAnomaly=NULL;
+	if(other.GetAnomaly())
+		m_pAnomaly = new CAnomaly(*other.m_pAnomaly);
 };
 
 CSector& CSector::operator=(const CSector& other){
-	m_KO = other.m_KO;
-	m_strSectorName = other.m_strSectorName;
-	m_Attributes = other.m_Attributes;
-	m_sOwnerOfSector = other.m_sOwnerOfSector;
-	m_sColonyOwner = other.m_sColonyOwner;
-	m_Status = other.m_Status;
-	m_bShipPort = other.m_bShipPort;
-	m_Outpost = other.m_Outpost;
-	m_Starbase = other.m_Starbase;
-	m_bWhoIsOwnerOfShip = other.m_bWhoIsOwnerOfShip;
-	m_mNumbersOfShips = other.m_mNumbersOfShips;
-	m_IsStationBuild = other.m_IsStationBuild;
-	m_iScanPower = other.m_iScanPower;
-	m_iNeededScanPower = other.m_iNeededScanPower;
-	m_iNeededStationPoints = other.m_iNeededStationPoints;
-	m_iStartStationPoints = other.m_iStartStationPoints;
-	m_bySunColor = other.m_bySunColor;
-	m_byOwnerPoints = other.m_byOwnerPoints;
-	m_Planets = other.m_Planets;
-	m_pAnomaly = other.m_pAnomaly;
+	if(this != &other )
+	{
+		m_KO = other.m_KO;
+		m_strSectorName = other.m_strSectorName;
+		m_Attributes = other.m_Attributes;
+		m_sOwnerOfSector = other.m_sOwnerOfSector;
+		m_sColonyOwner = other.m_sColonyOwner;
+		m_Status = other.m_Status;
+		m_bShipPort = other.m_bShipPort;
+		m_Outpost = other.m_Outpost;
+		m_Starbase = other.m_Starbase;
+		m_bWhoIsOwnerOfShip = other.m_bWhoIsOwnerOfShip;
+		m_mNumbersOfShips = other.m_mNumbersOfShips;
+		m_IsStationBuild = other.m_IsStationBuild;
+		m_iScanPower = other.m_iScanPower;
+		m_iNeededScanPower = other.m_iNeededScanPower;
+		m_iNeededStationPoints = other.m_iNeededStationPoints;
+		m_iStartStationPoints = other.m_iStartStationPoints;
+		m_bySunColor = other.m_bySunColor;
+		m_byOwnerPoints = other.m_byOwnerPoints;
+		m_Planets = other.m_Planets;
+		m_pAnomaly=NULL;
+		if(other.GetAnomaly())
+			m_pAnomaly = new CAnomaly(*other.m_pAnomaly);
+	}
 
 	return *this;
 };

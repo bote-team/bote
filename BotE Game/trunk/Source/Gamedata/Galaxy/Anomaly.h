@@ -72,6 +72,8 @@ public:
 
 	/// Standardkonstruktor
 	CAnomaly(void);
+	CAnomaly(const CAnomaly& other);
+	CAnomaly& operator=(const CAnomaly& other);
 
 	/// Standarddestruktor
 	virtual ~CAnomaly(void);
