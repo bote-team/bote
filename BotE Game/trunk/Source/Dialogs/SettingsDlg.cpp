@@ -21,18 +21,18 @@ CSettingsDlg::CSettingsDlg(bool bDisableNonWorking/* = false*/, CWnd* pParent /*
 	, m_bShowTraderoutes(FALSE)
 	, m_bAnimatedIcon(FALSE)
 	, m_bShowMiniMap(TRUE)
-	, m_bShowScrollBars(FALSE)
 	, m_bShowRandomEventPictures(TRUE)
+	, m_bShowScrollBars(FALSE)
 	, m_bInvertMouse(FALSE)
 	, m_bHideMenu(FALSE)
+	, m_bAlienEntities(TRUE)
+	, m_bRandomEvents(TRUE)
 	, m_bVCElimination(FALSE)
 	, m_bVCDiplomacy(FALSE)
 	, m_bVCConquest(FALSE)
 	, m_bVCResearch(FALSE)
 	, m_bVCCombat(FALSE)
 	, m_bVCSabotage(FALSE)
-	, m_bAlienEntities(TRUE)
-	, m_bRandomEvents(TRUE)
 {
 }
 

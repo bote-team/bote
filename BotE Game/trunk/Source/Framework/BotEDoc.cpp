@@ -68,18 +68,18 @@ END_MESSAGE_MAP()
 #pragma warning(push)
 #pragma warning (disable:4351)
 CBotEDoc::CBotEDoc() :
-	m_ptKO(0, 0),
-	m_ptCurrentCombatSector(-1, -1),
-	m_bCombatCalc(false),
-	m_bDataReceived(false),
-	m_bDontExit(false),
-	m_bGameLoaded(false),
-	m_bNewGame(true),
-	m_bRoundEndPressed(false),
+	m_iRound(1),
 	m_fDifficultyLevel(1.0f),
 	m_fStardate(121000.0f),
-	m_iRound(1),
-	m_nCombatOrder(COMBAT_ORDER::NONE)
+	m_ptKO(0, 0),
+	m_bDataReceived(false),
+	m_bRoundEndPressed(false),
+	m_bDontExit(false),
+	m_bGameLoaded(false),
+	m_ptCurrentCombatSector(-1, -1),
+	m_bCombatCalc(false),
+	m_nCombatOrder(COMBAT_ORDER::NONE),
+	m_bNewGame(true)
 {
 	resources::pDoc = this;
 

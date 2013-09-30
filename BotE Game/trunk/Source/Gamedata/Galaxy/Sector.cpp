@@ -26,9 +26,9 @@ static char THIS_FILE[]=__FILE__;
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CSector::CSector(void) :
+	m_KO(-1, -1),
 	m_Attributes(0),
-	m_bySunColor(0),
-	m_KO(-1, -1)
+	m_bySunColor(0)
 {
 	m_pAnomaly = NULL;
 }
