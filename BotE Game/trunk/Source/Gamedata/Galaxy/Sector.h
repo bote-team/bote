@@ -73,12 +73,11 @@ public:
 	/// Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
 
-private:
 	//iterators
 	typedef std::vector<CPlanet>::const_iterator const_iterator;
 	const_iterator begin() const;
 	const_iterator end() const;
-
+private:
 	typedef std::vector<CPlanet>::iterator iterator;
 	iterator begin();
 	iterator end();
@@ -501,6 +500,7 @@ public:
 	void SystemEventDemographic(CString& message, CMajor& major);
 	void Terraforming(CShip& ship);
 	bool PerhapsMinorExtends(BYTE TechnologicalProgress);
+	void CreateDeritiumForSpaceflightMinor();
 
 private:
 	/// Die Koordinate des Sektors auf der Map

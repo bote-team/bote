@@ -237,9 +237,10 @@ void CSystemAI::CalcPriorities()
 		return;
 
 	double dMaxHab = 0.0;
-	for (int i = 0; i < static_cast<int>(m_pDoc->GetSector(ko.x, ko.y).GetPlanets().size()); i++)
-		if (m_pDoc->GetSector(ko.x, ko.y).GetPlanet(i)->GetCurrentHabitant() > 0.0)
-			dMaxHab += m_pDoc->GetSector(ko.x, ko.y).GetPlanet(i)->GetMaxHabitant();
+	const CSector& sector = m_pDoc->GetSector(ko.x, ko.y);
+	for(CSector::const_iterator it = sector.begin(); it != sector.end(); ++it)
+		if (it->GetCurrentHabitant() > 0.0)
+			dMaxHab += it->GetMaxHabitant();
 	// wenn die Maximale Anzahl an Einwohnern 1.25 mal größer als die aktuelle Anzahl der Einwoher ist, dann
 	// werden Gebäudebauprioritäten verdoppelt
 	dMaxHab	= max(1.0, dMaxHab);
@@ -879,10 +880,11 @@ void CSystemAI::ScrapBuildings()
 		// Nur wenn 80% der maximal Bevölkerung schon im System leben
 		float currentHab = 0.0f;
 		float maxHab = 0.0f;
-		for (int i = 0; i < static_cast<int>(m_pDoc->GetSector(ko.x, ko.y).GetPlanets().size()); i++)
+		const CSector& sector = m_pDoc->GetSector(ko.x, ko.y);
+		for(CSector::const_iterator it = sector.begin(); it != sector.end(); ++it)
 		{
-			currentHab += m_pDoc->GetSector(ko.x, ko.y).GetPlanets().at(i).GetCurrentHabitant();
-			maxHab += m_pDoc->GetSector(ko.x, ko.y).GetPlanets().at(i).GetMaxHabitant();
+			currentHab += it->GetCurrentHabitant();
+			maxHab += it->GetMaxHabitant();
 		}
 		if (currentHab > (maxHab * 0.8))
 		{
@@ -1052,16 +1054,16 @@ void CSystemAI::CalcProd()
 			tmpEnergyBoni		+= buildingInfo->GetEnergyBoni();
 		}
 	}
+	const CSector& sector = m_pDoc->GetSector(m_KO.x, m_KO.y);
 	// Jetzt werden noch eventuelle Boni durch die Planetenklassen dazugerechnet
-	for (int i = 0; i < static_cast<int>(m_pDoc->GetSector(m_KO.x, m_KO.y).GetPlanets().size()); i++)
+	for(CSector::const_iterator it = sector.begin(); it != sector.end(); ++it)
 	{
-		CSector* pSector = &m_pDoc->GetSector(m_KO.x, m_KO.y);
-		if (pSector->GetPlanets().at(i).GetColonized() == TRUE && pSector->GetPlanets().at(i).GetCurrentHabitant() > 0.0f)
+		if (it->GetColonized() == TRUE && it->GetCurrentHabitant() > 0.0f)
 		{
-			if (pSector->GetPlanets().at(i).GetBoni()[6] == TRUE)	// food
-				tmpFoodBoni		+= (pSector->GetPlanets().at(i).GetSize()+1) * 25;
-			if (pSector->GetPlanets().at(i).GetBoni()[7] == TRUE)	// energy
-				tmpEnergyBoni	+= (pSector->GetPlanets().at(i).GetSize()+1) * 25;
+			if (it->GetBoni()[6] == TRUE)	// food
+				tmpFoodBoni		+= (it->GetSize()+1) * 25;
+			if (it->GetBoni()[7] == TRUE)	// energy
+				tmpEnergyBoni	+= (it->GetSize()+1) * 25;
 		}
 	}
 

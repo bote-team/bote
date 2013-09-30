@@ -1565,6 +1565,10 @@ bool CShip::SanityCheckOrdersConsistency(const CShip& with) const {
 		|| with.m_iCurrentOrder == SHIP_ORDER::ASSIGN_FLAGSHIP)
 		return false;
 	assert(CanHaveOrder(with.m_iCurrentOrder, false));
+	if(m_iCurrentOrder == SHIP_ORDER::TERRAFORM) {
+		assert(0 <= m_nTerraformingPlanet &&
+			m_nTerraformingPlanet < static_cast<int>(resources::pDoc->GetSector(m_KO.x, m_KO.y).GetPlanets().size()));
+	}
 	return m_iCurrentOrder == with.m_iCurrentOrder
 		&& m_nCombatTactic == with.m_nCombatTactic
 		&& m_KO == with.m_KO

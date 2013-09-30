@@ -1213,22 +1213,7 @@ void CBotEDoc::GenerateGalaxy()
 					// wenn die Minorrace Schiffe bauen kann, sie aber kein Deritium im System besitzt, so wird
 					// ein Deritium auf dem ersten kolonisierten Planeten hinzugefügt
 					if (pMinor->GetSpaceflightNation())
-					{
-						BOOLEAN bRes[RESOURCES::DERITIUM + 1] = {FALSE};
-						GetSector(x, y).GetAvailableResources(bRes, true);
-						// gibt es kein Deritium=
-						if (!bRes[RESOURCES::DERITIUM])
-						{
-							for (int p = 0; p < static_cast<int>(GetSector(x, y).GetPlanets().size()); p++)
-							{
-								if (GetSector(x, y).GetPlanet(p)->GetCurrentHabitant() > 0 && GetSector(x, y).GetPlanet(p)->GetColonized())
-								{
-									GetSector(x, y).GetPlanet(p)->SetBoni(RESOURCES::DERITIUM, TRUE);
-									break;
-								}
-							}
-						}
-					}
+						GetSector(x, y).CreateDeritiumForSpaceflightMinor();
 				}
 			}
 		}

@@ -334,6 +334,7 @@ private:
 	CArray<Sector> m_Path;				// Der Kurs des Schiffes zum Ziel
 	bool m_bCloakOn;					// ist die Tarnung eingeschaltet
 	short m_nTerraformingPlanet;		// Nummer des Planeten der terraformt wird
+	//correct values: (-1: none, 0 <= m_nTerraformingPlanet <= (planet count -1) otherwise
 	bool m_bIsFlagShip;					// Ist dieses Schiff ein Flagschiff (es kann immer nur ein Schiff eines Imperiums Flagschiff sein)
 	USHORT m_iCrewExperiance;			// Crewerfahrung des Schiffes
 	// Laderaum

@@ -544,10 +544,10 @@ void CSector::CreatePlanets(const CString& sMajorID)
 						// Deritium überprüfen
 						if (!bRes[RESOURCES::DERITIUM])
 						{
-							for (int p = 0; p < static_cast<int>(this->GetPlanets().size()); p++)
-								if (this->GetPlanet(p)->GetCurrentHabitant() > 0 && this->GetPlanet(p)->GetColonized())
+							for(CSector::iterator it = begin(); it != end(); ++it)
+								if (it->GetCurrentHabitant() > 0 && it->GetColonized())
 								{
-									this->GetPlanet(p)->SetBoni(RESOURCES::DERITIUM, TRUE);
+									it->SetBoni(RESOURCES::DERITIUM, TRUE);
 									break;
 								}
 						}
@@ -1175,7 +1175,7 @@ void CSector::Colonize(CSystem& sy, const CShips& ship, CMajor& major)
 	sy.SetHabitants(GetCurrentHabitants());
 
 	sy.CalculateNumberOfWorkbuildings(resources::BuildingInfo);
-	sy.CalculateVariables(resources::BuildingInfo, empire->GetResearch()->GetResearchInfo(), GetPlanets(), &major, CTrade::GetMonopolOwner());
+	sy.CalculateVariables(resources::BuildingInfo, empire->GetResearch()->GetResearchInfo(), m_Planets, &major, CTrade::GetMonopolOwner());
 }
 
 void CSector::SystemEventPlanetMovement(CString& message)
@@ -1275,4 +1275,22 @@ bool CSector::PerhapsMinorExtends(BYTE TechnologicalProgress)
 		}
 	}
 	return bColonized;
+}
+
+void CSector::CreateDeritiumForSpaceflightMinor()
+{
+	BOOLEAN bRes[RESOURCES::DERITIUM + 1] = {FALSE};
+	GetAvailableResources(bRes, true);
+	// gibt es kein Deritium=
+	if (!bRes[RESOURCES::DERITIUM])
+	{
+		for(CSector::iterator it = begin(); it != end(); ++it)
+		{
+			if (it->GetCurrentHabitant() > 0 && it->GetColonized())
+			{
+				it->SetBoni(RESOURCES::DERITIUM, TRUE);
+				break;
+			}
+		}
+	}
 }
