@@ -44,7 +44,7 @@ enum SectorAttributes
 	SECTOR_CONQUERED	= 8
 };
 
-class CSector : public CObject
+class CSector
 {
 public:
 
@@ -56,8 +56,6 @@ public:
 		DISCOVER_STATUS_FULL_KNOWN	= 3
 	};
 
-	// Klasse serialisierbar machen
-	DECLARE_SERIAL (CSector)
 
 	/// Konstruktor
 	CSector(void);

@@ -15,8 +15,6 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 
-IMPLEMENT_SERIAL (CSystem, CObject, 1)
-
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
@@ -127,7 +125,6 @@ CSystem& CSystem::operator=(const CSystem& other)
 ///////////////////////////////////////////////////////////////////////
 void CSystem::Serialize(CArchive &ar)
 {
-	CObject::Serialize(ar);
 	m_AssemblyList.Serialize(ar);
 	m_Production.Serialize(ar);
 	m_Workers.Serialize(ar);

@@ -30,10 +30,9 @@ class CBotEDoc;
 class CPlanet;
 class CGlobalBuildings;
 
-class CSystem : public CObject
+class CSystem
 {
 public:
-	DECLARE_SERIAL (CSystem)
 	// Standardkonstruktor
 	CSystem(void);
 

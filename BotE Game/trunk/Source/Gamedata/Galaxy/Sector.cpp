@@ -22,8 +22,6 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-IMPLEMENT_SERIAL (CSector, CObject, 1)
-
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
@@ -98,9 +96,6 @@ CSector::~CSector(void)
 ///////////////////////////////////////////////////////////////////////
 void CSector::Serialize(CArchive &ar)
 {
-	// Funktion der Basisklasse aufrufen
-	CObject::Serialize(ar);
-
 	// Wird geschrieben?
 	if (ar.IsStoring())
 	// Alle Variablen in der richtigen Reihenfolge schreiben
