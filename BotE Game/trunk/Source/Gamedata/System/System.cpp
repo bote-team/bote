@@ -70,6 +70,7 @@ CSystem::CSystem(const CSystem &other) :
 	m_TradeRoutes.Copy(other.m_TradeRoutes);
 	m_ResourceRoutes.Copy(other.m_ResourceRoutes);
 	m_Troops.Copy(other.m_Troops);
+	m_BuildableUpdates.Copy(other.m_BuildableUpdates);
 
 	const unsigned size = sizeof(m_bDisabledProductions) / sizeof(m_bDisabledProductions[0]);
 	for(unsigned i = 0; i < size; ++i)
