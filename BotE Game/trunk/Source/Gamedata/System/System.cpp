@@ -2703,7 +2703,7 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 		}
 		if (building->GetOnlyMinorRace())
 		{
-			if (sector->GetMinorRace() == TRUE && sector->GetTakenSector() == FALSE)
+			if (sector->GetMinorRace() == TRUE)
 				return TRUE;
 		}
 		if (building->GetOnlyTakenSystem())
@@ -2727,7 +2727,7 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 		}
 		if (building->GetOnlyMinorRace())
 		{
-			if (sector->GetMinorRace() == TRUE && sector->GetTakenSector() == FALSE)
+			if (sector->GetMinorRace() == TRUE)
 				return TRUE;
 		}
 		if (building->GetOnlyTakenSystem())
@@ -2740,7 +2740,7 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 	// Zuerst Minorraceplanet checken
 	if (building->GetOnlyMinorRace())
 	{
-		if (sector->GetMinorRace() == TRUE && sector->GetTakenSector() == FALSE)
+		if (sector->GetMinorRace() == TRUE)
 		{
 			return TRUE;
 		}
@@ -2780,7 +2780,7 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 		}
 		if (building->GetOnlyMinorRace())
 		{
-			if (sector->GetMinorRace() == TRUE && sector->GetTakenSector() == FALSE)
+			if (sector->GetMinorRace() == TRUE)
 				return TRUE;
 		}
 		return FALSE;
