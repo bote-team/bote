@@ -4,12 +4,12 @@ MAJOR3:0:0:Our secret service could successfully infiltrate several saboteurs wi
 MAJOR4:0:0:The Taq'rhiar could successfully infiltrate several saboteurs with high-explosives. The detonation could be heard in wide areas and destroyed $number$ buildings type "$building$" in the $system$ system.
 MAJOR5:0:0:The Cartare Order could successfully infiltrate several saboteurs with high-explosives. The detonation could be heard in wide areas and destroyed $number$ buildings type "$building$" in the $system$ system.
 MAJOR6:0:0:Our secret service could successfully infiltrate several saboteurs with high-explosives. The detonation could be heard in wide areas and destroyed $number$ buildings type "$building$" in the $system$ system.
-MAJOR1:0:1:Our secret service was able to accomplish a sabotage move on the economy of the $race$. Before any countermeasures could be established, $credits$ Credits flew directly on our accounts.
-MAJOR2:0:1:Our secret service was able to accomplish a sabotage move on the economy of the $race$. Before any countermeasures could be established, $credits$ Credits flew directly on our accounts.
-MAJOR3:0:1:Our secret service was able to accomplish a sabotage move on the economy of the $race$. Before any countermeasures could be established, $credits$ Credits flew directly on our accounts.
-MAJOR4:0:1:The Taq'rhiar was able to accomplish a sabotage move on the economy of the $race$. Before any countermeasures could be established, $credits$ Credits flew directly on our accounts.
-MAJOR5:0:1:The Cartare Order was able to accomplish a sabotage move on the economy of the $race$. Before any countermeasures could be established, $credits$ Credits flew directly on our accounts.
-MAJOR6:0:1:Our secret service was able to accomplish a sabotage move on the economy of the $race$. Before any countermeasures could be established, $credits$ Credits flew directly on our accounts.
+MAJOR1:0:1:Our secret service was able to accomplish a sabotage move on the economy of $race$. Before any countermeasures could be established, $credits$ Credits flew directly on our accounts.
+MAJOR2:0:1:Our secret service was able to accomplish a sabotage move on the economy of $race$. Before any countermeasures could be established, $credits$ Credits flew directly on our accounts.
+MAJOR3:0:1:Our secret service was able to accomplish a sabotage move on the economy of $race$. Before any countermeasures could be established, $credits$ Credits flew directly on our accounts.
+MAJOR4:0:1:The Taq'rhiar was able to accomplish a sabotage move on the economy of $race$. Before any countermeasures could be established, $credits$ Credits flew directly on our accounts.
+MAJOR5:0:1:The Cartare Order was able to accomplish a sabotage move on the economy of $race$. Before any countermeasures could be established, $credits$ Credits flew directly on our accounts.
+MAJOR6:0:1:Our secret service was able to accomplish a sabotage move on the economy of $race$. Before any countermeasures could be established, $credits$ Credits flew directly on our accounts.
 MAJOR1:0:2:Apt saboteurs were able to poison a substantial number of food products on the $system$ system whereby $number$ billion of the population perished.
 MAJOR2:0:2:Apt saboteurs were able to poison a substantial number of food products on the $system$ system whereby $number$ billion of the population perished.
 MAJOR3:0:2:Apt saboteurs were able to poison a substantial number of food products on the $system$ system whereby $number$ billion of the population perished.
@@ -28,63 +28,63 @@ MAJOR3:1:1:Some of our saboteurs working undercover as scientists in various are
 MAJOR4:1:1:Saboteurs of the Taq'rhiar working undercover as scientists in various areas managed to send copies of foreign research data to our research facilities before they could be erased. From this data we could extract an additional amount of $FP$ research points to our research.
 MAJOR5:1:1:Saboteurs of the Cartare Order working undercover as scientists in various areas managed to send copies of foreign research data to our research facilities before they could be erased. From this data we could extract an additional amount of $FP$ research points to our research.
 MAJOR6:1:1:Some of our saboteurs working undercover as scientists in various areas managed to send copies of foreign research data to our research facilities before they could be erased. From this data we could extract an additional amount of $FP$ research points to our research.
-MAJOR1:1:2:Our agents have managed to sabotage a couple of enemy experiments in the field of $techtype$ therefore causing a fundamental loss of research data to the $race$ which have again to be researched anew.
-MAJOR2:1:2:Our agents have managed to sabotage a couple of enemy experiments in the field of $techtype$ therefore causing a fundamental loss of research data to the $race$ which have again to be researched anew.
-MAJOR3:1:2:Our agents have managed to sabotage a couple of enemy experiments in the field of $techtype$ therefore causing a fundamental loss of research data to the $race$ which have again to be researched anew.
-MAJOR4:1:2:Our agents have managed to sabotage a couple of enemy experiments in the field of $techtype$ therefore causing a fundamental loss of research data to the $race$ which have again to be researched anew.
-MAJOR5:1:2:Our agents have managed to sabotage a couple of enemy experiments in the field of $techtype$ therefore causing a fundamental loss of research data to the $race$ which have again to be researched anew.
-MAJOR6:1:2:Our agents have managed to sabotage a couple of enemy experiments in the field of $techtype$ therefore causing a fundamental loss of research data to the $race$ which have again to be researched anew.
+MAJOR1:1:2:Our agents have managed to sabotage a couple of enemy experiments in the field of $techtype$ therefore causing a fundamental loss of research data to $race$ which have again to be researched anew.
+MAJOR2:1:2:Our agents have managed to sabotage a couple of enemy experiments in the field of $techtype$ therefore causing a fundamental loss of research data to $race$ which have again to be researched anew.
+MAJOR3:1:2:Our agents have managed to sabotage a couple of enemy experiments in the field of $techtype$ therefore causing a fundamental loss of research data to $race$ which have again to be researched anew.
+MAJOR4:1:2:Our agents have managed to sabotage a couple of enemy experiments in the field of $techtype$ therefore causing a fundamental loss of research data to $race$ which have again to be researched anew.
+MAJOR5:1:2:Our agents have managed to sabotage a couple of enemy experiments in the field of $techtype$ therefore causing a fundamental loss of research data to $race$ which have again to be researched anew.
+MAJOR6:1:2:Our agents have managed to sabotage a couple of enemy experiments in the field of $techtype$ therefore causing a fundamental loss of research data to $race$ which have again to be researched anew.
 MAJOR1:2:0:Our secret service could successfully infiltrate several saboteurs with high-explosives. The detonation could be heard in wide areas and destroyed $number$ buildings type "$building$" in the $system$ system.
 MAJOR2:2:0:Our secret service could successfully infiltrate several saboteurs with high-explosives. The detonation could be heard in wide areas and destroyed $number$ buildings type "$building$" in the $system$ system.
 MAJOR3:2:0:Our secret service could successfully infiltrate several saboteurs with high-explosives. The detonation could be heard in wide areas and destroyed $number$ buildings type "$building$" in the $system$ system.
 MAJOR4:2:0:The Taq'rhiar could successfully infiltrate several saboteurs with high-explosives. The detonation could be heard in wide areas and destroyed $number$ buildings type "$building$" in the $system$ system.
 MAJOR5:2:0:The Cartare Order could successfully infiltrate several saboteurs with high-explosives. The detonation could be heard in wide areas and destroyed $number$ buildings type "$building$" in the $system$ system.
 MAJOR6:2:0:Our secret service could successfully infiltrate several saboteurs with high-explosives. The detonation could be heard in wide areas and destroyed $number$ buildings type "$building$" in the $system$ system.
-MAJOR1:2:1:Some of our saboteurs were able to deposit radioactive material in a barrack complex in the $system$ system. According to our latest intel the $race$ suffered the loss of $number$ $troop$.
-MAJOR2:2:1:Some of our saboteurs were able to deposit radioactive material in a barrack complex in the $system$ system. According to our latest intel the $race$ suffered the loss of $number$ $troop$.
-MAJOR3:2:1:Some of our saboteurs were able to deposit radioactive material in a barrack complex in the $system$ system. According to our latest intel the $race$ suffered the loss of $number$ $troop$.
-MAJOR4:2:1:Some Taq'rhiar saboteurs were able to deposit radioactive material in a barrack complex in the $system$ system. According to our latest intel the $race$ suffered the loss of $number$ $troop$.
-MAJOR5:2:1:Some saboteurs of the Cartare Order were able to deposit radioactive material in a barrack complex in the $system$ system. According to our latest intel the $race$ suffered the loss of $number$ $troop$.
-MAJOR6:2:1:Some of our saboteurs were able to deposit radioactive material in a barrack complex in the $system$ system. According to our latest intel the $race$ suffered the loss of $number$ $troop$.
+MAJOR1:2:1:Some of our saboteurs were able to deposit radioactive material in a barrack complex in the $system$ system. According to our latest intel $race$ suffered the loss of $number$ $troop$.
+MAJOR2:2:1:Some of our saboteurs were able to deposit radioactive material in a barrack complex in the $system$ system. According to our latest intel $race$ suffered the loss of $number$ $troop$.
+MAJOR3:2:1:Some of our saboteurs were able to deposit radioactive material in a barrack complex in the $system$ system. According to our latest intel $race$ suffered the loss of $number$ $troop$.
+MAJOR4:2:1:Some Taq'rhiar saboteurs were able to deposit radioactive material in a barrack complex in the $system$ system. According to our latest intel $race$ suffered the loss of $number$ $troop$.
+MAJOR5:2:1:Some saboteurs of the Cartare Order were able to deposit radioactive material in a barrack complex in the $system$ system. According to our latest intel $race$ suffered the loss of $number$ $troop$.
+MAJOR6:2:1:Some of our saboteurs were able to deposit radioactive material in a barrack complex in the $system$ system. According to our latest intel $race$ suffered the loss of $number$ $troop$.
 MAJOR1:2:2:In a perfectly planned sabotage move on a ship in the $system$ system a sufficient amount of explosives could be stashed aboard the vessel. The following detonation teared the $ship$ downright apart.
 MAJOR2:2:2:In a perfectly planned sabotage move on a ship in the $system$ system a sufficient amount of explosives could be stashed aboard the vessel. The following detonation teared the $ship$ downright apart.
 MAJOR3:2:2:In a perfectly planned sabotage move on a ship in the $system$ system a sufficient amount of explosives could be stashed aboard the vessel. The following detonation teared the $ship$ downright apart.
 MAJOR4:2:2:In a perfectly planned sabotage move on a ship in the $system$ system a sufficient amount of explosives could be stashed aboard the vessel. The following detonation teared the $ship$ downright apart.
 MAJOR5:2:2:In a perfectly planned sabotage move on a ship in the $system$ system a sufficient amount of explosives could be stashed aboard the vessel. The following detonation teared the $ship$ downright apart.
 MAJOR6:2:2:In a perfectly planned sabotage move on a ship in the $system$ system a sufficient amount of explosives could be stashed aboard the vessel. The following detonation teared the $ship$ downright apart.
-MAJOR1:2:3:One of our agents successfully took over the control of a ship in the $system$ sector. This $ship$ is now under our control by which the $race$ had to acquiesce a military setback.
-MAJOR2:2:3:One of our agents successfully took over the control of a ship in the $system$ sector. This $ship$ is now under our control by which the $race$ had to acquiesce a military setback.
-MAJOR3:2:3:One of our agents successfully took over the control of a ship in the $system$ sector. This $ship$ is now under our control by which the $race$ had to acquiesce a military setback.
-MAJOR4:2:3:One of our Taq'rhiar agents successfully took over the control of a ship in the $system$ sector. This $ship$ is now under our control by which the $race$ had to acquiesce a military setback.
-MAJOR5:2:3:An agent of the Cartare Order successfully took over the control of a ship in the $system$ sector. This $ship$ is now under our control by which the $race$ had to acquiesce a military setback.
-MAJOR6:2:3:One of our agents successfully took over the control of a ship in the $system$ sector. This $ship$ is now under our control by which the $race$ had to acquiesce a military setback.
+MAJOR1:2:3:One of our agents successfully took over the control of a ship in the $system$ sector. This $ship$ is now under our control by which $race$ had to acquiesce a military setback.
+MAJOR2:2:3:One of our agents successfully took over the control of a ship in the $system$ sector. This $ship$ is now under our control by which $race$ had to acquiesce a military setback.
+MAJOR3:2:3:One of our agents successfully took over the control of a ship in the $system$ sector. This $ship$ is now under our control by which $race$ had to acquiesce a military setback.
+MAJOR4:2:3:One of our Taq'rhiar agents successfully took over the control of a ship in the $system$ sector. This $ship$ is now under our control by which $race$ had to acquiesce a military setback.
+MAJOR5:2:3:An agent of the Cartare Order successfully took over the control of a ship in the $system$ sector. This $ship$ is now under our control by which $race$ had to acquiesce a military setback.
+MAJOR6:2:3:One of our agents successfully took over the control of a ship in the $system$ sector. This $ship$ is now under our control by which $race$ had to acquiesce a military setback.
 MAJOR1:2:4:By a well-wrought sabotage act high-explosives could be stashed on a ship in the $system$ system. The adjoining detonation did not have the expected effect on the ship however and only caused small damage on the $ship$.
 MAJOR2:2:4:By a well-wrought sabotage act high-explosives could be stashed on a ship in the $system$ system. The adjoining detonation did not have the expected effect on the ship however and only caused small damage on the $ship$.
 MAJOR3:2:4:By a well-wrought sabotage act high-explosives could be stashed on a ship in the $system$ system. The adjoining detonation did not have the expected effect on the ship however and only caused small damage on the $ship$.
 MAJOR4:2:4:By a well-wrought sabotage act of our Taq'rhiar high-explosives could be stashed on a ship in the $system$ system. The adjoining detonation did not have the expected effect on the ship however and only caused small damage on the $ship$.
 MAJOR5:2:4:By a well-wrought sabotage act of the Cartare Order high-explosives could be stashed on a ship in the $system$ system. The adjoining detonation did not have the expected effect on the ship however and only caused small damage on the $ship$.
 MAJOR6:2:4:By a well-wrought sabotage act high-explosives could be stashed on a ship in the $system$ system. The adjoining detonation did not have the expected effect on the ship however and only caused small damage on the $ship$.
-MAJOR1:3:0:Infiltrated diplomats were able to put our organisation in a new light at the $race$. The relationship between our peoples could be improved.
-MAJOR2:3:0:Infiltrated diplomats were able to put our own empire in a new light at the $race$. The relationship between our peoples could be improved.
-MAJOR3:3:0:Infiltrated diplomats were able to put our own empire in a new light at the $race$. The relationship between our peoples could be improved.
-MAJOR4:3:0:Infiltrated diplomats were able to put our own empire in a new light at the $race$. The relationship between our peoples could be improved.
-MAJOR5:3:0:Infiltrated diplomats were able to put our own empire in a new light at the $race$. The relationship between our peoples could be improved.
-MAJOR6:3:0:Infiltrated diplomats were able to put our own empire in a new light at the $race$. The relationship between our peoples could be improved.
-MAJOR1:3:1:Infiltrated diplomats were able to secretly put up propaganda campaigns among the $race$. By that the relationship between them and the $major$ suffered a major setback.
-MAJOR2:3:1:Infiltrated diplomats were able to secretly put up propaganda campaigns among the $race$. By that the relationship between them and the $major$ suffered a major setback.
-MAJOR3:3:1:Infiltrated diplomats were able to secretly put up propaganda campaigns among the $race$. By that the relationship between them and the $major$ suffered a major setback.
-MAJOR4:3:1:Infiltrated diplomats were able to secretly put up propaganda campaigns among the $race$. By that the relationship between them and the $major$ suffered a major setback.
-MAJOR5:3:1:Infiltrated diplomats were able to secretly put up propaganda campaigns among the $race$. By that the relationship between them and the $major$ suffered a major setback.
-MAJOR6:3:1:Infiltrated diplomats were able to secretly put up propaganda campaigns among the $race$. By that the relationship between them and the $major$ suffered a major setback.
+MAJOR1:3:0:Infiltrated diplomats were able to put our organisation in a new light at $race$. The relationship between our peoples could be improved.
+MAJOR2:3:0:Infiltrated diplomats were able to put our own empire in a new light at $race$. The relationship between our peoples could be improved.
+MAJOR3:3:0:Infiltrated diplomats were able to put our own empire in a new light at $race$. The relationship between our peoples could be improved.
+MAJOR4:3:0:Infiltrated diplomats were able to put our own empire in a new light at $race$. The relationship between our peoples could be improved.
+MAJOR5:3:0:Infiltrated diplomats were able to put our own empire in a new light at $race$. The relationship between our peoples could be improved.
+MAJOR6:3:0:Infiltrated diplomats were able to put our own empire in a new light at $race$. The relationship between our peoples could be improved.
+MAJOR1:3:1:Infiltrated diplomats were able to secretly put up propaganda campaigns among $race$. By that the relationship between them and $major$ suffered a major setback.
+MAJOR2:3:1:Infiltrated diplomats were able to secretly put up propaganda campaigns among $race$. By that the relationship between them and $major$ suffered a major setback.
+MAJOR3:3:1:Infiltrated diplomats were able to secretly put up propaganda campaigns among $race$. By that the relationship between them and $major$ suffered a major setback.
+MAJOR4:3:1:Infiltrated diplomats were able to secretly put up propaganda campaigns among $race$. By that the relationship between them and $major$ suffered a major setback.
+MAJOR5:3:1:Infiltrated diplomats were able to secretly put up propaganda campaigns among $race$. By that the relationship between them and $major$ suffered a major setback.
+MAJOR6:3:1:Infiltrated diplomats were able to secretly put up propaganda campaigns among $race$. By that the relationship between them and $major$ suffered a major setback.
 MAJOR1:3:2:Some deft diplomatic talks by our infiltrated diplomats and aptly chosen smaller gifts to the $minor$ led to a significant improvement in our relationship.
 MAJOR2:3:2:Some deft diplomatic talks by our infiltrated diplomats and aptly chosen smaller gifts to the $minor$ led to a significant improvement in our relationship.
 MAJOR3:3:2:Some deft diplomatic talks by our infiltrated diplomats and aptly chosen smaller gifts to the $minor$ led to a significant improvement in our relationship.
 MAJOR4:3:2:Some deft diplomatic talks by our infiltrated diplomats and aptly chosen smaller gifts to the $minor$ led to a significant improvement in our relationship.
 MAJOR5:3:2:Some deft diplomatic talks by our infiltrated diplomats and aptly chosen smaller gifts to the $minor$ led to a significant improvement in our relationship.
 MAJOR6:3:2:Some deft diplomatic talks by our infiltrated diplomats and aptly chosen smaller gifts to the $minor$ led to a significant improvement in our relationship.
-MAJOR1:3:3:Covert-operating diplomats succeeded in deteriorating the relationship between the $race$ and the $minor$ by spreading falsified information.
-MAJOR2:3:3:Covert-operating diplomats succeeded in deteriorating the relationship between the $race$ and the $minor$ by spreading falsified information.
-MAJOR3:3:3:Covert-operating diplomats succeeded in deteriorating the relationship between the $race$ and the $minor$ by spreading falsified information.
-MAJOR4:3:3:Covert-operating diplomats succeeded in deteriorating the relationship between the $race$ and the $minor$ by spreading falsified information.
-MAJOR5:3:3:Covert-operating diplomats succeeded in deteriorating the relationship between the $race$ and the $minor$ by spreading falsified information.
-MAJOR6:3:3:Covert-operating diplomats succeeded in deteriorating the relationship between the $race$ and the $minor$ by spreading falsified information.
+MAJOR1:3:3:Covert-operating diplomats succeeded in deteriorating the relationship between $race$ and the $minor$ by spreading falsified information.
+MAJOR2:3:3:Covert-operating diplomats succeeded in deteriorating the relationship between $race$ and the $minor$ by spreading falsified information.
+MAJOR3:3:3:Covert-operating diplomats succeeded in deteriorating the relationship between $race$ and the $minor$ by spreading falsified information.
+MAJOR4:3:3:Covert-operating diplomats succeeded in deteriorating the relationship between $race$ and the $minor$ by spreading falsified information.
+MAJOR5:3:3:Covert-operating diplomats succeeded in deteriorating the relationship between $race$ and the $minor$ by spreading falsified information.
+MAJOR6:3:3:Covert-operating diplomats succeeded in deteriorating the relationship between $race$ and the $minor$ by spreading falsified information.

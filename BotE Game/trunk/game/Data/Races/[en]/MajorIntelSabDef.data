@@ -64,18 +64,18 @@ MAJOR3:2:4:It appears from our intelligence reports that the explosives were kep
 MAJOR4:2:4:It appears from the Taq'rhiar report that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occured.
 MAJOR5:2:4:It appears from the report of the Cartare Order that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occured.
 MAJOR6:2:4:It appears from our intelligence reports that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occured.
-MAJOR1:3:0:Our relations with the $race$ have improved in the last period of time. Any particuliar reason could not be made out.
-MAJOR2:3:0:Our relations with the $race$ have improved in the last period of time. Any particuliar reason could not be made out.
-MAJOR3:3:0:Our relations with the $race$ have improved in the last period of time. Any particuliar reason could not be made out.
-MAJOR4:3:0:Our relations with the $race$ have improved in the last period of time. Any particuliar reason could not be made out.
-MAJOR5:3:0:Our relations with the $race$ have improved in the last period of time. Any particuliar reason could not be made out.
-MAJOR6:3:0:Our relations with the $race$ have improved in the last period of time. Any particuliar reason could not be made out.
-MAJOR1:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with the $major$.
-MAJOR2:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with the $major$.
-MAJOR3:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with the $major$.
-MAJOR4:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with the $major$.
-MAJOR5:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with the $major$.
-MAJOR6:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with the $major$.
+MAJOR1:3:0:Our relations with $race$ have improved in the last period of time. Any particuliar reason could not be made out.
+MAJOR2:3:0:Our relations with $race$ have improved in the last period of time. Any particuliar reason could not be made out.
+MAJOR3:3:0:Our relations with $race$ have improved in the last period of time. Any particuliar reason could not be made out.
+MAJOR4:3:0:Our relations with $race$ have improved in the last period of time. Any particuliar reason could not be made out.
+MAJOR5:3:0:Our relations with $race$ have improved in the last period of time. Any particuliar reason could not be made out.
+MAJOR6:3:0:Our relations with $race$ have improved in the last period of time. Any particuliar reason could not be made out.
+MAJOR1:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with $major$.
+MAJOR2:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with $major$.
+MAJOR3:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with $major$.
+MAJOR4:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with $major$.
+MAJOR5:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with $major$.
+MAJOR6:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with $major$.
 MAJOR1:3:3:Falsified information spread around among the $minor$ negatively affected our relationship with them.
 MAJOR2:3:3:Falsified information spread around among the $minor$ negatively affected our relationship with them.
 MAJOR3:3:3:Falsified information spread around among the $minor$ negatively affected our relationship with them.
