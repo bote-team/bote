@@ -1,7 +1,7 @@
 #0	Eliminate an Empire
 		The fall of $param$ is celebrated enthusiastically by many Coalition citizens
 		The fall of $param$ lifted the Exchange to record highs
-		Warriors celebrated the fall of $param$ with bloodwine and song
+		Warriors celebrated the fall of $param$ with wine and song
 		An Imperial holiday commemorates the fall of $param$
 		All Cartares rejoice at the collapse of $param$
 		The fall of $param$ has increased faith of our citizens in the power and wisdom of the Vi
@@ -11,7 +11,7 @@
 		Warriors are deeply inspired by the great victory
 		This great victory was welcome news to all loyal Rotharians
 		Cartare citizens are deeply inspired by the great victory
-		The Vi are delightened with battle progress
+		The Vi are delighted with battle progress
 #2	Win a Significant Battle
 		Victory is the lead story in most civilian news services
 		Brokers are buying stock in our military after victory
@@ -87,7 +87,7 @@
 		Investors are enthusiastic about opportunities in the new $param$ colony
 		The $param$ system will give our people some long-overdue breathing room
 		Citizens are glad to hear that the $param$ system is now part of our Empire
-		Citizens raised a glass of kanar to celebrate the colonization of $param$
+		Citizens celebrate the colonization of $param$
 		The Vi celebrates the foundation of our new colony in $param$
 #13	Liberate a Minor Race System
 		Celebrations are planned to honor the heroes who liberated $param$
@@ -99,16 +99,16 @@
 #14	Liberate a Former Native System
 		The liberation of the $param$ system has generated new support for the war
 		The restoration of the $param$ market is good news to all Heyoun exporters
-		Many warriors will join the Order of the Bat'leth for their actions at $param$
+		Many warriors will join the Kha'rehc Order for their actions at $param$
 		The rescue of $param$ has become a popular cause for celebration
 		The liberation of $param$ has raised the spirits of all loyal Cartares
 		Liberation of $param$ pleases the Vi
 #15	Lose Home System to Outside Forces
 		Protesters are demanding an explanation for our failure to protect the Sol system
-		The loss of Heyounnar has pushed the Exchange down to an all-time low
+		The loss of Hanar has pushed the Exchange down to an all-time low
 		Many warriors have chosen honorable suicide over life without the homeworld
 		The people believe that the loss of Rotharius is a clear sign of governmental incompetence
-		The loss of Cardassia Prime has led to widespread disillusionment and several suicides
+		The loss of Cartar Prime has led to widespread disillusionment and several suicides
 		Loss of Vi homeworld: The Vi do not see any perspective in their being here in the alpha quadrant anymore
 #16	Lose a Member System to Outside Forces
 		Citizens are outraged by our inability to properly defend $param$
@@ -148,7 +148,7 @@
 #21	Eliminate a Minor Race Entirely
 		Protests: Extinction of the $param$ makes people outraged
 		Extinction of $param$: Exchange reacts with a severe drop in all sales activities
-		Khaorons concelebrate the extinction of $param$,
+		Khaorons celebrate the extinction of $param$,
 		People condemns extinction of $param$,
 		Extinction of $param$ justified: They were not worth to live
 		Extermination of $param$ pleases Vi
@@ -412,14 +412,14 @@
 		""
 		""
 #59	Successful espionage
-		Espionage activies have no impact on people's opinion
+		Espionage activities have no impact on people's opinion
 		Our traders rather concentrate on making profits than conducting espionage
 		Warriors call our spy activities dishonorable
 		People approve espionage methods of the Tal'Shiar
 		Union citizens are mildly pleased with espionage activities
 		The Vi are amused about our espionage activities
 #60	Successful sabotage
-		Sabotage activies have no impact on people's opinion
+		Sabotage activities have no impact on people's opinion
 		Our traders rather concentrate on making profits than conducting sabotage missions
 		Warriors call our sabotage activities dishonorable
 		People approve sabotage methods of the Tal'Shiar

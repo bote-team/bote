@@ -287,7 +287,7 @@ Name
 [CLASS]
 Class
 [POINTS_SHORT]
-Pkt.
+P.
 [ROUND]
 Turn
 [ROUNDS]
@@ -591,7 +591,7 @@ Morale bonus
 [BONUS_TO_ALL_RES]
 Resource bonus
 [TECHNIC_BONUS]
-Technic bonus
+Bonus to all techs
 [BIOTECH_BONUS]
 Biotech bonus
 [ENERGYTECH_BONUS]
@@ -1881,10 +1881,10 @@ We have lost a resource route in the § system
 We have lost § resource routes in the § system
 
 [BTN_TRADEROUTE]
-Traderoute
+Trade route
 
 [BTN_RESOURCEROUTE]
-Resourcer.
+Resource r.
 
 [SYSTEM_IS_BLOCKED]
 System is §% blocked
@@ -2471,7 +2471,7 @@ Warriors of the Kha'rehc Order with long lasting and also mental training shape 
 [MAJOR3_TROOP4_NAME]
 Khaoron Special Forces 1st Skill
 [MAJOR3_TROOP4_DESC]
-Khaoron warriors who toke part in a strong military training. They are trained in various melee weapons and firearms and for attacks on alien worlds. 
+Khaoron warriors who took part in a strong military training. They are trained in various melee weapons and firearms and for attacks on alien worlds. 
 [MAJOR3_TROOP5_NAME]
 Khaoron Special Forces 2nd Skill
 [MAJOR3_TROOP5_DESC]

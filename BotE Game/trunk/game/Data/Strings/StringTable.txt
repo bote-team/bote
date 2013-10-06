@@ -488,19 +488,19 @@ Im §-System werden voraussichtlich Terraformpunkte verschwendet
 [OUTPOST_FINISHED]
 Ein neuer Aussenposten wurde errichtet
 [STARBASE_FINISHED]
-Eine neue Sternbasis wurde errichtet
+Eine neue Sternenbasis wurde errichtet
 [OUTPOST_UPGRADE_FINISHED]
 Ein Aussenpostenupgrade wurde fertiggestellt
 [STARBASE_UPGRADE_FINISHED]
-Ein Sternbasisupgrade wurde fertiggestellt
+Ein Sternenbasisupgrade wurde fertiggestellt
 [OUTPOST_CONSTRUCTION]
 Aussenpostenbau
 [STARBASE_CONSTRUCTION]
-Sternbasisbau
+Sternenbasisbau
 [OUTPOST_UPGRADE]
 Aussenpostenupgrade
 [STARBASE_UPGRADE]
-Sternbasisupgrade
+Sternenbasisupgrade
 [ASSIGN_FLAGSHIP_MESSAGE]
 Die § (§) wurde zum Flaggschiff ernannt
 [GET_CONTACT_TO_MINOR]
@@ -1242,7 +1242,7 @@ Terraforming
 [BUILD_OUTPOST_ORDER]
 Aussenposten
 [BUILD_STARBASE_ORDER]
-Sternbasis
+Sternenbasis
 [UPGRADE_OUTPOST_ORDER]
 Upgrade
 [UPGRADE_STARBASE_ORDER]
@@ -1296,7 +1296,7 @@ Schlachtschiff
 [OUTPOST]
 Aussenposten
 [STARBASE]
-Sternbasis
+Sternenbasis
 [ALIEN]
 Weltraummonster
 
@@ -1328,7 +1328,7 @@ Schlachtschiffe
 [OUTPOSTS]
 Aussenposten
 [STARBASES]
-Sternbasen
+Sternenbasen
 [ALIENS]
 Schiffe
 
@@ -2369,7 +2369,7 @@ Wir haben den Sieg in der Kategorie "§" davongetragen!
 [BIRTH_OF_THE_EMPIRE_END]
 Die Geschichte der Geburt unseres Imperiums ist nun zu Ende...
 [REACHED_GAMEPOINTS]
-erreichte Punktezahl:
+erreichte Punktzahl:
 
 //Randomevents
 [SYSTEMEVENTMORALBOOST]
