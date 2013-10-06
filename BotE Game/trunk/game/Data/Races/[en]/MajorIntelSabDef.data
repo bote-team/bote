@@ -1,9 +1,9 @@
-MAJOR1:0:0:A desastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
-MAJOR2:0:0:A desastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
-MAJOR3:0:0:A desastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
-MAJOR4:0:0:A desastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
-MAJOR5:0:0:A desastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
-MAJOR6:0:0:A desastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR1:0:0:A disastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR2:0:0:A disastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR3:0:0:A disastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR4:0:0:A disastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR5:0:0:A disastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR6:0:0:A disastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
 MAJOR1:0:1:Our intelligence reports the loss of $credits$ Credits. No traces of theft could be found.
 MAJOR2:0:1:Our intelligence reports the loss of $credits$ Credits. No traces of theft could be found. This means our certain ruin!
 MAJOR3:0:1:Our intelligence reports the loss of $credits$ Credits. No traces of theft could be found.
@@ -58,24 +58,24 @@ MAJOR3:2:3:Enemy agents were able to take over the control of one of our ship in
 MAJOR4:2:3:Enemy agents were able to take over the control of one of our ship in the $system$-sector. This $ship$ is no longer on our scanners.
 MAJOR5:2:3:Enemy agents were able to take over the control of one of our ship in the $system$-sector. This $ship$ is no longer on our scanners.
 MAJOR6:2:3:Enemy agents were able to take over the control of one of our ship in the $system$-sector. This $ship$ is no longer on our scanners.
-MAJOR1:2:4:It appears from our intelligence reports that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occured.
-MAJOR2:2:4:It appears from our intelligence reports that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occured.
-MAJOR3:2:4:It appears from our intelligence reports that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occured.
-MAJOR4:2:4:It appears from the Taq'rhiar report that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occured.
-MAJOR5:2:4:It appears from the report of the Cartare Order that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occured.
-MAJOR6:2:4:It appears from our intelligence reports that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occured.
-MAJOR1:3:0:Our relations with $race$ have improved in the last period of time. Any particuliar reason could not be made out.
-MAJOR2:3:0:Our relations with $race$ have improved in the last period of time. Any particuliar reason could not be made out.
-MAJOR3:3:0:Our relations with $race$ have improved in the last period of time. Any particuliar reason could not be made out.
-MAJOR4:3:0:Our relations with $race$ have improved in the last period of time. Any particuliar reason could not be made out.
-MAJOR5:3:0:Our relations with $race$ have improved in the last period of time. Any particuliar reason could not be made out.
-MAJOR6:3:0:Our relations with $race$ have improved in the last period of time. Any particuliar reason could not be made out.
-MAJOR1:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with $major$.
-MAJOR2:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with $major$.
-MAJOR3:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with $major$.
-MAJOR4:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with $major$.
-MAJOR5:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with $major$.
-MAJOR6:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with $major$.
+MAJOR1:2:4:It appears from our intelligence reports that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occurred.
+MAJOR2:2:4:It appears from our intelligence reports that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occurred.
+MAJOR3:2:4:It appears from our intelligence reports that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occurred.
+MAJOR4:2:4:It appears from the Taq'rhiar report that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occurred.
+MAJOR5:2:4:It appears from the report of the Cartare Order that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occurred.
+MAJOR6:2:4:It appears from our intelligence reports that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occurred.
+MAJOR1:3:0:Our relations with $race$ have improved in the last period of time. Any particular reason could not be made out.
+MAJOR2:3:0:Our relations with $race$ have improved in the last period of time. Any particular reason could not be made out.
+MAJOR3:3:0:Our relations with $race$ have improved in the last period of time. Any particular reason could not be made out.
+MAJOR4:3:0:Our relations with $race$ have improved in the last period of time. Any particular reason could not be made out.
+MAJOR5:3:0:Our relations with $race$ have improved in the last period of time. Any particular reason could not be made out.
+MAJOR6:3:0:Our relations with $race$ have improved in the last period of time. Any particular reason could not be made out.
+MAJOR1:3:1:A propaganda strike by enemy intel against our institution ends in deterioration of our relations with $major$.
+MAJOR2:3:1:A propaganda strike by enemy intel against our institution ends in deterioration of our relations with $major$.
+MAJOR3:3:1:A propaganda strike by enemy intel against our institution ends in deterioration of our relations with $major$.
+MAJOR4:3:1:A propaganda strike by enemy intel against our institution ends in deterioration of our relations with $major$.
+MAJOR5:3:1:A propaganda strike by enemy intel against our institution ends in deterioration of our relations with $major$.
+MAJOR6:3:1:A propaganda strike by enemy intel against our institution ends in deterioration of our relations with $major$.
 MAJOR1:3:3:Falsified information spread around among the $minor$ negatively affected our relationship with them.
 MAJOR2:3:3:Falsified information spread around among the $minor$ negatively affected our relationship with them.
 MAJOR3:3:3:Falsified information spread around among the $minor$ negatively affected our relationship with them.
