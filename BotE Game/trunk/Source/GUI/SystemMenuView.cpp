@@ -2009,19 +2009,31 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	rect = RectF(870,80,60,25);
 	if (m_iWhichSubMenu == 0)		// Wenn wir im normalen Baumenü sind
 	{
-		s.Format("%i",pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd());
-		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
+		if (pDoc->GetSystem(p.x,p.y).GetProduction()->GetUpdateBuildSpeed() == 
+			pDoc->GetSystem(p.x,p.y).GetProduction()->GetBuildingBuildSpeed())
+		{
+			s.Format("%i",(short)(pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd() *
+				(100 + pDoc->GetSystem(p.x, p.y).GetProduction()->GetBuildingBuildSpeed()) / 100));
+			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
+		}
+		else
+		{
+			s.Format("%i",(pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd()));
+			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
+		}
 	}
 	else if (m_iWhichSubMenu == 1)	// Wenn wir im Werftuntermenü sind
 	{
 		s.Format("%i",(int)(pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd() *
-			pDoc->GetSystem(p.x,p.y).GetProduction()->GetShipYardEfficiency() / 100));
+			pDoc->GetSystem(p.x,p.y).GetProduction()->GetShipYardEfficiency() / 100 *
+			(100 + pDoc->GetSystem(p.x, p.y).GetProduction()->GetShipBuildSpeed()) / 100));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 	}
 	else							// Wenn wir im Kasernenuntermenü sind
 	{
 		s.Format("%i",(short)(pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd() *
-			pDoc->GetSystem(p.x,p.y).GetProduction()->GetBarrackEfficiency() / 100));
+			pDoc->GetSystem(p.x,p.y).GetProduction()->GetBarrackEfficiency() / 100 *
+			(100 + pDoc->GetSystem(p.x, p.y).GetProduction()->GetTroopBuildSpeed()) / 100));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 	}
 
@@ -2065,14 +2077,34 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	s.Format("%i",pDoc->GetSystem(p.x,p.y).GetFoodStore());
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 25;
-	if (m_iWhichSubMenu == 1)		// Wenn wir im Werftuntermenü sind
+	// Wenn wir im normalen Baumenü sind
+	if (m_iWhichSubMenu == 0 && 
+			(pDoc->GetSystem(p.x,p.y).GetProduction()->GetBuildingBuildSpeed() > 0 ||
+			pDoc->GetSystem(p.x, p.y).GetProduction()->GetUpdateBuildSpeed() > 0))		
 	{
-		s.Format("%i%%",pDoc->GetSystem(p.x,p.y).GetProduction()->GetShipYardEfficiency());
+		if (pDoc->GetSystem(p.x,p.y).GetProduction()->GetBuildingBuildSpeed() ==
+				pDoc->GetSystem(p.x,p.y).GetProduction()->GetUpdateBuildSpeed())
+		{
+			s.Format("%i%%",(short)(100 + pDoc->GetSystem(p.x,p.y).GetProduction()->GetBuildingBuildSpeed()));
+			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
+		}
+		else
+		{
+			s.Format("%i%%   %i%%",(short)(100 + pDoc->GetSystem(p.x,p.y).GetProduction()->GetBuildingBuildSpeed()),
+				(short)(100 + pDoc->GetSystem(p.x,p.y).GetProduction()->GetUpdateBuildSpeed()));
+			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
+		}
+	}
+	else if (m_iWhichSubMenu == 1)		// Wenn wir im Werftuntermenü sind
+	{
+		s.Format("%i%%",(short)(pDoc->GetSystem(p.x,p.y).GetProduction()->GetShipYardEfficiency() *
+			(100 + pDoc->GetSystem(p.x,p.y).GetProduction()->GetShipBuildSpeed()) / 100));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 	}
 	else if (m_iWhichSubMenu == 2)	// Wenn wir im Kasernenuntermenü sind
 	{
-		s.Format("%i%%",pDoc->GetSystem(p.x,p.y).GetProduction()->GetBarrackEfficiency());
+		s.Format("%i%%",(short)(pDoc->GetSystem(p.x,p.y).GetProduction()->GetBarrackEfficiency() *
+			(100 + pDoc->GetSystem(p.x,p.y).GetProduction()->GetTroopBuildSpeed()) / 100));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 	}
 
