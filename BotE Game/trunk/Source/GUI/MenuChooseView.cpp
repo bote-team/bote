@@ -187,17 +187,13 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	if (nActiveMainView >= VIEWS::GALAXY_VIEW && nActiveMainView <= VIEWS::EMPIRE_VIEW)
 		m_Buttons.GetAt(nActiveMainView - 1)->SetState(BUTTON_STATE::DEACTIVATED);
 
-	// Geheimdienstbutton deaktivieren, solange keine anderen Majors bekannt sind
 	// Diplomatiebutton deaktivieren, solange gar keine anderen Rassen bekannt sind
 	if (!m_bKnowOtherRaces)
 		m_Buttons.GetAt(VIEWS::DIPLOMACY_VIEW - 1)->SetState(BUTTON_STATE::DEACTIVATED);
-	else if (m_Buttons.GetAt(VIEWS::DIPLOMACY_VIEW - 1)->GetState() != BUTTON_STATE::DEACTIVATED)
-		m_Buttons.GetAt(VIEWS::DIPLOMACY_VIEW - 1)->SetState(BUTTON_STATE::NORMAL);
 
+	// Geheimdienstbutton deaktivieren, solange keine anderen Majors bekannt sind
 	if (!m_bKnowOtherMajors)
 		m_Buttons.GetAt(VIEWS::INTEL_VIEW - 1)->SetState(BUTTON_STATE::DEACTIVATED);
-	else if (m_Buttons.GetAt(VIEWS::INTEL_VIEW - 1)->GetState() != BUTTON_STATE::DEACTIVATED)
-		m_Buttons.GetAt(VIEWS::INTEL_VIEW - 1)->SetState(BUTTON_STATE::NORMAL);
 
 	// Buttons zeichnen
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
