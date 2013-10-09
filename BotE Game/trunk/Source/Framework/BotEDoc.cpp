@@ -3627,18 +3627,20 @@ bool CBotEDoc::BuildStation(CShips& ship, CSector& sector, SHIP_ORDER::Typ order
 		? SHIP_TYPE::STARBASE : SHIP_TYPE::OUTPOST;
 	const short id = pMajor->BestBuildableVariant(type, m_ShipInfoArray);
 	assert(id != -1);
-	bool remove = false;
+	CShips::StationWorkResult result;
 	if (sector.IsStationBuildable(order, pMajor->GetRaceID())) {
 		sector.SetIsStationBuilding(order, owner);
 		if (sector.GetStartStationPoints(owner) == 0)
 			sector.SetStartStationPoints(m_ShipInfoArray.GetAt((id-10000)).
 					GetBaseIndustry(),owner);
-		remove = ship.BuildStation(order, sector, *pMajor, id);
+		result = ship.BuildStation(order, sector, *pMajor, id);
 	}
 	else
 		ship.UnsetCurrentOrder();
+	//If we didn't finish, the leader (or any ship doing the station work) must not be removed.
+	assert(!result.remove_leader || result.finished);
 
-	if(order != SHIP_ORDER::BUILD_OUTPOST && remove) {
+	if(order != SHIP_ORDER::BUILD_OUTPOST && result.finished) {
 		// Wenn wir jetzt die Station gebaut haben, dann müssen wir die alten Station aus der
 		// Schiffsliste nehmen
 		for(CShipMap::iterator k = m_ShipMap.begin(); k != m_ShipMap.end(); ++k)
@@ -3650,7 +3652,7 @@ bool CBotEDoc::BuildStation(CShips& ship, CSector& sector, SHIP_ORDER::Typ order
 				break;
 			}
 	}
-	return remove;
+	return result.remove_leader;
 }
 
 namespace //helpers for CBotEDoc::CalcShipOrders()
@@ -4009,30 +4011,15 @@ void CBotEDoc::CalcShipMovement()
 			if (GetSector(p.x, p.y).GetPlanet(y->second->GetTerraform())->GetTerraformed())
 				y->second->SetTerraform(-1);
 		}
-		// Prüfen, dass ein Aussenpostenbaubefehl noch gültig ist
-		else if (y->second->GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST)
-		{
-			if (GetSector(p.x, p.y).GetIsStationInSector() == TRUE)
-				y->second->UnsetCurrentOrder();
-		}
-		// Prüfen, dass ein Sternbasenbaubefehl noch gültig ist
-		else if (y->second->GetCurrentOrder() == SHIP_ORDER::BUILD_STARBASE)
-		{
-			if (GetSector(p.x, p.y).GetStarbase(y->second->GetOwnerOfShip()) == TRUE)
-				y->second->UnsetCurrentOrder();
-		}
-		// Prüfen, dass ein Aussenposten-Upgradebefehl noch gültig ist
-		else if (y->second->GetCurrentOrder() == SHIP_ORDER::UPGRADE_OUTPOST) {
-			if (GetSector(p.x, p.y).IsStationBuildable(SHIP_ORDER::UPGRADE_OUTPOST, 
-				y->second->GetOwnerOfShip()) == FALSE)
-				y->second->UnsetCurrentOrder();
-		}
-		// Prüfen, dass ein Sternbasen-Upgradebefehl noch gültig ist
-		else if (y->second->GetCurrentOrder() == SHIP_ORDER::UPGRADE_STARBASE) {
-			if (GetSector(p.x, p.y).IsStationBuildable(SHIP_ORDER::UPGRADE_STARBASE, 
-				y->second->GetOwnerOfShip()) == FALSE)
-				y->second->UnsetCurrentOrder();
-		}
+		// Prüfen, dass Stationsarbeitsbefehle noch gültig sind
+		//This is neccessary, as it can happen, that another major, whose ships are near the start
+		//of the shipmap, is still doing station work in this sector in the same round that another major,
+		//whose ships come after the first major's in the shipmap, finished its station work in this sector.
+		//If it weren't for this ordering in the shipmap, we could just unset the orders of all ships
+		//following the finishing event in CalcShipOrders().
+		if (y->second->IsDoingStationWork() &&
+			!GetSector(p.x, p.y).IsStationBuildable(y->second->GetCurrentOrder(), y->second->GetOwnerOfShip()))
+			y->second->UnsetCurrentOrder();
 
 		// weiter mit Schiffsbewegung
 		Sector shipKO((char)y->second->GetKO().x,(char)y->second->GetKO().y);
