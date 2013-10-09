@@ -3618,7 +3618,7 @@ void CBotEDoc::CalcTrade()
 
 /////BEGIN: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
 
-bool CBotEDoc::BuildStation(CShips& ship, CSector& sector, SHIP_ORDER::Typ order) {
+bool CBotEDoc::BuildStation(CShips& ship, CSector& sector, SHIP_ORDER::Typ order, CSystem& system) {
 	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(ship.GetOwnerOfShip()));
 	assert(pMajor);
 	const CString& owner = ship.GetOwnerOfShip();
@@ -3633,22 +3633,19 @@ bool CBotEDoc::BuildStation(CShips& ship, CSector& sector, SHIP_ORDER::Typ order
 		if (sector.GetStartStationPoints(owner) == 0)
 			sector.SetStartStationPoints(m_ShipInfoArray.GetAt((id-10000)).
 					GetBaseIndustry(),owner);
-		if(ship.BuildStation(order, sector, *pMajor, id))
-			remove = true;
+		remove = ship.BuildStation(order, sector, *pMajor, id);
 	}
 	else
 		ship.UnsetCurrentOrder();
 
-	if(order != SHIP_ORDER::BUILD_OUTPOST && remove == TRUE) {
+	if(order != SHIP_ORDER::BUILD_OUTPOST && remove) {
 		// Wenn wir jetzt die Station gebaut haben, dann müssen wir die alten Station aus der
 		// Schiffsliste nehmen
 		for(CShipMap::iterator k = m_ShipMap.begin(); k != m_ShipMap.end(); ++k)
-			if ((k->second->GetShipType() == SHIP_TYPE::OUTPOST 
-				|| k->second->GetShipType() == SHIP_TYPE::STARBASE) 
-				&& k->second->GetKO() == sector.GetKO()) {
-				// ebenfalls muss die Station aus der Shiphistory der aktuellen Schiffe entfernt werden
-				pMajor->GetShipHistory()->RemoveShip(k->second);
+			if (k->second->IsStation() && k->second->GetKO() == sector.GetKO())
+			{
 				assert(k->second->Key() != ship.Key());
+				k->second->Scrap(*pMajor, sector, system, false);
 				m_ShipMap.EraseAt(k, true);
 				break;
 			}
@@ -3841,7 +3838,7 @@ void CBotEDoc::CalcShipOrders()
 		}
 		// hier wird ein Aussenposten/Sternbasis gebaut/geupgradet
 		else if (y->second->IsDoingStationWork()) {
-			if(BuildStation(*y->second, *pSector, current_order)) {
+			if(BuildStation(*y->second, *pSector, current_order, *pSystem)) {
 				RemoveShip(y);
 				increment = false;
 				continue;
@@ -3850,7 +3847,7 @@ void CBotEDoc::CalcShipOrders()
 		// Wenn wir das Schiff abracken/zerst?ren/demontieren wollen
 		else if (current_order == SHIP_ORDER::DESTROY_SHIP)	// das Schiff wird demontiert
 		{
-			y->second->Scrap(*pMajor, *pSector, *pSystem);
+			y->second->Scrap(*pMajor, *pSector, *pSystem, true);
 			m_ShipMap.EraseAt(y, true);//no memory leak for fleet ships due to Reset() call in CShips::~CShips()
 			increment = false;
 			continue;
