@@ -113,6 +113,9 @@ public:
 		CHull* GetHull(void) {return m_Leader.GetHull();}
 		const CHull* GetHull(void) const {return m_Leader.GetHull();}
 		bool IsAlive() const {return m_Leader.IsAlive();}
+		bool IsDoingStationWork(SHIP_ORDER::Typ ignore = SHIP_ORDER::NONE) const {
+			return m_Leader.IsDoingStationWork(ignore);
+		}
 		CShield* GetShield(void) {return m_Leader.GetShield();}
 		const CShield* GetShield(void) const {return m_Leader.GetShield();}
 		CArray<CTorpedoWeapons, CTorpedoWeapons>* GetTorpedoWeapons(void) {return m_Leader.GetTorpedoWeapons();}

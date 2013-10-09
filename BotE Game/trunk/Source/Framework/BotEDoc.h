@@ -317,7 +317,7 @@ protected:
 
 	/////BEGIN: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
 protected:
-	bool BuildStation(SHIP_TYPE::Typ, CShips& ship, CSector& sector, SHIP_ORDER::Typ);
+	bool BuildStation(CShips& ship, CSector& sector, SHIP_ORDER::Typ);
 	/////END: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
 	/// Diese Funktion berechnet die Schiffsbefehle. Der Systemangriffsbefehl ist davon ausgenommen.
 	void CalcShipOrders();

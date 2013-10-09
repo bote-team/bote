@@ -3618,11 +3618,13 @@ void CBotEDoc::CalcTrade()
 
 /////BEGIN: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
 
-bool CBotEDoc::BuildStation(SHIP_TYPE::Typ type, CShips& ship, CSector& sector, SHIP_ORDER::Typ order) {
+bool CBotEDoc::BuildStation(CShips& ship, CSector& sector, SHIP_ORDER::Typ order) {
 	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(ship.GetOwnerOfShip()));
 	assert(pMajor);
 	const CString& owner = ship.GetOwnerOfShip();
 
+	const SHIP_TYPE::Typ type = (order == SHIP_ORDER::BUILD_STARBASE || order == SHIP_ORDER::UPGRADE_STARBASE)
+		? SHIP_TYPE::STARBASE : SHIP_TYPE::OUTPOST;
 	const short id = pMajor->BestBuildableVariant(type, m_ShipInfoArray);
 	assert(id != -1);
 	bool remove = false;
@@ -3838,13 +3840,8 @@ void CBotEDoc::CalcShipOrders()
 			}
 		}
 		// hier wird ein Aussenposten/Sternbasis gebaut/geupgradet
-		else if (current_order == SHIP_ORDER::BUILD_OUTPOST 
-			|| current_order == SHIP_ORDER::BUILD_STARBASE 
-			|| current_order == SHIP_ORDER::UPGRADE_OUTPOST 
-			|| current_order == SHIP_ORDER::UPGRADE_STARBASE) {
-			if(BuildStation((current_order == SHIP_ORDER::BUILD_OUTPOST 
-				|| current_order == SHIP_ORDER::UPGRADE_OUTPOST) 
-				? SHIP_TYPE::OUTPOST : SHIP_TYPE::STARBASE, *y->second, *pSector, current_order)) {
+		else if (y->second->IsDoingStationWork()) {
+			if(BuildStation(*y->second, *pSector, current_order)) {
 				RemoveShip(y);
 				increment = false;
 				continue;

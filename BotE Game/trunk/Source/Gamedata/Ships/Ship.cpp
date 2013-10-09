@@ -884,17 +884,13 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
 		case SHIP_ORDER::TERRAFORM:
 			return GetColonizePoints() >= 1;
 		case SHIP_ORDER::BUILD_OUTPOST:
-			return m_iStationBuildPoints >= 1 && m_iCurrentOrder != SHIP_ORDER::BUILD_STARBASE 
-				&& m_iCurrentOrder != SHIP_ORDER::UPGRADE_OUTPOST && m_iCurrentOrder != SHIP_ORDER::UPGRADE_STARBASE;
+			return m_iStationBuildPoints >= 1 && !IsDoingStationWork(SHIP_ORDER::BUILD_OUTPOST);
 		case SHIP_ORDER::BUILD_STARBASE:
-			return m_iStationBuildPoints >= 1 && m_iCurrentOrder != SHIP_ORDER::BUILD_OUTPOST 
-				&& m_iCurrentOrder != SHIP_ORDER::UPGRADE_OUTPOST && m_iCurrentOrder != SHIP_ORDER::UPGRADE_STARBASE;
+			return m_iStationBuildPoints >= 1 && !IsDoingStationWork(SHIP_ORDER::BUILD_STARBASE);
 		case SHIP_ORDER::UPGRADE_OUTPOST:
-			return m_iStationBuildPoints >= 1 && m_iCurrentOrder != SHIP_ORDER::BUILD_OUTPOST 
-				&& m_iCurrentOrder != SHIP_ORDER::BUILD_STARBASE && m_iCurrentOrder != SHIP_ORDER::UPGRADE_STARBASE;
+			return m_iStationBuildPoints >= 1 && !IsDoingStationWork(SHIP_ORDER::UPGRADE_OUTPOST);
 		case SHIP_ORDER::UPGRADE_STARBASE:
-			return m_iStationBuildPoints >= 1 && m_iCurrentOrder != SHIP_ORDER::BUILD_OUTPOST 
-				&& m_iCurrentOrder != SHIP_ORDER::BUILD_STARBASE && m_iCurrentOrder != SHIP_ORDER::UPGRADE_OUTPOST;
+			return m_iStationBuildPoints >= 1 && !IsDoingStationWork(SHIP_ORDER::UPGRADE_STARBASE);
 		case SHIP_ORDER::BLOCKADE_SYSTEM:
 			return HasSpecial(SHIP_SPECIAL::BLOCKADESHIP);
 		case SHIP_ORDER::ATTACK_SYSTEM:
@@ -911,6 +907,19 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
 
 bool CShip::CanCloak() const {
 	return m_iStealthGrade >= 4 && !IsStation();
+}
+
+bool CShip::IsDoingStationWork(SHIP_ORDER::Typ ignore) const
+{
+	const SHIP_ORDER::Typ values[] = { SHIP_ORDER::BUILD_OUTPOST, SHIP_ORDER::BUILD_STARBASE,
+		SHIP_ORDER::UPGRADE_OUTPOST, SHIP_ORDER::UPGRADE_STARBASE };
+	std::set<SHIP_ORDER::Typ> station_orders(values, values + sizeof(values)/sizeof(SHIP_ORDER::Typ));
+	if(ignore != SHIP_ORDER::NONE)
+		station_orders.erase(ignore);
+	for(std::set<SHIP_ORDER::Typ>::const_iterator it = station_orders.begin(); it != station_orders.end(); ++it)
+		if(m_iCurrentOrder == *it)
+			return true;
+	return false;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -1478,8 +1487,7 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 	if(!fleetship) {
 		// Wenn das Schiff gerade eine Station baut, so dies dem Sektor mitteilen
 		const SHIP_ORDER::Typ current_order = GetCurrentOrder();
-		if (current_order == SHIP_ORDER::BUILD_OUTPOST || current_order == SHIP_ORDER::BUILD_STARBASE 
-			|| current_order == SHIP_ORDER::UPGRADE_OUTPOST || current_order == SHIP_ORDER::UPGRADE_STARBASE)
+		if (IsDoingStationWork())
 			sector.SetIsStationBuilding(current_order, sRace);
 		// Wenn das Schiff gerade Terraform, so dies dem Planeten mitteilen
 		else if (current_order == SHIP_ORDER::TERRAFORM)
