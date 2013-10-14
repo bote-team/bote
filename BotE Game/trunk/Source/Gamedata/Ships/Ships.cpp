@@ -572,15 +572,15 @@ CShips::StationWorkResult CShips::BuildStation(SHIP_ORDER::Typ order, CSector& s
 	return result;
 }
 
-void CShips::Scrap(CMajor& major, CSector& se, CSystem& sy, bool unset_station)
+void CShips::Scrap(CMajor& major, CSector& se, CSystem& sy, bool disassembly)
 {
 	for(CShips::const_iterator x = begin(); x != end(); ++x)
-		x->second->Scrap(major, se, sy, unset_station);
-	m_Leader.Scrap(major, se, sy, unset_station);
+		x->second->Scrap(major, se, sy, disassembly);
+	m_Leader.Scrap(major, se, sy, disassembly);
 
 	// Wenn es ein Au?enposten oder eine Sternbasis ist,
 	// dann dem Sektor bekanntgeben, dass in ihm keine Station mehr ist
-	if (IsStation() && unset_station)
+	if (IsStation() && disassembly)
 	{
 		se.UnsetOutpost(GetOwnerOfShip());
 		se.UnsetStarbase(GetOwnerOfShip());

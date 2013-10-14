@@ -1532,10 +1532,10 @@ bool CShip::BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major, 
 	return true;
 }
 
-void CShip::Scrap(CMajor& major, const CSector& se, CSystem& sy, bool unset_station) {
+void CShip::Scrap(CMajor& major, const CSector& se, CSystem& sy, bool disassembly) {
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 	major.GetShipHistory()->ModifyShip(&CShips(*this), se.GetName(TRUE),
-		resources::pDoc->GetCurrentRound(), CLoc::GetString((unset_station) ? 
+		resources::pDoc->GetCurrentRound(), CLoc::GetString(disassembly ?
 		"DISASSEMBLY" : "UPGRADE"), CLoc::GetString("DESTROYED"));
 	if(sy.GetOwnerOfSystem() != m_sOwnerOfShip)
 		return;

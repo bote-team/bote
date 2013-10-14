@@ -359,7 +359,7 @@ public:
 	StationWorkResult BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major, short id);
 
 
-	void Scrap(CMajor& major, CSector& se, CSystem& sy, bool unset_station);
+	void Scrap(CMajor& major, CSector& se, CSystem& sy, bool disassembly);
 
 	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Auﬂer Erfahrung im Kampf, diese werden nach einem
 	/// Kampf direkt verteilt.
