@@ -4,26 +4,6 @@ class CShipMap;
 class CMajor;
 class CMinor;
 
-enum GLOBALEVENTTYPE
-{
-	GLOBALEVENTSYSTEM = 0,
-	GLOBALEVENTRESEARCH = 1,
-	GLOBALEVENTMINOR = 2
-};
-
-enum SYSTEMEVENTTYPE
-{
-	SYSTEMEVENTMORALBOOST=0,// Moral bonus
-	SYSTEMEVENTMORALMALUS=1,// Moral malus
-	SYSTEMEVENTPLANETMOVEMENT=2,
-	SYSTEMEVENTDEMOGRAPHIC=3
-};
-enum EXPLOREEVENTTYPE
-{
-	ALIENTEC=0,
-	EVENTSHIPXP=1
-};
-
 /// Singleton-Klasse zum Berechnen der Random Events (Random Event Manager)
 class CRandomEventCtrl : public CObject
 {
@@ -33,6 +13,26 @@ private:
 
 	/// Den Kopierkonstruktor schützen um zu vermeiden, dass das Objekt unbeabsichtigt kopiert wird.
 	CRandomEventCtrl(const CRandomEventCtrl& cc);
+
+	enum GLOBALEVENTTYPE
+	{
+		GLOBALEVENTSYSTEM,
+		GLOBALEVENTRESEARCH,
+		GLOBALEVENTMINOR
+	};
+
+	enum SYSTEMEVENTTYPE
+	{
+		SYSTEMEVENTMORALBOOST,// Moral bonus
+		SYSTEMEVENTMORALMALUS,// Moral malus
+		SYSTEMEVENTPLANETMOVEMENT,
+		SYSTEMEVENTDEMOGRAPHIC
+	};
+	enum EXPLOREEVENTTYPE
+	{
+		ALIENTEC,
+		EVENTSHIPXP
+	};
 
 public:
 	/// Standarddestruktor
@@ -57,6 +57,7 @@ public:
 
 private:
 	// Für Random Events die nur ein System betreffen
+	// @return true in case an event happened
 	bool SystemEvent(const CPoint &ko, CMajor* pRace);
 
 	//Für globale Events

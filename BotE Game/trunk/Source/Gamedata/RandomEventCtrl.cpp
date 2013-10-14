@@ -49,7 +49,7 @@ void CRandomEventCtrl::CalcEvents(CMajor* pRace)
 		return;
 
 	CBotEDoc const* pDoc = resources::pDoc;
-	const unsigned event_type = rand() % 3;
+	const unsigned event_type = rand() % (GLOBALEVENTMINOR + 1);
 	if(event_type == GLOBALEVENTSYSTEM)//system affecting event
 	{
 		//Calculate whether such event happens. The more systems we have, the more
@@ -64,7 +64,9 @@ void CRandomEventCtrl::CalcEvents(CMajor* pRace)
 		//Major home systems are generally unaffected. Unbalances too much.
 		if(pDoc->GetRaceKO(pRace->GetRaceID()) == ko)
 			return;
-		for(int i=0;i<100&&(!SystemEvent(ko, pRace));i++);
+		for(int i=0; i<100; i++)
+			if(SystemEvent(ko, pRace))
+				break;
 	}
 	else if (event_type == GLOBALEVENTRESEARCH){
 		if(rand() % 99 >= static_cast<int>(m_uiGlobalProb))
@@ -95,7 +97,7 @@ bool CRandomEventCtrl::SystemEvent(const CPoint &ko, CMajor* pRace)
 	ASSERT(pDoc);
 	//ko= Systemkoordinate
 	CString sMsgText;//Nachrichtentext
-	int nEventNumber=rand()%4;
+	int nEventNumber=rand()% (SYSTEMEVENTDEMOGRAPHIC + 1);
 
 	if(nEventNumber==SYSTEMEVENTMORALBOOST)//If abfrage mit allen möglichen Randomevents; evtl. hier bedingungen einfügen
 	{
@@ -118,7 +120,7 @@ bool CRandomEventCtrl::SystemEvent(const CPoint &ko, CMajor* pRace)
 		pRace->GetEmpire()->AddMsg(message);
 		resources::pClientWorker->SetToEmpireViewFor(*pRace);
 	}
-	return sMsgText.IsEmpty();
+	return !sMsgText.IsEmpty();
 }
 
 void CRandomEventCtrl::GlobalEventResearch(CMajor *pRace)
