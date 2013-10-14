@@ -859,7 +859,10 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 			// Dann stecken das angeklickte Schiff in die gerade angezeigte Flotte stecken
 			// Fremde Flotten können nicht bearbeitet werden
 			const CShipMap::iterator& fleetship = pDoc->FleetShip();
-			assert(fleetship->second->GetOwnerOfShip() == pMajor->GetRaceID());
+			//double-clicking a foreign fleet gets us into the fleet view for that fleet
+			//clicking an own ship to add it then must be aborted here
+			if(fleetship->second->GetOwnerOfShip() != pMajor->GetRaceID())
+				return;
 			const CShipMap::iterator& current_ship = pDoc->CurrentShip();
 			// Jetzt fügen wir der Flotte das angeklickte Schiff hinzu, wenn es nicht das Schiff selbst ist,
 			// welches die Flotte anführt
@@ -869,7 +872,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 			assert(fleetship->second->GetKO() == current_ship->second->GetKO());
 			// sicherheitshalber wird hier nochmal überprüft, dass keine Station hinzugefügt werden kann und
 			// das sich das Schiff auch im gleichen Sektor befindet
-			if (fleetship->second->GetOwnerOfShip() == current_ship->second->GetOwnerOfShip() && !current_ship->second->IsStation())
+			if (!current_ship->second->IsStation())
 			{
 				// Wenn das Schiff welches wir hinzufügen wollen selbst eine Flotte besizt, so müssen
 				// wir diese Flotte natürlich auch noch hinzufügen
