@@ -1016,9 +1016,11 @@ bool CSector::IsStationBuildable(SHIP_ORDER::Typ order, const CString& race) con
 		SHIP_TYPE::Typ type = (order == SHIP_ORDER::UPGRADE_OUTPOST) 
 			? SHIP_TYPE::OUTPOST : SHIP_TYPE::STARBASE;
 		USHORT bestbuildableID = pMajor->BestBuildableVariant(type, pDoc->m_ShipInfoArray);
+		USHORT industry = pDoc->m_ShipInfoArray.GetAt(bestbuildableID-10000).GetBaseIndustry();
 		for(CShipMap::const_iterator k = pDoc->m_ShipMap.begin(); k != pDoc->m_ShipMap.end(); ++k)
 			if (k->second->GetShipType() == type && k->second->GetKO() == m_KO) {
-				if (k->second->GetID() < bestbuildableID) {
+				if (pDoc->m_ShipInfoArray.GetAt(k->second->GetID()-10000).GetBaseIndustry() 
+					< industry) {
 					return StationBuildContinuable(race, *this);
 				}
 				break;
