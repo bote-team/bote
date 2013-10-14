@@ -576,7 +576,7 @@ void CShips::Scrap(CMajor& major, CSector& se, CSystem& sy, bool unset_station)
 {
 	for(CShips::const_iterator x = begin(); x != end(); ++x)
 		x->second->Scrap(major, se, sy, unset_station);
-	m_Leader.Scrap(major, se, sy);
+	m_Leader.Scrap(major, se, sy, unset_station);
 
 	// Wenn es ein Au?enposten oder eine Sternbasis ist,
 	// dann dem Sektor bekanntgeben, dass in ihm keine Station mehr ist

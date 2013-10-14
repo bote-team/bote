@@ -318,6 +318,8 @@ runs
 destroyed
 [DISASSEMBLY]
 Disassembly
+[UPGRADE]
+Upgrade
 [COMBAT]
 Combat
 [COMMODITIES]

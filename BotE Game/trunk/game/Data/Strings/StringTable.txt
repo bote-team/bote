@@ -318,6 +318,8 @@ läuft
 zerstört
 [DISASSEMBLY]
 Demontage
+[UPGRADE]
+Upgrade
 [COMBAT]
 Kampf
 [COMMODITIES]

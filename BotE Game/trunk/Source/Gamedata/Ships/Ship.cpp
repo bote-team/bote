@@ -1532,10 +1532,11 @@ bool CShip::BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major, 
 	return true;
 }
 
-void CShip::Scrap(CMajor& major, const CSector& se, CSystem& sy) {
+void CShip::Scrap(CMajor& major, const CSector& se, CSystem& sy, bool unset_station) {
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 	major.GetShipHistory()->ModifyShip(&CShips(*this), se.GetName(TRUE),
-		resources::pDoc->GetCurrentRound(), CLoc::GetString("DISASSEMBLY"),	CLoc::GetString("DESTROYED"));
+		resources::pDoc->GetCurrentRound(), CLoc::GetString((unset_station) ? 
+		"DISASSEMBLY" : "UPGRADE"), CLoc::GetString("DESTROYED"));
 	if(sy.GetOwnerOfSystem() != m_sOwnerOfShip)
 		return;
 	// wenn wir in dem Sector wo wir das Schiff demoniteren ein uns gehörendes System haben,
