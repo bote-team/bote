@@ -87,7 +87,7 @@ public:
 	// Funktion gibt die Anzahl oder die RunningNumber (ID) der Gebäude zurück, welche Arbeiter benötigen.
 	// Wir übergeben dafür als Parameter den Typ des Gebäudes (FARM, BAUHOF usw.) und einen Modus.
 	// Ist der Modus NULL, dann bekommen wir die Anzahl zurück, ist der Modus EINS, dann die RunningNumber.
-	USHORT GetNumberOfWorkbuildings(WORKER::Typ nWorker, int Modus, BuildingInfoArray* buildingInfos) const;
+	USHORT GetNumberOfWorkbuildings(WORKER::Typ nWorker, int Modus) const;
 
 	// Funktion gibt die Anzahl des Gebäudes mit der übergebenen RunningNumber zurück.
 	USHORT GetNumberOfBuilding(USHORT runningNumber) const;

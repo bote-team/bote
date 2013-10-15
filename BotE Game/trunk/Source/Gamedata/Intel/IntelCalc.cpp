@@ -531,7 +531,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 			if (i != WORKER::SECURITY_WORKER && i != WORKER::RESEARCH_WORKER)
 			{
 				WORKER::Typ nWorker = (WORKER::Typ)i;
-				buildingTypes[i] = m_pDoc->GetSystem(sectors.GetAt(random).x, sectors.GetAt(random).y).GetNumberOfWorkbuildings(nWorker, 0, NULL);
+				buildingTypes[i] = m_pDoc->GetSystem(sectors.GetAt(random).x, sectors.GetAt(random).y).GetNumberOfWorkbuildings(nWorker, 0);
 				if (buildingTypes[i] > NULL)
 				{
 					start = i;
@@ -549,7 +549,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 		{
 			WORKER::Typ nWorker = (WORKER::Typ)start;
 			CEcoIntelObj* report = new CEcoIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)),
-				m_pDoc->GetSystem(sectors.GetAt(random).x, sectors.GetAt(random).y).GetNumberOfWorkbuildings(nWorker, 1, &m_pDoc->BuildingInfo), (BYTE)buildingTypes[start]);
+				m_pDoc->GetSystem(sectors.GetAt(random).x, sectors.GetAt(random).y).GetNumberOfWorkbuildings(nWorker, 1), (BYTE)buildingTypes[start]);
 			// Intelreport dem Akteur hinzufügen
 			if (report)
 			{
@@ -742,11 +742,11 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 		}
 
 		// ansonsten werden Gebäude welche Arbeiter benötigen ausspioniert
-		USHORT buildings = m_pDoc->GetSystem(sectors.GetAt(random).x, sectors.GetAt(random).y).GetNumberOfWorkbuildings(WORKER::RESEARCH_WORKER, 0, NULL);
+		USHORT buildings = m_pDoc->GetSystem(sectors.GetAt(random).x, sectors.GetAt(random).y).GetNumberOfWorkbuildings(WORKER::RESEARCH_WORKER, 0);
 		if (buildings > 0)
 		{
 			CScienceIntelObj* report = new CScienceIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)),
-				m_pDoc->GetSystem(sectors.GetAt(random).x, sectors.GetAt(random).y).GetNumberOfWorkbuildings(WORKER::RESEARCH_WORKER, 1, &m_pDoc->BuildingInfo), (BYTE)buildings);
+				m_pDoc->GetSystem(sectors.GetAt(random).x, sectors.GetAt(random).y).GetNumberOfWorkbuildings(WORKER::RESEARCH_WORKER, 1), (BYTE)buildings);
 			// Intelreport dem Akteur hinzufügen
 			if (report)
 			{
@@ -881,11 +881,11 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 		if (rand()%3 == NULL)	// zu 33% wird versucht ein arbeiterbenötigendes Gebäude zu spionieren
 		{
 			// ansonsten werden Gebäude welche Arbeiter benötigen ausspioniert
-			USHORT buildings = m_pDoc->GetSystem(sectors.GetAt(random).x, sectors.GetAt(random).y).GetNumberOfWorkbuildings(WORKER::SECURITY_WORKER, 0, NULL);
+			USHORT buildings = m_pDoc->GetSystem(sectors.GetAt(random).x, sectors.GetAt(random).y).GetNumberOfWorkbuildings(WORKER::SECURITY_WORKER, 0);
 			if (buildings > 0)
 			{
 				CMilitaryIntelObj* report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)),
-					m_pDoc->GetSystem(sectors.GetAt(random).x, sectors.GetAt(random).y).GetNumberOfWorkbuildings(WORKER::SECURITY_WORKER, 1, &m_pDoc->BuildingInfo), (BYTE)buildings, TRUE, FALSE, FALSE);
+					m_pDoc->GetSystem(sectors.GetAt(random).x, sectors.GetAt(random).y).GetNumberOfWorkbuildings(WORKER::SECURITY_WORKER, 1), (BYTE)buildings, TRUE, FALSE, FALSE);
 				// Intelreport dem Akteur hinzufügen
 				if (report)
 				{

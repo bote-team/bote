@@ -676,7 +676,7 @@ void CSystemAI::AssignWorkers()
 	{
 		if (system.GetWorker(WORKER::FREE_WORKER) > 0)
 		{
-			if (system.GetWorker(WORKER::FOOD_WORKER) >= system.GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0, NULL))
+			if (system.GetWorker(WORKER::FOOD_WORKER) >= system.GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0))
 				break;
 			system.GetWorker()->InkrementWorker(WORKER::FOOD_WORKER);
 			CalcProd();
@@ -726,7 +726,7 @@ void CSystemAI::AssignWorkers()
 	{
 		if (system.GetWorker(WORKER::FREE_WORKER) > 0)
 		{
-			if (system.GetWorker(WORKER::ENERGY_WORKER) >= system.GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 0, NULL))
+			if (system.GetWorker(WORKER::ENERGY_WORKER) >= system.GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 0))
 				break;
 			system.GetWorker()->InkrementWorker(WORKER::ENERGY_WORKER);
 			CalcProd();
@@ -776,10 +776,10 @@ void CSystemAI::AssignWorkers()
 				int workers = (freeWorkers * percentage[nWorker]) / 100;
 				for (int j = 0; j < workers; j++)
 				{
-					if (system.GetNumberOfWorkbuildings(nWorker,0,NULL) > system.GetWorker(nWorker))
+					if (system.GetNumberOfWorkbuildings(nWorker,0) > system.GetWorker(nWorker))
 					{
 						system.GetWorker()->InkrementWorker(nWorker);
-						if (system.GetWorker(nWorker) == system.GetNumberOfWorkbuildings(nWorker, 0, NULL))
+						if (system.GetWorker(nWorker) == system.GetNumberOfWorkbuildings(nWorker, 0))
 							break;
 					}
 				}
@@ -792,7 +792,7 @@ void CSystemAI::AssignWorkers()
 	if (system.GetAssemblyList()->GetAssemblyListEntry(0) != 0)
 	{
 		if (system.GetWorker(WORKER::FREE_WORKER) > 0)
-			while (system.GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER,0,NULL) > system.GetWorker(WORKER::INDUSTRY_WORKER))
+			while (system.GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER,0) > system.GetWorker(WORKER::INDUSTRY_WORKER))
 			{
 				system.GetWorker()->InkrementWorker(WORKER::INDUSTRY_WORKER);
 				system.GetWorker()->CalculateFreeWorkers();
@@ -814,7 +814,7 @@ void CSystemAI::AssignWorkers()
 	for (int i = WORKER::SECURITY_WORKER; i <= WORKER::IRIDIUM_WORKER; i++)
 	{
 		WORKER::Typ nWorker = (WORKER::Typ)i;
-		numberOfWorkBuildings += system.GetNumberOfWorkbuildings(nWorker,0,NULL);
+		numberOfWorkBuildings += system.GetNumberOfWorkbuildings(nWorker,0);
 		workers += system.GetWorker(nWorker);
 	}
 
@@ -823,7 +823,7 @@ void CSystemAI::AssignWorkers()
 		// Zufälligen Arbeiter zwischen Geheimdienst- und Iridiumarbeiter wählen
 		WORKER::Typ nWorker = (WORKER::Typ)(rand()%WORKER::ALL_WORKER);
 		// Alle Arbeiter werden mit einer zufälligen Anzahl besetzt
-		if (system.GetNumberOfWorkbuildings(nWorker,0,NULL) > system.GetWorker(nWorker))
+		if (system.GetNumberOfWorkbuildings(nWorker,0) > system.GetWorker(nWorker))
 		{
 			workers++;
 			system.GetWorker()->InkrementWorker(nWorker);
@@ -835,7 +835,7 @@ void CSystemAI::AssignWorkers()
 	// Denn dadruch bekommen wir bei Handelswaren mehr Credits.
 	while (system.GetWorker(WORKER::FREE_WORKER) > 0)
 	{
-		if (system.GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER,0,NULL) > system.GetWorker(WORKER::INDUSTRY_WORKER))
+		if (system.GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER,0) > system.GetWorker(WORKER::INDUSTRY_WORKER))
 		{
 			system.GetWorker()->InkrementWorker(WORKER::INDUSTRY_WORKER);
 			system.GetWorker()->CalculateFreeWorkers();
@@ -888,8 +888,8 @@ void CSystemAI::ScrapBuildings()
 		}
 		if (currentHab > (maxHab * 0.8))
 		{
-			int n = m_pDoc->GetSystem(ko.x, ko.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0, NULL) - m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->GetWorker(WORKER::FOOD_WORKER);
-			int id = m_pDoc->GetSystem(ko.x, ko.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 1, &m_pDoc->BuildingInfo);
+			int n = m_pDoc->GetSystem(ko.x, ko.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0) - m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->GetWorker(WORKER::FOOD_WORKER);
+			int id = m_pDoc->GetSystem(ko.x, ko.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 1);
 			while (n > 1)
 			{
 				m_pDoc->GetSystem(ko.x, ko.y).SetBuildingDestroy(id, TRUE);
@@ -900,8 +900,8 @@ void CSystemAI::ScrapBuildings()
 
 	if (m_pDoc->GetSystem(ko.x, ko.y).GetProduction()->GetEnergyProd() > 0)
 	{
-		int n = m_pDoc->GetSystem(ko.x, ko.y).GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 0, NULL) - m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->GetWorker(WORKER::ENERGY_WORKER);
-		int id = m_pDoc->GetSystem(ko.x, ko.y).GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 1, &m_pDoc->BuildingInfo);
+		int n = m_pDoc->GetSystem(ko.x, ko.y).GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 0) - m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->GetWorker(WORKER::ENERGY_WORKER);
+		int id = m_pDoc->GetSystem(ko.x, ko.y).GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 1);
 		while (n > 3)
 		{
 			m_pDoc->GetSystem(ko.x, ko.y).SetBuildingDestroy(id, TRUE);
@@ -1188,7 +1188,7 @@ int CSystemAI::GetFoodPrio(double dMaxHab) const
 	// Restliche Arbeiter berechnen (diesen Wert aber durch 1.5 teilen, damit er nicht so stark eingeht)
 	int nRestWorkers = floor(dMaxHab - dCurHab) / 1.5;
 
-	if (m_pDoc->GetSystem(m_KO.x, m_KO.y).GetWorker(WORKER::ALL_WORKER) + nRestWorkers < m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0, NULL))
+	if (m_pDoc->GetSystem(m_KO.x, m_KO.y).GetWorker(WORKER::ALL_WORKER) + nRestWorkers < m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0))
 		return 0;
 
 	/// existieren Gebäude welche die jeweilige Priorität ermöglichen
@@ -1226,7 +1226,7 @@ int CSystemAI::GetIndustryPrio(double dMaxHab) const
 	// Restliche Arbeiter berechnen (diesen Wert aber durch 1.5 teilen, damit er nicht so stark eingeht)
 	int nRestWorkers = floor(dMaxHab - dCurHab) / 1.5;
 
-	if (m_pDoc->GetSystem(m_KO.x, m_KO.y).GetWorker(WORKER::ALL_WORKER) + nRestWorkers < m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 0, NULL) + m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0, NULL))
+	if (m_pDoc->GetSystem(m_KO.x, m_KO.y).GetWorker(WORKER::ALL_WORKER) + nRestWorkers < m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 0) + m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0))
 		return 0;
 
 	// existieren Gebäude welche die jeweilige Priorität ermöglichen
@@ -1240,10 +1240,10 @@ int CSystemAI::GetIndustryPrio(double dMaxHab) const
 
 	// Arbeiter temporär auf Maximum stellen
 	USHORT nWorkers  = m_pDoc->GetSystem(m_KO.x, m_KO.y).GetWorker(WORKER::INDUSTRY_WORKER);
-	USHORT nNumber	 = m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 0, NULL);
+	USHORT nNumber	 = m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 0);
 	if (nWorkers == 0)
 	{
-		short nID = m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 1, &m_pDoc->BuildingInfo);
+		short nID = m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 1);
 		if (nID > 0)
 			nIPProd = m_pDoc->GetBuildingInfo(nID).GetIPProd() * nNumber;
 	}
@@ -1298,7 +1298,7 @@ int CSystemAI::GetEnergyPrio(double dMaxHab) const
 	// Restliche Arbeiter berechnen (diesen Wert aber durch 1.5 teilen, damit er nicht so stark eingeht)
 	int nRestWorkers = floor(dMaxHab - dCurHab) / 1.5;
 
-	if (m_pDoc->GetSystem(m_KO.x, m_KO.y).GetWorker(WORKER::ALL_WORKER) + nRestWorkers < m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 0, NULL) + m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0, NULL))
+	if (m_pDoc->GetSystem(m_KO.x, m_KO.y).GetWorker(WORKER::ALL_WORKER) + nRestWorkers < m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 0) + m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0))
 		return 0;
 
 	// existieren Gebäude welche die jeweilige Priorität ermöglichen
@@ -1309,10 +1309,10 @@ int CSystemAI::GetEnergyPrio(double dMaxHab) const
 	int nEnergyProd = m_pDoc->GetSystem(m_KO.x, m_KO.y).GetProduction()->GetMaxEnergyProd();
 	// Arbeiter temporär auf maximum stellen
 	USHORT nWorkers = m_pDoc->GetSystem(m_KO.x, m_KO.y).GetWorker(WORKER::ENERGY_WORKER);
-	USHORT nNumber	= m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 0, NULL);
+	USHORT nNumber	= m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 0);
 	if (nWorkers == 0)
 	{
-		short nID = m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 1, &m_pDoc->BuildingInfo);
+		short nID = m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 1);
 		if (nID > NULL)
 			nEnergyProd = m_pDoc->GetBuildingInfo(nID).GetEnergyProd() * nNumber;
 	}
@@ -1351,7 +1351,7 @@ int CSystemAI::GetIntelPrio(double dMaxHab) const
 	// Restliche Arbeiter berechnen (diesen Wert aber durch 1.5 teilen, damit er nicht so stark eingeht)
 	int nRestWorkers = floor(dMaxHab - dCurHab) / 1.5;
 
-	if (m_pDoc->GetSystem(m_KO.x, m_KO.y).GetWorker(WORKER::ALL_WORKER) + nRestWorkers < m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::SECURITY_WORKER, 0, NULL) + m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0, NULL))
+	if (m_pDoc->GetSystem(m_KO.x, m_KO.y).GetWorker(WORKER::ALL_WORKER) + nRestWorkers < m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::SECURITY_WORKER, 0) + m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0))
 		return 0;
 
 	// existieren Gebäude welche die jeweilige Priorität ermöglichen
@@ -1375,7 +1375,7 @@ int CSystemAI::GetResearchPrio(double dMaxHab) const
 	// Restliche Arbeiter berechnen (diesen Wert aber durch 1.5 teilen, damit er nicht so stark eingeht)
 	int nRestWorkers = floor(dMaxHab - dCurHab) / 1.5;
 
-	if (m_pDoc->GetSystem(m_KO.x, m_KO.y).GetWorker(WORKER::ALL_WORKER) + nRestWorkers < m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::RESEARCH_WORKER, 0, NULL) + m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0, NULL))
+	if (m_pDoc->GetSystem(m_KO.x, m_KO.y).GetWorker(WORKER::ALL_WORKER) + nRestWorkers < m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::RESEARCH_WORKER, 0) + m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0))
 		return 0;
 
 	// existieren Gebäude welche die jeweilige Priorität ermöglichen
@@ -1415,7 +1415,7 @@ int CSystemAI::GetResourcePrio(WORKER::Typ nWorker, double dMaxHab) const
 	// Restliche Arbeiter berechnen (diesen Wert aber durch 1.5 teilen, damit er nicht so stark eingeht)
 	int nRestWorkers = floor(dMaxHab - dCurHab) / 1.5;
 
-	if (m_pDoc->GetSystem(m_KO.x, m_KO.y).GetWorker(WORKER::ALL_WORKER) + nRestWorkers < m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(nWorker, 0, NULL) + m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0, NULL))
+	if (m_pDoc->GetSystem(m_KO.x, m_KO.y).GetWorker(WORKER::ALL_WORKER) + nRestWorkers < m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(nWorker, 0) + m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0))
 		return 0;
 
 	// existieren Gebäude welche die jeweilige Priorität ermöglichen
@@ -1425,10 +1425,10 @@ int CSystemAI::GetResourcePrio(WORKER::Typ nWorker, double dMaxHab) const
 	int nResProd = m_pDoc->GetSystem(m_KO.x, m_KO.y).GetProduction()->GetResourceProd(nRes);
 	// Arbeiter temporär auf maximum stellen
 	USHORT nWorkers	= m_pDoc->GetSystem(m_KO.x, m_KO.y).GetWorker(nWorker);
-	USHORT nNumber	= m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(nWorker, 0, NULL);
+	USHORT nNumber	= m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(nWorker, 0);
 	if (nWorkers == 0)
 	{
-		short nID = m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(nWorker, 1, &m_pDoc->BuildingInfo);
+		short nID = m_pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfWorkbuildings(nWorker, 1);
 		if (nID > 0)
 			nResProd = m_pDoc->GetBuildingInfo(nID).GetResourceProd(nRes) * nNumber;
 	}

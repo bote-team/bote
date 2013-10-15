@@ -302,7 +302,7 @@ int CSystem::GetNeededRoundsToCompleteProject(int nID)
 // Funktion gibt die Anzahl oder die RunningNumber (ID) der Gebäude zurück, welche Arbeiter benötigen.
 // Wir übergeben dafür als Parameter den Typ des Gebäudes (FARM, BAUHOF usw.) und einen Modus.
 // Ist der Modus NULL, dann bekommen wir die Anzahl zurück, ist der Modus EINS, dann die RunningNumber.
-USHORT CSystem::GetNumberOfWorkbuildings(WORKER::Typ nWorker, int Modus, BuildingInfoArray* buildingInfos) const
+USHORT CSystem::GetNumberOfWorkbuildings(WORKER::Typ nWorker, int Modus) const
 {
 	// "Modus" gibt an, ob wir die Anzahl der Gebäude oder die aktuelle RunningNumber
 	// des speziellen Gebäudes zurückgegeben wird
@@ -328,7 +328,7 @@ USHORT CSystem::GetNumberOfWorkbuildings(WORKER::Typ nWorker, int Modus, Buildin
 	{
 		for (int i = 0; i < m_Buildings.GetSize(); i++)
 		{
-			const CBuildingInfo* buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
+			const CBuildingInfo* buildingInfo = &resources::BuildingInfo->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
 
 			if (buildingInfo->GetWorker())
 			{
@@ -559,7 +559,7 @@ void CSystem::SetWorkersIntoBuildings()
 		for (int i = WORKER::FOOD_WORKER; i <= WORKER::IRIDIUM_WORKER; i++)
 		{
 			WORKER::Typ nWorker = (WORKER::Typ)i;
-			if (m_Workers.GetWorker(WORKER::FREE_WORKER) > 0 && GetNumberOfWorkbuildings(nWorker,0,NULL) > m_Workers.GetWorker(nWorker))
+			if (m_Workers.GetWorker(WORKER::FREE_WORKER) > 0 && GetNumberOfWorkbuildings(nWorker,0) > m_Workers.GetWorker(nWorker))
 			{
 				all_buildings_full = false;
 				m_Workers.InkrementWorker(nWorker);
@@ -2122,11 +2122,11 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 		// Ressourcen sind abhängig von der Anzahl der jeweiligen Gebäude und dem technologischen Fortschritt der
 		// Minorrace
 		this->CalculateNumberOfWorkbuildings(buildingInfo);
-		this->SetFoodStore(this->GetFoodStore() + rand()%(this->GetNumberOfWorkbuildings(WORKER::FOOD_WORKER,0,NULL) * (pMinor->GetTechnologicalProgress() + 1) * 100 + 1));
+		this->SetFoodStore(this->GetFoodStore() + rand()%(this->GetNumberOfWorkbuildings(WORKER::FOOD_WORKER,0) * (pMinor->GetTechnologicalProgress() + 1) * 100 + 1));
 		for (int res = RESOURCES::TITAN; res <= RESOURCES::IRIDIUM; res++)
 		{
 			WORKER::Typ nWorker = (WORKER::Typ)(res + 5);
-			int resAdd = rand()%(this->GetNumberOfWorkbuildings(nWorker, 0, NULL) * (pMinor->GetTechnologicalProgress() + 1) * 100 + 1);
+			int resAdd = rand()%(this->GetNumberOfWorkbuildings(nWorker, 0) * (pMinor->GetTechnologicalProgress() + 1) * 100 + 1);
 			this->SetResourceStore(res, resAdd);
 		}
 
@@ -2262,7 +2262,7 @@ void CSystem::BuildBuildingsAfterColonization(const CSector *sector, const Build
 	for (int build = WORKER::FOOD_WORKER; build <= WORKER::IRIDIUM_WORKER; build++)
 	{
 		WORKER::Typ nWorker = (WORKER::Typ)build;
-		if (this->GetNumberOfWorkbuildings(nWorker, 0, NULL) > 0)
+		if (this->GetNumberOfWorkbuildings(nWorker, 0) > 0)
 			runningNumber[build] = 0;
 		if (runningNumber[build] != 0)
 		{
