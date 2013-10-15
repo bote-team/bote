@@ -646,9 +646,10 @@ BOOLEAN CSystem::SetHabitants(double habitants)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 // Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der System-Klasse.
-void CSystem::CalculateVariables(const CResearchInfo* ResearchInfo, const std::vector<CPlanet>& planets, const CMajor* pOwner, const CString *sMonopolOwner)
+void CSystem::CalculateVariables(const CResearchInfo* ResearchInfo, const std::vector<CPlanet>& planets, const CMajor* pOwner)
 {
 	const BuildingInfoArray* const buildingInfos = resources::BuildingInfo;
+	const CString *const sMonopolOwner = CTrade::GetMonopolOwner();
 
 	int NumberOfBuildings;
 	NumberOfBuildings = m_Buildings.GetSize();

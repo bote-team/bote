@@ -50,7 +50,7 @@ public:
 	 * zum System gehörenden Sektor <code>sector</code>, einen Zeiger auf die Gebäudeinformationen <code>buildingInfos</code>
 	 * und das Feld mit den Monopolbesitzern <code>monopolOwner</code>.
 	 */
-	void Init(CRace* pDefender, CSystem* system, CShipMap* ships, CSector* sector, const CString* monopolOwner);
+	void Init(CRace* pDefender, CSystem* system, CShipMap* ships, CSector* sector);
 
 	/**
 	 * Diese Funktion führt den Angriff durch. Außerdem werden alle Berechnungen der Auswirkungen des Angriffs
@@ -90,9 +90,6 @@ private:
 
 	/// Die Koordinate des Systems auf der Map
 	CPoint m_KO;
-
-	/// Ein Zeiger auf das Feld der Monopolbesitzer
-	const CString* m_sMonopolOwner;
 
 	/// StringFeld zur Nachrichtenrückgabe über einen Angriff. Muss nicht serialisiert werden
 	CStringArray m_strNews;

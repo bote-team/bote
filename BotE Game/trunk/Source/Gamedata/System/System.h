@@ -215,7 +215,7 @@ public:
 
 // sonstige Funktionen
 	// Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der Systemklasse.
-	void CalculateVariables(const CResearchInfo*, const std::vector<CPlanet>&, const CMajor* pOwner, const CString*);
+	void CalculateVariables(const CResearchInfo*, const std::vector<CPlanet>&, const CMajor* pOwner);
 
 	// Funktion berechnet die Lagerinhalte des Systems. Aufrufen bei Ende bzw. Beginn einer neuen Runde.
 	// Gibt die Funktion TRUE zurück hat sich das System Aufgrund zu schlechter Moral vom Besitzer losgesagt.

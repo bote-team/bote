@@ -14,7 +14,6 @@ CAttackSystem::CAttackSystem(void) :
 	m_pDefender(),
 	m_pSystem(),
 	m_pSector(),
-	m_sMonopolOwner(),
 	m_bTroopsInvolved(FALSE),
 	m_bAssultShipInvolved(FALSE),
 	m_fKilledPop(0.0f),
@@ -36,14 +35,13 @@ CAttackSystem::~CAttackSystem(void)
 /// welches angegriffen wird, einen Zeiger auf das komplette Feld aller Schiffe <code>ships</code>, einen Zeiger auf den
 /// zum System gehörenden Sektor <code>sector</code>, einen Zeiger auf die Gebäudeinformationen <code>buildingInfos</code>
 /// und das Feld mit den Monopolbesitzern <code>monopolOwner</code>.
-void CAttackSystem::Init(CRace* pDefender, CSystem* system, CShipMap* ships, CSector* sector, const CString* monopolOwner)
+void CAttackSystem::Init(CRace* pDefender, CSystem* system, CShipMap* ships, CSector* sector)
 {
 	m_pDefender = pDefender;
 	m_pSystem = system;
 	m_pSector = sector;
 //	MYTRACE("general")(MT::LEVEL_INFO, "System Attack: Defender %s, System %s, Sector %s\n", pDefender, system, sector);
 	m_KO = sector->GetKO();;
-	m_sMonopolOwner = monopolOwner;
 
 	m_bTroopsInvolved = FALSE;
 	m_bAssultShipInvolved = FALSE;
@@ -339,9 +337,9 @@ MYTRACE("general")(MT::LEVEL_INFO, "SHIELDS_SAVED_LIFE\n", torpedoDamage);
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pDefender);
 			CResearchInfo* pInfo = pMajor->GetEmpire()->GetResearch()->GetResearchInfo();
-			m_pSystem->CalculateVariables(pInfo, m_pSector->GetPlanets(), pMajor, m_sMonopolOwner);
+			m_pSystem->CalculateVariables(pInfo, m_pSector->GetPlanets(), pMajor);
 			m_pSystem->CheckEnergyBuildings();
-			m_pSystem->CalculateVariables(pInfo, m_pSector->GetPlanets(), pMajor, m_sMonopolOwner);
+			m_pSystem->CalculateVariables(pInfo, m_pSector->GetPlanets(), pMajor);
 		}
 
 		if (m_iDestroyedBuildings != 0)
@@ -494,9 +492,9 @@ MYTRACE("general")(MT::LEVEL_INFO, "ti = \"%f\"\n", ti);
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pDefender);
 			CResearchInfo* pInfo = pMajor->GetEmpire()->GetResearch()->GetResearchInfo();
-			m_pSystem->CalculateVariables(pInfo, m_pSector->GetPlanets(), pMajor, m_sMonopolOwner);
+			m_pSystem->CalculateVariables(pInfo, m_pSector->GetPlanets(), pMajor);
 			m_pSystem->CheckEnergyBuildings();
-			m_pSystem->CalculateVariables(pInfo, m_pSector->GetPlanets(), pMajor, m_sMonopolOwner);
+			m_pSystem->CalculateVariables(pInfo, m_pSector->GetPlanets(), pMajor);
 		}
 	}
 
