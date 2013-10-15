@@ -1822,7 +1822,6 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
 
-	int RoundToBuild;
 	CPoint p = pDoc->GetKO();
 	CString m_strAssemblyListEntry("");
 
@@ -1878,53 +1877,9 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 			}
 			g->DrawRectangle(&rectPen, 749, y-1, 27, 22);
 
-			// Hier Berechnung der noch verbleibenden Runden, bis das Projekt fertig wird (nicht bei NeverReady-Aufträgen)
-			// divide by zero check
-			if (pDoc->GetSystem(p.x, p.y).GetProduction()->GetIndustryProd() > 0)
-			{
-				if (nAssemblyListEntry > 0 && nAssemblyListEntry < 10000 && pDoc->GetBuildingInfo(nAssemblyListEntry).GetNeverReady())
-				{
-					RoundToBuild = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(i);
-					m_strAssemblyListEntry.Format("%i", RoundToBuild);
-				}
-				// Bei Upgrades
-				else if (nAssemblyListEntry < 0)
-				{
-					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
-						/((float)pDoc->GetSystem(p.x, p.y).GetProduction()->GetIndustryProd()
-							* (100+pDoc->GetSystem(p.x, p.y).GetProduction()->GetUpdateBuildSpeed())/100));
-					m_strAssemblyListEntry.Format("%i",RoundToBuild);
-				}
-				// Bei Gebäuden
-				else if (nAssemblyListEntry < 10000)
-				{
-					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
-						/((float)pDoc->GetSystem(p.x, p.y).GetProduction()->GetIndustryProd()
-							* (100+pDoc->GetSystem(p.x, p.y).GetProduction()->GetBuildingBuildSpeed())/100));
-					m_strAssemblyListEntry.Format("%i",RoundToBuild);
-				}
-				// Bei Schiffen Wertfeffiziens mitbeachten
-				else if (nAssemblyListEntry < 20000 && pDoc->GetSystem(p.x, p.y).GetProduction()->GetShipYardEfficiency() > 0)
-				{
-					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
-						/((float)pDoc->GetSystem(p.x, p.y).GetProduction()->GetIndustryProd() * pDoc->GetSystem(p.x,p.y).GetProduction()->GetShipYardEfficiency() / 100
-							* (100+pDoc->GetSystem(p.x, p.y).GetProduction()->GetShipBuildSpeed())/100));
-					m_strAssemblyListEntry.Format("%i",RoundToBuild);
-				}
-				// Bei Truppen die Kaserneneffiziens beachten
-				else if (pDoc->GetSystem(p.x, p.y).GetProduction()->GetBarrackEfficiency() > 0)
-				{
-					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
-						/((float)pDoc->GetSystem(p.x, p.y).GetProduction()->GetIndustryProd() * pDoc->GetSystem(p.x,p.y).GetProduction()->GetBarrackEfficiency() / 100
-							* (100+pDoc->GetSystem(p.x, p.y).GetProduction()->GetTroopBuildSpeed())/100));
-					m_strAssemblyListEntry.Format("%i",RoundToBuild);
-				}
-				else
-					m_strAssemblyListEntry.Format("?");
-
-				fontFormat.SetAlignment(StringAlignmentFar);
-				g->DrawString(CComBSTR(m_strAssemblyListEntry), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(765,y,260,25), &fontFormat, &usedBrush);
-			}
+			m_strAssemblyListEntry.Format("%i", pDoc->GetSystem(p.x, p.y).NeededRoundsToBuild(i));
+			fontFormat.SetAlignment(StringAlignmentFar);
+			g->DrawString(CComBSTR(m_strAssemblyListEntry), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(765,y,260,25), &fontFormat, &usedBrush);
 			y += 25;
 			usedBrush.SetColor(normalColor);
 		}

@@ -2989,6 +2989,54 @@ int CSystem::CalcIPProd(const CArray<CBuildingInfo, CBuildingInfo>& BuildingInfo
 	return IPProd;
 }
 
+int CSystem::NeededRoundsToBuild(int AssemblyListIndex) const
+{
+	assert(0 <= AssemblyListIndex && AssemblyListIndex < ALE);
+	// Hier Berechnung der noch verbleibenden Runden, bis das Projekt fertig wird (nicht bei NeverReady-Aufträgen)
+	// divide by zero check
+	const int industry_prod = m_Production.GetIndustryProd();
+	const int needed_prod = m_AssemblyList.GetNeededIndustryInAssemblyList(AssemblyListIndex);
+	if (industry_prod > 0)
+	{
+		const int nAssemblyListEntry = m_AssemblyList.GetAssemblyListEntry(AssemblyListIndex);
+		if (nAssemblyListEntry > 0 && nAssemblyListEntry < 10000
+			&& resources::pDoc->GetBuildingInfo(nAssemblyListEntry).GetNeverReady())
+		{
+			return needed_prod;
+		}
+		// Bei Upgrades
+		else if (nAssemblyListEntry < 0)
+		{
+			return (int)ceil((float)(needed_prod)
+				/((float)industry_prod * (100+m_Production.GetUpdateBuildSpeed())/100));
+		}
+		// Bei Gebäuden
+		else if (nAssemblyListEntry < 10000)
+		{
+			return (int)ceil((float)(needed_prod)
+				/((float)industry_prod * (100+m_Production.GetBuildingBuildSpeed())/100));
+		}
+		// Bei Schiffen Wertfeffiziens mitbeachten
+		else if (nAssemblyListEntry < 20000 && m_Production.GetShipYardEfficiency() > 0)
+		{
+			return (int)ceil((float)(needed_prod)
+				/((float)industry_prod * m_Production.GetShipYardEfficiency() / 100
+					* (100+m_Production.GetShipBuildSpeed())/100));
+		}
+		// Bei Truppen die Kaserneneffiziens beachten
+		else if (m_Production.GetBarrackEfficiency() > 0)
+		{
+			return (int)ceil((float)(needed_prod)
+				/((float)industry_prod * m_Production.GetBarrackEfficiency() / 100
+					* (100+m_Production.GetTroopBuildSpeed())/100));
+		}
+		else
+			assert(false);
+	}
+	assert(false);
+	return INT_MAX;
+}
+
 void CSystem::TrainTroops()
 {
 	const int xp = m_Production.GetTroopTraining();

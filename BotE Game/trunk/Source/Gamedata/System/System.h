@@ -280,6 +280,8 @@ public:
 	//ShipYardEfficiency, BarrackEfficiency
 	int CalcIPProd(const CArray<CBuildingInfo, CBuildingInfo>& BuildingInfo, const int list) const;
 
+	int NeededRoundsToBuild(int AssemblyListIndex) const;
+
 	void TrainTroops();
 
 	// Funktion überprüft, ob wie aufgrund der Bevölkerung hier im System überhaupt (noch) eine Handelsroute
