@@ -552,26 +552,22 @@ void CSystem::SetWorkersIntoBuildings()
 {
 	m_Workers.SetWorker(WORKER::ALL_WORKER, (int)(m_dHabitants));
 	m_Workers.CalculateFreeWorkers();
-	int numberOfWorkBuildings = 0;
-	int workers = 0;
-	for (int i = WORKER::FOOD_WORKER; i <= WORKER::IRIDIUM_WORKER; i++)
+
+	while(m_Workers.GetWorker(WORKER::FREE_WORKER) > 0)
 	{
-		WORKER::Typ nWorker = (WORKER::Typ)i;
-		numberOfWorkBuildings += GetNumberOfWorkbuildings(nWorker,0,NULL);
-		workers += m_Workers.GetWorker(nWorker);
-	}
-	while (m_Workers.GetWorker(WORKER::FREE_WORKER) > 0 && workers < numberOfWorkBuildings)
-	{
+		bool all_buildings_full = true;
 		for (int i = WORKER::FOOD_WORKER; i <= WORKER::IRIDIUM_WORKER; i++)
 		{
 			WORKER::Typ nWorker = (WORKER::Typ)i;
 			if (m_Workers.GetWorker(WORKER::FREE_WORKER) > 0 && GetNumberOfWorkbuildings(nWorker,0,NULL) > m_Workers.GetWorker(nWorker))
 			{
-				workers++;
+				all_buildings_full = false;
 				m_Workers.InkrementWorker(nWorker);
 				m_Workers.DekrementWorker(WORKER::FREE_WORKER);
 			}
 		}
+		if(all_buildings_full)
+			break;
 	}
 }
 
