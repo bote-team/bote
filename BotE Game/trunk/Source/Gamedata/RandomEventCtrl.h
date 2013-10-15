@@ -5,7 +5,7 @@ class CMajor;
 class CMinor;
 
 /// Singleton-Klasse zum Berechnen der Random Events (Random Event Manager)
-class CRandomEventCtrl : public CObject
+class CRandomEventCtrl
 {
 private:
 	/// Konstruktor private, damit man sich keine Instanzen holen kann.
