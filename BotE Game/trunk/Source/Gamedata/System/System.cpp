@@ -646,8 +646,10 @@ BOOLEAN CSystem::SetHabitants(double habitants)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 // Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der System-Klasse.
-void CSystem::CalculateVariables(const BuildingInfoArray* buildingInfos, const CResearchInfo* ResearchInfo, const std::vector<CPlanet>& planets, const CMajor* pOwner, const CString *sMonopolOwner)
+void CSystem::CalculateVariables(const CResearchInfo* ResearchInfo, const std::vector<CPlanet>& planets, const CMajor* pOwner, const CString *sMonopolOwner)
 {
+	const BuildingInfoArray* const buildingInfos = resources::BuildingInfo;
+
 	int NumberOfBuildings;
 	NumberOfBuildings = m_Buildings.GetSize();
 	// Alle werde wieder auf NULL setzen
@@ -1780,8 +1782,9 @@ int CSystem::SetNewBuildingOnline(const BuildingInfoArray *buildingInfos)
 // falls zuwenig Energie im System vorhanden ist.
 // Diese Funktion aufrufen, bevor wir CalculateVariables() usw. aufrufen, weil wir ja die bösen Onlinegebäude vorher
 // ausschalten wollen.
-bool CSystem::CheckEnergyBuildings(const BuildingInfoArray* pvBuildingInfos)
+bool CSystem::CheckEnergyBuildings()
 {
+	const BuildingInfoArray* const pvBuildingInfos = resources::BuildingInfo;
 	bool bRet = false;
 	for (int i = 0; i < m_Buildings.GetSize(); i++)
 	{

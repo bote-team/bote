@@ -215,7 +215,7 @@ public:
 
 // sonstige Funktionen
 	// Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der Systemklasse.
-	void CalculateVariables(const BuildingInfoArray*, const CResearchInfo*, const std::vector<CPlanet>&, const CMajor* pOwner, const CString*);
+	void CalculateVariables(const CResearchInfo*, const std::vector<CPlanet>&, const CMajor* pOwner, const CString*);
 
 	// Funktion berechnet die Lagerinhalte des Systems. Aufrufen bei Ende bzw. Beginn einer neuen Runde.
 	// Gibt die Funktion TRUE zurück hat sich das System Aufgrund zu schlechter Moral vom Besitzer losgesagt.
@@ -257,7 +257,7 @@ public:
 	// Funktion überprüft Gebäude die Energie benötigen und schaltet diese gegebenfalls ab,
 	// falls zuwenig Energie im System vorhanden ist. Diese Funktion aufrufen, bevor wir CalculateVariables() usw.
 	// aufrufen, weil wir ja die bösen Onlinegebäude vorher ausschalten wollen.
-	bool CheckEnergyBuildings(const BuildingInfoArray* pvBuildingInfos);
+	bool CheckEnergyBuildings();
 
 	// Funktion fügt einen Baulistencheck durch
 	BOOLEAN AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuildings* globals);

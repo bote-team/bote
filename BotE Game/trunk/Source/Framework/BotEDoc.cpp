@@ -1690,7 +1690,7 @@ void CBotEDoc::ApplyBuildingsAtStartup()
 					// baubare Gebäude, Schiffe und Truppen berechnen
 					system.CalculateNumberOfWorkbuildings(&this->BuildingInfo);
 					system.SetWorkersIntoBuildings();
-					system.CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), sector->GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+					system.CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), sector->GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 					// alle produzierten FP und SP der Imperien berechnen und zuweisen
 					int currentPoints;
 					currentPoints = system.GetProduction()->GetResearchProd();
@@ -2540,17 +2540,17 @@ void CBotEDoc::CalcSystemAttack()
 			// Wenn eine Minorrace in dem System lebt und dieser nicht schon erobert wurde
 			if (defender && defender->IsMinor() && GetSector(p.x, p.y).GetTakenSector() == FALSE)
 			{
-				pSystemAttack->Init(defender, &GetSystem(p.x, p.y), &m_ShipMap, &GetSector(p.x, p.y), &this->BuildingInfo, CTrade::GetMonopolOwner());
+				pSystemAttack->Init(defender, &GetSystem(p.x, p.y), &m_ShipMap, &GetSector(p.x, p.y), CTrade::GetMonopolOwner());
 			}
 			// Wenn eine Majorrace in dem System lebt
 			else if (defender && defender->IsMajor() && pSystemAttack->IsDefenderNotAttacker(sDefender, &attackers))
 			{
-				pSystemAttack->Init(defender, &GetSystem(p.x, p.y), &m_ShipMap, &GetSector(p.x, p.y), &this->BuildingInfo, CTrade::GetMonopolOwner());
+				pSystemAttack->Init(defender, &GetSystem(p.x, p.y), &m_ShipMap, &GetSector(p.x, p.y), CTrade::GetMonopolOwner());
 			}
 			// Wenn niemand mehr in dem System lebt, z.B. durch Rebellion
 			else
 			{
-				pSystemAttack->Init(NULL, &GetSystem(p.x, p.y), &m_ShipMap, &GetSector(p.x, p.y), &this->BuildingInfo, CTrade::GetMonopolOwner());
+				pSystemAttack->Init(NULL, &GetSystem(p.x, p.y), &m_ShipMap, &GetSector(p.x, p.y), CTrade::GetMonopolOwner());
 			}
 
 			// keine Schiffe sind am Angriff beteiligt -> z.B. alle im Sektor sind am Rückzug
@@ -3393,11 +3393,11 @@ void CBotEDoc::CalcOldRoundData()
 		{
 			assert(system.GetOwnerOfSystem() != "");
 			calc.HandlePopulationEffects(*sector, system, pMajor);
-			system.CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), sector->GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+			system.CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), sector->GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 
 			// hier könnte die Energie durch Weltraummonster weggenommen werden!
 			// Gebäude die Energie benötigen checken
-			if (system.CheckEnergyBuildings(&this->BuildingInfo))
+			if (system.CheckEnergyBuildings())
 				calc.SystemMessage(*sector, pMajor, "BUILDING_TURN_OFF", EMPIRE_NEWS_TYPE::SOMETHING, 2);
 
 			// Die Bauaufträge in dem System berechnen. Außerdem wird hier auch die System-KI ausgeführt.
@@ -3449,8 +3449,7 @@ void CBotEDoc::CalcNewRoundData()
 			// Ressourcenrouten checken
 			new_round_data_calc.CheckRoutes(*sector, system, pMajor);
 
-			system.CalculateVariables(&this->BuildingInfo,
-				empire->GetResearch()->GetResearchInfo(),
+			system.CalculateVariables(empire->GetResearch()->GetResearchInfo(),
 				sector->GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 
 			const CSystemProd* const production = system.GetProduction();
@@ -4958,7 +4957,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 			system.CalculateBuildableBuildings(&*sector, &BuildingInfo, pMajor, &m_GlobalBuildings);
 			system.CalculateBuildableShips(this, sector->GetKO());
 			system.CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
-			system.CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), sector->GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+			system.CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), sector->GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 
 			// alle produzierten FP und SP der Imperien berechnen und zuweisen
 			int currentPoints;

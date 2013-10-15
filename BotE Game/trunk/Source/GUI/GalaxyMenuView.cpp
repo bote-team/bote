@@ -911,7 +911,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					else
 						m_bDrawTradeRoute = FALSE;
 					// Anzeige gleich aktualisieren
-					pDoc->GetSystem(p.x, p.y).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
+					pDoc->GetSystem(p.x, p.y).CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
 						pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 					Invalidate();
 				}
@@ -924,7 +924,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 			// Wenn wir eine Handelsroute gelöscht haben, dann aktualisieren
 			else if (numberOfRoutes > pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetSize())
-				pDoc->GetSystem(p.x, p.y).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
+				pDoc->GetSystem(p.x, p.y).CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
 				pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 		}
 		// Wenn wir eine Ressourcenroute festlegen wollen
