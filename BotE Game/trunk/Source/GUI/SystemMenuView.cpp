@@ -3133,8 +3133,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 			pDoc->GetSystem(p.x, p.y).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_Systems);
 			// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
-			pDoc->GetSystem(p.x, p.y).CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
-				pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+			pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
 
 			int RunningNumber = abs(nFirstAssemblyListEntry);
 			// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben.
@@ -3216,7 +3215,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					// Variablen berechnen
-					pDoc->GetSystem(p.x, p.y).CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+					pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
 					// FP´s und SP´s wieder draufrechnen
 					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3236,7 +3235,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					// Variablen berechnen
-					pDoc->GetSystem(p.x, p.y).CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+					pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
 					// FP´s und SP´s wieder draufrechnen
 					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3266,7 +3265,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					// Variablen berechnen
-					pDoc->GetSystem(p.x, p.y).CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+					pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
 					// FP´s und SP´s wieder draufrechnen
 					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3299,7 +3298,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					if (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker,0,NULL) > pDoc->GetSystem(p.x,p.y).GetWorker(nWorker))
 					{
 						pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,0,0);	// FoodWorker inkrementieren
-						pDoc->GetSystem(p.x, p.y).CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+						pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
 						Invalidate();
 						return;
 					}
@@ -3312,7 +3311,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					if (pDoc->GetSystem(p.x,p.y).GetWorker(nWorker) > 0)
 					{
 						pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,0,1);	// FoodWorker dekrementieren
-						pDoc->GetSystem(p.x, p.y).CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+						pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
 						Invalidate();
 						return;
 					}
@@ -3335,7 +3334,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						// Wenn wir ziemlich weit ganz links geklickt haben, dann Arbeiter auf null setzen, werden hier nur um eins dekrementiert
 						if (j == 0 && point.x < Timber[i][j].left+3)
 							pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,0,1);
-						pDoc->GetSystem(p.x, p.y).CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+						pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
 						Invalidate();
 						return;
 					}
@@ -3366,7 +3365,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					// Variablen berechnen
-					pDoc->GetSystem(p.x, p.y).CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+					pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
 					// FP´s und SP´s wieder draufrechnen
 					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3613,7 +3612,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 						pDoc->GetSystem(p.x, p.y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 
 					// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
-					pDoc->GetSystem(p.x, p.y).CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+					pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
 					m_iClickedOn = i;
 
 					// Die Struktur Buildlist löschen
@@ -3694,7 +3693,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				}
 				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_Systems);
 				// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
-				pDoc->GetSystem(p.x, p.y).CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+				pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
 			}
 			// Die restlichen Einträge seperat, weil wir die Bauliste anders löschen müssen und auch keine RES zurückbekommen müssen
 			else
@@ -3891,7 +3890,7 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					pDoc->GetSystem(p.x, p.y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 
 				// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
-				pDoc->GetSystem(p.x, p.y).CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+				pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
 
 				// Die Struktur BuildList löschen, alle Werte auf 0
 				m_vBuildlist.RemoveAll();

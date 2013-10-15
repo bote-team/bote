@@ -336,10 +336,9 @@ MYTRACE("general")(MT::LEVEL_INFO, "SHIELDS_SAVED_LIFE\n", torpedoDamage);
 		if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->IsMajor())
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pDefender);
-			CResearchInfo* pInfo = pMajor->GetEmpire()->GetResearch()->GetResearchInfo();
-			m_pSystem->CalculateVariables(pInfo, m_pSector->GetPlanets(), pMajor);
+			m_pSystem->CalculateVariables(m_pSector->GetPlanets(), pMajor);
 			m_pSystem->CheckEnergyBuildings();
-			m_pSystem->CalculateVariables(pInfo, m_pSector->GetPlanets(), pMajor);
+			m_pSystem->CalculateVariables(m_pSector->GetPlanets(), pMajor);
 		}
 
 		if (m_iDestroyedBuildings != 0)
@@ -491,10 +490,9 @@ MYTRACE("general")(MT::LEVEL_INFO, "ti = \"%f\"\n", ti);
 		if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->IsMajor())
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pDefender);
-			CResearchInfo* pInfo = pMajor->GetEmpire()->GetResearch()->GetResearchInfo();
-			m_pSystem->CalculateVariables(pInfo, m_pSector->GetPlanets(), pMajor);
+			m_pSystem->CalculateVariables(m_pSector->GetPlanets(), pMajor);
 			m_pSystem->CheckEnergyBuildings();
-			m_pSystem->CalculateVariables(pInfo, m_pSector->GetPlanets(), pMajor);
+			m_pSystem->CalculateVariables(m_pSector->GetPlanets(), pMajor);
 		}
 	}
 

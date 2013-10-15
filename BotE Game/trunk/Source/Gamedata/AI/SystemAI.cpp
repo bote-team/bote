@@ -151,7 +151,7 @@ void CSystemAI::CalcPriorities()
 		// Bauauftrag entfernen
 		// CHECK WW: KI sollte hier anteilige Ressourcen zurückbekommen
 		m_pDoc->GetSystem(ko.x, ko.y).GetAssemblyList()->ClearAssemblyList(ko, m_pDoc->m_Systems);
-		m_pDoc->GetSystem(ko.x, ko.y).CalculateVariables(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_pDoc->GetSector(ko.x, ko.y).GetPlanets(), m_pMajor);
+		m_pDoc->GetSystem(ko.x, ko.y).CalculateVariables(m_pDoc->GetSector(ko.x, ko.y).GetPlanets(), m_pMajor);
 	}
 
 	// Wenn die Moral in dem System sehr niedrig ist, dann wird versucht ein Moralgebäude bzw. Polizeistaat oder ähnliches
@@ -204,7 +204,7 @@ void CSystemAI::CalcPriorities()
 				// Bau abbrechen
 				// CHECK WW: KI sollte hier anteilige Ressourcen zurückbekommen
 				m_pDoc->GetSystem(ko.x, ko.y).GetAssemblyList()->ClearAssemblyList(ko, m_pDoc->m_Systems);
-				m_pDoc->GetSystem(ko.x, ko.y).CalculateVariables(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_pDoc->GetSector(ko.x, ko.y).GetPlanets(), m_pMajor);
+				m_pDoc->GetSystem(ko.x, ko.y).CalculateVariables(m_pDoc->GetSector(ko.x, ko.y).GetPlanets(), m_pMajor);
 				MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Removed current buildorder because of low moral in System '%s'\n", m_pDoc->GetSector(ko.x, ko.y).GetName());
 			}
 		}

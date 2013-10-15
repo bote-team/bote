@@ -1690,7 +1690,7 @@ void CBotEDoc::ApplyBuildingsAtStartup()
 					// baubare Gebäude, Schiffe und Truppen berechnen
 					system.CalculateNumberOfWorkbuildings(&this->BuildingInfo);
 					system.SetWorkersIntoBuildings();
-					system.CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), sector->GetPlanets(), pMajor);
+					system.CalculateVariables(sector->GetPlanets(), pMajor);
 					// alle produzierten FP und SP der Imperien berechnen und zuweisen
 					int currentPoints;
 					currentPoints = system.GetProduction()->GetResearchProd();
@@ -3393,7 +3393,7 @@ void CBotEDoc::CalcOldRoundData()
 		{
 			assert(system.GetOwnerOfSystem() != "");
 			calc.HandlePopulationEffects(*sector, system, pMajor);
-			system.CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), sector->GetPlanets(), pMajor);
+			system.CalculateVariables(sector->GetPlanets(), pMajor);
 
 			// hier könnte die Energie durch Weltraummonster weggenommen werden!
 			// Gebäude die Energie benötigen checken
@@ -3449,8 +3449,7 @@ void CBotEDoc::CalcNewRoundData()
 			// Ressourcenrouten checken
 			new_round_data_calc.CheckRoutes(*sector, system, pMajor);
 
-			system.CalculateVariables(empire->GetResearch()->GetResearchInfo(),
-				sector->GetPlanets(), pMajor);
+			system.CalculateVariables(sector->GetPlanets(), pMajor);
 
 			const CSystemProd* const production = system.GetProduction();
 			// Haben wir eine online Schiffswerft im System, dann ShipPort in dem Sektor setzen
@@ -4957,7 +4956,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 			system.CalculateBuildableBuildings(&*sector, &BuildingInfo, pMajor, &m_GlobalBuildings);
 			system.CalculateBuildableShips(this, sector->GetKO());
 			system.CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
-			system.CalculateVariables(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), sector->GetPlanets(), pMajor);
+			system.CalculateVariables(sector->GetPlanets(), pMajor);
 
 			// alle produzierten FP und SP der Imperien berechnen und zuweisen
 			int currentPoints;

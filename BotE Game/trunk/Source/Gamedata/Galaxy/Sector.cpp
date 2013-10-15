@@ -1179,7 +1179,7 @@ void CSector::Colonize(CSystem& sy, const CShips& ship, CMajor& major)
 	sy.SetHabitants(GetCurrentHabitants());
 
 	sy.CalculateNumberOfWorkbuildings(resources::BuildingInfo);
-	sy.CalculateVariables(empire->GetResearch()->GetResearchInfo(), m_Planets, &major);
+	sy.CalculateVariables(m_Planets, &major);
 }
 
 void CSector::SystemEventPlanetMovement(CString& message)
