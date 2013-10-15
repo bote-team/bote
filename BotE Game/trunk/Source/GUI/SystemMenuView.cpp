@@ -3210,7 +3210,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// Wenn wir noch freie Arbeiter haben
 				if (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker,0) > pDoc->GetSystem(p.x,p.y).GetWorker(nWorker))
 				{
-					pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,0,0);	// FoodWorker inkrementieren
+					pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,CSystem::SET_WORKER_MODE_INCREMENT);	// FoodWorker inkrementieren
 					// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
 					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3230,7 +3230,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// Wenn wir noch Arbeiter in dem bestimmten Gebäude haben
 				if (pDoc->GetSystem(p.x,p.y).GetWorker(nWorker) > 0)
 				{
-					pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,0,1);	// FoodWorker dekrementieren
+					pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,CSystem::SET_WORKER_MODE_DECREMENT);	// FoodWorker dekrementieren
 					// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
 					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3257,10 +3257,10 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						j = (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER)+pDoc->GetSystem(p.x,p.y).GetWorker(nWorker));
 						j--;	// Müssen wir machen
 					}
-					pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,j+1,2);
+					pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,CSystem::SET_WORKER_MODE_SET,j+1);
 					// Wenn wir ziemlich weit ganz links geklickt haben, dann Arbeiter auf null setzen, werden hier nur um eins dekrementiert
 					if (j == 0 && point.x < Timber[i][j].left+3)
-						pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,0,1);
+						pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,CSystem::SET_WORKER_MODE_DECREMENT);
 					// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
 					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3297,7 +3297,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					// Wenn wir noch freie Arbeiter haben
 					if (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker,0) > pDoc->GetSystem(p.x,p.y).GetWorker(nWorker))
 					{
-						pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,0,0);	// FoodWorker inkrementieren
+						pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,CSystem::SET_WORKER_MODE_INCREMENT);	// FoodWorker inkrementieren
 						pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
 						Invalidate();
 						return;
@@ -3310,7 +3310,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					// Wenn wir noch Arbeiter in dem bestimmten Gebäude haben
 					if (pDoc->GetSystem(p.x,p.y).GetWorker(nWorker) > 0)
 					{
-						pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,0,1);	// FoodWorker dekrementieren
+						pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,CSystem::SET_WORKER_MODE_DECREMENT);	// FoodWorker dekrementieren
 						pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
 						Invalidate();
 						return;
@@ -3330,10 +3330,10 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 							j = (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER)+pDoc->GetSystem(p.x,p.y).GetWorker(nWorker));
 							j--;	// Müssen wir machen
 						}
-						pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,j+1,2);
+						pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,CSystem::SET_WORKER_MODE_SET,j+1);
 						// Wenn wir ziemlich weit ganz links geklickt haben, dann Arbeiter auf null setzen, werden hier nur um eins dekrementiert
 						if (j == 0 && point.x < Timber[i][j].left+3)
-							pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,0,1);
+							pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,CSystem::SET_WORKER_MODE_DECREMENT);
 						pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
 						Invalidate();
 						return;

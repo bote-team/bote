@@ -534,16 +534,21 @@ void CSystem::SetIsBuildingOnline(int index, BOOLEAN newStatus)
 
 // Komplette Zugriffsfunktion für das Arbeiterobjekt. Bei Modus 0 wird der "WhatWorker" inkrementiert, bei Modus 2 wird
 // er dekrementiert und bei Modus 2 wird der "WhatWorker" auf den Wert von Value gesetzt.
-void CSystem::SetWorker(WORKER::Typ nWhatWorker, int Value, int Modus)
+void CSystem::SetWorker(WORKER::Typ nWhatWorker, SetWorkerMode Modus, int Value)
 {
+	if(Modus != SET_WORKER_MODE_SET)
+		assert(Value == -1);
+	else
+		assert(Value >= 0);
+
 	// Modus == 0 --> Inkrement
 	// Modus == 1 --> Dekrement
 	// Modus == 2 --> SetWorkers inkl. Value
-	if (Modus == 0)
+	if (Modus == SET_WORKER_MODE_INCREMENT)
 		m_Workers.InkrementWorker(nWhatWorker);
-	else if (Modus == 1)
+	else if (Modus == SET_WORKER_MODE_DECREMENT)
 		m_Workers.DekrementWorker(nWhatWorker);
-	else if (Modus == 2)
+	else if (Modus == SET_WORKER_MODE_SET)
 		m_Workers.SetWorker(nWhatWorker, Value);
 }
 
@@ -2274,7 +2279,7 @@ void CSystem::BuildBuildingsAfterColonization(const CSector *sector, const Build
 				m_Buildings.Add(building);
 			}
 			// Gebäude mit Arbeitern besetzen
-			this->SetWorker(nWorker,colonizationPoints*2,2);
+			this->SetWorker(nWorker,SET_WORKER_MODE_SET, colonizationPoints*2);
 		}
 	}
 	this->CalculateNumberOfWorkbuildings(buildingInfo);

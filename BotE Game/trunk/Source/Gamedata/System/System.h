@@ -172,9 +172,10 @@ public:
 	/// @param newStatus neuer Status des Gebäudes - <code>1</code> für online, ansonsten <code>NULL</code>
 	void SetIsBuildingOnline(int index, BOOLEAN newStatus);
 
+	enum SetWorkerMode { SET_WORKER_MODE_INCREMENT, SET_WORKER_MODE_DECREMENT, SET_WORKER_MODE_SET };
 	// Komplette Zugriffsfunktion für das Arbeiterobjekt. Bei Modus 0 wird der "WhatWorker" inkrementiert, bei Modus 2 wird
 	// er dekrementiert und bei Modus 2 wird der "WhatWorker" auf den Wert von Value gesetzt.
-	void SetWorker(WORKER::Typ nWhatWorker, int Value, int Modus);
+	void SetWorker(WORKER::Typ nWhatWorker, SetWorkerMode Modus, int Value = -1);
 
 	// Funktion setzt alle vorhandenen Arbeiter soweit wie möglich in Gebäude, die Arbeiter benötigen.
 	void SetWorkersIntoBuildings();
