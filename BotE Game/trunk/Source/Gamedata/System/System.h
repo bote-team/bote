@@ -62,6 +62,9 @@ public:
 		return &m_AssemblyList;
 	}
 
+	const CSystemManager& Manager() const { return m_Manager; }
+	CSystemManager& Manager() { return m_Manager; }
+
 	/// Funktion berechnet die theoretisch benötigte Anzahl an Runden, bis ein beliebiges Projekt in
 	/// diesem System fertig sein wird.
 	/// @param nID ID des Projektes

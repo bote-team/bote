@@ -19,7 +19,7 @@ CSystemManager::CSystemManager()
 
 CSystemManager::CSystemManager(const CSystemManager& o) :
 	m_bActive(o.m_bActive),
-	m_PriorityList(o.m_PriorityList)
+	m_PriorityMap(o.m_PriorityMap)
 {
 }
 
@@ -33,7 +33,7 @@ CSystemManager& CSystemManager::operator=(const CSystemManager& o)
 		return *this;
 
 	m_bActive = o.m_bActive;
-	m_PriorityList = o.m_PriorityList;
+	m_PriorityMap = o.m_PriorityMap;
 
 	return *this;
 }
@@ -42,17 +42,7 @@ void CSystemManager::Reset()
 {
 	m_bActive = false;
 
-
-	m_PriorityList.clear();
-	m_PriorityList.reserve(PrioritiesCount);
-
-	m_PriorityList.push_back(WORKER::SECURITY_WORKER);
-	m_PriorityList.push_back(WORKER::RESEARCH_WORKER);
-	m_PriorityList.push_back(WORKER::TITAN_WORKER);
-	m_PriorityList.push_back(WORKER::DEUTERIUM_WORKER);
-	m_PriorityList.push_back(WORKER::DURANIUM_WORKER);
-	m_PriorityList.push_back(WORKER::CRYSTAL_WORKER);
-	m_PriorityList.push_back(WORKER::IRIDIUM_WORKER);
+	ClearPriorities(true);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -64,19 +54,28 @@ void CSystemManager::Serialize(CArchive& ar)
 	if(ar.IsStoring())
 	{
 		ar << m_bActive;
-		for(std::vector<WORKER::Typ>::const_iterator it = m_PriorityList.begin();
-				it != m_PriorityList.end(); ++it)
-			ar << static_cast<int>(*it);
+		ar << static_cast<int>(m_PriorityMap.size());
+		for(std::map<int, WORKER::Typ>::const_iterator it = m_PriorityMap.begin();
+				it != m_PriorityMap.end(); ++it)
+		{
+			ar << it->first;
+			ar << static_cast<int>(it->second);
+		}
 	}
 	else
 	{
 		ar >> m_bActive;
-		for(std::vector<WORKER::Typ>::iterator it = m_PriorityList.begin();
-				it != m_PriorityList.end(); ++it)
+
+		ClearPriorities(false);
+		int map_size;
+		ar >> map_size;
+		for(int i = 0; i < map_size; ++i)
 		{
+			int key;
+			ar >> key;
 			int value;
 			ar >> value;
-			*it = static_cast<WORKER::Typ>(value);
+			AddPriority(key, static_cast<WORKER::Typ>(value));
 		}
 	}
 }
@@ -90,18 +89,53 @@ bool CSystemManager::Active() const
 	return m_bActive;
 }
 
+int CSystemManager::Priority(WORKER::Typ type) const
+{
+	for(std::map<int, WORKER::Typ>::const_iterator it = m_PriorityMap.begin(); it != m_PriorityMap.end(); ++it)
+	{
+		if(it->second == type)
+			return it->first;
+	}
+	assert(false);
+	return 0;
+}
+
 //////////////////////////////////////////////////////////////////////
 // setters
 //////////////////////////////////////////////////////////////////////
 
-void CSystemManager::Activate()
+void CSystemManager::SetActive(bool is)
 {
-	m_bActive = true;
+	m_bActive = is;
 }
 
-void CSystemManager::DeActivate()
+void CSystemManager::ClearPriorities(bool refill_with_standard)
 {
-	m_bActive = false;
+	m_PriorityMap.clear();
+	if(!refill_with_standard)
+		return;
+	int i = 1;
+	AddPriority(i++, WORKER::SECURITY_WORKER);
+	AddPriority(i++, WORKER::RESEARCH_WORKER);
+	AddPriority(i++, WORKER::TITAN_WORKER);
+	AddPriority(i++, WORKER::DEUTERIUM_WORKER);
+	AddPriority(i++, WORKER::DURANIUM_WORKER);
+	AddPriority(i++, WORKER::CRYSTAL_WORKER);
+	AddPriority(i++, WORKER::IRIDIUM_WORKER);
+}
+
+void CSystemManager::AddPriority(int value, WORKER::Typ type)
+{
+	assert(1 <= value && value <= max_priority);
+	while(m_PriorityMap.find(value) != m_PriorityMap.end())
+	{
+		if(value > max_priority / 2.0f)
+			--value;
+		else
+			++value;
+	}
+	assert(1 <= value && value <= max_priority);
+	m_PriorityMap.insert(std::pair<int, WORKER::Typ>(value, type));
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -188,12 +222,12 @@ bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
 	}
 
 	//security, research, titan, deuterium, duranium, crystal, iridium in order according to priorities
-	for(std::vector<WORKER::Typ>::const_iterator it = m_PriorityList.begin();
-			it != m_PriorityList.end(); ++it)
+	for(std::map<int, WORKER::Typ>::const_reverse_iterator it = m_PriorityMap.rbegin();
+		it != m_PriorityMap.rend(); ++it)
 	{
-		const int to_set = min(workers_left_to_set, system.GetNumberOfWorkbuildings(*it, 0));
+		const int to_set = min(workers_left_to_set, system.GetNumberOfWorkbuildings(it->second, 0));
 		workers_left_to_set -= to_set;
-		system.SetWorker(*it, CSystem::SET_WORKER_MODE_SET, to_set);
+		system.SetWorker(it->second, CSystem::SET_WORKER_MODE_SET, to_set);
 		if(workers_left_to_set == 0)
 			break;
 	}

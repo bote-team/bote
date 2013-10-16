@@ -995,6 +995,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Source\Dialogs\ManagerSettingsDlg.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Source\Dialogs\NewGamePage.cpp"
 					>
 				</File>
@@ -1265,6 +1269,10 @@
 				</File>
 				<File
 					RelativePath=".\Source\Dialogs\MainDlg.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Source\Dialogs\ManagerSettingsDlg.h"
 					>
 				</File>
 				<File

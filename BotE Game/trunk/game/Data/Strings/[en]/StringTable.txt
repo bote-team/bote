@@ -109,6 +109,8 @@ Energy
 Structures
 [BTN_TRADEMENUE]
 Trade
+[BTN_SYSTEMMANAGER]
+System Manager
 [BTN_BAUHOF]
 Structures
 [BTN_DOCKYARD]

@@ -109,6 +109,8 @@ Energie
 Bauwerke
 [BTN_TRADEMENUE]
 Handel
+[BTN_SYSTEMMANAGER]
+Systemverwalter
 [BTN_BAUHOF]
 Bauhof
 [BTN_DOCKYARD]

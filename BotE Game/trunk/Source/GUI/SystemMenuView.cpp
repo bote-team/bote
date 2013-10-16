@@ -14,6 +14,7 @@
 #include "General/Loc.h"
 #include "Ships/Ships.h"
 #include "GraphicPool.h"
+#include "ManagerSettingsDlg.h"
 
 short CSystemMenuView::m_iClickedOn = 0;
 BYTE CSystemMenuView::m_byResourceRouteRes = RESOURCES::TITAN;
@@ -2963,7 +2964,15 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	int temp = m_bySubMenu;
 	if (ButtonReactOnLeftClick(point, &m_BuildMenueMainButtons, temp, FALSE))
 	{
-		m_bySubMenu = temp;
+		if(temp == 5)
+		{
+			CSystem& system = pDoc->CurrentSystem();
+			CManagerSettingsDlg dlg(&system.Manager());
+			if(dlg.DoModal() == IDOK)
+				system.ExecuteManager(pDoc->GetKO(), *pMajor);
+		}
+		else
+			m_bySubMenu = temp;
 		if (m_bySubMenu == 0)
 		{
 			m_bClickedOnBuyButton = FALSE;
@@ -3928,6 +3937,7 @@ void CSystemMenuView::CreateButtons()
 	m_BuildMenueMainButtons.Add(new CMyButton(CPoint(350,690), CSize(160,40), CLoc::GetString("BTN_ENERGYMENUE"), fileN, fileI, fileA));
 	m_BuildMenueMainButtons.Add(new CMyButton(CPoint(520,690), CSize(160,40), CLoc::GetString("BTN_BUILDING_OVERVIEWMENUE"), fileN, fileI, fileA));
 	m_BuildMenueMainButtons.Add(new CMyButton(CPoint(690,690), CSize(160,40), CLoc::GetString("BTN_TRADEMENUE"), fileN, fileI, fileA));
+	m_BuildMenueMainButtons.Add(new CMyButton(CPoint(860,690), CSize(160,40), CLoc::GetString("BTN_SYSTEMMANAGER"), fileN, fileI, fileA));
 
 	// Zuweisungsbuttons im Arbeitermenü
 	fileN = "Other\\" + sPrefix + "buttonminus.bop";
