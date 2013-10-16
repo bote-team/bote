@@ -511,6 +511,8 @@ Die § (§) wurde zum Flaggschiff ernannt
 Wir haben die § in Sektor § kennengelernt
 [GET_CONTACT_TO_MAJOR]
 Wir haben die § in Sektor § getroffen
+[MANAGER_MALFUNCTION]
+Der Verwalter des § Systems meldet einen Fehler.
 
 // Baumenü
 [UPGRADING]

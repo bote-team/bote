@@ -511,6 +511,8 @@ The § (§) has been assigned as flagship
 We have established contact with the §
 [GET_CONTACT_TO_MAJOR]
 We found the § in sector §
+[MANAGER_MALFUNCTION]
+The manager of the § system reports an error.
 
 // build menu
 [UPGRADING]

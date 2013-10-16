@@ -7,6 +7,7 @@
 #include "BotE.h"
 #include "BotEDoc.h"
 #include "Races\RaceController.h"
+#include "General/Loc.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -633,12 +634,20 @@ void CSystem::SetWorkersIntoBuildings()
 	}
 }
 
-void CSystem::ExecuteManager(const CPoint& p, const CMajor& owner)
+void CSystem::ExecuteManager(const CPoint& p, CMajor& owner)
 {
 	if(!m_Manager.Active() || !owner.IsHumanPlayer())
 		return;
 
-	m_Manager.DistributeWorkers(*this, p);
+	const bool success = m_Manager.DistributeWorkers(*this, p);
+	if(!success)
+	{
+		const CString& text = CLoc::GetString("MANAGER_MALFUNCTION",false,
+			resources::pDoc->GetSector(p.x, p.y).GetName());
+		CEmpireNews message;
+		message.CreateNews(text,EMPIRE_NEWS_TYPE::ECONOMY,"",p);
+		owner.GetEmpire()->AddMsg(message);
+	}
 }
 
 void CSystem::FreeAllWorkers()
