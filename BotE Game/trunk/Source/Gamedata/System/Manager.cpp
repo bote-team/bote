@@ -326,3 +326,27 @@ bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
 	return true;
 }
 
+static bool ShouldTakeShipyardOnline(const CSystem& system)
+{
+	const CAssemblyList& assembly_list = *system.GetAssemblyList();
+	if(assembly_list.IsEmpty())
+		return false;
+	const int nAssemblyListEntry = assembly_list.GetAssemblyListEntry(0);
+	if(nAssemblyListEntry < 10000 || nAssemblyListEntry >= 20000)
+		return false;
+	return true;
+}
+
+void CSystemManager::CheckShipyard(CSystem& system) const
+{
+	const bool should_be_online = ShouldTakeShipyardOnline(system);
+	CArray<CBuilding>* buildings = system.GetAllBuildings();
+	for(int i = 0; i < buildings->GetSize(); ++i)
+	{
+		CBuilding& building = buildings->GetAt(i);
+		const CBuildingInfo& info = resources::BuildingInfo->GetAt(building.GetRunningNumber() - 1);
+		if(info.GetShipYard() && info.GetNeededEnergy() > 0)
+			building.SetIsBuildingOnline(should_be_online);
+	}
+}
+

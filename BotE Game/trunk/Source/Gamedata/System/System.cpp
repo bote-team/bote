@@ -639,6 +639,7 @@ void CSystem::ExecuteManager(const CPoint& p, CMajor& owner)
 	if(!m_Manager.Active() || !owner.IsHumanPlayer())
 		return;
 
+	m_Manager.CheckShipyard(*this);
 	const bool success = m_Manager.DistributeWorkers(*this, p);
 	if(!success)
 	{
