@@ -890,6 +890,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Source\Gamedata\System\Manager.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Source\Gamedata\System\System.cpp"
 						>
 					</File>
@@ -1624,6 +1628,10 @@
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\System\GlobalStorage.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\System\Manager.h"
 						>
 					</File>
 					<File

@@ -42,6 +42,8 @@ public:
 	// Funktion gibt den Bauauftrag an der Stelle "pos" in der Bauliste zurück
 	short GetAssemblyListEntry(USHORT pos) const {return m_iEntry[pos];}
 
+	bool IsEmpty() const { return m_iEntry[0] == 0; }
+
 	// Nachfolgende Funktionen geben die noch verbleibenden Kosten des Auftrages in der Bauliste zurück
 	int GetNeededIndustryInAssemblyList(USHORT entry) const {return m_iNeededIndustryInAssemblyList[entry];}
 	UINT GetNeededTitanInAssemblyList(USHORT entry) const {return m_iNeededTitanInAssemblyList[entry];}

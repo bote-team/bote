@@ -22,6 +22,7 @@
 #include "Trade/TradeRoute.h"
 #include "array_sort.h"
 #include "General/GlobalTypes.h"
+#include "Manager.h"
 
 // forward declaration
 class CMajor;
@@ -177,8 +178,13 @@ public:
 	// er dekrementiert und bei Modus 2 wird der "WhatWorker" auf den Wert von Value gesetzt.
 	void SetWorker(WORKER::Typ nWhatWorker, SetWorkerMode Modus, int Value = -1);
 
+	bool SanityCheckWorkers();
+
 	// Funktion setzt alle vorhandenen Arbeiter soweit wie möglich in Gebäude, die Arbeiter benötigen.
 	void SetWorkersIntoBuildings();
+
+	void ExecuteManager(const CPoint& p, const CMajor& owner);
+	void FreeAllWorkers();
 
 	// Funktion addiert moralAdd zu m_iMoral dazu und mach gleichzeitig noch die Überprüfen auf den richtigen Bereich.
 	void SetMoral(short moralAdd) {if ((m_iMoral+moralAdd) >= 0) m_iMoral += moralAdd; if (m_iMoral > 200) m_iMoral = 200;}
@@ -410,6 +416,8 @@ private:
 
 	/// Autofunktion aktiviert oder nicht
 	BOOLEAN m_bAutoBuild;
+
+	CSystemManager m_Manager;
 
 	// private Hilfsfunktionen (mal schauen ob wir die direkt in die cpp-Datei schreiben können)
 	BOOLEAN CheckGeneralConditions(CBuildingInfo* building, CSector* sector, CGlobalBuildings* globals, CMajor* pMajor);

@@ -58,7 +58,8 @@ CSystem::CSystem(const CSystem &other) :
 	m_iCrystalMines(other.m_iCrystalMines),
 	m_iIridiumMines(other.m_iIridiumMines),
 	m_byMaxTradeRoutesFromHab(other.m_byMaxTradeRoutesFromHab),
-	m_bAutoBuild(other.m_bAutoBuild)
+	m_bAutoBuild(other.m_bAutoBuild),
+	m_Manager(other.m_Manager)
 {
 	m_Buildings.Copy(other.m_Buildings);
 	m_BuildableBuildings.Copy(other.m_BuildableBuildings);
@@ -101,6 +102,7 @@ CSystem& CSystem::operator=(const CSystem& other)
 	m_iIridiumMines = other.m_iIridiumMines;
 	m_byMaxTradeRoutesFromHab = other.m_byMaxTradeRoutesFromHab;
 	m_bAutoBuild = other.m_bAutoBuild;
+	m_Manager = other.m_Manager;
 
 	m_Buildings.Copy(other.m_Buildings);
 	m_BuildableBuildings.Copy(other.m_BuildableBuildings);
@@ -130,6 +132,7 @@ void CSystem::Serialize(CArchive &ar)
 	m_Production.Serialize(ar);
 	m_Workers.Serialize(ar);
 	m_Store.Serialize(ar);
+	m_Manager.Serialize(ar);
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -552,6 +555,22 @@ void CSystem::SetWorker(WORKER::Typ nWhatWorker, SetWorkerMode Modus, int Value)
 		m_Workers.SetWorker(nWhatWorker, Value);
 }
 
+bool CSystem::SanityCheckWorkers()
+{
+	m_Workers.CalculateFreeWorkers();
+	return m_Workers.GetWorker(WORKER::ALL_WORKER) == m_Workers.GetWorker(WORKER::FREE_WORKER)
+		+ m_Workers.GetWorker(WORKER::FOOD_WORKER)
+		+ m_Workers.GetWorker(WORKER::INDUSTRY_WORKER)
+		+ m_Workers.GetWorker(WORKER::ENERGY_WORKER)
+		+ m_Workers.GetWorker(WORKER::SECURITY_WORKER)
+		+ m_Workers.GetWorker(WORKER::RESEARCH_WORKER)
+		+ m_Workers.GetWorker(WORKER::TITAN_WORKER)
+		+ m_Workers.GetWorker(WORKER::DEUTERIUM_WORKER)
+		+ m_Workers.GetWorker(WORKER::DURANIUM_WORKER)
+		+ m_Workers.GetWorker(WORKER::CRYSTAL_WORKER)
+		+ m_Workers.GetWorker(WORKER::IRIDIUM_WORKER);
+}
+
 // Funktion setzt alle vorhandenen Arbeiter soweit wie möglich in Gebäude, die Arbeiter benötigen.
 void CSystem::SetWorkersIntoBuildings()
 {
@@ -574,6 +593,19 @@ void CSystem::SetWorkersIntoBuildings()
 		if(all_buildings_full)
 			break;
 	}
+}
+
+void CSystem::ExecuteManager(const CPoint& p, const CMajor& owner)
+{
+	if(!m_Manager.Active() || !owner.IsHumanPlayer())
+		return;
+
+	m_Manager.DistributeWorkers(*this, p);
+}
+
+void CSystem::FreeAllWorkers()
+{
+	m_Workers.FreeAll();
 }
 
 void CSystem::SetStores(const GameResources& add)
@@ -2619,6 +2651,7 @@ void CSystem::ResetSystem()
 	m_byMaxTradeRoutesFromHab = 0;
 	m_Troops.RemoveAll();
 	m_bAutoBuild = FALSE;
+	m_Manager.Reset();
 
 	// Deaktivierte Produktionen zurücksetzen
 	ClearDisabledProductions();
