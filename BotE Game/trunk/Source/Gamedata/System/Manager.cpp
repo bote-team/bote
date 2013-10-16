@@ -204,6 +204,19 @@ namespace //helpers for DistributeWorkers()
 			CalculateVariables(system, p);
 		}
 	}
+
+	int FillRemainingSlots(CSystem& system, WORKER::Typ type, int workers_left_to_set)
+	{
+		const int current_workers = system.GetWorker(type);
+		const int buildings = system.GetNumberOfWorkbuildings(type, 0);
+		assert(0 <= current_workers && current_workers <= buildings);
+		const int still_free = buildings - current_workers;
+		if(still_free == 0)
+			return 0;
+		const int to_set = min(still_free, workers_left_to_set);
+		system.SetWorker(type, CSystem::SET_WORKER_MODE_SET, current_workers + to_set);
+		return to_set;
+	}
 }
 
 bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
@@ -266,6 +279,14 @@ bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
 		if(workers_left_to_set == 0)
 			break;
 	}
+
+	//put any remaining workers into food, industry, energy
+	if(workers_left_to_set > 0 && system.GetFoodStore() < MAX_FOOD_STORE)
+		workers_left_to_set -= FillRemainingSlots(system, WORKER::FOOD_WORKER, workers_left_to_set);
+	if(workers_left_to_set > 0)
+		workers_left_to_set -= FillRemainingSlots(system, WORKER::INDUSTRY_WORKER, workers_left_to_set);
+	if(workers_left_to_set > 0)
+		workers_left_to_set -= FillRemainingSlots(system, WORKER::ENERGY_WORKER, workers_left_to_set);
 
 	assert(workers_left_to_set >= 0);
 #ifdef CONSISTENCY_CHECKS
