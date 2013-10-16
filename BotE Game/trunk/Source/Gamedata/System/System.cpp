@@ -558,6 +558,19 @@ void CSystem::SetWorker(WORKER::Typ nWhatWorker, SetWorkerMode Modus, int Value)
 bool CSystem::SanityCheckWorkers()
 {
 	m_Workers.CalculateFreeWorkers();
+	const bool in_range = SanityCheckWorkersInRange(WORKER::FOOD_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::INDUSTRY_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::ENERGY_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::SECURITY_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::RESEARCH_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::TITAN_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::DEUTERIUM_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::DURANIUM_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::CRYSTAL_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::IRIDIUM_WORKER);
+	if(!in_range)
+		return false;
+
 	return m_Workers.GetWorker(WORKER::ALL_WORKER) == m_Workers.GetWorker(WORKER::FREE_WORKER)
 		+ m_Workers.GetWorker(WORKER::FOOD_WORKER)
 		+ m_Workers.GetWorker(WORKER::INDUSTRY_WORKER)
@@ -3081,4 +3094,10 @@ void CSystem::TrainTroops()
 	const int xp = m_Production.GetTroopTraining();
 	for(int i = 0; i < m_Troops.GetSize(); ++i)
 		m_Troops.GetAt(i).AddExperiancePoints(xp);
+}
+
+bool CSystem::SanityCheckWorkersInRange(WORKER::Typ type) const
+{
+	const int workers = m_Workers.GetWorker(type);
+	return 0 <= workers && workers <= GetNumberOfWorkbuildings(type, 0);
 }

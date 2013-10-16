@@ -268,7 +268,9 @@ bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
 	}
 
 	assert(workers_left_to_set >= 0);
+#ifdef CONSISTENCY_CHECKS
 	assert(system.SanityCheckWorkers());
+#endif
 
 	CalculateVariables(system, p);
 
