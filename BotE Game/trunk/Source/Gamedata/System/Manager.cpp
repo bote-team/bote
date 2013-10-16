@@ -19,6 +19,8 @@ CSystemManager::CSystemManager()
 
 CSystemManager::CSystemManager(const CSystemManager& o) :
 	m_bActive(o.m_bActive),
+	m_bSafeMoral(o.m_bSafeMoral),
+	m_bMaxIndustry(o.m_bMaxIndustry),
 	m_PriorityMap(o.m_PriorityMap)
 {
 }
@@ -33,6 +35,8 @@ CSystemManager& CSystemManager::operator=(const CSystemManager& o)
 		return *this;
 
 	m_bActive = o.m_bActive;
+	m_bSafeMoral = o.m_bSafeMoral;
+	m_bMaxIndustry = o.m_bMaxIndustry;
 	m_PriorityMap = o.m_PriorityMap;
 
 	return *this;
@@ -41,6 +45,8 @@ CSystemManager& CSystemManager::operator=(const CSystemManager& o)
 void CSystemManager::Reset()
 {
 	m_bActive = false;
+	m_bSafeMoral = true;
+	m_bMaxIndustry = false;
 
 	ClearPriorities(true);
 }
@@ -54,6 +60,8 @@ void CSystemManager::Serialize(CArchive& ar)
 	if(ar.IsStoring())
 	{
 		ar << m_bActive;
+		ar << m_bSafeMoral;
+		ar << m_bMaxIndustry;
 		ar << static_cast<int>(m_PriorityMap.size());
 		for(std::map<int, WORKER::Typ>::const_iterator it = m_PriorityMap.begin();
 				it != m_PriorityMap.end(); ++it)
@@ -65,6 +73,8 @@ void CSystemManager::Serialize(CArchive& ar)
 	else
 	{
 		ar >> m_bActive;
+		ar >> m_bSafeMoral;
+		ar >> m_bMaxIndustry;
 
 		ClearPriorities(false);
 		int map_size;
@@ -89,6 +99,16 @@ bool CSystemManager::Active() const
 	return m_bActive;
 }
 
+bool CSystemManager::SafeMoral() const
+{
+	return m_bSafeMoral;
+}
+
+bool CSystemManager::MaxIndustry() const
+{
+	return m_bMaxIndustry;
+}
+
 int CSystemManager::Priority(WORKER::Typ type) const
 {
 	for(std::map<int, WORKER::Typ>::const_iterator it = m_PriorityMap.begin(); it != m_PriorityMap.end(); ++it)
@@ -107,6 +127,16 @@ int CSystemManager::Priority(WORKER::Typ type) const
 void CSystemManager::SetActive(bool is)
 {
 	m_bActive = is;
+}
+
+void CSystemManager::SetSafeMoral(bool is)
+{
+	m_bSafeMoral = is;
+}
+
+void CSystemManager::SetMaxIndustry(bool is)
+{
+	m_bMaxIndustry = is;
 }
 
 void CSystemManager::ClearPriorities(bool refill_with_standard)
@@ -204,20 +234,25 @@ bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
 		system.SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_SET, industry_workers);
 		CalculateVariables(system, p);
 		const int min_rounds = system.NeededRoundsToBuild(0);
-		while(min_rounds == system.NeededRoundsToBuild(0))
+		assert(min_rounds >= 1);
+		if(!m_bMaxIndustry || min_rounds == 1)
 		{
-			system.SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_DECREMENT);
-			++workers_left_to_set;
-			CalculateVariables(system, p);
-		}
-		//undo last step of the loop
-		system.SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
-		--workers_left_to_set;
-		//+1 worker in case of moral loss
-		if(workers_left_to_set >= 1 && system.GetWorker(WORKER::INDUSTRY_WORKER) < max_buildings)
-		{
+			while(min_rounds == system.NeededRoundsToBuild(0))
+			{
+				system.SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_DECREMENT);
+				++workers_left_to_set;
+				CalculateVariables(system, p);
+			}
+			//undo last step of the loop
 			system.SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
 			--workers_left_to_set;
+			if(m_bSafeMoral && min_rounds == 1 && workers_left_to_set >= 1
+				&& system.GetWorker(WORKER::INDUSTRY_WORKER) < max_buildings)
+			{
+				//+1 worker in case of moral loss
+				system.SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
+				--workers_left_to_set;
+			}
 		}
 	}
 

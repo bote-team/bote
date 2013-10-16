@@ -40,6 +40,8 @@ public:
 //////////////////////////////////////////////////////////////////////
 
 	bool Active() const;
+	bool SafeMoral() const;
+	bool MaxIndustry() const;
 
 	int Priority(WORKER::Typ type) const;
 
@@ -48,6 +50,8 @@ public:
 //////////////////////////////////////////////////////////////////////
 
 	void SetActive(bool is);
+	void SetSafeMoral(bool is);
+	void SetMaxIndustry(bool is);
 
 	void ClearPriorities(bool refill_with_standard);
 
@@ -68,6 +72,8 @@ public:
 private:
 
 	bool m_bActive;
+	bool m_bSafeMoral;
+	bool m_bMaxIndustry;
 	std::map<int, WORKER::Typ> m_PriorityMap;//1-100 each
 
 };

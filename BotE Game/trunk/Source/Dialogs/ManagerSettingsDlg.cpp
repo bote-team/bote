@@ -16,13 +16,17 @@ IMPLEMENT_DYNAMIC(CManagerSettingsDlg, CDialog)
 CManagerSettingsDlg::CManagerSettingsDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CManagerSettingsDlg::IDD, pParent), m_Manager(NULL)
 	, m_bActive(FALSE)
+	, m_bSafeMoral(FALSE)
+	, m_bMaxIndustry(FALSE)
 {
 
 }
 
 CManagerSettingsDlg::CManagerSettingsDlg(CSystemManager* manager, CWnd* pParent)
 	: CDialog(CManagerSettingsDlg::IDD, pParent), m_Manager(manager),
-	m_bActive(FALSE)
+	m_bActive(FALSE),
+	m_bSafeMoral(FALSE),
+	m_bMaxIndustry(FALSE)
 {
 
 }
@@ -42,6 +46,8 @@ void CManagerSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SLIDER_DURANIUM, m_ctrlDuraniumSlider);
 	DDX_Control(pDX, IDC_SLIDER_CRYSTAL, m_ctrlCrystalSlider);
 	DDX_Control(pDX, IDC_SLIDER_IRIDIUM, m_ctrlIridiumSlider);
+	DDX_Check(pDX, IDC_CHECK_SAFE_MORAL, m_bSafeMoral);
+	DDX_Check(pDX, IDC_CHECK_MAX_INDUSTRY, m_bMaxIndustry);
 }
 
 
@@ -57,6 +63,8 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	m_bActive = m_Manager->Active();
+	m_bSafeMoral = m_Manager->SafeMoral();
+	m_bMaxIndustry = m_Manager->MaxIndustry();
 
 	m_ctrlSecuritySlider.SetRange(1, CSystemManager::max_priority);
 	m_ctrlSecuritySlider.SetTicFreq(tick_frequ);
@@ -95,7 +103,8 @@ void CManagerSettingsDlg::OnOK()
 	UpdateData(true);
 
 	m_Manager->SetActive(m_bActive ? true : false);
-
+	m_Manager->SetSafeMoral(m_bSafeMoral ? true : false);
+	m_Manager->SetMaxIndustry(m_bMaxIndustry ? true : false);
 
 	m_Manager->ClearPriorities(false);
 
@@ -126,6 +135,9 @@ void CManagerSettingsDlg::SetStates(BOOL active)
 	SetState(IDC_SLIDER_DURANIUM, active);
 	SetState(IDC_SLIDER_CRYSTAL, active);
 	SetState(IDC_SLIDER_IRIDIUM, active);
+
+	SetState(IDC_CHECK_SAFE_MORAL, active);
+	SetState(IDC_CHECK_MAX_INDUSTRY, active);
 }
 
 void CManagerSettingsDlg::OnBnClickedCheckActive()

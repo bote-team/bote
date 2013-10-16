@@ -40,6 +40,8 @@ private:
 	CSystemManager* m_Manager;
 
 	BOOL m_bActive;
+	BOOL m_bSafeMoral;
+	BOOL m_bMaxIndustry;
 
 	CSliderCtrl m_ctrlSecuritySlider;
 	CSliderCtrl m_ctrlResearchSlider;

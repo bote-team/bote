@@ -118,6 +118,9 @@
 #define IDC_CHECK_SHOWRANDOMEVENTPICTURES 1070
 #define IDC_CHECK_ACTIVE                1071
 #define IDC_SLIDER_SECURITY             1072
+#define IDC_CHECK_SAFE_MORAL            1073
+#define IDC_CHECK2                      1074
+#define IDC_CHECK_MAX_INDUSTRY          1074
 #define ID_OPTIONEN                     32773
 #define ID_INFORMATION                  32774
 #define ID_DATENBANK                    32775
@@ -143,7 +146,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        191
 #define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1073
+#define _APS_NEXT_CONTROL_VALUE         1075
 #define _APS_NEXT_SYMED_VALUE           107
 #endif
 #endif
