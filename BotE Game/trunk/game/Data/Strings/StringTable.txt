@@ -110,7 +110,7 @@ Bauwerke
 [BTN_TRADEMENUE]
 Handel
 [BTN_SYSTEMMANAGER]
-Systemverwalter
+Verwalter
 [BTN_BAUHOF]
 Bauhof
 [BTN_DOCKYARD]
