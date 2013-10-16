@@ -276,15 +276,43 @@ bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
 		const int to_set = min(workers_left_to_set, system.GetNumberOfWorkbuildings(it->second, 0));
 		workers_left_to_set -= to_set;
 		system.SetWorker(it->second, CSystem::SET_WORKER_MODE_SET, to_set);
+		if(system.HasStore(it->second))
+		{
+			const int store = system.GetResourceStore(it->second);
+			while(true)
+			{
+				const int workers = system.GetWorker(it->second);
+				if(workers == 0)
+					break;
+				CalculateVariables(system, p);
+				const int prod = system.GetProduction()->GetXProd(it->second);
+				if(store + prod <= MAX_RES_STORE)
+					break;
+				system.SetWorker(it->second, CSystem::SET_WORKER_MODE_DECREMENT);
+				++workers_left_to_set;
+			}
+		}
 		if(workers_left_to_set == 0)
 			break;
 	}
 
-	//put any remaining workers into food, industry, energy
+	//distribute any remaining workers
 	if(workers_left_to_set > 0 && system.GetFoodStore() < MAX_FOOD_STORE)
 		workers_left_to_set -= FillRemainingSlots(system, WORKER::FOOD_WORKER, workers_left_to_set);
 	if(workers_left_to_set > 0)
 		workers_left_to_set -= FillRemainingSlots(system, WORKER::INDUSTRY_WORKER, workers_left_to_set);
+	if(workers_left_to_set > 0)
+		workers_left_to_set -= FillRemainingSlots(system, WORKER::TITAN_WORKER, workers_left_to_set);
+	if(workers_left_to_set > 0)
+		workers_left_to_set -= FillRemainingSlots(system, WORKER::DEUTERIUM_WORKER, workers_left_to_set);
+	if(workers_left_to_set > 0)
+		workers_left_to_set -= FillRemainingSlots(system, WORKER::DURANIUM_WORKER, workers_left_to_set);
+	if(workers_left_to_set > 0)
+		workers_left_to_set -= FillRemainingSlots(system, WORKER::CRYSTAL_WORKER, workers_left_to_set);
+	if(workers_left_to_set > 0)
+		workers_left_to_set -= FillRemainingSlots(system, WORKER::IRIDIUM_WORKER, workers_left_to_set);
+	if(workers_left_to_set > 0)
+		workers_left_to_set -= FillRemainingSlots(system, WORKER::FOOD_WORKER, workers_left_to_set);
 	if(workers_left_to_set > 0)
 		workers_left_to_set -= FillRemainingSlots(system, WORKER::ENERGY_WORKER, workers_left_to_set);
 

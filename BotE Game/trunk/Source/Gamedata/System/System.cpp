@@ -432,6 +432,12 @@ USHORT CSystem::GetNumberOfBuilding(USHORT runningNumber) const
 	return number;
 }
 
+bool CSystem::HasStore(WORKER::Typ type) const
+{
+	return	type == WORKER::TITAN_WORKER || type == WORKER::DEUTERIUM_WORKER
+		|| type == WORKER::DURANIUM_WORKER || type == WORKER::CRYSTAL_WORKER || type == WORKER::IRIDIUM_WORKER;
+}
+
 // Funktion gibt den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
 UINT CSystem::GetResourceStore(USHORT res) const
 {
@@ -445,6 +451,25 @@ UINT CSystem::GetResourceStore(USHORT res) const
 	case RESOURCES::DERITIUM: {return this->GetDeritiumStore();}
 	}
 	return 0;
+}
+
+static RESOURCES::TYPE WorkerToResource(WORKER::Typ type)
+{
+	std::map<WORKER::Typ, RESOURCES::TYPE> transformer;
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::TITAN_WORKER, RESOURCES::TITAN));
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::DEUTERIUM_WORKER, RESOURCES::DEUTERIUM));
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::DURANIUM_WORKER, RESOURCES::DURANIUM));
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::CRYSTAL_WORKER, RESOURCES::CRYSTAL));
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::IRIDIUM_WORKER, RESOURCES::IRIDIUM));
+	const std::map<WORKER::Typ, RESOURCES::TYPE>::const_iterator it = transformer.find(type);
+	assert(it != transformer.end());
+	return it->second;
+}
+
+int CSystem::GetResourceStore(WORKER::Typ type) const
+{
+	assert(HasStore(type));
+	return GetResourceStore(WorkerToResource(type));
 }
 
 // Funktion gibt einen Zeiger auf den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.

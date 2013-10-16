@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "SystemProd.h"
 
+#include <cassert>
+
 // statische Variablen initialisieren
 std::map<CString, short> CSystemProd::m_iMoralProdEmpireWide;
 
@@ -482,4 +484,23 @@ CSystemProd::RESEARCHBONI CSystemProd::GetResearchBoni() const
 			m_iConstructionTechBoni,
 			m_iWeaponTechBoni
 		);
+}
+
+int CSystemProd::GetXProd(WORKER::Typ x) const
+{
+	switch(x)
+	{
+		case WORKER::FOOD_WORKER: return m_iFoodProd;
+		case WORKER::INDUSTRY_WORKER: return m_iIndustryProd;
+		case WORKER::ENERGY_WORKER: return m_iEnergyProd;
+		case WORKER::SECURITY_WORKER: return m_iSecurityProd;
+		case WORKER::RESEARCH_WORKER: return m_iResearchProd;
+		case WORKER::TITAN_WORKER: return m_iTitanProd;
+		case WORKER::DEUTERIUM_WORKER: return m_iDeuteriumProd;
+		case WORKER::DURANIUM_WORKER: return m_iDuraniumProd;
+		case WORKER::CRYSTAL_WORKER: return m_iCrystalProd;
+		case WORKER::IRIDIUM_WORKER: return m_iIridiumProd;
+	}
+	assert(false);
+	return 0;
 }
