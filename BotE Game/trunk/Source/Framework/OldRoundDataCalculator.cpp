@@ -175,7 +175,7 @@ void COldRoundDataCalculator::FinishBuild(const int to_build, const CSector& sec
 		// genügend Arbeiter da sind
 		unsigned short CheckValue = system.SetNewBuildingOnline(&BuildingInfo);
 		// Nachricht generieren das das Gebäude nicht online genommen werden konnte
-		if (CheckValue == 1)
+		if (CheckValue == 1 && !system.Manager().Active())
 			SystemMessage(sector, pMajor, "NOT_ENOUGH_WORKER", EMPIRE_NEWS_TYPE::SOMETHING, 1);
 		else if (CheckValue == 2)
 			SystemMessage(sector, pMajor, "NOT_ENOUGH_ENERGY", EMPIRE_NEWS_TYPE::SOMETHING, 2);
