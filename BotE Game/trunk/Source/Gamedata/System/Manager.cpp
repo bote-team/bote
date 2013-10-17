@@ -361,8 +361,14 @@ void CSystemManager::CheckShipyard(CSystem& system) const
 	{
 		CBuilding& building = buildings->GetAt(i);
 		const CBuildingInfo& info = resources::BuildingInfo->GetAt(building.GetRunningNumber() - 1);
-		if(info.GetShipYard() && info.GetNeededEnergy() > 0)
-			building.SetIsBuildingOnline(should_be_online);
+		const int needed = info.GetNeededEnergy();
+		if(info.GetShipYard() && needed > 0)
+		{
+			if(should_be_online && system.GetProduction()->GetEnergyProd() >= needed)
+				building.SetIsBuildingOnline(should_be_online);
+			else if(!should_be_online && info.GetMoralProd() <= 0)
+				building.SetIsBuildingOnline(should_be_online);
+		}
 	}
 }
 
