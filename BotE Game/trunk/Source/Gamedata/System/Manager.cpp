@@ -184,7 +184,7 @@ namespace //helpers for DistributeWorkers()
 	}
 
 	bool IncreaseWorkersUntilSufficient(CSystem& system, int& workers_left_to_set, WORKER::Typ type,
-		const CPoint& p, const CSystemProd& prod)
+		const CPoint& p, const CSystemProd& prod, bool allow_insufficient)
 	{
 		assert(type == WORKER::ENERGY_WORKER || type == WORKER::FOOD_WORKER);
 		while(true)
@@ -193,12 +193,12 @@ namespace //helpers for DistributeWorkers()
 			if(value >= 0)
 				return true;
 			if(workers_left_to_set <= 0)
-				return false;
+				return allow_insufficient;
 			const int number_of_buildings = system.GetNumberOfWorkbuildings(type, 0);
 			const int workers_set = system.GetWorker(type);
 			assert(workers_set <= number_of_buildings);
 			if(workers_set == number_of_buildings)
-				return false;
+				return allow_insufficient;
 			system.SetWorker(type, CSystem::SET_WORKER_MODE_INCREMENT);
 			--workers_left_to_set;
 			CalculateVariables(system, p);
@@ -228,11 +228,11 @@ bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
 
 
 	//energy
-	if(!IncreaseWorkersUntilSufficient(system, workers_left_to_set, WORKER::ENERGY_WORKER, p, prod))
+	if(!IncreaseWorkersUntilSufficient(system, workers_left_to_set, WORKER::ENERGY_WORKER, p, prod, false))
 		return false;
 
 	//food
-	if(!IncreaseWorkersUntilSufficient(system, workers_left_to_set, WORKER::FOOD_WORKER, p, prod))
+	if(!IncreaseWorkersUntilSufficient(system, workers_left_to_set, WORKER::FOOD_WORKER, p, prod, true))
 		return false;
 
 	//industry
