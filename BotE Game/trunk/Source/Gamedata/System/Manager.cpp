@@ -266,7 +266,8 @@ bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
 		assert(min_rounds >= 1);
 		if((!m_bMaxIndustry || min_rounds == 1) && !assembly_list.GetWasBuildingBought())
 		{
-			while(min_rounds == system.NeededRoundsToBuild(0))
+			while(min_rounds == system.NeededRoundsToBuild(0)
+				&& system.GetWorker(WORKER::INDUSTRY_WORKER) > 0)
 			{
 				system.SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_DECREMENT);
 				++workers_left_to_set;
