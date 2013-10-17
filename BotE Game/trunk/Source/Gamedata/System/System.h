@@ -190,7 +190,7 @@ public:
 	// Funktion setzt alle vorhandenen Arbeiter soweit wie möglich in Gebäude, die Arbeiter benötigen.
 	void SetWorkersIntoBuildings();
 
-	void ExecuteManager(const CPoint& p, CMajor& owner);
+	void ExecuteManager(const CPoint& p, CMajor& owner, bool turn_change);
 	void FreeAllWorkers();
 
 	// Funktion addiert moralAdd zu m_iMoral dazu und mach gleichzeitig noch die Überprüfen auf den richtigen Bereich.

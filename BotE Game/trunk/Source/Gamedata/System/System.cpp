@@ -634,21 +634,26 @@ void CSystem::SetWorkersIntoBuildings()
 	}
 }
 
-void CSystem::ExecuteManager(const CPoint& p, CMajor& owner)
+static void ManagerMessage(const CString& text, CMajor& owner, const CPoint& p)
+{
+	CEmpireNews message;
+	message.CreateNews(text,EMPIRE_NEWS_TYPE::ECONOMY,"",p);
+	owner.GetEmpire()->AddMsg(message);
+}
+
+
+void CSystem::ExecuteManager(const CPoint& p, CMajor& owner, bool turn_change)
 {
 	if(!m_Manager.Active() || !owner.IsHumanPlayer())
 		return;
 
+	const CString& name = resources::pDoc->GetSector(p.x, p.y).GetName();
+
 	m_Manager.CheckShipyard(*this);
-	const bool success = m_Manager.DistributeWorkers(*this, p);
-	if(!success)
-	{
-		const CString& text = CLoc::GetString("MANAGER_MALFUNCTION",false,
-			resources::pDoc->GetSector(p.x, p.y).GetName());
-		CEmpireNews message;
-		message.CreateNews(text,EMPIRE_NEWS_TYPE::ECONOMY,"",p);
-		owner.GetEmpire()->AddMsg(message);
-	}
+	if(!m_Manager.DistributeWorkers(*this, p))
+		ManagerMessage(CLoc::GetString("MANAGER_MALFUNCTION",false, name), owner, p);
+	if(turn_change && m_Manager.CheckFamine(*this))
+		ManagerMessage(CLoc::GetString("MANAGER_FAMINE_WARNING",false, name), owner, p);
 }
 
 void CSystem::FreeAllWorkers()

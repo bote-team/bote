@@ -61,9 +61,13 @@ public:
 // other functions
 //////////////////////////////////////////////////////////////////////
 
+	//@return false in case of an error
 	bool DistributeWorkers(CSystem& system, const CPoint& p) const;
 
 	void CheckShipyard(CSystem& system) const;
+
+	//@return true in case of expected famine
+	bool CheckFamine(const CSystem& system) const;
 
 //////////////////////////////////////////////////////////////////////
 // Members

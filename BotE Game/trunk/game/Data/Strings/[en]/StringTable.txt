@@ -513,6 +513,8 @@ We have established contact with the §
 We found the § in sector §
 [MANAGER_MALFUNCTION]
 The manager of the § system reports an error.
+[MANAGER_FAMINE_WARNING]
+The manager of the § system warns of expected famine in the next turn.
 
 // build menu
 [UPGRADING]

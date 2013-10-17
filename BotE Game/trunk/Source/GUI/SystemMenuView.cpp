@@ -2969,7 +2969,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			CSystem& system = pDoc->CurrentSystem();
 			CManagerSettingsDlg dlg(&system.Manager());
 			if(dlg.DoModal() == IDOK)
-				system.ExecuteManager(pDoc->GetKO(), *pMajor);
+				system.ExecuteManager(pDoc->GetKO(), *pMajor, false);
 		}
 		else
 			m_bySubMenu = temp;
@@ -3143,7 +3143,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			pDoc->GetSystem(p.x, p.y).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_Systems);
 			// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
 			pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
-			pDoc->GetSystem(p.x, p.y).ExecuteManager(p, *pMajor);
+			pDoc->GetSystem(p.x, p.y).ExecuteManager(p, *pMajor, false);
 
 			int RunningNumber = abs(nFirstAssemblyListEntry);
 			// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben.
@@ -3379,7 +3379,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					// Variablen berechnen
 					pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
 					if(took_something_offline)
-						pDoc->GetSystem(p.x, p.y).ExecuteManager(p, *pMajor);
+						pDoc->GetSystem(p.x, p.y).ExecuteManager(p, *pMajor, false);
 					// FP´s und SP´s wieder draufrechnen
 					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3627,7 +3627,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 					// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
 					pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
-					pDoc->GetSystem(p.x, p.y).ExecuteManager(p, *pMajor);
+					pDoc->GetSystem(p.x, p.y).ExecuteManager(p, *pMajor, false);
 					m_iClickedOn = i;
 
 					// Die Struktur Buildlist löschen
@@ -3709,7 +3709,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_Systems);
 				// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
 				pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
-				pDoc->GetSystem(p.x, p.y).ExecuteManager(p, *pMajor);
+				pDoc->GetSystem(p.x, p.y).ExecuteManager(p, *pMajor, false);
 			}
 			// Die restlichen Einträge seperat, weil wir die Bauliste anders löschen müssen und auch keine RES zurückbekommen müssen
 			else

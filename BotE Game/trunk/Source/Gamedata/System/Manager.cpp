@@ -350,3 +350,12 @@ void CSystemManager::CheckShipyard(CSystem& system) const
 	}
 }
 
+bool CSystemManager::CheckFamine(const CSystem& system) const
+{
+	const int food_prod = system.GetProduction()->GetFoodProd();
+	if(food_prod >= 0)
+		return false;
+	const int food_store = system.GetFoodStore();
+	return food_store + food_prod < 0;
+}
+

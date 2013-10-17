@@ -4965,7 +4965,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 			currentPoints = system.GetProduction()->GetSecurityProd();
 			pMajor->GetEmpire()->AddSP(currentPoints);
 
-			system.ExecuteManager(sector->GetKO(), *pMajor);
+			system.ExecuteManager(sector->GetKO(), *pMajor, true);
 		}
 
 		// Gibt es eine Anomalie im Sektor, so vielleicht die Scanpower niedriger setzen
