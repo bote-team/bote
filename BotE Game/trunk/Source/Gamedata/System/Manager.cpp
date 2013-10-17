@@ -264,7 +264,7 @@ bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
 		CalculateVariables(system, p);
 		const int min_rounds = system.NeededRoundsToBuild(0);
 		assert(min_rounds >= 1);
-		if(!m_bMaxIndustry || min_rounds == 1)
+		if((!m_bMaxIndustry || min_rounds == 1) && !assembly_list.GetWasBuildingBought())
 		{
 			while(min_rounds == system.NeededRoundsToBuild(0))
 			{
