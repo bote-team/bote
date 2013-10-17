@@ -1064,7 +1064,7 @@ void CSector::BuildStation(SHIP_TYPE::Typ station, const CString& race) {
 		m_Outpost = race;
 	else {
 		assert(station == SHIP_TYPE::STARBASE);
-		assert(m_Outpost == race);
+		assert(m_Outpost == race || m_Starbase == race);
 		m_Outpost.Empty();
 		m_Starbase = race;
 	}
