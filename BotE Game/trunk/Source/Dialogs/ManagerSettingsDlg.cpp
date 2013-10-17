@@ -18,6 +18,7 @@ CManagerSettingsDlg::CManagerSettingsDlg(CWnd* pParent /*=NULL*/)
 	, m_bActive(FALSE)
 	, m_bSafeMoral(FALSE)
 	, m_bMaxIndustry(FALSE)
+	, m_bNeglectFood(FALSE)
 {
 
 }
@@ -26,7 +27,8 @@ CManagerSettingsDlg::CManagerSettingsDlg(CSystemManager* manager, CWnd* pParent)
 	: CDialog(CManagerSettingsDlg::IDD, pParent), m_Manager(manager),
 	m_bActive(FALSE),
 	m_bSafeMoral(FALSE),
-	m_bMaxIndustry(FALSE)
+	m_bMaxIndustry(FALSE),
+	m_bNeglectFood(FALSE)
 {
 
 }
@@ -48,6 +50,7 @@ void CManagerSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SLIDER_IRIDIUM, m_ctrlIridiumSlider);
 	DDX_Check(pDX, IDC_CHECK_SAFE_MORAL, m_bSafeMoral);
 	DDX_Check(pDX, IDC_CHECK_MAX_INDUSTRY, m_bMaxIndustry);
+	DDX_Check(pDX, IDC_CHECK_NEGLECT_FOOD, m_bNeglectFood);
 }
 
 
@@ -65,6 +68,7 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 	m_bActive = m_Manager->Active();
 	m_bSafeMoral = m_Manager->SafeMoral();
 	m_bMaxIndustry = m_Manager->MaxIndustry();
+	m_bNeglectFood = m_Manager->NeglectFood();
 
 	m_ctrlSecuritySlider.SetRange(1, CSystemManager::max_priority);
 	m_ctrlSecuritySlider.SetTicFreq(tick_frequ);
@@ -105,6 +109,7 @@ void CManagerSettingsDlg::OnOK()
 	m_Manager->SetActive(m_bActive ? true : false);
 	m_Manager->SetSafeMoral(m_bSafeMoral ? true : false);
 	m_Manager->SetMaxIndustry(m_bMaxIndustry ? true : false);
+	m_Manager->SetNeglectFood(m_bNeglectFood ? true : false);
 
 	m_Manager->ClearPriorities(false);
 
@@ -138,6 +143,7 @@ void CManagerSettingsDlg::SetStates(BOOL active)
 
 	SetState(IDC_CHECK_SAFE_MORAL, active);
 	SetState(IDC_CHECK_MAX_INDUSTRY, active);
+	SetState(IDC_CHECK_NEGLECT_FOOD, active);
 }
 
 void CManagerSettingsDlg::OnBnClickedCheckActive()

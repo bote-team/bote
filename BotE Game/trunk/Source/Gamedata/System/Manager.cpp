@@ -21,6 +21,7 @@ CSystemManager::CSystemManager(const CSystemManager& o) :
 	m_bActive(o.m_bActive),
 	m_bSafeMoral(o.m_bSafeMoral),
 	m_bMaxIndustry(o.m_bMaxIndustry),
+	m_bNeglectFood(o.m_bNeglectFood),
 	m_PriorityMap(o.m_PriorityMap)
 {
 }
@@ -37,6 +38,7 @@ CSystemManager& CSystemManager::operator=(const CSystemManager& o)
 	m_bActive = o.m_bActive;
 	m_bSafeMoral = o.m_bSafeMoral;
 	m_bMaxIndustry = o.m_bMaxIndustry;
+	m_bNeglectFood = o.m_bNeglectFood;
 	m_PriorityMap = o.m_PriorityMap;
 
 	return *this;
@@ -47,6 +49,7 @@ void CSystemManager::Reset()
 	m_bActive = false;
 	m_bSafeMoral = true;
 	m_bMaxIndustry = false;
+	m_bNeglectFood = false;
 
 	ClearPriorities(true);
 }
@@ -62,6 +65,7 @@ void CSystemManager::Serialize(CArchive& ar)
 		ar << m_bActive;
 		ar << m_bSafeMoral;
 		ar << m_bMaxIndustry;
+		ar << m_bNeglectFood;
 		ar << static_cast<int>(m_PriorityMap.size());
 		for(std::map<int, WORKER::Typ>::const_iterator it = m_PriorityMap.begin();
 				it != m_PriorityMap.end(); ++it)
@@ -75,6 +79,7 @@ void CSystemManager::Serialize(CArchive& ar)
 		ar >> m_bActive;
 		ar >> m_bSafeMoral;
 		ar >> m_bMaxIndustry;
+		ar >> m_bNeglectFood;
 
 		ClearPriorities(false);
 		int map_size;
@@ -109,6 +114,11 @@ bool CSystemManager::MaxIndustry() const
 	return m_bMaxIndustry;
 }
 
+bool CSystemManager::NeglectFood() const
+{
+	return m_bNeglectFood;
+}
+
 int CSystemManager::Priority(WORKER::Typ type) const
 {
 	for(std::map<int, WORKER::Typ>::const_iterator it = m_PriorityMap.begin(); it != m_PriorityMap.end(); ++it)
@@ -137,6 +147,11 @@ void CSystemManager::SetSafeMoral(bool is)
 void CSystemManager::SetMaxIndustry(bool is)
 {
 	m_bMaxIndustry = is;
+}
+
+void CSystemManager::SetNeglectFood(bool is)
+{
+	m_bNeglectFood = is;
 }
 
 void CSystemManager::ClearPriorities(bool refill_with_standard)
@@ -232,8 +247,9 @@ bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
 		return false;
 
 	//food
-	if(!IncreaseWorkersUntilSufficient(system, workers_left_to_set, WORKER::FOOD_WORKER, p, prod, true))
-		return false;
+	if(!m_bNeglectFood || CheckFamine(system))
+		if(!IncreaseWorkersUntilSufficient(system, workers_left_to_set, WORKER::FOOD_WORKER, p, prod, true))
+			return false;
 
 	//industry
 	const CAssemblyList& assembly_list = *system.GetAssemblyList();

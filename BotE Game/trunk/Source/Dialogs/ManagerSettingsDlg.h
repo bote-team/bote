@@ -42,6 +42,7 @@ private:
 	BOOL m_bActive;
 	BOOL m_bSafeMoral;
 	BOOL m_bMaxIndustry;
+	BOOL m_bNeglectFood;
 
 	CSliderCtrl m_ctrlSecuritySlider;
 	CSliderCtrl m_ctrlResearchSlider;
