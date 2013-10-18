@@ -3361,7 +3361,6 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				if (m_EnergyList.GetAt(i).rect.PtInRect(point))
 				{
 					const CBuildingInfo *buildingInfo = &pDoc->BuildingInfo.GetAt(pDoc->GetSystem(p.x, p.y).GetAllBuildings()->GetAt(m_EnergyList.GetAt(i).index).GetRunningNumber() - 1);
-					bool took_something_offline = false;
 					if (m_EnergyList.GetAt(i).status == 0)
 					{
 						if (pDoc->GetSystem(p.x,p.y).GetProduction()->GetEnergyProd() >= buildingInfo->GetNeededEnergy())
@@ -3369,7 +3368,6 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					}
 					else
 					{
-						took_something_offline = true;
 						pDoc->GetSystem(p.x, p.y).SetIsBuildingOnline(m_EnergyList.GetAt(i).index, FALSE);
 					}
 
@@ -3378,8 +3376,6 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					// Variablen berechnen
 					pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
-					if(took_something_offline)
-						pDoc->GetSystem(p.x, p.y).ExecuteManager(p, *pMajor, false);
 					// FP´s und SP´s wieder draufrechnen
 					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
