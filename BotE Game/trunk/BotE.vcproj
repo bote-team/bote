@@ -890,6 +890,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Source\Gamedata\System\Manager.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Source\Gamedata\System\System.cpp"
 						>
 					</File>
@@ -988,6 +992,10 @@
 				</File>
 				<File
 					RelativePath=".\Source\Dialogs\MainDlg.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Source\Dialogs\ManagerSettingsDlg.cpp"
 					>
 				</File>
 				<File
@@ -1261,6 +1269,10 @@
 				</File>
 				<File
 					RelativePath=".\Source\Dialogs\MainDlg.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Source\Dialogs\ManagerSettingsDlg.h"
 					>
 				</File>
 				<File
@@ -1624,6 +1636,10 @@
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\System\GlobalStorage.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\System\Manager.h"
 						>
 					</File>
 					<File

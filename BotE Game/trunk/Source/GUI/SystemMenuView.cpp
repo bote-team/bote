@@ -14,6 +14,7 @@
 #include "General/Loc.h"
 #include "Ships/Ships.h"
 #include "GraphicPool.h"
+#include "ManagerSettingsDlg.h"
 
 short CSystemMenuView::m_iClickedOn = 0;
 BYTE CSystemMenuView::m_byResourceRouteRes = RESOURCES::TITAN;
@@ -2943,6 +2944,43 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 	}
 }
 
+namespace
+{
+	struct ResearchAndSecurityRecalcHelper
+	{
+		CEmpire* m_pEmpire;
+		CSystemProd* m_pProd;
+
+		ResearchAndSecurityRecalcHelper(CEmpire* pEmpire, CSystemProd* pProd) :
+			m_pEmpire(pEmpire), m_pProd(pProd)
+		{
+			// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
+			m_pEmpire->AddFP(-m_pProd->GetResearchProd());
+			m_pEmpire->AddSP(-m_pProd->GetSecurityProd());
+		};
+
+		~ResearchAndSecurityRecalcHelper()
+		{
+			// FP´s und SP´s wieder draufrechnen
+			m_pEmpire->AddFP(m_pProd->GetResearchProd());
+			m_pEmpire->AddSP(m_pProd->GetSecurityProd());
+		}
+
+	};
+
+	void ReflectPossibleResearchOrSecurityWorkerChange(CMajor* pMajor, CBotEDoc* pDoc, const CPoint& p, bool manager)
+	{
+		CSystem& system = pDoc->GetSystem(p.x,p.y);
+		const ResearchAndSecurityRecalcHelper help(pMajor->GetEmpire(), system.GetProduction());
+
+		// Variablen berechnen
+		system.CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+		if(manager)
+			system.ExecuteManager(pDoc->GetKO(), *pMajor, false);
+	}
+
+}
+
 void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
@@ -2963,7 +3001,15 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	int temp = m_bySubMenu;
 	if (ButtonReactOnLeftClick(point, &m_BuildMenueMainButtons, temp, FALSE))
 	{
-		m_bySubMenu = temp;
+		if(temp == 5)
+		{
+			CSystem& system = pDoc->CurrentSystem();
+			CManagerSettingsDlg dlg(&system.Manager());
+			if(dlg.DoModal() == IDOK)
+				ReflectPossibleResearchOrSecurityWorkerChange(pMajor, pDoc, pDoc->GetKO(), true);
+		}
+		else
+			m_bySubMenu = temp;
 		if (m_bySubMenu == 0)
 		{
 			m_bClickedOnBuyButton = FALSE;
@@ -3023,7 +3069,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 		}
 
-		CPoint p = pDoc->GetKO();
+		const CPoint& p = pDoc->GetKO();
 		// Überprüfen ob wir auf den KaufenButton gedrückt haben und wir noch nix gekauft haben
 		// dies geht nicht bei NeverReady wie z.B. Kriegsrecht Aufträgen
 		int nFirstAssemblyListEntry = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetAssemblyListEntry(0);
@@ -3133,7 +3179,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 			pDoc->GetSystem(p.x, p.y).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_Systems);
 			// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
-			pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+			ReflectPossibleResearchOrSecurityWorkerChange(pMajor, pDoc, p, true);
 
 			int RunningNumber = abs(nFirstAssemblyListEntry);
 			// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben.
@@ -3211,14 +3257,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				if (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker,0) > pDoc->GetSystem(p.x,p.y).GetWorker(nWorker))
 				{
 					pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,CSystem::SET_WORKER_MODE_INCREMENT);	// FoodWorker inkrementieren
-					// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
-					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
-					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
-					// Variablen berechnen
-					pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
-					// FP´s und SP´s wieder draufrechnen
-					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
-					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
+					ReflectPossibleResearchOrSecurityWorkerChange(pMajor, pDoc, p, false);
 					Invalidate();
 					return;
 				}
@@ -3231,14 +3270,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				if (pDoc->GetSystem(p.x,p.y).GetWorker(nWorker) > 0)
 				{
 					pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,CSystem::SET_WORKER_MODE_DECREMENT);	// FoodWorker dekrementieren
-					// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
-					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
-					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
-					// Variablen berechnen
-					pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
-					// FP´s und SP´s wieder draufrechnen
-					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
-					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
+					ReflectPossibleResearchOrSecurityWorkerChange(pMajor, pDoc, p, false);
 					Invalidate();
 					return;
 				}
@@ -3261,14 +3293,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					// Wenn wir ziemlich weit ganz links geklickt haben, dann Arbeiter auf null setzen, werden hier nur um eins dekrementiert
 					if (j == 0 && point.x < Timber[i][j].left+3)
 						pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,CSystem::SET_WORKER_MODE_DECREMENT);
-					// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
-					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
-					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
-					// Variablen berechnen
-					pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
-					// FP´s und SP´s wieder draufrechnen
-					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
-					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
+					ReflectPossibleResearchOrSecurityWorkerChange(pMajor, pDoc, p, false);
 					Invalidate();
 					return;
 				}
@@ -3361,14 +3386,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						pDoc->GetSystem(p.x, p.y).SetIsBuildingOnline(m_EnergyList.GetAt(i).index, FALSE);
 					}
 
-					// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
-					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
-					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
-					// Variablen berechnen
-					pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
-					// FP´s und SP´s wieder draufrechnen
-					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
-					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
+					ReflectPossibleResearchOrSecurityWorkerChange(pMajor, pDoc, p, false);
 					// Wenn es eine Werft war, die wir an bzw. aus geschaltet haben, dann nochmal schauen ob ich auch
 					// noch alle Schiffe bauen kann. Denn wenn die aus ist, dann kann ich keine mehr bauen
 					if (buildingInfo->GetShipYard())
@@ -3612,7 +3630,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 						pDoc->GetSystem(p.x, p.y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 
 					// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
-					pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+					ReflectPossibleResearchOrSecurityWorkerChange(pMajor, pDoc, p, true);
 					m_iClickedOn = i;
 
 					// Die Struktur Buildlist löschen
@@ -3693,7 +3711,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				}
 				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_Systems);
 				// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
-				pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+				ReflectPossibleResearchOrSecurityWorkerChange(pMajor, pDoc, p, true);
 			}
 			// Die restlichen Einträge seperat, weil wir die Bauliste anders löschen müssen und auch keine RES zurückbekommen müssen
 			else
@@ -3890,7 +3908,7 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					pDoc->GetSystem(p.x, p.y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 
 				// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
-				pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+				ReflectPossibleResearchOrSecurityWorkerChange(pMajor, pDoc, p, true);
 
 				// Die Struktur BuildList löschen, alle Werte auf 0
 				m_vBuildlist.RemoveAll();
@@ -3921,6 +3939,7 @@ void CSystemMenuView::CreateButtons()
 	m_BuildMenueMainButtons.Add(new CMyButton(CPoint(350,690), CSize(160,40), CLoc::GetString("BTN_ENERGYMENUE"), fileN, fileI, fileA));
 	m_BuildMenueMainButtons.Add(new CMyButton(CPoint(520,690), CSize(160,40), CLoc::GetString("BTN_BUILDING_OVERVIEWMENUE"), fileN, fileI, fileA));
 	m_BuildMenueMainButtons.Add(new CMyButton(CPoint(690,690), CSize(160,40), CLoc::GetString("BTN_TRADEMENUE"), fileN, fileI, fileA));
+	m_BuildMenueMainButtons.Add(new CMyButton(CPoint(860,690), CSize(160,40), CLoc::GetString("BTN_SYSTEMMANAGER"), fileN, fileI, fileA));
 
 	// Zuweisungsbuttons im Arbeitermenü
 	fileN = "Other\\" + sPrefix + "buttonminus.bop";

@@ -116,6 +116,8 @@ public:
 	short GetTroopBuildSpeed() const {return m_iTroopBuildSpeed;}
 	BOOLEAN GetResourceDistributor(BYTE res) const { return m_bResourceDistributor[res]; }
 
+	int GetXProd(WORKER::Typ x) const;
+
 	RESEARCHBONI GetResearchBoni() const;
 
 	// zum Schreiben der Membervariabeln

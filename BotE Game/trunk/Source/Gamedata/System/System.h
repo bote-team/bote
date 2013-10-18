@@ -22,6 +22,7 @@
 #include "Trade/TradeRoute.h"
 #include "array_sort.h"
 #include "General/GlobalTypes.h"
+#include "Manager.h"
 
 // forward declaration
 class CMajor;
@@ -60,6 +61,9 @@ public:
 	const CAssemblyList* GetAssemblyList() const {
 		return &m_AssemblyList;
 	}
+
+	const CSystemManager& Manager() const { return m_Manager; }
+	CSystemManager& Manager() { return m_Manager; }
 
 	/// Funktion berechnet die theoretisch benötigte Anzahl an Runden, bis ein beliebiges Projekt in
 	/// diesem System fertig sein wird.
@@ -118,6 +122,9 @@ public:
 	UINT GetIridiumStore() const {return m_Store.Iridium;}
 	UINT GetDeritiumStore() const {return m_Store.Deritium;}
 
+	//not for food
+	bool HasStore(WORKER::Typ type) const;
+
 	// Funktionen geben die jeweiligen maximalen Lagerinhalte zurück
 	static long GetFoodStoreMax() {return MAX_FOOD_STORE;}
 	static UINT GetTitanStoreMax() {return MAX_RES_STORE;}
@@ -129,6 +136,7 @@ public:
 
 	// Funktion gibt den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
 	UINT GetResourceStore(USHORT res) const;
+	int GetResourceStore(WORKER::Typ type) const;
 
 	// Funktion gibt einen Zeiger auf den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
 	int* GetResourceStorages(USHORT res);
@@ -177,8 +185,13 @@ public:
 	// er dekrementiert und bei Modus 2 wird der "WhatWorker" auf den Wert von Value gesetzt.
 	void SetWorker(WORKER::Typ nWhatWorker, SetWorkerMode Modus, int Value = -1);
 
+	bool SanityCheckWorkers();
+
 	// Funktion setzt alle vorhandenen Arbeiter soweit wie möglich in Gebäude, die Arbeiter benötigen.
 	void SetWorkersIntoBuildings();
+
+	void ExecuteManager(const CPoint& p, CMajor& owner, bool turn_change);
+	void FreeAllWorkers();
 
 	// Funktion addiert moralAdd zu m_iMoral dazu und mach gleichzeitig noch die Überprüfen auf den richtigen Bereich.
 	void SetMoral(short moralAdd) {if ((m_iMoral+moralAdd) >= 0) m_iMoral += moralAdd; if (m_iMoral > 200) m_iMoral = 200;}
@@ -411,9 +424,13 @@ private:
 	/// Autofunktion aktiviert oder nicht
 	BOOLEAN m_bAutoBuild;
 
+	CSystemManager m_Manager;
+
 	// private Hilfsfunktionen (mal schauen ob wir die direkt in die cpp-Datei schreiben können)
 	BOOLEAN CheckGeneralConditions(CBuildingInfo* building, CSector* sector, CGlobalBuildings* globals, CMajor* pMajor);
 	BOOLEAN CheckFollower(BuildingInfoArray* buildings, USHORT ID, BOOLEAN flag = 0, BOOLEAN equivalence = 0);
+
+	bool SanityCheckWorkersInRange(WORKER::Typ type) const;
 
 };
 

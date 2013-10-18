@@ -36,6 +36,7 @@ public:
 // sonstige Funktionen
 	void CalculateFreeWorkers();
 	void CheckWorkers();	// Fkt. überprüft, ob wir nicht zuviele Arbeiter eingestellt haben
+	void FreeAll();
 
 private:
 	BYTE m_iFoodWorker;

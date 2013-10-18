@@ -109,6 +109,8 @@ Energie
 Bauwerke
 [BTN_TRADEMENUE]
 Handel
+[BTN_SYSTEMMANAGER]
+Verwalter
 [BTN_BAUHOF]
 Bauhof
 [BTN_DOCKYARD]
@@ -509,6 +511,10 @@ Die § (§) wurde zum Flaggschiff ernannt
 Wir haben die § in Sektor § kennengelernt
 [GET_CONTACT_TO_MAJOR]
 Wir haben die § in Sektor § getroffen
+[MANAGER_MALFUNCTION]
+Der Verwalter des § Systems meldet einen Fehler.
+[MANAGER_FAMINE_WARNING]
+Der Verwalter des § Systems warnt vor einer Hungersnot in der nächsten Runde.
 
 // Baumenü
 [UPGRADING]

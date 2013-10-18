@@ -7,6 +7,7 @@
 #include "BotE.h"
 #include "BotEDoc.h"
 #include "Races\RaceController.h"
+#include "General/Loc.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -58,7 +59,8 @@ CSystem::CSystem(const CSystem &other) :
 	m_iCrystalMines(other.m_iCrystalMines),
 	m_iIridiumMines(other.m_iIridiumMines),
 	m_byMaxTradeRoutesFromHab(other.m_byMaxTradeRoutesFromHab),
-	m_bAutoBuild(other.m_bAutoBuild)
+	m_bAutoBuild(other.m_bAutoBuild),
+	m_Manager(other.m_Manager)
 {
 	m_Buildings.Copy(other.m_Buildings);
 	m_BuildableBuildings.Copy(other.m_BuildableBuildings);
@@ -101,6 +103,7 @@ CSystem& CSystem::operator=(const CSystem& other)
 	m_iIridiumMines = other.m_iIridiumMines;
 	m_byMaxTradeRoutesFromHab = other.m_byMaxTradeRoutesFromHab;
 	m_bAutoBuild = other.m_bAutoBuild;
+	m_Manager = other.m_Manager;
 
 	m_Buildings.Copy(other.m_Buildings);
 	m_BuildableBuildings.Copy(other.m_BuildableBuildings);
@@ -130,6 +133,7 @@ void CSystem::Serialize(CArchive &ar)
 	m_Production.Serialize(ar);
 	m_Workers.Serialize(ar);
 	m_Store.Serialize(ar);
+	m_Manager.Serialize(ar);
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -429,6 +433,12 @@ USHORT CSystem::GetNumberOfBuilding(USHORT runningNumber) const
 	return number;
 }
 
+bool CSystem::HasStore(WORKER::Typ type) const
+{
+	return	type == WORKER::TITAN_WORKER || type == WORKER::DEUTERIUM_WORKER
+		|| type == WORKER::DURANIUM_WORKER || type == WORKER::CRYSTAL_WORKER || type == WORKER::IRIDIUM_WORKER;
+}
+
 // Funktion gibt den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
 UINT CSystem::GetResourceStore(USHORT res) const
 {
@@ -442,6 +452,25 @@ UINT CSystem::GetResourceStore(USHORT res) const
 	case RESOURCES::DERITIUM: {return this->GetDeritiumStore();}
 	}
 	return 0;
+}
+
+static RESOURCES::TYPE WorkerToResource(WORKER::Typ type)
+{
+	std::map<WORKER::Typ, RESOURCES::TYPE> transformer;
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::TITAN_WORKER, RESOURCES::TITAN));
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::DEUTERIUM_WORKER, RESOURCES::DEUTERIUM));
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::DURANIUM_WORKER, RESOURCES::DURANIUM));
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::CRYSTAL_WORKER, RESOURCES::CRYSTAL));
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::IRIDIUM_WORKER, RESOURCES::IRIDIUM));
+	const std::map<WORKER::Typ, RESOURCES::TYPE>::const_iterator it = transformer.find(type);
+	assert(it != transformer.end());
+	return it->second;
+}
+
+int CSystem::GetResourceStore(WORKER::Typ type) const
+{
+	assert(HasStore(type));
+	return GetResourceStore(WorkerToResource(type));
 }
 
 // Funktion gibt einen Zeiger auf den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
@@ -552,6 +581,35 @@ void CSystem::SetWorker(WORKER::Typ nWhatWorker, SetWorkerMode Modus, int Value)
 		m_Workers.SetWorker(nWhatWorker, Value);
 }
 
+bool CSystem::SanityCheckWorkers()
+{
+	m_Workers.CalculateFreeWorkers();
+	const bool in_range = SanityCheckWorkersInRange(WORKER::FOOD_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::INDUSTRY_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::ENERGY_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::SECURITY_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::RESEARCH_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::TITAN_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::DEUTERIUM_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::DURANIUM_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::CRYSTAL_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::IRIDIUM_WORKER);
+	if(!in_range)
+		return false;
+
+	return m_Workers.GetWorker(WORKER::ALL_WORKER) == m_Workers.GetWorker(WORKER::FREE_WORKER)
+		+ m_Workers.GetWorker(WORKER::FOOD_WORKER)
+		+ m_Workers.GetWorker(WORKER::INDUSTRY_WORKER)
+		+ m_Workers.GetWorker(WORKER::ENERGY_WORKER)
+		+ m_Workers.GetWorker(WORKER::SECURITY_WORKER)
+		+ m_Workers.GetWorker(WORKER::RESEARCH_WORKER)
+		+ m_Workers.GetWorker(WORKER::TITAN_WORKER)
+		+ m_Workers.GetWorker(WORKER::DEUTERIUM_WORKER)
+		+ m_Workers.GetWorker(WORKER::DURANIUM_WORKER)
+		+ m_Workers.GetWorker(WORKER::CRYSTAL_WORKER)
+		+ m_Workers.GetWorker(WORKER::IRIDIUM_WORKER);
+}
+
 // Funktion setzt alle vorhandenen Arbeiter soweit wie möglich in Gebäude, die Arbeiter benötigen.
 void CSystem::SetWorkersIntoBuildings()
 {
@@ -574,6 +632,33 @@ void CSystem::SetWorkersIntoBuildings()
 		if(all_buildings_full)
 			break;
 	}
+}
+
+static void ManagerMessage(const CString& text, CMajor& owner, const CPoint& p)
+{
+	CEmpireNews message;
+	message.CreateNews(text,EMPIRE_NEWS_TYPE::ECONOMY,"",p);
+	owner.GetEmpire()->AddMsg(message);
+}
+
+
+void CSystem::ExecuteManager(const CPoint& p, CMajor& owner, bool turn_change)
+{
+	if(!m_Manager.Active() || !owner.IsHumanPlayer())
+		return;
+
+	const CString& name = resources::pDoc->GetSector(p.x, p.y).GetName();
+
+	m_Manager.CheckShipyard(*this);
+	if(!m_Manager.DistributeWorkers(*this, p))
+		ManagerMessage(CLoc::GetString("MANAGER_MALFUNCTION",false, name), owner, p);
+	if(turn_change && m_Manager.CheckFamine(*this))
+		ManagerMessage(CLoc::GetString("MANAGER_FAMINE_WARNING",false, name), owner, p);
+}
+
+void CSystem::FreeAllWorkers()
+{
+	m_Workers.FreeAll();
 }
 
 void CSystem::SetStores(const GameResources& add)
@@ -2619,6 +2704,7 @@ void CSystem::ResetSystem()
 	m_byMaxTradeRoutesFromHab = 0;
 	m_Troops.RemoveAll();
 	m_bAutoBuild = FALSE;
+	m_Manager.Reset();
 
 	// Deaktivierte Produktionen zurücksetzen
 	ClearDisabledProductions();
@@ -3048,4 +3134,10 @@ void CSystem::TrainTroops()
 	const int xp = m_Production.GetTroopTraining();
 	for(int i = 0; i < m_Troops.GetSize(); ++i)
 		m_Troops.GetAt(i).AddExperiancePoints(xp);
+}
+
+bool CSystem::SanityCheckWorkersInRange(WORKER::Typ type) const
+{
+	const int workers = m_Workers.GetWorker(type);
+	return 0 <= workers && workers <= GetNumberOfWorkbuildings(type, 0);
 }

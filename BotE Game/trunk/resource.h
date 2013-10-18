@@ -9,7 +9,7 @@
 #define IDD_CHOOSERACEVIEW              105
 #define IDD_NEWGAMEVIEW                 106
 #define IDR_MAINFRAME                   128
-#define IDR_BOTETYPE					129
+#define IDR_BOTETYPE                    129
 #define IDD_NEWGAME                     129
 #define IDD_CHOOSERACE                  130
 #define IDD_DIALOG1                     131
@@ -20,6 +20,8 @@
 #define IDD_SEARCHSERVERS               183
 #define IDB_LOGO                        188
 #define IDD_SETTINGSDLG                 189
+#define IDD_MANAGER_SETTINGS_DLG        190
+#define IDD_MANAGER_SETTINGSDLG         190
 #define IDC_CLIENT                      1001
 #define IDC_SERVER                      1002
 #define IDC_HOSTIP                      1003
@@ -91,11 +93,17 @@
 #define IDC_EDIT_RANDOMSEED             1051
 #define IDC_SLIDER_STARDENSITY          1052
 #define IDC_SLIDER_MINORDENSITY         1053
+#define IDC_SLIDER_RESEARCH             1053
 #define IDC_CHECK_HIDEMENUBAR           1054
+#define IDC_SLIDER_TITAN                1054
 #define IDC_SLIDER_ANOMALYDENSITY       1055
+#define IDC_SLIDER_DEUTERIUM            1055
 #define IDC_CHECK_VC_ELIMINATION        1056
+#define IDC_SLIDER_CRYSTAL              1056
 #define IDC_CHECK_VC_DIPLOMACY          1057
+#define IDC_SLIDER_DURANIUM             1057
 #define IDC_CHECK_VC_CONQUEST           1058
+#define IDC_SLIDER_IRIDIUM              1058
 #define IDC_CHECK_VC_RESEARCH           1059
 #define IDC_CHECK_VC_COMBAT             1060
 #define IDC_CHECK_VC_SABOTAGE           1061
@@ -108,6 +116,13 @@
 #define IDC_CHECK_RANDOMEVENTS          1068
 #define IDC_CHECK_ALIENENTITIES         1069
 #define IDC_CHECK_SHOWRANDOMEVENTPICTURES 1070
+#define IDC_CHECK_ACTIVE                1071
+#define IDC_SLIDER_SECURITY             1072
+#define IDC_CHECK_SAFE_MORAL            1073
+#define IDC_CHECK2                      1074
+#define IDC_CHECK_MAX_INDUSTRY          1074
+#define IDC_CHECK1                      1075
+#define IDC_CHECK_NEGLECT_FOOD          1075
 #define ID_OPTIONEN                     32773
 #define ID_INFORMATION                  32774
 #define ID_DATENBANK                    32775
@@ -131,9 +146,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        190
+#define _APS_NEXT_RESOURCE_VALUE        191
 #define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1071
+#define _APS_NEXT_CONTROL_VALUE         1076
 #define _APS_NEXT_SYMED_VALUE           107
 #endif
 #endif

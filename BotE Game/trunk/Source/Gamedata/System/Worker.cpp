@@ -6,6 +6,8 @@
 #include "stdafx.h"
 #include "Worker.h"
 
+#include <cassert>
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -282,5 +284,22 @@ void CWorker::CheckWorkers()
 			}
 		}
 	}
+}
+
+void CWorker::FreeAll()
+{
+	m_iFoodWorker = 0;
+	m_iIndustryWorker = 0;
+	m_iEnergyWorker = 0;
+	m_iSecurityWorker = 0;
+	m_iResearchWorker = 0;
+	m_iTitanWorker = 0;
+	m_iDeuteriumWorker = 0;
+	m_iDuraniumWorker = 0;
+	m_iCrystalWorker = 0;
+	m_iIridiumWorker = 0;
+
+	CalculateFreeWorkers();
+	assert(m_iAllWorkers == m_iFreeWorkers);
 }
 

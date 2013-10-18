@@ -109,6 +109,8 @@ Energy
 Structures
 [BTN_TRADEMENUE]
 Trade
+[BTN_SYSTEMMANAGER]
+Manager
 [BTN_BAUHOF]
 Structures
 [BTN_DOCKYARD]
@@ -509,6 +511,10 @@ The § (§) has been assigned as flagship
 We have established contact with the §
 [GET_CONTACT_TO_MAJOR]
 We found the § in sector §
+[MANAGER_MALFUNCTION]
+The manager of the § system reports an error.
+[MANAGER_FAMINE_WARNING]
+The manager of the § system warns of expected famine in the next turn.
 
 // build menu
 [UPGRADING]
