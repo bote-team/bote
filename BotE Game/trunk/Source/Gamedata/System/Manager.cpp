@@ -187,158 +187,193 @@ void CSystemManager::AddPriority(int value, WORKER::Typ type)
 // other functions
 //////////////////////////////////////////////////////////////////////
 
-namespace //helpers for DistributeWorkers()
+class CWorkersDistributionCalculator
 {
-	void CalculateVariables(CSystem& system, const CPoint& p)
-	{
-		const CBotEDoc& doc = *resources::pDoc;
-		const CSector& sector = doc.GetSector(p.x, p.y);
-		const CMajor* major = dynamic_cast<CMajor*>(doc.GetRaceCtrl()->GetRace(system.GetOwnerOfSystem()));
-		assert(major);
-		system.CalculateVariables(sector.GetPlanets(), major);
-	}
+private:
+	CSystem* m_pSystem;
+	const CSystemProd* const m_pProd;
+	const CPoint m_Co;
+	int m_WorkersLeftToSet;
 
-	bool IncreaseWorkersUntilSufficient(CSystem& system, int& workers_left_to_set, WORKER::Typ type,
-		const CPoint& p, const CSystemProd& prod, bool allow_insufficient)
+	int FillRemainingSlots(WORKER::Typ type) const
 	{
-		assert(type == WORKER::ENERGY_WORKER || type == WORKER::FOOD_WORKER);
-		while(true)
-		{
-			const int value = (type == WORKER::ENERGY_WORKER) ? prod.GetEnergyProd() : prod.GetFoodProd();
-			if(value >= 0)
-				return true;
-			if(workers_left_to_set <= 0)
-				return allow_insufficient;
-			const int number_of_buildings = system.GetNumberOfWorkbuildings(type, 0);
-			const int workers_set = system.GetWorker(type);
-			assert(workers_set <= number_of_buildings);
-			if(workers_set == number_of_buildings)
-				return allow_insufficient;
-			system.SetWorker(type, CSystem::SET_WORKER_MODE_INCREMENT);
-			--workers_left_to_set;
-			CalculateVariables(system, p);
-		}
-	}
-
-	int FillRemainingSlots(CSystem& system, WORKER::Typ type, int workers_left_to_set)
-	{
-		const int current_workers = system.GetWorker(type);
-		const int buildings = system.GetNumberOfWorkbuildings(type, 0);
+		const int current_workers = m_pSystem->GetWorker(type);
+		const int buildings = m_pSystem->GetNumberOfWorkbuildings(type, 0);
 		assert(0 <= current_workers && current_workers <= buildings);
 		const int still_free = buildings - current_workers;
 		if(still_free == 0)
 			return 0;
-		const int to_set = min(still_free, workers_left_to_set);
-		system.SetWorker(type, CSystem::SET_WORKER_MODE_SET, current_workers + to_set);
+		const int to_set = min(still_free, m_WorkersLeftToSet);
+		m_pSystem->SetWorker(type, CSystem::SET_WORKER_MODE_SET, current_workers + to_set);
 		return to_set;
 	}
-}
+
+	void CalculateVariables() const
+	{
+		const CBotEDoc& doc = *resources::pDoc;
+		const CSector& sector = doc.GetSector(m_Co.x, m_Co.y);
+		const CMajor* major = dynamic_cast<CMajor*>(doc.GetRaceCtrl()->GetRace(m_pSystem->GetOwnerOfSystem()));
+		assert(major);
+		m_pSystem->CalculateVariables(sector.GetPlanets(), major);
+	}
+
+public:
+
+	CWorkersDistributionCalculator(CSystem& system, const CPoint& p) :
+		m_pSystem(&system),
+		m_pProd(system.GetProduction()),
+		m_Co(p),
+		m_WorkersLeftToSet(system.GetWorker(WORKER::ALL_WORKER))
+	{
+	}
+
+	void Prepare() const
+	{
+		m_pSystem->FreeAllWorkers();
+		CalculateVariables();
+	}
+
+	void Finish() const
+	{
+		assert(m_WorkersLeftToSet >= 0);
+		#ifdef CONSISTENCY_CHECKS
+			assert(m_pSystem->SanityCheckWorkers());
+		#endif
+		CalculateVariables();
+	}
+
+	bool IncreaseWorkersUntilSufficient(WORKER::Typ type, bool allow_insufficient)
+	{
+		assert(type == WORKER::ENERGY_WORKER || type == WORKER::FOOD_WORKER);
+		while(true)
+		{
+			const int value = (type == WORKER::ENERGY_WORKER) ? m_pProd->GetEnergyProd() : m_pProd->GetFoodProd();
+			if(value >= 0)
+				return true;
+			if(m_WorkersLeftToSet <= 0)
+				return allow_insufficient;
+			const int number_of_buildings = m_pSystem->GetNumberOfWorkbuildings(type, 0);
+			const int workers_set = m_pSystem->GetWorker(type);
+			assert(workers_set <= number_of_buildings);
+			if(workers_set == number_of_buildings)
+				return allow_insufficient;
+			m_pSystem->SetWorker(type, CSystem::SET_WORKER_MODE_INCREMENT);
+			--m_WorkersLeftToSet;
+			CalculateVariables();
+		}
+	}
+
+	bool DoIndustry(bool max_industry, bool safe_moral)
+	{
+		const CAssemblyList& assembly_list = *m_pSystem->GetAssemblyList();
+		if(assembly_list.IsEmpty())
+			return true;
+		if(m_WorkersLeftToSet <= 0)
+			return false;
+		const int max_buildings = m_pSystem->GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 0);
+		const int industry_workers = min(max_buildings, m_WorkersLeftToSet);
+		m_WorkersLeftToSet -= industry_workers;
+		m_pSystem->SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_SET, industry_workers);
+		CalculateVariables();
+		const int min_rounds = m_pSystem->NeededRoundsToBuild(0);
+		assert(min_rounds >= 1);
+		if((!max_industry || min_rounds == 1) && !assembly_list.GetWasBuildingBought())
+		{
+			while(min_rounds == m_pSystem->NeededRoundsToBuild(0)
+				&& m_pSystem->GetWorker(WORKER::INDUSTRY_WORKER) > 0)
+			{
+				m_pSystem->SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_DECREMENT);
+				++m_WorkersLeftToSet;
+				CalculateVariables();
+			}
+			//undo last step of the loop
+			m_pSystem->SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
+			--m_WorkersLeftToSet;
+			if(safe_moral && min_rounds == 1 && m_WorkersLeftToSet >= 1
+				&& m_pSystem->GetWorker(WORKER::INDUSTRY_WORKER) < max_buildings)
+			{
+				//+1 worker in case of moral loss
+				m_pSystem->SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
+				--m_WorkersLeftToSet;
+			}
+		}
+		return true;
+	}
+
+	void DoPriorities(const std::map<int, WORKER::Typ>& priorities)
+	{
+		for(std::map<int, WORKER::Typ>::const_reverse_iterator it = priorities.rbegin();
+			it != priorities.rend(); ++it)
+		{
+			const int to_set = min(m_WorkersLeftToSet, m_pSystem->GetNumberOfWorkbuildings(it->second, 0));
+			m_WorkersLeftToSet -= to_set;
+			m_pSystem->SetWorker(it->second, CSystem::SET_WORKER_MODE_SET, to_set);
+			if(m_pSystem->HasStore(it->second))
+			{
+				const int store = m_pSystem->GetResourceStore(it->second);
+				while(true)
+				{
+					const int workers = m_pSystem->GetWorker(it->second);
+					if(workers == 0)
+						break;
+					CalculateVariables();
+					const int prod = m_pSystem->GetProduction()->GetXProd(it->second);
+					if(store + prod <= MAX_RES_STORE)
+						break;
+					m_pSystem->SetWorker(it->second, CSystem::SET_WORKER_MODE_DECREMENT);
+					++m_WorkersLeftToSet;
+				}
+			}
+			if(m_WorkersLeftToSet == 0)
+				break;
+		}
+	}
+
+	void DoRemaining()
+	{
+		//distribute any remaining workers
+		if(m_WorkersLeftToSet > 0 && m_pSystem->GetFoodStore() < MAX_FOOD_STORE)
+			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::FOOD_WORKER);
+		if(m_WorkersLeftToSet > 0)
+			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::INDUSTRY_WORKER);
+		if(m_WorkersLeftToSet > 0)
+			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::TITAN_WORKER);
+		if(m_WorkersLeftToSet > 0)
+			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::DEUTERIUM_WORKER);
+		if(m_WorkersLeftToSet > 0)
+			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::DURANIUM_WORKER);
+		if(m_WorkersLeftToSet > 0)
+			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::CRYSTAL_WORKER);
+		if(m_WorkersLeftToSet > 0)
+			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::IRIDIUM_WORKER);
+		if(m_WorkersLeftToSet > 0)
+			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::FOOD_WORKER);
+		if(m_WorkersLeftToSet > 0)
+			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::ENERGY_WORKER);
+	}
+
+};
 
 bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
 {
-	system.FreeAllWorkers();
-	CalculateVariables(system, p);
-	int workers_left_to_set = system.GetWorker(WORKER::ALL_WORKER);
-	const CSystemProd& prod = *system.GetProduction();
+	CWorkersDistributionCalculator calc(system, p);
 
-
+	calc.Prepare();
 	//energy
-	if(!IncreaseWorkersUntilSufficient(system, workers_left_to_set, WORKER::ENERGY_WORKER, p, prod, false))
+	if(!calc.IncreaseWorkersUntilSufficient(WORKER::ENERGY_WORKER, false))
 		return false;
-
 	//food
 	if(!m_bNeglectFood || CheckFamine(system))
-		if(!IncreaseWorkersUntilSufficient(system, workers_left_to_set, WORKER::FOOD_WORKER, p, prod, true))
+		if(!calc.IncreaseWorkersUntilSufficient(WORKER::FOOD_WORKER, true))
 			return false;
-
 	//industry
-	const CAssemblyList& assembly_list = *system.GetAssemblyList();
-	if(!assembly_list.IsEmpty())
-	{
-		if(workers_left_to_set <= 0)
-			return false;
-		const int max_buildings = system.GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 0);
-		const int industry_workers = min(max_buildings, workers_left_to_set);
-		workers_left_to_set -= industry_workers;
-		system.SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_SET, industry_workers);
-		CalculateVariables(system, p);
-		const int min_rounds = system.NeededRoundsToBuild(0);
-		assert(min_rounds >= 1);
-		if((!m_bMaxIndustry || min_rounds == 1) && !assembly_list.GetWasBuildingBought())
-		{
-			while(min_rounds == system.NeededRoundsToBuild(0)
-				&& system.GetWorker(WORKER::INDUSTRY_WORKER) > 0)
-			{
-				system.SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_DECREMENT);
-				++workers_left_to_set;
-				CalculateVariables(system, p);
-			}
-			//undo last step of the loop
-			system.SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
-			--workers_left_to_set;
-			if(m_bSafeMoral && min_rounds == 1 && workers_left_to_set >= 1
-				&& system.GetWorker(WORKER::INDUSTRY_WORKER) < max_buildings)
-			{
-				//+1 worker in case of moral loss
-				system.SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
-				--workers_left_to_set;
-			}
-		}
-	}
-
+	if(!calc.DoIndustry(m_bMaxIndustry, m_bSafeMoral))
+		return false;
 	//security, research, titan, deuterium, duranium, crystal, iridium in order according to priorities
-	for(std::map<int, WORKER::Typ>::const_reverse_iterator it = m_PriorityMap.rbegin();
-		it != m_PriorityMap.rend(); ++it)
-	{
-		const int to_set = min(workers_left_to_set, system.GetNumberOfWorkbuildings(it->second, 0));
-		workers_left_to_set -= to_set;
-		system.SetWorker(it->second, CSystem::SET_WORKER_MODE_SET, to_set);
-		if(system.HasStore(it->second))
-		{
-			const int store = system.GetResourceStore(it->second);
-			while(true)
-			{
-				const int workers = system.GetWorker(it->second);
-				if(workers == 0)
-					break;
-				CalculateVariables(system, p);
-				const int prod = system.GetProduction()->GetXProd(it->second);
-				if(store + prod <= MAX_RES_STORE)
-					break;
-				system.SetWorker(it->second, CSystem::SET_WORKER_MODE_DECREMENT);
-				++workers_left_to_set;
-			}
-		}
-		if(workers_left_to_set == 0)
-			break;
-	}
-
+	calc.DoPriorities(m_PriorityMap);
 	//distribute any remaining workers
-	if(workers_left_to_set > 0 && system.GetFoodStore() < MAX_FOOD_STORE)
-		workers_left_to_set -= FillRemainingSlots(system, WORKER::FOOD_WORKER, workers_left_to_set);
-	if(workers_left_to_set > 0)
-		workers_left_to_set -= FillRemainingSlots(system, WORKER::INDUSTRY_WORKER, workers_left_to_set);
-	if(workers_left_to_set > 0)
-		workers_left_to_set -= FillRemainingSlots(system, WORKER::TITAN_WORKER, workers_left_to_set);
-	if(workers_left_to_set > 0)
-		workers_left_to_set -= FillRemainingSlots(system, WORKER::DEUTERIUM_WORKER, workers_left_to_set);
-	if(workers_left_to_set > 0)
-		workers_left_to_set -= FillRemainingSlots(system, WORKER::DURANIUM_WORKER, workers_left_to_set);
-	if(workers_left_to_set > 0)
-		workers_left_to_set -= FillRemainingSlots(system, WORKER::CRYSTAL_WORKER, workers_left_to_set);
-	if(workers_left_to_set > 0)
-		workers_left_to_set -= FillRemainingSlots(system, WORKER::IRIDIUM_WORKER, workers_left_to_set);
-	if(workers_left_to_set > 0)
-		workers_left_to_set -= FillRemainingSlots(system, WORKER::FOOD_WORKER, workers_left_to_set);
-	if(workers_left_to_set > 0)
-		workers_left_to_set -= FillRemainingSlots(system, WORKER::ENERGY_WORKER, workers_left_to_set);
-
-	assert(workers_left_to_set >= 0);
-#ifdef CONSISTENCY_CHECKS
-	assert(system.SanityCheckWorkers());
-#endif
-
-	CalculateVariables(system, p);
+	calc.DoRemaining();
+	calc.Finish();
 
 	return true;
 }
@@ -354,7 +389,7 @@ static bool ShouldTakeShipyardOnline(const CSystem& system)
 	return true;
 }
 
-void CSystemManager::CheckShipyard(CSystem& system) const
+void CSystemManager::CheckShipyard(CSystem& system)
 {
 	const bool should_be_online = ShouldTakeShipyardOnline(system);
 	CArray<CBuilding>* buildings = system.GetAllBuildings();
@@ -373,7 +408,7 @@ void CSystemManager::CheckShipyard(CSystem& system) const
 	}
 }
 
-bool CSystemManager::CheckFamine(const CSystem& system) const
+bool CSystemManager::CheckFamine(const CSystem& system)
 {
 	const int food_prod = system.GetProduction()->GetFoodProd();
 	if(food_prod >= 0)

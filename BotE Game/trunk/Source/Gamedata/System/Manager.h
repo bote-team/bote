@@ -66,10 +66,10 @@ public:
 	//@return false in case of an error
 	bool DistributeWorkers(CSystem& system, const CPoint& p) const;
 
-	void CheckShipyard(CSystem& system) const;
+	static void CheckShipyard(CSystem& system);
 
 	//@return true in case of expected famine
-	bool CheckFamine(const CSystem& system) const;
+	static bool CheckFamine(const CSystem& system);
 
 //////////////////////////////////////////////////////////////////////
 // Members
