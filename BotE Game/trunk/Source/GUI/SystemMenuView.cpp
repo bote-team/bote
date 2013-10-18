@@ -2953,11 +2953,11 @@ namespace
 
 		ResearchAndSecurityRecalcHelper(CEmpire* pEmpire, CSystemProd* pProd) :
 			m_pEmpire(pEmpire), m_pProd(pProd)
-			{
-				// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
-				m_pEmpire->AddFP(-m_pProd->GetResearchProd());
-				m_pEmpire->AddSP(-m_pProd->GetSecurityProd());
-			};
+		{
+			// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
+			m_pEmpire->AddFP(-m_pProd->GetResearchProd());
+			m_pEmpire->AddSP(-m_pProd->GetSecurityProd());
+		};
 
 		~ResearchAndSecurityRecalcHelper()
 		{
