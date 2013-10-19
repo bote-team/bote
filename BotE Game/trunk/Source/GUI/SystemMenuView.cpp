@@ -391,7 +391,8 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 		}
 
 		// noch verbleibende Runden bis das Projekt fertig wird
-		int nRounds = pDoc->GetSystem(p.x, p.y).GetNeededRoundsToCompleteProject(m_vBuildlist[i]);
+		const int nRounds = pDoc->GetSystem(p.x, p.y).
+			NeededRoundsToBuild(m_vBuildlist[i], false);
 		BOOLEAN bCanAddToAssemblyList = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->MakeEntry(m_vBuildlist[i], p, pDoc->m_Systems, true);
 		if (!bCanAddToAssemblyList)
 		{
@@ -1878,7 +1879,7 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 			}
 			g->DrawRectangle(&rectPen, 749, y-1, 27, 22);
 
-			m_strAssemblyListEntry.Format("%i", pDoc->GetSystem(p.x, p.y).NeededRoundsToBuild(i));
+			m_strAssemblyListEntry.Format("%i", pDoc->GetSystem(p.x, p.y).NeededRoundsToBuild(i, true));
 			fontFormat.SetAlignment(StringAlignmentFar);
 			g->DrawString(CComBSTR(m_strAssemblyListEntry), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(765,y,260,25), &fontFormat, &usedBrush);
 			y += 25;

@@ -239,70 +239,6 @@ void CSystem::Serialize(CArchive &ar)
 // Zugriffsfunktionen
 //////////////////////////////////////////////////////////////////////
 
-int CSystem::GetNeededRoundsToCompleteProject(int nID)
-{
-	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
-
-	int nRounds = 0;
-
-	if (GetProduction()->GetIndustryProd() <= 0)
-		return nRounds;
-
-	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
-	if (!pMajor)
-		return nRounds;
-
-	// handelt es sich um ein Update von Gebäuden?
-	if (nID < 0)
-	{
-		// Hier Berechnung der noch verbleibenden Runden, bis das Update fertig wird
-		m_AssemblyList.CalculateNeededRessources(&pDoc->GetBuildingInfo(abs(nID)), NULL, NULL, &m_Buildings, nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
-
-		nRounds = (int)ceil((float)(m_AssemblyList.GetNeededIndustryForBuild())
-			/ ((float)GetProduction()->GetIndustryProd()
-			* (100 + GetProduction()->GetUpdateBuildSpeed()) / 100));
-	}
-	// handelt es sich um ein Gebäude
-	else if (nID < 10000)
-	{
-		m_AssemblyList.CalculateNeededRessources(&pDoc->GetBuildingInfo(nID), NULL, NULL, &m_Buildings, nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
-
-		if (pDoc->GetBuildingInfo(nID).GetNeverReady())
-			return nRounds;
-
-		nRounds = (int)ceil((float)(m_AssemblyList.GetNeededIndustryForBuild())
-			/ ((float)GetProduction()->GetIndustryProd()
-			* (100 + GetProduction()->GetBuildingBuildSpeed()) / 100));
-	}
-	// handelt es sich um ein Schiff
-	else if (nID < 20000)
-	{
-		// Hier Berechnung der noch verbleibenden Runden, bis das Projekt fertig wird
-		m_AssemblyList.CalculateNeededRessources(NULL, &pDoc->m_ShipInfoArray.GetAt(nID - 10000), NULL, &m_Buildings, nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
-		if (GetProduction()->GetShipYardEfficiency() == 0)
-			return nRounds;
-
-		nRounds = (int)ceil((float)(m_AssemblyList.GetNeededIndustryForBuild())
-			/ ((float)GetProduction()->GetIndustryProd() * GetProduction()->GetShipYardEfficiency() / 100
-			* (100 + GetProduction()->GetShipBuildSpeed()) / 100));
-	}
-	// handelt es sich um eine Truppe
-	else
-	{
-		// Hier Berechnung der noch verbleibenden Runden, bis das Projekt fertig wird
-		m_AssemblyList.CalculateNeededRessources(NULL, NULL, &pDoc->m_TroopInfo.GetAt(nID - 20000), &m_Buildings, nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
-		if (GetProduction()->GetBarrackEfficiency() == 0)
-			return nRounds;
-
-		nRounds = (int)ceil((float)(m_AssemblyList.GetNeededIndustryForBuild())
-			/ ((float)GetProduction()->GetIndustryProd() * GetProduction()->GetBarrackEfficiency() / 100
-			* (100 + GetProduction()->GetTroopBuildSpeed()) / 100));
-	}
-
-	return nRounds;
-}
-
 // Funktion gibt die Anzahl oder die RunningNumber (ID) der Gebäude zurück, welche Arbeiter benötigen.
 // Wir übergeben dafür als Parameter den Typ des Gebäudes (FARM, BAUHOF usw.) und einen Modus.
 // Ist der Modus NULL, dann bekommen wir die Anzahl zurück, ist der Modus EINS, dann die RunningNumber.
@@ -3081,52 +3017,107 @@ int CSystem::CalcIPProd(const CArray<CBuildingInfo, CBuildingInfo>& BuildingInfo
 	return IPProd;
 }
 
-int CSystem::NeededRoundsToBuild(int AssemblyListIndex) const
+class TurnsCalc //helpers for NeededRoundsToBuild()
 {
-	assert(0 <= AssemblyListIndex && AssemblyListIndex < ALE);
-	// Hier Berechnung der noch verbleibenden Runden, bis das Projekt fertig wird (nicht bei NeverReady-Aufträgen)
-	// divide by zero check
-	const int industry_prod = m_Production.GetIndustryProd();
-	const int needed_prod = m_AssemblyList.GetNeededIndustryInAssemblyList(AssemblyListIndex);
-	if (industry_prod > 0)
+private:
+
+	static float SpeedFactor(short speed)
 	{
-		const int nAssemblyListEntry = m_AssemblyList.GetAssemblyListEntry(AssemblyListIndex);
-		if (nAssemblyListEntry > 0 && nAssemblyListEntry < 10000
-			&& resources::pDoc->GetBuildingInfo(nAssemblyListEntry).GetNeverReady())
-		{
-			return needed_prod;
-		}
-		// Bei Upgrades
-		else if (nAssemblyListEntry < 0)
-		{
-			return (int)ceil((float)(needed_prod)
-				/((float)industry_prod * (100+m_Production.GetUpdateBuildSpeed())/100));
-		}
-		// Bei Gebäuden
-		else if (nAssemblyListEntry < 10000)
-		{
-			return (int)ceil((float)(needed_prod)
-				/((float)industry_prod * (100+m_Production.GetBuildingBuildSpeed())/100));
-		}
-		// Bei Schiffen Wertfeffiziens mitbeachten
-		else if (nAssemblyListEntry < 20000 && m_Production.GetShipYardEfficiency() > 0)
-		{
-			return (int)ceil((float)(needed_prod)
-				/((float)industry_prod * m_Production.GetShipYardEfficiency() / 100
-					* (100+m_Production.GetShipBuildSpeed())/100));
-		}
-		// Bei Truppen die Kaserneneffiziens beachten
-		else if (m_Production.GetBarrackEfficiency() > 0)
-		{
-			return (int)ceil((float)(needed_prod)
-				/((float)industry_prod * m_Production.GetBarrackEfficiency() / 100
-					* (100+m_Production.GetTroopBuildSpeed())/100));
-		}
-		else
-			assert(false);
+		return 1.0f + speed / 100.0f;
 	}
-	assert(false);
-	return INT_MAX;
+
+	static float EffFactor(short efficiency)
+	{
+		if(efficiency == 0)
+			return 1;
+		return efficiency / 100.0f;
+	}
+
+public:
+	static int Turns(float needed, float prod, short speed, short eff = -1)
+	{
+		float eff_factor = 1.0f;
+		if(eff != -1)
+			eff_factor = EffFactor(eff);
+		float turns = needed /(prod * SpeedFactor(speed) * eff_factor);
+		return static_cast<int>(ceil(turns));
+	}
+
+	static void CalculateNeededResources(CSystem& system, int index,
+		const CBuildingInfo* pBuildingInfo,
+		const CShipInfo* pShipInfo, const CTroopInfo* pTroopInfo)
+	{
+		const CMajor* pMajor = dynamic_cast<CMajor*>(
+			resources::pDoc->GetRaceCtrl()->GetRace(system.GetOwnerOfSystem()));
+		system.GetAssemblyList()->CalculateNeededRessources(
+			pBuildingInfo,
+			pShipInfo, pTroopInfo, system.GetAllBuildings(), index,
+			pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+	}
+};
+
+int CSystem::NeededRoundsToBuild(int index_or_id, bool already_in_list)
+{
+	const float prod = m_Production.GetIndustryProd();
+	if(prod <= 0)
+	{
+		assert(false);
+		return INT_MAX;
+	}
+
+	float needed = 0;
+	if(already_in_list)
+	{
+		//must be an assembly list index
+		assert(0 <= index_or_id && index_or_id < ALE);
+		needed = m_AssemblyList.GetNeededIndustryInAssemblyList(index_or_id);
+		//till the following call it's perhaps an index, afterwards always an ID
+		index_or_id = m_AssemblyList.GetAssemblyListEntry(index_or_id);
+	}
+	if (index_or_id < 0) // Bei Upgrades
+	{
+		if(!already_in_list)
+		{
+			TurnsCalc::CalculateNeededResources(*this, index_or_id,
+				&resources::pDoc->GetBuildingInfo(abs(index_or_id)), NULL, NULL);
+			needed = m_AssemblyList.GetNeededIndustryForBuild();
+		}
+		return TurnsCalc::Turns(needed, prod, m_Production.GetUpdateBuildSpeed());
+	}
+	else if (index_or_id < 10000)	// Bei Gebäuden
+	{
+		if(!already_in_list)
+		{
+			TurnsCalc::CalculateNeededResources(*this, index_or_id,
+				&resources::pDoc->GetBuildingInfo(index_or_id), NULL, NULL);
+			needed = m_AssemblyList.GetNeededIndustryForBuild();
+		}
+		if(resources::pDoc->GetBuildingInfo(index_or_id).GetNeverReady())
+			return already_in_list ? needed : 0;
+		return TurnsCalc::Turns(needed, prod, m_Production.GetBuildingBuildSpeed());
+	}
+	else if (index_or_id < 20000)	// Bei Schiffen Wertfeffiziens mitbeachten
+	{
+		assert(m_Production.GetShipYardEfficiency() > 0);
+		if(!already_in_list)
+		{
+			TurnsCalc::CalculateNeededResources(*this, index_or_id, NULL,
+				&resources::pDoc->m_ShipInfoArray.GetAt(index_or_id - 10000), NULL);
+			needed = m_AssemblyList.GetNeededIndustryForBuild();
+		}
+		short eff = m_Production.GetShipYardEfficiency();
+		return TurnsCalc::Turns(needed, prod, m_Production.GetShipBuildSpeed(), eff);
+	}
+	// Bei Truppen die Kaserneneffiziens beachten
+	assert(m_Production.GetBarrackEfficiency() > 0);
+	if(!already_in_list)
+	{
+		TurnsCalc::CalculateNeededResources(*this, index_or_id, NULL, NULL,
+			&resources::pDoc->m_TroopInfo.GetAt(index_or_id - 20000));
+		needed = m_AssemblyList.GetNeededIndustryForBuild();
+	}
+	short eff = m_Production.GetBarrackEfficiency();
+	return TurnsCalc::Turns(needed, prod, m_Production.GetTroopBuildSpeed(), eff);
 }
 
 void CSystem::TrainTroops()

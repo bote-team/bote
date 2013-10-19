@@ -65,12 +65,6 @@ public:
 	const CSystemManager& Manager() const { return m_Manager; }
 	CSystemManager& Manager() { return m_Manager; }
 
-	/// Funktion berechnet die theoretisch benötigte Anzahl an Runden, bis ein beliebiges Projekt in
-	/// diesem System fertig sein wird.
-	/// @param nID ID des Projektes
-	/// @return Anzahl der benötigten Runden
-	int GetNeededRoundsToCompleteProject(int nID);
-
 	// Funktion gibt einen Zeiger auf alle Produktionswerte und manche Boni des Systems zurück
 	CSystemProd* GetProduction() {return &m_Production;}
 	const CSystemProd* GetProduction() const {return &m_Production;}
@@ -294,7 +288,12 @@ public:
 	//ShipYardEfficiency, BarrackEfficiency
 	int CalcIPProd(const CArray<CBuildingInfo, CBuildingInfo>& BuildingInfo, const int list) const;
 
-	int NeededRoundsToBuild(int AssemblyListIndex) const;
+	// Funktion berechnet die vorraussichtlich benötigte Anzahl an Runden,
+	// bis ein beliebiges Projekt in diesem System fertig sein wird.
+	//@param index_or_id assembly list entry index if already_in_list,
+	//the building ID otherwise
+	// @return Anzahl der benötigten Runden
+	int NeededRoundsToBuild(int index_or_id, bool already_in_list);
 
 	void TrainTroops();
 

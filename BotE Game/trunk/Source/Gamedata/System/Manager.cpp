@@ -275,11 +275,11 @@ public:
 		m_WorkersLeftToSet -= industry_workers;
 		m_pSystem->SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_SET, industry_workers);
 		CalculateVariables();
-		const int min_rounds = m_pSystem->NeededRoundsToBuild(0);
+		const int min_rounds = m_pSystem->NeededRoundsToBuild(0, true);
 		assert(min_rounds >= 1);
 		if((!max_industry || min_rounds == 1) && !assembly_list.GetWasBuildingBought())
 		{
-			while(min_rounds == m_pSystem->NeededRoundsToBuild(0)
+			while(min_rounds == m_pSystem->NeededRoundsToBuild(0, true)
 				&& m_pSystem->GetWorker(WORKER::INDUSTRY_WORKER) > 0)
 			{
 				m_pSystem->SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_DECREMENT);
