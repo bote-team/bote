@@ -126,10 +126,16 @@ void CCombat::PreCombatCalculation()
 		bool bFlagship = false;
 		// Hat eine Rasse ein Schiff mit der Kommandoeigenschaft im Kampf?
 		bool bCommandship = false;
-		// Umso mehr verschiedene Schiffstypen am Kampf teilnehmen, desto größer ist auch der Bonus. Für jeden Schifftyp
-		// gibt es einen 5% Bonus.
-		std::map<BYTE, int> mShipTypes;
-
+		// Number of ships per ship type (for mixed fleet bonus)
+		int nShipTypeScout = 0;
+		int nShipTypeFighter = 0;
+		int nShipTypeFrigate = 0;
+		int nShipTypeDestroyer = 0;
+		int nShipTypeCruiser = 0;
+		int nShipTypeHeavyDestroyer = 0;
+		int nShipTypeHeavyCruiser = 0;
+		int nShipTypeBattleship = 0;
+		int nShipTypeDreadnought = 0;
 		// Hier das Feld aller beteiligten Schiffe durchgehen
 		for (int i = 0; i < m_CS.GetSize(); i++)
 		{
@@ -155,46 +161,61 @@ void CCombat::PreCombatCalculation()
 				bFlagship = true;
 			if (m_CS.GetAt(i)->m_pShip->HasSpecial(SHIP_SPECIAL::COMMANDSHIP))
 				bCommandship = true;
-			// Kolonieschiffe, Transporter, Sonden, Outposts und Starbases gelten dabei nicht mit!
-			if (m_CS.GetAt(i)->m_pShip->GetShipType() >= SHIP_TYPE::SCOUT && m_CS.GetAt(i)->m_pShip->GetShipType() <= SHIP_TYPE::DREADNOUGHT)
-				mShipTypes[m_CS.GetAt(i)->m_pShip->GetShipType()] += 1;
+			// Count ships per ship type for mixed fleet bonus
+			if (m_CS.GetAt(i)->m_pShip->GetShipType() == SHIP_TYPE::SCOUT)
+				nShipTypeScout += 1;
+			if (m_CS.GetAt(i)->m_pShip->GetShipType() == SHIP_TYPE::FIGHTER)
+				nShipTypeFighter += 1;
+			if (m_CS.GetAt(i)->m_pShip->GetShipType() == SHIP_TYPE::FRIGATE)
+				nShipTypeFrigate += 1;
+			if (m_CS.GetAt(i)->m_pShip->GetShipType() == SHIP_TYPE::DESTROYER)
+				nShipTypeDestroyer += 1;
+			if (m_CS.GetAt(i)->m_pShip->GetShipType() == SHIP_TYPE::CRUISER)
+				nShipTypeCruiser += 1;
+			if (m_CS.GetAt(i)->m_pShip->GetShipType() == SHIP_TYPE::HEAVY_DESTROYER)
+				nShipTypeHeavyDestroyer += 1;
+			if (m_CS.GetAt(i)->m_pShip->GetShipType() == SHIP_TYPE::HEAVY_CRUISER)
+				nShipTypeHeavyCruiser += 1;
+			if (m_CS.GetAt(i)->m_pShip->GetShipType() == SHIP_TYPE::BATTLESHIP)
+				nShipTypeBattleship += 1;
+			if (m_CS.GetAt(i)->m_pShip->GetShipType() == SHIP_TYPE::DREADNOUGHT)
+				nShipTypeDreadnought += 1;
 		}
-
-		// Wir brauchen um den Bonus für viele verschiedene Schiffstypen zu bekommen eine bestimmte Anzahl von jedem
-		// Schiffstyp. Dieser Wert beträgt "Anzahl Schiffstypen" - 1 von jedem Typ. Schaffen wir diesen Wert nicht, dann
-		// bekommen wir den Bonus nur für "minimalen Wert + 1".
+		// Mixed fleet bonus: bonus per ship for the first five ships per shiptype
 		int mod = 0;
-		int nSmallest = INT_MAX;
-		int nDifferentTypes = mShipTypes.size();
-		// Schiffstypen durchgehen
-		for (std::map<BYTE, int>::const_iterator types = mShipTypes.begin(); types != mShipTypes.end(); ++types)
-			nSmallest = min(nSmallest, types->second);
-
-		// Schaffen wir den Wert nicht
-		if ((nDifferentTypes - 1) > nSmallest)
-			// dann ist der maximale Bonus smallest + 1
-			mod = nSmallest + 1;
-		else if (nDifferentTypes > 1 && nSmallest > 1)
-			mod = nDifferentTypes;
-		else if (nDifferentTypes > 1)
-			mod = 1;
+		if (nShipTypeScout > 0)
+			mod += min(nShipTypeScout,5);
+		if (nShipTypeFighter > 0)
+			mod += min(nShipTypeFighter,5);
+		if (nShipTypeFrigate > 0)
+			mod += min(nShipTypeFrigate,5);
+		if (nShipTypeDestroyer > 0)
+			mod += min(nShipTypeDestroyer,5);
+		if (nShipTypeCruiser > 0)
+			mod += min(nShipTypeCruiser,5);
+		if (nShipTypeHeavyDestroyer > 0)
+			mod += min(nShipTypeHeavyDestroyer,5);
+		if (nShipTypeHeavyCruiser > 0)
+			mod += min(nShipTypeHeavyCruiser,5);
+		if (nShipTypeBattleship > 0)
+			mod += min(nShipTypeBattleship,5);
+		if (nShipTypeDreadnought > 0)
+			mod += min(nShipTypeDreadnought,5);
+		MYTRACE("general")(MT::LEVEL_INFO, "Mixed fleet bonus: %d\n", mod);
 
 		// Jetzt noch die ganzen Boni/Mali den Schiffen zuweisen und die Felder mit den Gegnern für die einzelnen Rassen füllen
 		for (int i = 0; i < m_CS.GetSize(); i++)
 		{
 			if (m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() == *it)
 			{
-				// Schiffe mit dem Befehl "Meiden" bekommen einen 25% Bonus
-				if (m_CS.GetAt(i)->m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_AVOID)
-					m_CS.ElementAt(i)->m_iModifier += 25;
-				// 20% Bonus wenn Schiff mit Kommandoeigenschaft am Kampf teilnimmt
+				// 10% Bonus wenn Schiff mit Kommandoeigenschaft am Kampf teilnimmt
 				if (bCommandship)
-					m_CS.ElementAt(i)->m_iModifier += 20;
-				// 10% Bonus wenn Flagschiff am Kampf teilnehmen
-				if (bFlagship)
 					m_CS.ElementAt(i)->m_iModifier += 10;
+				// 20% Bonus wenn Flagschiff am Kampf teilnimmt
+				if (bFlagship)
+					m_CS.ElementAt(i)->m_iModifier += 20;
 				// möglichen Bonus durch verschiedene Schiffstypen draufrechnen
-				m_CS.ElementAt(i)->m_iModifier += mod * 5;	// 5% pro Schiffstyp
+				m_CS.ElementAt(i)->m_iModifier += mod;
 				// möglichen Bonus durch Erfahrung der Crew draufrechnen
 				m_CS.ElementAt(i)->m_iModifier += m_CS.GetAt(i)->GetCrewExperienceModi();
 				// Darf nicht 0% sein (normal sind 100 eingestellt)
