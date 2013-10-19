@@ -203,7 +203,7 @@ public:
 
 	std::vector<DistributionElem> Calc()
 	{
-		if(m_Priorities.empty())
+		if(m_Priorities.empty() || m_iAllWorkers == 0)
 			return std::vector<DistributionElem>();
 		CalcDefaultWorkersDistributionDouble();
 		DistributeRemaining();
