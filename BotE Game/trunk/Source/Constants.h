@@ -36,6 +36,12 @@ extern double STARMAP_ZOOM_MAX;				///< maximaler Zoom-Faktor
 static const double STARMAP_ZOOM_STEP = 0.05;		///< Änderung des Zoom-Faktors beim Drehen des Scrollrades
 static const double STARMAP_ZOOM_INITIAL = 1.0;		///< Zoom-Faktor zu Beginn
 
+static const double ERROR_TOLERANCE = 10E-12; //minimum tolerance for double comparison
+inline bool Equals(double is, double should)
+{
+	return should - ERROR_TOLERANCE < is && is < should + ERROR_TOLERANCE;
+}
+
 
 // ------------- View-IDs ------------------------------------------------------
 

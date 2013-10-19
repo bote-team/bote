@@ -57,7 +57,7 @@ public:
 
 	void ClearPriorities(bool refill_with_standard);
 
-	void AddPriority(int value, WORKER::Typ type);
+	void AddPriority(WORKER::Typ type, int value);
 
 //////////////////////////////////////////////////////////////////////
 // other functions
@@ -83,6 +83,6 @@ private:
 	bool m_bSafeMoral;
 	bool m_bMaxIndustry;
 	bool m_bNeglectFood;
-	std::map<int, WORKER::Typ> m_PriorityMap;//1-100 each
+	std::map<WORKER::Typ, int> m_PriorityMap;//1-100 each
 
 };

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "float.h"
 
 #include <cassert>
 
@@ -67,11 +68,11 @@ void CSystemManager::Serialize(CArchive& ar)
 		ar << m_bMaxIndustry;
 		ar << m_bNeglectFood;
 		ar << static_cast<int>(m_PriorityMap.size());
-		for(std::map<int, WORKER::Typ>::const_iterator it = m_PriorityMap.begin();
+		for(std::map<WORKER::Typ, int>::const_iterator it = m_PriorityMap.begin();
 				it != m_PriorityMap.end(); ++it)
 		{
-			ar << it->first;
-			ar << static_cast<int>(it->second);
+			ar << it->second;
+			ar << static_cast<int>(it->first);
 		}
 	}
 	else
@@ -86,11 +87,11 @@ void CSystemManager::Serialize(CArchive& ar)
 		ar >> map_size;
 		for(int i = 0; i < map_size; ++i)
 		{
-			int key;
-			ar >> key;
 			int value;
 			ar >> value;
-			AddPriority(key, static_cast<WORKER::Typ>(value));
+			int key;
+			ar >> key;
+			AddPriority(static_cast<WORKER::Typ>(key), value);
 		}
 	}
 }
@@ -121,13 +122,9 @@ bool CSystemManager::NeglectFood() const
 
 int CSystemManager::Priority(WORKER::Typ type) const
 {
-	for(std::map<int, WORKER::Typ>::const_iterator it = m_PriorityMap.begin(); it != m_PriorityMap.end(); ++it)
-	{
-		if(it->second == type)
-			return it->first;
-	}
-	assert(false);
-	return 0;
+	std::map<WORKER::Typ, int>::const_iterator it = m_PriorityMap.find(type);
+	assert(it != m_PriorityMap.end());
+	return it->second;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -160,32 +157,126 @@ void CSystemManager::ClearPriorities(bool refill_with_standard)
 	if(!refill_with_standard)
 		return;
 	int i = 1;
-	AddPriority(i++, WORKER::SECURITY_WORKER);
-	AddPriority(i++, WORKER::RESEARCH_WORKER);
-	AddPriority(i++, WORKER::TITAN_WORKER);
-	AddPriority(i++, WORKER::DEUTERIUM_WORKER);
-	AddPriority(i++, WORKER::DURANIUM_WORKER);
-	AddPriority(i++, WORKER::CRYSTAL_WORKER);
-	AddPriority(i++, WORKER::IRIDIUM_WORKER);
+	AddPriority(WORKER::SECURITY_WORKER, i++);
+	AddPriority(WORKER::RESEARCH_WORKER, i++);
+	AddPriority(WORKER::TITAN_WORKER, i++);
+	AddPriority(WORKER::DEUTERIUM_WORKER, i++);
+	AddPriority(WORKER::DURANIUM_WORKER, i++);
+	AddPriority(WORKER::CRYSTAL_WORKER, i++);
+	AddPriority(WORKER::IRIDIUM_WORKER, i++);
 }
 
-void CSystemManager::AddPriority(int value, WORKER::Typ type)
+void CSystemManager::AddPriority(WORKER::Typ type, int value)
 {
 	assert(1 <= value && value <= max_priority);
-	while(m_PriorityMap.find(value) != m_PriorityMap.end())
-	{
-		if(value > max_priority / 2.0f)
-			--value;
-		else
-			++value;
-	}
-	assert(1 <= value && value <= max_priority);
-	m_PriorityMap.insert(std::pair<int, WORKER::Typ>(value, type));
+	m_PriorityMap.insert(std::pair<WORKER::Typ, int>(type, value));
 }
 
 //////////////////////////////////////////////////////////////////////
 // other functions
 //////////////////////////////////////////////////////////////////////
+
+struct DistributionElem
+{
+	WORKER::Typ m_Type;
+	double m_dCount;
+	int m_iCount;
+	double m_dFPart;
+
+	DistributionElem(WORKER::Typ type, double count) :
+		m_Type(type),
+		m_dCount(count),
+		m_iCount(static_cast<int>(floor(count))),
+		m_dFPart(count - m_iCount)
+	{};
+
+	bool operator<(const DistributionElem& o)
+	{
+		return m_dFPart < o.m_dFPart;
+	}
+};
+
+class DefaultDistributionCalculator
+{
+public:
+
+	DefaultDistributionCalculator(int all_workers, const std::map<WORKER::Typ, int>& priorities) :
+		m_iAllWorkers(all_workers),
+		m_Priorities(priorities),
+		m_Result(),
+		m_iResultingWorkers(0)
+	{};
+
+	std::vector<DistributionElem> Calc()
+	{
+		CalcDefaultWorkersDistributionDouble();
+		DistributeRemaining();
+
+		std::sort(m_Result.begin(), m_Result.end(), &comp);
+
+		return m_Result;
+	}
+
+private:
+
+	const int m_iAllWorkers;
+	const std::map<WORKER::Typ, int> m_Priorities;
+	std::vector<DistributionElem> m_Result;
+	int m_iResultingWorkers;
+
+	static bool comp(const DistributionElem& left, const DistributionElem& right)
+	{
+		return left.m_dCount > right.m_dCount;
+	}
+
+	double WorkersOn(WORKER::Typ type, double workers) const
+	{
+		for(std::vector<DistributionElem>::const_iterator it = m_Result.begin(); it != m_Result.end(); ++it)
+			workers -= it->m_dCount;
+		assert(workers > 0.0f);
+
+		double divisor = 0;
+		std::map<WORKER::Typ, int>::const_iterator it = m_Priorities.find(type);
+		const double weight_of_this = it->second;
+		assert(it != m_Priorities.end());
+		for(;;)
+		{
+			++it;
+			if(it == m_Priorities.end())
+				break;
+			divisor += it->second;
+		}
+		divisor = 1.0f + divisor / weight_of_this;
+		return workers / divisor;
+	}
+
+	void CalcDefaultWorkersDistributionDouble()
+	{
+		double resulting_workers = 0;
+		for(std::map<WORKER::Typ, int>::const_iterator it = m_Priorities.begin();
+			it != m_Priorities.end(); ++it)
+		{
+			const double workers = WorkersOn(it->first, m_iAllWorkers);
+			resulting_workers += workers;
+			m_iResultingWorkers += static_cast<int>(floor(workers));
+			m_Result.push_back(DistributionElem(it->first, workers));
+		}
+		assert(Equals(resulting_workers, m_iAllWorkers));
+	}
+
+	void DistributeRemaining()
+	{
+		std::sort(m_Result.begin(), m_Result.end());
+		for(std::vector<DistributionElem>::reverse_iterator it = m_Result.rbegin(); it != m_Result.rend(); ++it)
+		{
+			if(m_iResultingWorkers == m_iAllWorkers)
+				return;
+			++m_iResultingWorkers;
+			it->m_iCount++;
+		}
+		assert(false);
+	}
+};
 
 class CWorkersDistributionCalculator
 {
@@ -195,17 +286,16 @@ private:
 	const CPoint m_Co;
 	int m_WorkersLeftToSet;
 
-	int FillRemainingSlots(WORKER::Typ type) const
+	void FillRemainingSlots(WORKER::Typ type)
 	{
-		const int current_workers = m_pSystem->GetWorker(type);
+		assert(m_WorkersLeftToSet >= 0);
+		if(m_WorkersLeftToSet == 0)
+			return;
+		m_WorkersLeftToSet += m_pSystem->GetWorker(type);
+		m_pSystem->SetWorker(type, CSystem::SET_WORKER_MODE_SET, 0);
 		const int buildings = m_pSystem->GetNumberOfWorkbuildings(type, 0);
-		assert(0 <= current_workers && current_workers <= buildings);
-		const int still_free = buildings - current_workers;
-		if(still_free == 0)
-			return 0;
-		const int to_set = min(still_free, m_WorkersLeftToSet);
-		m_pSystem->SetWorker(type, CSystem::SET_WORKER_MODE_SET, current_workers + to_set);
-		return to_set;
+		const int to_set = min(buildings, m_WorkersLeftToSet);
+		SetWorker(type, CSystem::SET_WORKER_MODE_SET,to_set);
 	}
 
 	void CalculateVariables() const
@@ -215,6 +305,47 @@ private:
 		const CMajor* major = dynamic_cast<CMajor*>(doc.GetRaceCtrl()->GetRace(m_pSystem->GetOwnerOfSystem()));
 		assert(major);
 		m_pSystem->CalculateVariables(sector.GetPlanets(), major);
+	}
+
+	void DecrementForFullStore(WORKER::Typ type)
+	{
+		if(!m_pSystem->HasStore(type))
+			return;
+		const int store = m_pSystem->GetResourceStore(type);
+		while(true)
+		{
+			const int workers = m_pSystem->GetWorker(type);
+			if(workers == 0)
+				break;
+			CalculateVariables();
+			const int prod = m_pSystem->GetProduction()->GetXProd(type);
+			if(store + prod <= MAX_RES_STORE)
+				break;
+			SetWorker(type, CSystem::SET_WORKER_MODE_DECREMENT);
+		}
+	}
+
+	void SetWorker(WORKER::Typ type, CSystem::SetWorkerMode mode, int value = -1)
+	{
+		if(mode == CSystem::SET_WORKER_MODE_INCREMENT)
+		{
+			assert(value == -1);
+			m_pSystem->SetWorker(type, mode);
+			--m_WorkersLeftToSet;
+		}
+		else if(mode == CSystem::SET_WORKER_MODE_DECREMENT)
+		{
+			assert(value == -1);
+			m_pSystem->SetWorker(type, mode);
+			++m_WorkersLeftToSet;
+		}
+		else if(mode == CSystem::SET_WORKER_MODE_SET)
+		{
+			assert(value >= 0);
+			m_pSystem->SetWorker(type, mode, value);
+			m_WorkersLeftToSet -= value;
+		}
+		assert(m_WorkersLeftToSet >= 0);
 	}
 
 public:
@@ -257,8 +388,7 @@ public:
 			assert(workers_set <= number_of_buildings);
 			if(workers_set == number_of_buildings)
 				return allow_insufficient;
-			m_pSystem->SetWorker(type, CSystem::SET_WORKER_MODE_INCREMENT);
-			--m_WorkersLeftToSet;
+			SetWorker(type, CSystem::SET_WORKER_MODE_INCREMENT);
 			CalculateVariables();
 		}
 	}
@@ -272,8 +402,7 @@ public:
 			return false;
 		const int max_buildings = m_pSystem->GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 0);
 		const int industry_workers = min(max_buildings, m_WorkersLeftToSet);
-		m_WorkersLeftToSet -= industry_workers;
-		m_pSystem->SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_SET, industry_workers);
+		SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_SET, industry_workers);
 		CalculateVariables();
 		const int min_rounds = m_pSystem->NeededRoundsToBuild(0, true);
 		assert(min_rounds >= 1);
@@ -282,74 +411,71 @@ public:
 			while(min_rounds == m_pSystem->NeededRoundsToBuild(0, true)
 				&& m_pSystem->GetWorker(WORKER::INDUSTRY_WORKER) > 0)
 			{
-				m_pSystem->SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_DECREMENT);
-				++m_WorkersLeftToSet;
+				SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_DECREMENT);
 				CalculateVariables();
 			}
 			//undo last step of the loop
-			m_pSystem->SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
-			--m_WorkersLeftToSet;
+			SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
 			if(safe_moral && min_rounds == 1 && m_WorkersLeftToSet >= 1
 				&& m_pSystem->GetWorker(WORKER::INDUSTRY_WORKER) < max_buildings)
 			{
 				//+1 worker in case of moral loss
-				m_pSystem->SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
-				--m_WorkersLeftToSet;
+				SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
 			}
 		}
 		return true;
 	}
 
-	void DoPriorities(const std::map<int, WORKER::Typ>& priorities)
+	void DoPriorities(const std::map<WORKER::Typ, int>& priorities)
 	{
-		for(std::map<int, WORKER::Typ>::const_reverse_iterator it = priorities.rbegin();
-			it != priorities.rend(); ++it)
+		DefaultDistributionCalculator decalc(m_WorkersLeftToSet, priorities);
+		const std::vector<DistributionElem>& result = decalc.Calc();
+
+		int failed_to_set = 0;
+		for(std::vector<DistributionElem>::const_iterator it = result.begin(); it != result.end(); ++it)
 		{
-			const int to_set = min(m_WorkersLeftToSet, m_pSystem->GetNumberOfWorkbuildings(it->second, 0));
-			m_WorkersLeftToSet -= to_set;
-			m_pSystem->SetWorker(it->second, CSystem::SET_WORKER_MODE_SET, to_set);
-			if(m_pSystem->HasStore(it->second))
+			const int buildings = m_pSystem->GetNumberOfWorkbuildings(it->m_Type, 0);
+			if(buildings >= it->m_iCount)
 			{
-				const int store = m_pSystem->GetResourceStore(it->second);
-				while(true)
+				const int try_set = it->m_iCount + failed_to_set;
+				if(buildings >= try_set)
 				{
-					const int workers = m_pSystem->GetWorker(it->second);
-					if(workers == 0)
-						break;
-					CalculateVariables();
-					const int prod = m_pSystem->GetProduction()->GetXProd(it->second);
-					if(store + prod <= MAX_RES_STORE)
-						break;
-					m_pSystem->SetWorker(it->second, CSystem::SET_WORKER_MODE_DECREMENT);
-					++m_WorkersLeftToSet;
+					failed_to_set = 0;
+					SetWorker(it->m_Type, CSystem::SET_WORKER_MODE_SET, try_set);
+				}
+				else
+				{
+					failed_to_set -= buildings -it->m_iCount;
+					SetWorker(it->m_Type, CSystem::SET_WORKER_MODE_SET, buildings);
 				}
 			}
-			if(m_WorkersLeftToSet == 0)
-				break;
+			else
+			{
+				failed_to_set += it->m_iCount - buildings;
+				SetWorker(it->m_Type, CSystem::SET_WORKER_MODE_SET, buildings);
+			}
+			assert(m_WorkersLeftToSet >= 0 && failed_to_set >= 0);
+
+			DecrementForFullStore(it->m_Type);
 		}
 	}
 
 	void DoRemaining()
 	{
 		//distribute any remaining workers
-		if(m_WorkersLeftToSet > 0 && m_pSystem->GetFoodStore() < MAX_FOOD_STORE)
-			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::FOOD_WORKER);
-		if(m_WorkersLeftToSet > 0)
-			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::INDUSTRY_WORKER);
-		if(m_WorkersLeftToSet > 0)
-			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::TITAN_WORKER);
-		if(m_WorkersLeftToSet > 0)
-			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::DEUTERIUM_WORKER);
-		if(m_WorkersLeftToSet > 0)
-			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::DURANIUM_WORKER);
-		if(m_WorkersLeftToSet > 0)
-			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::CRYSTAL_WORKER);
-		if(m_WorkersLeftToSet > 0)
-			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::IRIDIUM_WORKER);
-		if(m_WorkersLeftToSet > 0)
-			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::FOOD_WORKER);
-		if(m_WorkersLeftToSet > 0)
-			m_WorkersLeftToSet -= FillRemainingSlots(WORKER::ENERGY_WORKER);
+		if(m_pSystem->GetFoodStore() < MAX_FOOD_STORE)
+			FillRemainingSlots(WORKER::FOOD_WORKER);
+
+		FillRemainingSlots(WORKER::RESEARCH_WORKER);
+		FillRemainingSlots(WORKER::SECURITY_WORKER);
+		FillRemainingSlots(WORKER::TITAN_WORKER);
+		FillRemainingSlots(WORKER::DEUTERIUM_WORKER);
+		FillRemainingSlots(WORKER::DURANIUM_WORKER);
+		FillRemainingSlots(WORKER::CRYSTAL_WORKER);
+		FillRemainingSlots(WORKER::IRIDIUM_WORKER);
+		FillRemainingSlots(WORKER::INDUSTRY_WORKER);
+		FillRemainingSlots(WORKER::FOOD_WORKER);
+		FillRemainingSlots(WORKER::ENERGY_WORKER);
 	}
 
 };

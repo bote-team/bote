@@ -113,13 +113,13 @@ void CManagerSettingsDlg::OnOK()
 
 	m_Manager->ClearPriorities(false);
 
-	m_Manager->AddPriority(m_ctrlSecuritySlider.GetPos(), WORKER::SECURITY_WORKER);
-	m_Manager->AddPriority(m_ctrlResearchSlider.GetPos(), WORKER::RESEARCH_WORKER);
-	m_Manager->AddPriority(m_ctrlTitanSlider.GetPos(), WORKER::TITAN_WORKER);
-	m_Manager->AddPriority(m_ctrlDeuteriumSlider.GetPos(), WORKER::DEUTERIUM_WORKER);
-	m_Manager->AddPriority(m_ctrlDuraniumSlider.GetPos(), WORKER::DURANIUM_WORKER);
-	m_Manager->AddPriority(m_ctrlCrystalSlider.GetPos(), WORKER::CRYSTAL_WORKER);
-	m_Manager->AddPriority(m_ctrlIridiumSlider.GetPos(), WORKER::IRIDIUM_WORKER);
+	m_Manager->AddPriority(WORKER::SECURITY_WORKER, m_ctrlSecuritySlider.GetPos());
+	m_Manager->AddPriority(WORKER::RESEARCH_WORKER, m_ctrlResearchSlider.GetPos());
+	m_Manager->AddPriority(WORKER::TITAN_WORKER, m_ctrlTitanSlider.GetPos());
+	m_Manager->AddPriority(WORKER::DEUTERIUM_WORKER, m_ctrlDeuteriumSlider.GetPos());
+	m_Manager->AddPriority(WORKER::DURANIUM_WORKER, m_ctrlDuraniumSlider.GetPos());
+	m_Manager->AddPriority(WORKER::CRYSTAL_WORKER, m_ctrlCrystalSlider.GetPos());
+	m_Manager->AddPriority(WORKER::IRIDIUM_WORKER, m_ctrlIridiumSlider.GetPos());
 
 	CDialog::OnOK();
 }
