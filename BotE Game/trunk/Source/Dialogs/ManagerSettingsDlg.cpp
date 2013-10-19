@@ -70,19 +70,19 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 	m_bMaxIndustry = m_Manager->MaxIndustry();
 	m_bNeglectFood = m_Manager->NeglectFood();
 
-	m_ctrlSecuritySlider.SetRange(1, CSystemManager::max_priority);
+	m_ctrlSecuritySlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
 	m_ctrlSecuritySlider.SetTicFreq(tick_frequ);
-	m_ctrlResearchSlider.SetRange(1, CSystemManager::max_priority);
+	m_ctrlResearchSlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
 	m_ctrlResearchSlider.SetTicFreq(tick_frequ);
-	m_ctrlTitanSlider.SetRange(1, CSystemManager::max_priority);
+	m_ctrlTitanSlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
 	m_ctrlTitanSlider.SetTicFreq(tick_frequ);
-	m_ctrlDeuteriumSlider.SetRange(1, CSystemManager::max_priority);
+	m_ctrlDeuteriumSlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
 	m_ctrlDeuteriumSlider.SetTicFreq(tick_frequ);
-	m_ctrlDuraniumSlider.SetRange(1, CSystemManager::max_priority);
+	m_ctrlDuraniumSlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
 	m_ctrlDuraniumSlider.SetTicFreq(tick_frequ);
-	m_ctrlCrystalSlider.SetRange(1, CSystemManager::max_priority);
+	m_ctrlCrystalSlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
 	m_ctrlCrystalSlider.SetTicFreq(tick_frequ);
-	m_ctrlIridiumSlider.SetRange(1, CSystemManager::max_priority);
+	m_ctrlIridiumSlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
 	m_ctrlIridiumSlider.SetTicFreq(tick_frequ);
 
 	m_ctrlSecuritySlider.SetPos(m_Manager->Priority(WORKER::SECURITY_WORKER));
@@ -111,7 +111,7 @@ void CManagerSettingsDlg::OnOK()
 	m_Manager->SetMaxIndustry(m_bMaxIndustry ? true : false);
 	m_Manager->SetNeglectFood(m_bNeglectFood ? true : false);
 
-	m_Manager->ClearPriorities(false);
+	m_Manager->ClearPriorities();
 
 	m_Manager->AddPriority(WORKER::SECURITY_WORKER, m_ctrlSecuritySlider.GetPos());
 	m_Manager->AddPriority(WORKER::RESEARCH_WORKER, m_ctrlResearchSlider.GetPos());

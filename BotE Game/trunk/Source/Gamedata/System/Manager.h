@@ -55,7 +55,7 @@ public:
 	void SetMaxIndustry(bool is);
 	void SetNeglectFood(bool is);
 
-	void ClearPriorities(bool refill_with_standard);
+	void ClearPriorities();
 
 	void AddPriority(WORKER::Typ type, int value);
 
@@ -76,6 +76,7 @@ public:
 //////////////////////////////////////////////////////////////////////
 
 	static const int max_priority = 100;
+	static const int min_priority = 0;
 
 private:
 

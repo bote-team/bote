@@ -52,7 +52,7 @@ void CSystemManager::Reset()
 	m_bMaxIndustry = false;
 	m_bNeglectFood = false;
 
-	ClearPriorities(true);
+	ClearPriorities();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -71,6 +71,7 @@ void CSystemManager::Serialize(CArchive& ar)
 		for(std::map<WORKER::Typ, int>::const_iterator it = m_PriorityMap.begin();
 				it != m_PriorityMap.end(); ++it)
 		{
+			assert(it->second > 0);
 			ar << it->second;
 			ar << static_cast<int>(it->first);
 		}
@@ -82,7 +83,7 @@ void CSystemManager::Serialize(CArchive& ar)
 		ar >> m_bMaxIndustry;
 		ar >> m_bNeglectFood;
 
-		ClearPriorities(false);
+		ClearPriorities();
 		int map_size;
 		ar >> map_size;
 		for(int i = 0; i < map_size; ++i)
@@ -91,6 +92,7 @@ void CSystemManager::Serialize(CArchive& ar)
 			ar >> value;
 			int key;
 			ar >> key;
+			assert(value > 0);
 			AddPriority(static_cast<WORKER::Typ>(key), value);
 		}
 	}
@@ -123,7 +125,8 @@ bool CSystemManager::NeglectFood() const
 int CSystemManager::Priority(WORKER::Typ type) const
 {
 	std::map<WORKER::Typ, int>::const_iterator it = m_PriorityMap.find(type);
-	assert(it != m_PriorityMap.end());
+	if(it == m_PriorityMap.end())
+		return min_priority;
 	return it->second;
 }
 
@@ -151,25 +154,16 @@ void CSystemManager::SetNeglectFood(bool is)
 	m_bNeglectFood = is;
 }
 
-void CSystemManager::ClearPriorities(bool refill_with_standard)
+void CSystemManager::ClearPriorities()
 {
 	m_PriorityMap.clear();
-	if(!refill_with_standard)
-		return;
-	int i = 1;
-	AddPriority(WORKER::SECURITY_WORKER, i++);
-	AddPriority(WORKER::RESEARCH_WORKER, i++);
-	AddPriority(WORKER::TITAN_WORKER, i++);
-	AddPriority(WORKER::DEUTERIUM_WORKER, i++);
-	AddPriority(WORKER::DURANIUM_WORKER, i++);
-	AddPriority(WORKER::CRYSTAL_WORKER, i++);
-	AddPriority(WORKER::IRIDIUM_WORKER, i++);
 }
 
 void CSystemManager::AddPriority(WORKER::Typ type, int value)
 {
-	assert(1 <= value && value <= max_priority);
-	m_PriorityMap.insert(std::pair<WORKER::Typ, int>(type, value));
+	assert(min_priority <= value && value <= max_priority);
+	if(value > min_priority)
+		m_PriorityMap.insert(std::pair<WORKER::Typ, int>(type, value));
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -209,6 +203,8 @@ public:
 
 	std::vector<DistributionElem> Calc()
 	{
+		if(m_Priorities.empty())
+			return std::vector<DistributionElem>();
 		CalcDefaultWorkersDistributionDouble();
 		DistributeRemaining();
 
