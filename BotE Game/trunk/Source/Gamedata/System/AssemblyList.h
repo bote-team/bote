@@ -82,8 +82,8 @@ public:
 	// Funktion berechnet die benötigten Rohstoffe. Übergeben wird die Information des gewünschten Gebäudes bzw. des
 	// gewünschten Schiffes oder der gewünschten Truppe, der RunningNumber des Bauauftrages, einen Zeiger auf alle
 	// vorhandenen Gebäude in dem System und ein Zeiger auf die Forschung
-	void CalculateNeededRessources(CBuildingInfo* buildingInfo, CShipInfo* shipInfo, CTroopInfo* troopInfo,
-		BuildingArray* m_Buildings, int RunningNumber, CResearchInfo* ResearchInfo, float modifier = 1.0f);
+	void CalculateNeededRessources(const CBuildingInfo* buildingInfo, const CShipInfo* shipInfo, const CTroopInfo* troopInfo,
+		const BuildingArray* m_Buildings, int RunningNumber, const CResearchInfo* ResearchInfo, float modifier = 1.0f);
 
 	// Funktion berechnet die Kosten für jedes Update in der Bauliste. Wird in der NextRound() Funktion aufgerufen.
 	// Weil in der Zwischenzeit hätte der Spieler ein Gebäude bauen können, das die Kosten mancher Updates verändern

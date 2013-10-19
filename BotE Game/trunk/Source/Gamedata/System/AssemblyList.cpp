@@ -173,8 +173,8 @@ UINT CAssemblyList::GetNeededResourceForBuild(BYTE res) const
 // Funktion berechnet die benötigten Rohstoffe. Übergeben wird die Information des gewünschten Gebäudes bzw. des
 // gewünschten Schiffes oder der gewünschten Truppe, der RunningNumber des Bauauftrages, einen Zeiger auf alle
 // vorhandenen Gebäude in dem System und ein Zeiger auf die Forschung
-void CAssemblyList::CalculateNeededRessources(CBuildingInfo* buildingInfo, CShipInfo* shipInfo, CTroopInfo* troopInfo,
-											  BuildingArray* m_Buildings, int RunningNumber, CResearchInfo* ResearchInfo, float modifier)
+void CAssemblyList::CalculateNeededRessources(const CBuildingInfo* buildingInfo, const CShipInfo* shipInfo, const CTroopInfo* troopInfo,
+											  const BuildingArray* m_Buildings, int RunningNumber, const CResearchInfo* ResearchInfo, float modifier)
 {
 	// Wenn ein Update, dann muß die RunningNumber des buildingInfo positiv sein und eins größer
 	// -> dies beim Aufruf dieser Funktion beachten

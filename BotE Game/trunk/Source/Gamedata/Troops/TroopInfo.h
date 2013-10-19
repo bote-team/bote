@@ -60,6 +60,7 @@ public:
 	 * Diese Funktion gibt einen Zeiger auf die benötigten Ressourcen dieser Truppe zurück
 	 */
 	USHORT* GetNeededResources() {return m_iNeededResources;}
+	const USHORT* GetNeededResources() const {return m_iNeededResources;}
 
 	/**
 	 * Diese Funktion gibt die benötigte Industrie zum Bau dieser Einheit zurück.
