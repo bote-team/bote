@@ -391,8 +391,18 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 		}
 
 		// noch verbleibende Runden bis das Projekt fertig wird
-		const int nRounds = pDoc->GetSystem(p.x, p.y).
-			NeededRoundsToBuild(m_vBuildlist[i], false);
+		// BEGIN: EXPENSIVE GARBAGE CODE IN ORDER TO GET THE MINIMUM NUMBER OF TURNS NEEDED
+		//due to CSystem or CSystemProd not having a member variable for the real max prod
+		CSystem& system = pDoc->GetSystem(p.x, p.y);
+		CSector& sector = pDoc->GetSector(p.x, p.y);
+		const int old_workers = system.GetWorker(WORKER::INDUSTRY_WORKER);
+		system.SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_SET,
+			system.GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 0));
+		system.CalculateVariables(sector.GetPlanets(), pMajor);
+		const int nRounds = pDoc->GetSystem(p.x, p.y).NeededRoundsToBuild(m_vBuildlist[i], false);
+		system.SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_SET, old_workers);
+		system.CalculateVariables(sector.GetPlanets(), pMajor);
+		// END: EXPENSIVE GARBAGE CODE
 		BOOLEAN bCanAddToAssemblyList = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->MakeEntry(m_vBuildlist[i], p, pDoc->m_Systems, true);
 		if (!bCanAddToAssemblyList)
 		{
