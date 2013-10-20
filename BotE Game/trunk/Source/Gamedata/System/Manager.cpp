@@ -297,16 +297,17 @@ private:
 	const CPoint m_Co;
 	int m_WorkersLeftToSet;
 
-	void FillRemainingSlots(WORKER::Typ type)
+	bool FillRemainingSlots(WORKER::Typ type)
 	{
 		assert(m_WorkersLeftToSet >= 0);
 		if(m_WorkersLeftToSet == 0)
-			return;
+			return false;
 		m_WorkersLeftToSet += m_pSystem->GetWorker(type);
 		m_pSystem->SetWorker(type, CSystem::SET_WORKER_MODE_SET, 0);
 		const int buildings = m_pSystem->GetNumberOfWorkbuildings(type, 0);
 		const int to_set = min(buildings, m_WorkersLeftToSet);
 		SetWorker(type, CSystem::SET_WORKER_MODE_SET,to_set);
+		return true;
 	}
 
 	void CalculateVariables() const
@@ -524,10 +525,21 @@ public:
 
 	void DoRemaining()
 	{
-		FillRemainingSlots(WORKER::FOOD_WORKER);
-		DecrementDueToFullStore(WORKER::FOOD_WORKER);
-
 		FillRemainingSlots(WORKER::RESEARCH_WORKER);
+
+		if(FillRemainingSlots(WORKER::TITAN_WORKER))
+			DecrementDueToFullStore(WORKER::TITAN_WORKER);
+		if(FillRemainingSlots(WORKER::DEUTERIUM_WORKER))
+			DecrementDueToFullStore(WORKER::DEUTERIUM_WORKER);
+		if(FillRemainingSlots(WORKER::DURANIUM_WORKER))
+			DecrementDueToFullStore(WORKER::DURANIUM_WORKER);
+		if(FillRemainingSlots(WORKER::CRYSTAL_WORKER))
+			DecrementDueToFullStore(WORKER::CRYSTAL_WORKER);
+		if(FillRemainingSlots(WORKER::IRIDIUM_WORKER))
+			DecrementDueToFullStore(WORKER::IRIDIUM_WORKER);
+		if(FillRemainingSlots(WORKER::FOOD_WORKER))
+			DecrementDueToFullStore(WORKER::FOOD_WORKER);
+
 		FillRemainingSlots(WORKER::SECURITY_WORKER);
 
 		FillRemainingSlots(WORKER::INDUSTRY_WORKER);
@@ -537,7 +549,6 @@ public:
 		FillRemainingSlots(WORKER::DURANIUM_WORKER);
 		FillRemainingSlots(WORKER::CRYSTAL_WORKER);
 		FillRemainingSlots(WORKER::IRIDIUM_WORKER);
-
 		FillRemainingSlots(WORKER::FOOD_WORKER);
 
 		FillRemainingSlots(WORKER::ENERGY_WORKER);
