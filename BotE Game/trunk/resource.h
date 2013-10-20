@@ -123,6 +123,8 @@
 #define IDC_CHECK_MAX_INDUSTRY          1074
 #define IDC_CHECK1                      1075
 #define IDC_CHECK_NEGLECT_FOOD          1075
+#define IDC_SLIDER_PRODUCTION           1076
+#define IDC_CHECK_INDUSTRY_PRIO         1077
 #define ID_OPTIONEN                     32773
 #define ID_INFORMATION                  32774
 #define ID_DATENBANK                    32775
@@ -148,7 +150,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        191
 #define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1076
+#define _APS_NEXT_CONTROL_VALUE         1078
 #define _APS_NEXT_SYMED_VALUE           107
 #endif
 #endif

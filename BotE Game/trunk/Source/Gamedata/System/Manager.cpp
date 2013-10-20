@@ -23,6 +23,7 @@ CSystemManager::CSystemManager(const CSystemManager& o) :
 	m_bSafeMoral(o.m_bSafeMoral),
 	m_bMaxIndustry(o.m_bMaxIndustry),
 	m_bNeglectFood(o.m_bNeglectFood),
+	m_bIndustryPrio(o.m_bIndustryPrio),
 	m_PriorityMap(o.m_PriorityMap)
 {
 }
@@ -40,6 +41,7 @@ CSystemManager& CSystemManager::operator=(const CSystemManager& o)
 	m_bSafeMoral = o.m_bSafeMoral;
 	m_bMaxIndustry = o.m_bMaxIndustry;
 	m_bNeglectFood = o.m_bNeglectFood;
+	m_bIndustryPrio = o.m_bIndustryPrio;
 	m_PriorityMap = o.m_PriorityMap;
 
 	return *this;
@@ -51,6 +53,7 @@ void CSystemManager::Reset()
 	m_bSafeMoral = true;
 	m_bMaxIndustry = false;
 	m_bNeglectFood = false;
+	m_bIndustryPrio = false;
 
 	ClearPriorities();
 }
@@ -67,6 +70,7 @@ void CSystemManager::Serialize(CArchive& ar)
 		ar << m_bSafeMoral;
 		ar << m_bMaxIndustry;
 		ar << m_bNeglectFood;
+		ar << m_bIndustryPrio;
 		ar << static_cast<int>(m_PriorityMap.size());
 		for(std::map<WORKER::Typ, int>::const_iterator it = m_PriorityMap.begin();
 				it != m_PriorityMap.end(); ++it)
@@ -82,6 +86,7 @@ void CSystemManager::Serialize(CArchive& ar)
 		ar >> m_bSafeMoral;
 		ar >> m_bMaxIndustry;
 		ar >> m_bNeglectFood;
+		ar >> m_bIndustryPrio;
 
 		ClearPriorities();
 		int map_size;
@@ -122,6 +127,11 @@ bool CSystemManager::NeglectFood() const
 	return m_bNeglectFood;
 }
 
+bool CSystemManager::IndustryPrio() const
+{
+	return m_bIndustryPrio;
+}
+
 int CSystemManager::Priority(WORKER::Typ type) const
 {
 	std::map<WORKER::Typ, int>::const_iterator it = m_PriorityMap.find(type);
@@ -152,6 +162,11 @@ void CSystemManager::SetMaxIndustry(bool is)
 void CSystemManager::SetNeglectFood(bool is)
 {
 	m_bNeglectFood = is;
+}
+
+void CSystemManager::SetIndustryPrio(bool is)
+{
+	m_bIndustryPrio = is;
 }
 
 void CSystemManager::ClearPriorities()
@@ -324,6 +339,32 @@ private:
 		return unset;
 	}
 
+	int DecrementDueToWastedIndustry(bool max_industry)
+	{
+		CalculateVariables();
+		const CAssemblyList& assembly_list = *m_pSystem->GetAssemblyList();
+		int unset = 0;
+		if(assembly_list.IsEmpty() || assembly_list.GetWasBuildingBought())
+			return unset;
+		const int min_rounds = m_pSystem->NeededRoundsToBuild(0, true);
+		assert(min_rounds >= 1);
+		if(max_industry && min_rounds > 1 || m_pSystem->GetWorker(WORKER::INDUSTRY_WORKER) == 0)
+			return unset;
+		while(true)
+		{
+			SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_DECREMENT);
+			++unset;
+			CalculateVariables();
+			if(min_rounds < m_pSystem->NeededRoundsToBuild(0, true))
+			{
+				SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
+				--unset;
+				assert(unset >= 0);
+				return unset;
+			}
+		}
+	}
+
 	void SetWorker(WORKER::Typ type, CSystem::SetWorkerMode mode, int value = -1)
 	{
 		if(mode == CSystem::SET_WORKER_MODE_INCREMENT)
@@ -346,6 +387,25 @@ private:
 		}
 		assert(m_WorkersLeftToSet >= 0);
 	}
+
+	struct SafeMoralWorkerReserve
+	{
+		CWorkersDistributionCalculator* m_Calc;
+		SafeMoralWorkerReserve(CWorkersDistributionCalculator& calc, bool safe_moral, bool industry_prio) :
+			m_Calc(NULL)
+		{
+			if(safe_moral && industry_prio && calc.m_WorkersLeftToSet >= 1)
+			{
+				m_Calc = &calc;
+				--m_Calc->m_WorkersLeftToSet;
+			}
+		}
+		~SafeMoralWorkerReserve()
+		{
+			if(m_Calc)
+				++m_Calc->m_WorkersLeftToSet;
+		}
+	};
 
 public:
 
@@ -392,7 +452,7 @@ public:
 		}
 	}
 
-	bool DoIndustry(bool max_industry, bool safe_moral)
+	bool DoIndustry(bool max_industry)
 	{
 		const CAssemblyList& assembly_list = *m_pSystem->GetAssemblyList();
 		if(assembly_list.IsEmpty())
@@ -402,60 +462,44 @@ public:
 		const int max_buildings = m_pSystem->GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 0);
 		const int industry_workers = min(max_buildings, m_WorkersLeftToSet);
 		SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_SET, industry_workers);
-		CalculateVariables();
-		const int min_rounds = m_pSystem->NeededRoundsToBuild(0, true);
-		assert(min_rounds >= 1);
-		if((!max_industry || min_rounds == 1) && !assembly_list.GetWasBuildingBought())
-		{
-			while(min_rounds == m_pSystem->NeededRoundsToBuild(0, true)
-				&& m_pSystem->GetWorker(WORKER::INDUSTRY_WORKER) > 0)
-			{
-				SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_DECREMENT);
-				CalculateVariables();
-			}
-			//undo last step of the loop
-			SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
-			if(safe_moral && min_rounds == 1 && m_WorkersLeftToSet >= 1
-				&& m_pSystem->GetWorker(WORKER::INDUSTRY_WORKER) < max_buildings)
-			{
-				//+1 worker in case of moral loss
-				SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
-			}
-		}
+		DecrementDueToWastedIndustry(max_industry);
 		return true;
 	}
 
-	void DoPriorities(const std::map<WORKER::Typ, int>& priorities)
+	void DoPriorities(const std::map<WORKER::Typ, int>& priorities, bool max_industry,
+		bool industry_prio, bool safe_moral)
 	{
-		DefaultDistributionCalculator decalc(m_WorkersLeftToSet, priorities);
+		SafeMoralWorkerReserve reserve(*this, safe_moral, industry_prio);
+		std::map<WORKER::Typ, int> prios(priorities);
+		if(!industry_prio)
+			prios.erase(WORKER::INDUSTRY_WORKER);
+		DefaultDistributionCalculator decalc(m_WorkersLeftToSet, prios);
 		const std::vector<DistributionElem>& result = decalc.Calc();
-
 		int failed_to_set = 0;
 		for(std::vector<DistributionElem>::const_iterator it = result.begin(); it != result.end(); ++it)
 		{
 			const int buildings = m_pSystem->GetNumberOfWorkbuildings(it->m_Type, 0);
-			if(buildings >= it->m_iCount)
-			{
+			if(buildings >= it->m_iCount) {
 				const int try_set = it->m_iCount + failed_to_set;
-				if(buildings >= try_set)
-				{
+				if(buildings >= try_set) {
 					failed_to_set = 0;
 					SetWorker(it->m_Type, CSystem::SET_WORKER_MODE_SET, try_set);
 				}
-				else
-				{
+				else {
 					failed_to_set -= buildings -it->m_iCount;
 					SetWorker(it->m_Type, CSystem::SET_WORKER_MODE_SET, buildings);
 				}
 			}
-			else
-			{
+			else {
 				failed_to_set += it->m_iCount - buildings;
 				SetWorker(it->m_Type, CSystem::SET_WORKER_MODE_SET, buildings);
 			}
 			assert(m_WorkersLeftToSet >= 0 && failed_to_set >= 0);
-
 			failed_to_set += DecrementDueToFullStore(it->m_Type);
+			if(it->m_Type == WORKER::INDUSTRY_WORKER) {
+				assert(industry_prio);
+				failed_to_set += DecrementDueToWastedIndustry(max_industry);
+			}
 		}
 	}
 
@@ -480,6 +524,17 @@ public:
 		FillRemainingSlots(WORKER::ENERGY_WORKER);
 	}
 
+	void SafeMoral()
+	{
+		const CAssemblyList& assembly_list = *m_pSystem->GetAssemblyList();
+		assert(m_WorkersLeftToSet >= 0);
+		if(assembly_list.IsEmpty() && m_WorkersLeftToSet == 0)
+			return;
+		const int max_buildings = m_pSystem->GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 0);
+		if(m_pSystem->GetWorker(WORKER::INDUSTRY_WORKER) < max_buildings)
+			SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
+	}
+
 };
 
 bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
@@ -495,10 +550,17 @@ bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
 		if(!calc.IncreaseWorkersUntilSufficient(WORKER::FOOD_WORKER, true))
 			return false;
 	//industry
-	if(!calc.DoIndustry(m_bMaxIndustry, m_bSafeMoral))
-		return false;
+	if(!m_bIndustryPrio)
+	{
+		if(!calc.DoIndustry(m_bMaxIndustry))
+			return false;
+		if(m_bSafeMoral)
+			calc.SafeMoral();
+	}
 	//security, research, titan, deuterium, duranium, crystal, iridium in order according to priorities
-	calc.DoPriorities(m_PriorityMap);
+	calc.DoPriorities(m_PriorityMap, m_bMaxIndustry, m_bIndustryPrio, m_bSafeMoral);
+	if(m_bSafeMoral && m_bIndustryPrio)
+		calc.SafeMoral();
 	//distribute any remaining workers
 	calc.DoRemaining();
 	calc.Finish();

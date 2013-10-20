@@ -26,6 +26,7 @@ public:
 	virtual BOOL OnInitDialog();
 
 	afx_msg void OnBnClickedCheckActive();
+	afx_msg void OnBnClickedCheckIndustryPrio();
 
 protected:
 	virtual void OnOK();
@@ -43,6 +44,7 @@ private:
 	BOOL m_bSafeMoral;
 	BOOL m_bMaxIndustry;
 	BOOL m_bNeglectFood;
+	BOOL m_bIndustryPrio;
 
 	CSliderCtrl m_ctrlSecuritySlider;
 	CSliderCtrl m_ctrlResearchSlider;
@@ -51,5 +53,6 @@ private:
 	CSliderCtrl m_ctrlDuraniumSlider;
 	CSliderCtrl m_ctrlCrystalSlider;
 	CSliderCtrl m_ctrlIridiumSlider;
+	CSliderCtrl m_ctrlProductionSlider;
 
 };

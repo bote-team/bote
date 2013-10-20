@@ -19,6 +19,7 @@ CManagerSettingsDlg::CManagerSettingsDlg(CWnd* pParent /*=NULL*/)
 	, m_bSafeMoral(FALSE)
 	, m_bMaxIndustry(FALSE)
 	, m_bNeglectFood(FALSE)
+	, m_bIndustryPrio(FALSE)
 {
 
 }
@@ -28,7 +29,8 @@ CManagerSettingsDlg::CManagerSettingsDlg(CSystemManager* manager, CWnd* pParent)
 	m_bActive(FALSE),
 	m_bSafeMoral(FALSE),
 	m_bMaxIndustry(FALSE),
-	m_bNeglectFood(FALSE)
+	m_bNeglectFood(FALSE),
+	m_bIndustryPrio(FALSE)
 {
 
 }
@@ -51,11 +53,14 @@ void CManagerSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_SAFE_MORAL, m_bSafeMoral);
 	DDX_Check(pDX, IDC_CHECK_MAX_INDUSTRY, m_bMaxIndustry);
 	DDX_Check(pDX, IDC_CHECK_NEGLECT_FOOD, m_bNeglectFood);
+	DDX_Check(pDX, IDC_CHECK_INDUSTRY_PRIO, m_bIndustryPrio);
+	DDX_Control(pDX, IDC_SLIDER_PRODUCTION, m_ctrlProductionSlider);
 }
 
 
 BEGIN_MESSAGE_MAP(CManagerSettingsDlg, CDialog)
 	ON_BN_CLICKED(IDC_CHECK_ACTIVE, &CManagerSettingsDlg::OnBnClickedCheckActive)
+	ON_BN_CLICKED(IDC_CHECK_INDUSTRY_PRIO, &CManagerSettingsDlg::OnBnClickedCheckIndustryPrio)
 END_MESSAGE_MAP()
 
 
@@ -69,6 +74,7 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 	m_bSafeMoral = m_Manager->SafeMoral();
 	m_bMaxIndustry = m_Manager->MaxIndustry();
 	m_bNeglectFood = m_Manager->NeglectFood();
+	m_bIndustryPrio = m_Manager->IndustryPrio();
 
 	m_ctrlSecuritySlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
 	m_ctrlSecuritySlider.SetTicFreq(tick_frequ);
@@ -84,6 +90,8 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 	m_ctrlCrystalSlider.SetTicFreq(tick_frequ);
 	m_ctrlIridiumSlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
 	m_ctrlIridiumSlider.SetTicFreq(tick_frequ);
+	m_ctrlProductionSlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
+	m_ctrlProductionSlider.SetTicFreq(tick_frequ);
 
 	m_ctrlSecuritySlider.SetPos(m_Manager->Priority(WORKER::SECURITY_WORKER));
 	m_ctrlResearchSlider.SetPos(m_Manager->Priority(WORKER::RESEARCH_WORKER));
@@ -92,6 +100,7 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 	m_ctrlDuraniumSlider.SetPos(m_Manager->Priority(WORKER::DURANIUM_WORKER));
 	m_ctrlCrystalSlider.SetPos(m_Manager->Priority(WORKER::CRYSTAL_WORKER));
 	m_ctrlIridiumSlider.SetPos(m_Manager->Priority(WORKER::IRIDIUM_WORKER));
+	m_ctrlProductionSlider.SetPos(m_Manager->Priority(WORKER::INDUSTRY_WORKER));
 
 	UpdateData(false);
 	SetStates(m_bActive);
@@ -110,6 +119,7 @@ void CManagerSettingsDlg::OnOK()
 	m_Manager->SetSafeMoral(m_bSafeMoral ? true : false);
 	m_Manager->SetMaxIndustry(m_bMaxIndustry ? true : false);
 	m_Manager->SetNeglectFood(m_bNeglectFood ? true : false);
+	m_Manager->SetIndustryPrio(m_bIndustryPrio ? true : false);
 
 	m_Manager->ClearPriorities();
 
@@ -120,6 +130,7 @@ void CManagerSettingsDlg::OnOK()
 	m_Manager->AddPriority(WORKER::DURANIUM_WORKER, m_ctrlDuraniumSlider.GetPos());
 	m_Manager->AddPriority(WORKER::CRYSTAL_WORKER, m_ctrlCrystalSlider.GetPos());
 	m_Manager->AddPriority(WORKER::IRIDIUM_WORKER, m_ctrlIridiumSlider.GetPos());
+	m_Manager->AddPriority(WORKER::INDUSTRY_WORKER, m_ctrlProductionSlider.GetPos());
 
 	CDialog::OnOK();
 }
@@ -140,13 +151,21 @@ void CManagerSettingsDlg::SetStates(BOOL active)
 	SetState(IDC_SLIDER_DURANIUM, active);
 	SetState(IDC_SLIDER_CRYSTAL, active);
 	SetState(IDC_SLIDER_IRIDIUM, active);
+	SetState(IDC_SLIDER_PRODUCTION, m_bIndustryPrio && active);
 
 	SetState(IDC_CHECK_SAFE_MORAL, active);
 	SetState(IDC_CHECK_MAX_INDUSTRY, active);
 	SetState(IDC_CHECK_NEGLECT_FOOD, active);
+	SetState(IDC_CHECK_INDUSTRY_PRIO, active);
 }
 
 void CManagerSettingsDlg::OnBnClickedCheckActive()
+{
+	UpdateData(true);
+	SetStates(m_bActive);
+}
+
+void CManagerSettingsDlg::OnBnClickedCheckIndustryPrio()
 {
 	UpdateData(true);
 	SetStates(m_bActive);
