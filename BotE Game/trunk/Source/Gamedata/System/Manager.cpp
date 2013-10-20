@@ -407,6 +407,24 @@ private:
 		}
 	};
 
+	void DoMaxPriorities(std::map<WORKER::Typ, int>& prios, bool max_industry)
+	{
+		for(std::map<WORKER::Typ, int>::const_iterator it = prios.begin(); it != prios.end();)
+		{
+			assert(it->second <= CSystemManager::max_priority);
+			if(it->second != CSystemManager::max_priority)
+			{
+				++it;
+				continue;
+			}
+			FillRemainingSlots(it->first);
+			DecrementDueToFullStore(it->first);
+			if(it->first == WORKER::INDUSTRY_WORKER)
+				DecrementDueToWastedIndustry(max_industry);
+			it = prios.erase(it);
+		}
+	}
+
 public:
 
 	CWorkersDistributionCalculator(CSystem& system, const CPoint& p) :
@@ -473,6 +491,7 @@ public:
 		std::map<WORKER::Typ, int> prios(priorities);
 		if(!industry_prio)
 			prios.erase(WORKER::INDUSTRY_WORKER);
+		DoMaxPriorities(prios, max_industry);
 		DefaultDistributionCalculator decalc(m_WorkersLeftToSet, prios);
 		const std::vector<DistributionElem>& result = decalc.Calc();
 		int failed_to_set = 0;
