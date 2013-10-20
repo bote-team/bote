@@ -475,11 +475,7 @@ public:
 		const CAssemblyList& assembly_list = *m_pSystem->GetAssemblyList();
 		if(assembly_list.IsEmpty())
 			return true;
-		if(m_WorkersLeftToSet <= 0)
-			return false;
-		const int max_buildings = m_pSystem->GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 0);
-		const int industry_workers = min(max_buildings, m_WorkersLeftToSet);
-		SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_SET, industry_workers);
+		FillRemainingSlots(WORKER::INDUSTRY_WORKER);
 		DecrementDueToWastedIndustry(max_industry);
 		return true;
 	}
