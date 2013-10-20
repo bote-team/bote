@@ -495,13 +495,17 @@ public:
 		{
 			const int buildings = m_pSystem->GetNumberOfWorkbuildings(it->m_Type, 0);
 			if(buildings >= it->m_iCount) {
-				const int try_set = it->m_iCount + failed_to_set;
+				int try_set = it->m_iCount;
+				if(it->m_Type != WORKER::INDUSTRY_WORKER)
+					try_set += failed_to_set;
 				if(buildings >= try_set) {
-					failed_to_set = 0;
+					if(it->m_Type != WORKER::INDUSTRY_WORKER)
+						failed_to_set = 0;
 					SetWorker(it->m_Type, CSystem::SET_WORKER_MODE_SET, try_set);
 				}
 				else {
-					failed_to_set -= buildings -it->m_iCount;
+					if(it->m_Type != WORKER::INDUSTRY_WORKER)
+						failed_to_set -= buildings -it->m_iCount;
 					SetWorker(it->m_Type, CSystem::SET_WORKER_MODE_SET, buildings);
 				}
 			}
