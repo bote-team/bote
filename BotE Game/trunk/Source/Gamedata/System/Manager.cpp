@@ -303,10 +303,11 @@ private:
 		m_pSystem->CalculateVariables(sector.GetPlanets(), major);
 	}
 
-	void DecrementForFullStore(WORKER::Typ type)
+	int DecrementDueToFullStore(WORKER::Typ type)
 	{
+		int unset = 0;
 		if(!m_pSystem->HasStore(type))
-			return;
+			return unset;
 		const int store = m_pSystem->GetResourceStore(type);
 		while(true)
 		{
@@ -315,10 +316,12 @@ private:
 				break;
 			CalculateVariables();
 			const int prod = m_pSystem->GetProduction()->GetXProd(type);
-			if(store + prod <= MAX_RES_STORE)
+			if(store + prod <= m_pSystem->GetXStoreMax(type))
 				break;
 			SetWorker(type, CSystem::SET_WORKER_MODE_DECREMENT);
+			++unset;
 		}
+		return unset;
 	}
 
 	void SetWorker(WORKER::Typ type, CSystem::SetWorkerMode mode, int value = -1)
@@ -452,25 +455,28 @@ public:
 			}
 			assert(m_WorkersLeftToSet >= 0 && failed_to_set >= 0);
 
-			DecrementForFullStore(it->m_Type);
+			failed_to_set += DecrementDueToFullStore(it->m_Type);
 		}
 	}
 
 	void DoRemaining()
 	{
-		//distribute any remaining workers
-		if(m_pSystem->GetFoodStore() < MAX_FOOD_STORE)
-			FillRemainingSlots(WORKER::FOOD_WORKER);
+		FillRemainingSlots(WORKER::FOOD_WORKER);
+		DecrementDueToFullStore(WORKER::FOOD_WORKER);
 
 		FillRemainingSlots(WORKER::RESEARCH_WORKER);
 		FillRemainingSlots(WORKER::SECURITY_WORKER);
+
+		FillRemainingSlots(WORKER::INDUSTRY_WORKER);
+
 		FillRemainingSlots(WORKER::TITAN_WORKER);
 		FillRemainingSlots(WORKER::DEUTERIUM_WORKER);
 		FillRemainingSlots(WORKER::DURANIUM_WORKER);
 		FillRemainingSlots(WORKER::CRYSTAL_WORKER);
 		FillRemainingSlots(WORKER::IRIDIUM_WORKER);
-		FillRemainingSlots(WORKER::INDUSTRY_WORKER);
+
 		FillRemainingSlots(WORKER::FOOD_WORKER);
+
 		FillRemainingSlots(WORKER::ENERGY_WORKER);
 	}
 

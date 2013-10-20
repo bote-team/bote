@@ -371,8 +371,29 @@ USHORT CSystem::GetNumberOfBuilding(USHORT runningNumber) const
 
 bool CSystem::HasStore(WORKER::Typ type) const
 {
-	return	type == WORKER::TITAN_WORKER || type == WORKER::DEUTERIUM_WORKER
-		|| type == WORKER::DURANIUM_WORKER || type == WORKER::CRYSTAL_WORKER || type == WORKER::IRIDIUM_WORKER;
+	return
+		type == WORKER::TITAN_WORKER ||
+		type == WORKER::DEUTERIUM_WORKER ||
+		type == WORKER::DURANIUM_WORKER ||
+		type == WORKER::CRYSTAL_WORKER ||
+		type == WORKER::IRIDIUM_WORKER ||
+		type == WORKER::FOOD_WORKER;
+}
+
+int CSystem::GetXStoreMax(RESOURCES::TYPE x)
+{
+	switch(x)
+	{
+		case RESOURCES::TITAN: return GetTitanStoreMax();
+		case RESOURCES::DEUTERIUM: return GetDeuteriumStoreMax();
+		case RESOURCES::DURANIUM: return GetDuraniumStoreMax();
+		case RESOURCES::CRYSTAL: return GetCrystalStoreMax();
+		case RESOURCES::IRIDIUM: return GetIridiumStoreMax();
+		case RESOURCES::DERITIUM: return GetDeritiumStoreMax();
+		case RESOURCES::FOOD: return GetFoodStoreMax();
+	}
+	assert(false);
+	return 0;
 }
 
 // Funktion gibt den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
@@ -386,6 +407,7 @@ UINT CSystem::GetResourceStore(USHORT res) const
 	case RESOURCES::CRYSTAL: {return this->GetCrystalStore();}
 	case RESOURCES::IRIDIUM: {return this->GetIridiumStore();}
 	case RESOURCES::DERITIUM: {return this->GetDeritiumStore();}
+	case RESOURCES::FOOD: { return this->GetFoodStore();}
 	}
 	return 0;
 }
@@ -398,6 +420,7 @@ static RESOURCES::TYPE WorkerToResource(WORKER::Typ type)
 	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::DURANIUM_WORKER, RESOURCES::DURANIUM));
 	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::CRYSTAL_WORKER, RESOURCES::CRYSTAL));
 	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::IRIDIUM_WORKER, RESOURCES::IRIDIUM));
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::FOOD_WORKER, RESOURCES::FOOD));
 	const std::map<WORKER::Typ, RESOURCES::TYPE>::const_iterator it = transformer.find(type);
 	assert(it != transformer.end());
 	return it->second;
@@ -407,6 +430,11 @@ int CSystem::GetResourceStore(WORKER::Typ type) const
 {
 	assert(HasStore(type));
 	return GetResourceStore(WorkerToResource(type));
+}
+
+int CSystem::GetXStoreMax(WORKER::Typ x)
+{
+	return GetXStoreMax(WorkerToResource(x));
 }
 
 // Funktion gibt einen Zeiger auf den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.

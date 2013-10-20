@@ -116,7 +116,6 @@ public:
 	UINT GetIridiumStore() const {return m_Store.Iridium;}
 	UINT GetDeritiumStore() const {return m_Store.Deritium;}
 
-	//not for food
 	bool HasStore(WORKER::Typ type) const;
 
 	// Funktionen geben die jeweiligen maximalen Lagerinhalte zurück
@@ -126,7 +125,9 @@ public:
 	static UINT GetDuraniumStoreMax() {return MAX_RES_STORE;}
 	static UINT GetCrystalStoreMax() {return MAX_RES_STORE;}
 	static UINT GetIridiumStoreMax() {return MAX_RES_STORE;}
-	static UINT GetDeritiumStoreMax() {return MAX_RES_STORE;}
+	static UINT GetDeritiumStoreMax() {return MAX_DERITIUM_STORE;}
+	static int GetXStoreMax(RESOURCES::TYPE x);
+	static int GetXStoreMax(WORKER::Typ x);
 
 	// Funktion gibt den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
 	UINT GetResourceStore(USHORT res) const;

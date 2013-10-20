@@ -448,7 +448,8 @@ namespace RESOURCES
 		DURANIUM            = 2,
 		CRYSTAL             = 3,
 		IRIDIUM             = 4,
-		DERITIUM	         = 5
+		DERITIUM            = 5,
+		FOOD                = 6
 	};
 }
 
