@@ -124,7 +124,6 @@
 #define IDC_CHECK1                      1075
 #define IDC_CHECK_NEGLECT_FOOD          1075
 #define IDC_SLIDER_PRODUCTION           1076
-#define IDC_CHECK_INDUSTRY_PRIO         1077
 #define IDC_STATIC_PRODUCTION           1078
 #define IDC_STATIC_SECURITY             1079
 #define IDC_STATIC_RESEARCH             1080

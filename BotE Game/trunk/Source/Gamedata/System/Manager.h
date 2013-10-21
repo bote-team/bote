@@ -86,7 +86,6 @@ private:
 	bool m_bSafeMoral;
 	bool m_bMaxIndustry;
 	bool m_bNeglectFood;
-	bool m_bIndustryPrio;
 	std::map<WORKER::Typ, int> m_PriorityMap;//1-100 each
 
 };

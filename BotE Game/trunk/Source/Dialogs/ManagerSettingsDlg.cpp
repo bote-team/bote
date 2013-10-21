@@ -19,7 +19,6 @@ CManagerSettingsDlg::CManagerSettingsDlg(CWnd* pParent /*=NULL*/)
 	, m_bSafeMoral(FALSE)
 	, m_bMaxIndustry(FALSE)
 	, m_bNeglectFood(FALSE)
-	, m_bIndustryPrio(FALSE)
 {
 
 }
@@ -29,8 +28,7 @@ CManagerSettingsDlg::CManagerSettingsDlg(CSystemManager* manager, CWnd* pParent)
 	m_bActive(FALSE),
 	m_bSafeMoral(FALSE),
 	m_bMaxIndustry(FALSE),
-	m_bNeglectFood(FALSE),
-	m_bIndustryPrio(FALSE)
+	m_bNeglectFood(FALSE)
 {
 
 }
@@ -53,14 +51,12 @@ void CManagerSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_SAFE_MORAL, m_bSafeMoral);
 	DDX_Check(pDX, IDC_CHECK_MAX_INDUSTRY, m_bMaxIndustry);
 	DDX_Check(pDX, IDC_CHECK_NEGLECT_FOOD, m_bNeglectFood);
-	DDX_Check(pDX, IDC_CHECK_INDUSTRY_PRIO, m_bIndustryPrio);
 	DDX_Control(pDX, IDC_SLIDER_PRODUCTION, m_ctrlProductionSlider);
 }
 
 
 BEGIN_MESSAGE_MAP(CManagerSettingsDlg, CDialog)
 	ON_BN_CLICKED(IDC_CHECK_ACTIVE, &CManagerSettingsDlg::OnBnClickedCheckActive)
-	ON_BN_CLICKED(IDC_CHECK_INDUSTRY_PRIO, &CManagerSettingsDlg::OnBnClickedCheckIndustryPrio)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_PRODUCTION, &CManagerSettingsDlg::OnNMCustomdrawSliderProduction)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_SECURITY, &CManagerSettingsDlg::OnNMCustomdrawSliderSecurity)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_RESEARCH, &CManagerSettingsDlg::OnNMCustomdrawSliderResearch)
@@ -82,7 +78,6 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 	m_bSafeMoral = m_Manager->SafeMoral();
 	m_bMaxIndustry = m_Manager->MaxIndustry();
 	m_bNeglectFood = m_Manager->NeglectFood();
-	m_bIndustryPrio = m_Manager->IndustryPrio();
 
 	m_ctrlProductionSlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
 	m_ctrlProductionSlider.SetTicFreq(tick_frequ);
@@ -136,7 +131,6 @@ void CManagerSettingsDlg::OnOK()
 	m_Manager->SetSafeMoral(m_bSafeMoral ? true : false);
 	m_Manager->SetMaxIndustry(m_bMaxIndustry ? true : false);
 	m_Manager->SetNeglectFood(m_bNeglectFood ? true : false);
-	m_Manager->SetIndustryPrio(m_bIndustryPrio ? true : false);
 
 	m_Manager->ClearPriorities();
 
@@ -168,21 +162,14 @@ void CManagerSettingsDlg::SetStates(BOOL active)
 	SetState(IDC_SLIDER_DURANIUM, active);
 	SetState(IDC_SLIDER_CRYSTAL, active);
 	SetState(IDC_SLIDER_IRIDIUM, active);
-	SetState(IDC_SLIDER_PRODUCTION, m_bIndustryPrio && active);
+	SetState(IDC_SLIDER_PRODUCTION, active);
 
 	SetState(IDC_CHECK_SAFE_MORAL, active);
 	SetState(IDC_CHECK_MAX_INDUSTRY, active);
 	SetState(IDC_CHECK_NEGLECT_FOOD, active);
-	SetState(IDC_CHECK_INDUSTRY_PRIO, active);
 }
 
 void CManagerSettingsDlg::OnBnClickedCheckActive()
-{
-	UpdateData(true);
-	SetStates(m_bActive);
-}
-
-void CManagerSettingsDlg::OnBnClickedCheckIndustryPrio()
 {
 	UpdateData(true);
 	SetStates(m_bActive);

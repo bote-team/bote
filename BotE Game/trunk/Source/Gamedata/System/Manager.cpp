@@ -23,7 +23,6 @@ CSystemManager::CSystemManager(const CSystemManager& o) :
 	m_bSafeMoral(o.m_bSafeMoral),
 	m_bMaxIndustry(o.m_bMaxIndustry),
 	m_bNeglectFood(o.m_bNeglectFood),
-	m_bIndustryPrio(o.m_bIndustryPrio),
 	m_PriorityMap(o.m_PriorityMap)
 {
 }
@@ -41,7 +40,6 @@ CSystemManager& CSystemManager::operator=(const CSystemManager& o)
 	m_bSafeMoral = o.m_bSafeMoral;
 	m_bMaxIndustry = o.m_bMaxIndustry;
 	m_bNeglectFood = o.m_bNeglectFood;
-	m_bIndustryPrio = o.m_bIndustryPrio;
 	m_PriorityMap = o.m_PriorityMap;
 
 	return *this;
@@ -53,7 +51,6 @@ void CSystemManager::Reset()
 	m_bSafeMoral = true;
 	m_bMaxIndustry = false;
 	m_bNeglectFood = false;
-	m_bIndustryPrio = false;
 
 	ClearPriorities();
 }
@@ -70,7 +67,6 @@ void CSystemManager::Serialize(CArchive& ar)
 		ar << m_bSafeMoral;
 		ar << m_bMaxIndustry;
 		ar << m_bNeglectFood;
-		ar << m_bIndustryPrio;
 		ar << static_cast<int>(m_PriorityMap.size());
 		for(std::map<WORKER::Typ, int>::const_iterator it = m_PriorityMap.begin();
 				it != m_PriorityMap.end(); ++it)
@@ -86,7 +82,6 @@ void CSystemManager::Serialize(CArchive& ar)
 		ar >> m_bSafeMoral;
 		ar >> m_bMaxIndustry;
 		ar >> m_bNeglectFood;
-		ar >> m_bIndustryPrio;
 
 		ClearPriorities();
 		int map_size;
@@ -127,11 +122,6 @@ bool CSystemManager::NeglectFood() const
 	return m_bNeglectFood;
 }
 
-bool CSystemManager::IndustryPrio() const
-{
-	return m_bIndustryPrio;
-}
-
 int CSystemManager::Priority(WORKER::Typ type) const
 {
 	std::map<WORKER::Typ, int>::const_iterator it = m_PriorityMap.find(type);
@@ -162,11 +152,6 @@ void CSystemManager::SetMaxIndustry(bool is)
 void CSystemManager::SetNeglectFood(bool is)
 {
 	m_bNeglectFood = is;
-}
-
-void CSystemManager::SetIndustryPrio(bool is)
-{
-	m_bIndustryPrio = is;
 }
 
 void CSystemManager::ClearPriorities()
@@ -392,10 +377,10 @@ private:
 	struct SafeMoralWorkerReserve
 	{
 		CWorkersDistributionCalculator* m_Calc;
-		SafeMoralWorkerReserve(CWorkersDistributionCalculator& calc, bool safe_moral, bool industry_prio) :
+		SafeMoralWorkerReserve(CWorkersDistributionCalculator& calc, bool safe_moral) :
 			m_Calc(NULL)
 		{
-			if(safe_moral && industry_prio && calc.m_WorkersLeftToSet >= 1)
+			if(safe_moral && calc.m_WorkersLeftToSet >= 1)
 			{
 				m_Calc = &calc;
 				--m_Calc->m_WorkersLeftToSet;
@@ -471,23 +456,10 @@ public:
 		}
 	}
 
-	bool DoIndustry(bool max_industry)
+	void DoPriorities(const std::map<WORKER::Typ, int>& priorities, bool max_industry, bool safe_moral)
 	{
-		const CAssemblyList& assembly_list = *m_pSystem->GetAssemblyList();
-		if(assembly_list.IsEmpty())
-			return true;
-		FillRemainingSlots(WORKER::INDUSTRY_WORKER);
-		DecrementDueToWastedIndustry(max_industry);
-		return true;
-	}
-
-	void DoPriorities(const std::map<WORKER::Typ, int>& priorities, bool max_industry,
-		bool industry_prio, bool safe_moral)
-	{
-		SafeMoralWorkerReserve reserve(*this, safe_moral, industry_prio);
+		SafeMoralWorkerReserve reserve(*this, safe_moral);
 		std::map<WORKER::Typ, int> prios(priorities);
-		if(!industry_prio)
-			prios.erase(WORKER::INDUSTRY_WORKER);
 		DoMaxPriorities(prios, max_industry);
 		DefaultDistributionCalculator decalc(m_WorkersLeftToSet, prios);
 		const std::vector<DistributionElem>& result = decalc.Calc();
@@ -517,7 +489,6 @@ public:
 			assert(m_WorkersLeftToSet >= 0 && failed_to_set >= 0);
 			failed_to_set += DecrementDueToFullStore(it->m_Type);
 			if(it->m_Type == WORKER::INDUSTRY_WORKER) {
-				assert(industry_prio);
 				failed_to_set += DecrementDueToWastedIndustry(max_industry);
 			}
 		}
@@ -579,17 +550,10 @@ bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
 	if(!m_bNeglectFood || CheckFamine(system))
 		if(!calc.IncreaseWorkersUntilSufficient(WORKER::FOOD_WORKER, true))
 			return false;
-	//industry
-	if(!m_bIndustryPrio)
-	{
-		if(!calc.DoIndustry(m_bMaxIndustry))
-			return false;
-		if(m_bSafeMoral)
-			calc.SafeMoral();
-	}
-	//security, research, titan, deuterium, duranium, crystal, iridium in order according to priorities
-	calc.DoPriorities(m_PriorityMap, m_bMaxIndustry, m_bIndustryPrio, m_bSafeMoral);
-	if(m_bSafeMoral && m_bIndustryPrio)
+	//industry, security, research, titan, deuterium, duranium, crystal, iridium
+	//in order according to priorities
+	calc.DoPriorities(m_PriorityMap, m_bMaxIndustry, m_bSafeMoral);
+	if(m_bSafeMoral)
 		calc.SafeMoral();
 	//distribute any remaining workers
 	calc.DoRemaining();
