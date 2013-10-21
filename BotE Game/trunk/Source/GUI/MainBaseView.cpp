@@ -140,14 +140,15 @@ void CMainBaseView::ButtonReactOnMouseOver(const CPoint &point, CArray<CMyButton
 
 BOOLEAN CMainBaseView::ButtonReactOnLeftClick(const CPoint &point, CArray<CMyButton*>* buttonArray, int &counter, BOOLEAN invalidate, BOOLEAN onlyActivate)
 {
-	short button = -1;
 	for (int i = 0; i < buttonArray->GetSize(); i++)
 		if (buttonArray->GetAt(i)->ClickedOnButton(point))
 		{
 			// Wenn der Button schon deaktiviert ist, dann kann er nicht angeklickt werden
 			if (buttonArray->GetAt(i)->GetState() == BUTTON_STATE::DEACTIVATED)
 				return FALSE;
-			button = i;
+			counter = i;
+			if(counter == 5)
+				return TRUE;
 			if (!onlyActivate)
 			{
 				// Button auf inaktiv schalten, anderen inaktiven Button auf normal schalten
@@ -170,7 +171,6 @@ BOOLEAN CMainBaseView::ButtonReactOnLeftClick(const CPoint &point, CArray<CMyBut
 					}
 					buttonArray->GetAt(i)->SetState(BUTTON_STATE::ACTIVATED);
 			}
-			counter = button;
 			if (invalidate)
 				Invalidate(FALSE);
 			return TRUE;
