@@ -61,6 +61,14 @@ void CManagerSettingsDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CManagerSettingsDlg, CDialog)
 	ON_BN_CLICKED(IDC_CHECK_ACTIVE, &CManagerSettingsDlg::OnBnClickedCheckActive)
 	ON_BN_CLICKED(IDC_CHECK_INDUSTRY_PRIO, &CManagerSettingsDlg::OnBnClickedCheckIndustryPrio)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_PRODUCTION, &CManagerSettingsDlg::OnNMCustomdrawSliderProduction)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_SECURITY, &CManagerSettingsDlg::OnNMCustomdrawSliderSecurity)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_RESEARCH, &CManagerSettingsDlg::OnNMCustomdrawSliderResearch)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_TITAN, &CManagerSettingsDlg::OnNMCustomdrawSliderTitan)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_DEUTERIUM, &CManagerSettingsDlg::OnNMCustomdrawSliderDeuterium)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_DURANIUM, &CManagerSettingsDlg::OnNMCustomdrawSliderDuranium)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_CRYSTAL, &CManagerSettingsDlg::OnNMCustomdrawSliderCrystal)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_IRIDIUM, &CManagerSettingsDlg::OnNMCustomdrawSliderIridium)
 END_MESSAGE_MAP()
 
 
@@ -76,6 +84,8 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 	m_bNeglectFood = m_Manager->NeglectFood();
 	m_bIndustryPrio = m_Manager->IndustryPrio();
 
+	m_ctrlProductionSlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
+	m_ctrlProductionSlider.SetTicFreq(tick_frequ);
 	m_ctrlSecuritySlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
 	m_ctrlSecuritySlider.SetTicFreq(tick_frequ);
 	m_ctrlResearchSlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
@@ -90,9 +100,8 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 	m_ctrlCrystalSlider.SetTicFreq(tick_frequ);
 	m_ctrlIridiumSlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
 	m_ctrlIridiumSlider.SetTicFreq(tick_frequ);
-	m_ctrlProductionSlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
-	m_ctrlProductionSlider.SetTicFreq(tick_frequ);
 
+	m_ctrlProductionSlider.SetPos(m_Manager->Priority(WORKER::INDUSTRY_WORKER));
 	m_ctrlSecuritySlider.SetPos(m_Manager->Priority(WORKER::SECURITY_WORKER));
 	m_ctrlResearchSlider.SetPos(m_Manager->Priority(WORKER::RESEARCH_WORKER));
 	m_ctrlTitanSlider.SetPos(m_Manager->Priority(WORKER::TITAN_WORKER));
@@ -100,7 +109,15 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 	m_ctrlDuraniumSlider.SetPos(m_Manager->Priority(WORKER::DURANIUM_WORKER));
 	m_ctrlCrystalSlider.SetPos(m_Manager->Priority(WORKER::CRYSTAL_WORKER));
 	m_ctrlIridiumSlider.SetPos(m_Manager->Priority(WORKER::IRIDIUM_WORKER));
-	m_ctrlProductionSlider.SetPos(m_Manager->Priority(WORKER::INDUSTRY_WORKER));
+
+	SetDisplayedPrio(IDC_SLIDER_PRODUCTION, m_ctrlProductionSlider.GetPos());
+	SetDisplayedPrio(IDC_SLIDER_SECURITY, m_ctrlSecuritySlider.GetPos());
+	SetDisplayedPrio(IDC_SLIDER_RESEARCH, m_ctrlResearchSlider.GetPos());
+	SetDisplayedPrio(IDC_SLIDER_TITAN, m_ctrlTitanSlider.GetPos());
+	SetDisplayedPrio(IDC_SLIDER_DEUTERIUM, m_ctrlProductionSlider.GetPos());
+	SetDisplayedPrio(IDC_SLIDER_DURANIUM, m_ctrlDuraniumSlider.GetPos());
+	SetDisplayedPrio(IDC_SLIDER_CRYSTAL, m_ctrlCrystalSlider.GetPos());
+	SetDisplayedPrio(IDC_SLIDER_IRIDIUM, m_ctrlIridiumSlider.GetPos());
 
 	UpdateData(false);
 	SetStates(m_bActive);
@@ -123,6 +140,7 @@ void CManagerSettingsDlg::OnOK()
 
 	m_Manager->ClearPriorities();
 
+	m_Manager->AddPriority(WORKER::INDUSTRY_WORKER, m_ctrlProductionSlider.GetPos());
 	m_Manager->AddPriority(WORKER::SECURITY_WORKER, m_ctrlSecuritySlider.GetPos());
 	m_Manager->AddPriority(WORKER::RESEARCH_WORKER, m_ctrlResearchSlider.GetPos());
 	m_Manager->AddPriority(WORKER::TITAN_WORKER, m_ctrlTitanSlider.GetPos());
@@ -130,7 +148,6 @@ void CManagerSettingsDlg::OnOK()
 	m_Manager->AddPriority(WORKER::DURANIUM_WORKER, m_ctrlDuraniumSlider.GetPos());
 	m_Manager->AddPriority(WORKER::CRYSTAL_WORKER, m_ctrlCrystalSlider.GetPos());
 	m_Manager->AddPriority(WORKER::IRIDIUM_WORKER, m_ctrlIridiumSlider.GetPos());
-	m_Manager->AddPriority(WORKER::INDUSTRY_WORKER, m_ctrlProductionSlider.GetPos());
 
 	CDialog::OnOK();
 }
@@ -169,4 +186,82 @@ void CManagerSettingsDlg::OnBnClickedCheckIndustryPrio()
 {
 	UpdateData(true);
 	SetStates(m_bActive);
+}
+
+void CManagerSettingsDlg::SetDlgItem(int item, const CString& text)
+{
+	CWnd* pCtrl = GetDlgItem(item);
+	assert(pCtrl);
+	pCtrl->SetWindowText(text);
+}
+
+void CManagerSettingsDlg::SetDisplayedPrio(int item, int prio)
+{
+	CString text;
+	text.Format("%u", prio);
+	SetDlgItem(item, text);
+}
+
+void CManagerSettingsDlg::OnNMCustomdrawSliderProduction(NMHDR * /*pNMHDR*/, LRESULT *pResult)
+{
+	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
+	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
+	SetDisplayedPrio(IDC_STATIC_PRODUCTION, m_ctrlProductionSlider.GetPos());
+	*pResult = 0;
+}
+
+void CManagerSettingsDlg::OnNMCustomdrawSliderSecurity(NMHDR * /*pNMHDR*/, LRESULT *pResult)
+{
+	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
+	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
+	SetDisplayedPrio(IDC_STATIC_SECURITY, m_ctrlSecuritySlider.GetPos());
+	*pResult = 0;
+}
+
+void CManagerSettingsDlg::OnNMCustomdrawSliderResearch(NMHDR * /*pNMHDR*/, LRESULT *pResult)
+{
+	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
+	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
+	SetDisplayedPrio(IDC_STATIC_RESEARCH, m_ctrlResearchSlider.GetPos());
+	*pResult = 0;
+}
+
+void CManagerSettingsDlg::OnNMCustomdrawSliderTitan(NMHDR * /*pNMHDR*/, LRESULT *pResult)
+{
+	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
+	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
+	SetDisplayedPrio(IDC_STATIC_TITAN, m_ctrlTitanSlider.GetPos());
+	*pResult = 0;
+}
+
+void CManagerSettingsDlg::OnNMCustomdrawSliderDeuterium(NMHDR * /*pNMHDR*/, LRESULT *pResult)
+{
+	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
+	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
+	SetDisplayedPrio(IDC_STATIC_DEUTERIUM, m_ctrlDeuteriumSlider.GetPos());
+	*pResult = 0;
+}
+
+void CManagerSettingsDlg::OnNMCustomdrawSliderDuranium(NMHDR * /*pNMHDR*/, LRESULT *pResult)
+{
+	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
+	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
+	SetDisplayedPrio(IDC_STATIC_DURANIUM, m_ctrlDuraniumSlider.GetPos());
+	*pResult = 0;
+}
+
+void CManagerSettingsDlg::OnNMCustomdrawSliderCrystal(NMHDR * /*pNMHDR*/, LRESULT *pResult)
+{
+	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
+	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
+	SetDisplayedPrio(IDC_STATIC_CRYSTAL, m_ctrlCrystalSlider.GetPos());
+	*pResult = 0;
+}
+
+void CManagerSettingsDlg::OnNMCustomdrawSliderIridium(NMHDR * /*pNMHDR*/, LRESULT *pResult)
+{
+	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
+	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
+	SetDisplayedPrio(IDC_STATIC_IRIDIUM, m_ctrlIridiumSlider.GetPos());
+	*pResult = 0;
 }

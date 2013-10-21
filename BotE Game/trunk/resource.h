@@ -125,6 +125,15 @@
 #define IDC_CHECK_NEGLECT_FOOD          1075
 #define IDC_SLIDER_PRODUCTION           1076
 #define IDC_CHECK_INDUSTRY_PRIO         1077
+#define IDC_STATIC_PRODUCTION           1078
+#define IDC_STATIC_SECURITY             1079
+#define IDC_STATIC_RESEARCH             1080
+#define IDC_STATIC_TITAN                1081
+#define IDC_STATIC_DEUTERIUM            1082
+#define IDC_STATIC_DURANIUM             1083
+#define IDC_STATIC_CRYSTAL              1084
+#define IDC_STATIC_PRODUCTION8          1085
+#define IDC_STATIC_IRIDIUM              1085
 #define ID_OPTIONEN                     32773
 #define ID_INFORMATION                  32774
 #define ID_DATENBANK                    32775
@@ -150,7 +159,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        191
 #define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1078
+#define _APS_NEXT_CONTROL_VALUE         1079
 #define _APS_NEXT_SYMED_VALUE           107
 #endif
 #endif
