@@ -496,6 +496,9 @@ public:
 
 	void DoRemaining()
 	{
+		if(FillRemainingSlots(WORKER::FOOD_WORKER))
+			DecrementDueToFullStore(WORKER::FOOD_WORKER);
+
 		FillRemainingSlots(WORKER::RESEARCH_WORKER);
 
 		if(FillRemainingSlots(WORKER::TITAN_WORKER))
@@ -508,8 +511,6 @@ public:
 			DecrementDueToFullStore(WORKER::CRYSTAL_WORKER);
 		if(FillRemainingSlots(WORKER::IRIDIUM_WORKER))
 			DecrementDueToFullStore(WORKER::IRIDIUM_WORKER);
-		if(FillRemainingSlots(WORKER::FOOD_WORKER))
-			DecrementDueToFullStore(WORKER::FOOD_WORKER);
 
 		FillRemainingSlots(WORKER::SECURITY_WORKER);
 
