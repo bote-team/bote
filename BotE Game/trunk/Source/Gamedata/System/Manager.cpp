@@ -558,7 +558,7 @@ public:
 	{
 		const CAssemblyList& assembly_list = *m_pSystem->GetAssemblyList();
 		assert(m_WorkersLeftToSet >= 0);
-		if(assembly_list.IsEmpty() && m_WorkersLeftToSet == 0)
+		if(assembly_list.IsEmpty() || m_WorkersLeftToSet == 0)
 			return;
 		const int max_buildings = m_pSystem->GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 0);
 		if(m_pSystem->GetWorker(WORKER::INDUSTRY_WORKER) < max_buildings)
