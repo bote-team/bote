@@ -185,7 +185,12 @@ void CManagerSettingsDlg::SetDlgItem(int item, const CString& text)
 void CManagerSettingsDlg::SetDisplayedPrio(int item, int prio)
 {
 	CString text;
-	text.Format("%u", prio);
+	if(prio == CSystemManager::min_priority)
+		text = "None";
+	else if(prio == CSystemManager::max_priority)
+		text = "Fill All";
+	else
+		text.Format("%u", prio);
 	SetDlgItem(item, text);
 }
 

@@ -77,7 +77,7 @@ public:
 // Members
 //////////////////////////////////////////////////////////////////////
 
-	static const int max_priority = 10;
+	static const int max_priority = 40;
 	static const int min_priority = 0;
 
 private:

@@ -45,7 +45,7 @@ private:
 	void SetDlgItem(int item, const CString& text);
 	void SetDisplayedPrio(int item, int prio);
 
-	static const int tick_frequ = 1;
+	static const int tick_frequ = 5;
 
 
 	CSystemManager* m_Manager;
