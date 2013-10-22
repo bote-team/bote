@@ -226,7 +226,7 @@ public:
 	// Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der Systemklasse.
 	void CalculateVariables(const std::vector<CPlanet>&, const CMajor* pOwner);
 
-	void CalculateEnergyPotential(const std::vector<CPlanet>& planets, const CMajor* pOwner);
+	void CalculatePotentials(const std::vector<CPlanet>& planets, const CMajor* pOwner);
 
 	// Funktion berechnet die Lagerinhalte des Systems. Aufrufen bei Ende bzw. Beginn einer neuen Runde.
 	// Gibt die Funktion TRUE zurück hat sich das System Aufgrund zu schlechter Moral vom Besitzer losgesagt.
@@ -296,7 +296,7 @@ public:
 	//@param index_or_id assembly list entry index if already_in_list,
 	//the building ID otherwise
 	// @return Anzahl der benötigten Runden
-	int NeededRoundsToBuild(int index_or_id, bool already_in_list);
+	int NeededRoundsToBuild(int index_or_id, bool already_in_list, bool use_potential = false);
 
 	void TrainTroops();
 

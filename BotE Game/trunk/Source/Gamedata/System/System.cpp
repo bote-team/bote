@@ -1011,14 +1011,22 @@ void CSystem::CalculateVariables(const std::vector<CPlanet>& planets, const CMaj
 	m_Workers.CalculateFreeWorkers();
 }
 
-void CSystem::CalculateEnergyPotential(const std::vector<CPlanet>& planets, const CMajor* pOwner)
+void CSystem::CalculatePotentials(const std::vector<CPlanet>& planets, const CMajor* pOwner)
 {
-	const CWorker prev = m_Workers;
-	const int workers = min(GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 0), GetWorker(WORKER::ALL_WORKER));
+	const CWorker prev(m_Workers);
+
+	int workers = min(GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 0), GetWorker(WORKER::ALL_WORKER));
 	m_Workers.FreeAll();
 	SetWorker(WORKER::ENERGY_WORKER, SET_WORKER_MODE_SET, workers);
 	CalculateVariables(planets, pOwner);
 	m_Production.m_iPotentialEnergyProd = m_Production.m_iMaxEnergyProd;
+
+	workers = min(GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 0), GetWorker(WORKER::ALL_WORKER));
+	m_Workers.FreeAll();
+	SetWorker(WORKER::INDUSTRY_WORKER, SET_WORKER_MODE_SET, workers);
+	CalculateVariables(planets, pOwner);
+	m_Production.m_iPotentialIndustryProd = m_Production.m_iIndustryProd;
+
 	m_Workers = prev;
 	CalculateVariables(planets, pOwner);
 }
@@ -3097,9 +3105,9 @@ public:
 	}
 };
 
-int CSystem::NeededRoundsToBuild(int index_or_id, bool already_in_list)
+int CSystem::NeededRoundsToBuild(int index_or_id, bool already_in_list, bool use_potential)
 {
-	const float prod = m_Production.GetIndustryProd();
+	const float prod = use_potential ? m_Production.m_iPotentialIndustryProd : m_Production.GetIndustryProd();
 	if(prod <= 0)
 	{
 		assert(false);

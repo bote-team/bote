@@ -151,6 +151,7 @@ private:
 	int m_iFoodProd;				///< Nahrungsproduktion in dem System
 	int m_iMaxFoodProd;				///< Nahrungsproduktion in dem System ohne Bevölkerungsabzug
 	int m_iIndustryProd;			///< Industrieproduktion in dem System
+	int m_iPotentialIndustryProd;
 	int m_iEnergyProd;				///< Energyproduktion in dem System
 	int m_iMaxEnergyProd;			///< Energieproduktion ohne den Energieverbrauch mancher Gebäude
 	int m_iPotentialEnergyProd;		//all energy buildings filled as far as workers available

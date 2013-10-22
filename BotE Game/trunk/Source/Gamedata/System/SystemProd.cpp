@@ -23,6 +23,7 @@ CSystemProd::CSystemProd(const CSystemProd &other) :
 	m_iFoodProd(other.m_iFoodProd),
 	m_iMaxFoodProd(other.m_iMaxFoodProd),
 	m_iIndustryProd(other.m_iIndustryProd),
+	m_iPotentialIndustryProd(other.m_iPotentialIndustryProd),
 	m_iEnergyProd(other.m_iEnergyProd),
 	m_iMaxEnergyProd(other.m_iMaxEnergyProd),
 	m_iPotentialEnergyProd(other.m_iPotentialEnergyProd),
@@ -85,6 +86,7 @@ CSystemProd& CSystemProd::operator=(const CSystemProd& other)
 	m_iFoodProd = other.m_iFoodProd;
 	m_iMaxFoodProd = other.m_iMaxFoodProd;
 	m_iIndustryProd = other.m_iIndustryProd;
+	m_iPotentialIndustryProd = other.m_iPotentialIndustryProd;
 	m_iEnergyProd = other.m_iEnergyProd;
 	m_iMaxEnergyProd = other.m_iMaxEnergyProd;
 	m_iPotentialEnergyProd = other.m_iPotentialEnergyProd;
@@ -156,6 +158,7 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar << m_iFoodProd;
 		ar << m_iMaxFoodProd;
 		ar << m_iIndustryProd;
+		ar << m_iPotentialIndustryProd;
 		ar << m_iEnergyProd;
 		ar << m_iMaxEnergyProd;
 		ar << m_iPotentialEnergyProd;
@@ -216,6 +219,7 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar >> m_iFoodProd;
 		ar >> m_iMaxFoodProd;
 		ar >> m_iIndustryProd;
+		ar >> m_iPotentialIndustryProd;
 		ar >> m_iEnergyProd;
 		ar >> m_iMaxEnergyProd;
 		ar >> m_iPotentialEnergyProd;
