@@ -603,14 +603,10 @@ public:
 		return bomb_warning;
 	}
 
-	bool CheckMoral(const CBuildingInfo& info, const CBuilding& building, bool require_positive,
+	bool CheckMoral(const CBuildingInfo& info, const CBuilding& building,
 		int min_moral = CSystemManager::max_min_moral,
 		int min_moral_prod = CSystemManager::max_min_moral_prod) const
 	{
-		if(info.GetMoralProd() > 0)
-			return true;
-		if(require_positive)
-			return false;
 		assert(info.GetMoralProd() < 0);
 		if(m_pSystem->GetMoral() < min_moral)
 			return false;
@@ -678,18 +674,18 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system, const CPoint& p)
 		{
 			assert(!info.IsDefenseBuilding());
 			should_be_online = checker.ShouldTakeShipyardOnline();
-			should_be_online = should_be_online || checker.CheckMoral(info, building, true);
 		}
 		if(info.IsDefenseBuilding())
 		{
 			assert(!info.GetShipYard());
 			should_be_online = checker.CheckDefense(bomb_warning);
-			should_be_online = should_be_online || checker.CheckMoral(info, building, true);
 		}
 		if(info.IsDeritiumRefinery())
 			should_be_online = checker.CheckDeritiumRefinery(info, building);
 		if(info.IsAcceptableMinusMoral())
-			should_be_online = checker.CheckMoral(info, building, false, m_iMinMoral, m_iMinMoralProd);
+			should_be_online = checker.CheckMoral(info, building, m_iMinMoral, m_iMinMoralProd);
+
+		should_be_online = should_be_online || info.GetMoralProd() > 0 || info.GetMoralProdEmpire() > 0;
 
 		const bool is_online = building.GetIsBuildingOnline();
 		if(should_be_online && !is_online)
@@ -716,7 +712,7 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system, const CPoint& p)
 bool CSystemManager::IsHandledEnergyConsumer(const CBuildingInfo& info)
 {
 	assert(info.GetNeededEnergy() >0);
-	return info.GetShipYard() || info.IsDefenseBuilding() || info.IsDeritiumRefinery()
+	return info.GetShipYard() || info.GetMoralProd() > 0 || info.IsDefenseBuilding() || info.IsDeritiumRefinery()
 		|| info.IsAcceptableMinusMoral();
 }
 
