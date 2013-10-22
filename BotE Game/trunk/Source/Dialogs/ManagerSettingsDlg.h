@@ -37,6 +37,7 @@ public:
 	afx_msg void OnNMCustomdrawSliderIridium(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMCustomdrawSliderMinMoral(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMCustomdrawSliderMinMoralProd(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnBnClickedCheckOnOffline();
 
 protected:
 	virtual void OnOK();
@@ -57,6 +58,7 @@ private:
 	BOOL m_bMaxIndustry;
 	BOOL m_bNeglectFood;
 	BOOL m_bBombWarning;
+	BOOL m_bOnOffline;
 
 	CSliderCtrl m_ctrlSecuritySlider;
 	CSliderCtrl m_ctrlResearchSlider;

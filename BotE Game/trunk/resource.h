@@ -139,6 +139,8 @@
 #define IDC_CHECK_BOMB_WARNING          1087
 #define IDC_STATIC_MIN_MORAL            1088
 #define IDC_STATIC_MIN_MORAL_PROD       1089
+#define IDC_CHECK3                      1090
+#define IDC_CHECK_ON_OFFLINE            1090
 #define ID_OPTIONEN                     32773
 #define ID_INFORMATION                  32774
 #define ID_DATENBANK                    32775
@@ -164,7 +166,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        191
 #define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1089
+#define _APS_NEXT_CONTROL_VALUE         1091
 #define _APS_NEXT_SYMED_VALUE           107
 #endif
 #endif

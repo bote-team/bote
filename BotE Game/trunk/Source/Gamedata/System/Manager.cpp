@@ -26,7 +26,8 @@ CSystemManager::CSystemManager(const CSystemManager& o) :
 	m_PriorityMap(o.m_PriorityMap),
 	m_iMinMoral(o.m_iMinMoral),
 	m_iMinMoralProd(o.m_iMinMoralProd),
-	m_bBombWarning(o.m_bBombWarning)
+	m_bBombWarning(o.m_bBombWarning),
+	m_bOnOffline(o.m_bOnOffline)
 {
 }
 
@@ -47,6 +48,7 @@ CSystemManager& CSystemManager::operator=(const CSystemManager& o)
 	m_iMinMoralProd = o.m_iMinMoralProd;
 	m_bBombWarning = o.m_bBombWarning;
 	m_PriorityMap = o.m_PriorityMap;
+	m_bOnOffline = o.m_bOnOffline;
 
 	return *this;
 }
@@ -60,6 +62,7 @@ void CSystemManager::Reset()
 	m_iMinMoral = max_min_moral;
 	m_iMinMoralProd = max_min_moral_prod;
 	m_bBombWarning = true;
+	m_bOnOffline = true;
 
 	ClearPriorities();
 }
@@ -79,6 +82,7 @@ void CSystemManager::Serialize(CArchive& ar)
 		ar << m_iMinMoral;
 		ar << m_iMinMoralProd;
 		ar << m_bBombWarning;
+		ar << m_bOnOffline;
 		ar << static_cast<int>(m_PriorityMap.size());
 		for(std::map<WORKER::Typ, int>::const_iterator it = m_PriorityMap.begin();
 				it != m_PriorityMap.end(); ++it)
@@ -97,6 +101,7 @@ void CSystemManager::Serialize(CArchive& ar)
 		ar >> m_iMinMoral;
 		ar >> m_iMinMoralProd;
 		ar >> m_bBombWarning;
+		ar >> m_bOnOffline;
 
 		ClearPriorities();
 		int map_size;
@@ -656,6 +661,8 @@ private:
 
 bool CSystemManager::CheckEnergyConsumers(CSystem& system, const CPoint& p)
 {
+	if(!m_bOnOffline)
+		return false;
 	CEnergyConsumersChecker checker(system, p);
 	CArray<CBuilding>* buildings = system.GetAllBuildings();
 	bool bomb_warning = false;

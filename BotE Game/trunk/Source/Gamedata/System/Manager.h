@@ -48,6 +48,7 @@ public:
 	int MinMoral() const { return m_iMinMoral; }
 	int MinMoralProd() const { return m_iMinMoralProd; }
 	bool BombWarning() const { return m_bBombWarning; }
+	bool OnOffline() const { return m_bOnOffline; }
 
 	int Priority(WORKER::Typ type) const;
 
@@ -63,6 +64,7 @@ public:
 	void SetMinMoral(int value) { m_iMinMoral = value; }
 	void SetMinMoralProd(int value) { m_iMinMoralProd = value; }
 	void SetBombWarning(int value) { m_bBombWarning = value; }
+	void SetOnOffline(bool is) { m_bOnOffline = is; }
 
 	void ClearPriorities();
 
@@ -103,6 +105,7 @@ private:
 	int m_iMinMoral;
 	int m_iMinMoralProd;
 	bool m_bBombWarning;
+	bool m_bOnOffline;
 	std::map<WORKER::Typ, int> m_PriorityMap;//1-100 each
 
 };

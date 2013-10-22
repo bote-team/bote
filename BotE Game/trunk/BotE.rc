@@ -341,7 +341,7 @@ BEGIN
     PUSHBUTTON      "Abbrechen",IDCANCEL,176,325,50,14
     CONTROL         "Active",IDC_CHECK_ACTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,23,47,10
     GROUPBOX        "Workers Distribution",IDC_STATIC,7,52,299,254
-    GROUPBOX        "General",IDC_STATIC,7,7,163,40
+    GROUPBOX        "General",IDC_STATIC,7,7,275,40
     LTEXT           "Security",IDC_STATIC,14,96,54,8
     LTEXT           "Research",IDC_STATIC,14,120,54,8
     LTEXT           "Titan",IDC_STATIC,14,145,54,8
@@ -377,6 +377,7 @@ BEGIN
     CONTROL         "",IDC_SLIDER_MIN_MORAL_PROD,"msctls_trackbar32",TBS_AUTOTICKS | WS_TABSTOP,410,93,182,18
     LTEXT           "Min Moral Prod",IDC_STATIC,321,96,54,8
     LTEXT           "0",IDC_STATIC_MIN_MORAL_PROD,384,96,27,8
+    CONTROL         "Take On-/Offline",IDC_CHECK_ON_OFFLINE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,169,23,69,10
 END
 
 

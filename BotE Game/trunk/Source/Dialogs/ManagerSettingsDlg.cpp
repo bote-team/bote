@@ -20,6 +20,7 @@ CManagerSettingsDlg::CManagerSettingsDlg(CWnd* pParent /*=NULL*/)
 	, m_bMaxIndustry(FALSE)
 	, m_bNeglectFood(FALSE)
 	, m_bBombWarning(FALSE)
+	, m_bOnOffline(FALSE)
 {
 
 }
@@ -30,7 +31,8 @@ CManagerSettingsDlg::CManagerSettingsDlg(CSystemManager* manager, CWnd* pParent)
 	m_bSafeMoral(FALSE),
 	m_bMaxIndustry(FALSE),
 	m_bNeglectFood(FALSE),
-	m_bBombWarning(FALSE)
+	m_bBombWarning(FALSE),
+	m_bOnOffline(FALSE)
 {
 
 }
@@ -57,6 +59,7 @@ void CManagerSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_BOMB_WARNING, m_bBombWarning);
 	DDX_Control(pDX, IDC_SLIDER_MIN_MORAL, m_ctrlMinMoralSlider);
 	DDX_Control(pDX, IDC_SLIDER_MIN_MORAL_PROD, m_ctrlMinMoralProdSlider);
+	DDX_Check(pDX, IDC_CHECK_ON_OFFLINE, m_bOnOffline);
 }
 
 
@@ -72,6 +75,7 @@ BEGIN_MESSAGE_MAP(CManagerSettingsDlg, CDialog)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_IRIDIUM, &CManagerSettingsDlg::OnNMCustomdrawSliderIridium)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_MIN_MORAL, &CManagerSettingsDlg::OnNMCustomdrawSliderMinMoral)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_MIN_MORAL_PROD, &CManagerSettingsDlg::OnNMCustomdrawSliderMinMoralProd)
+	ON_BN_CLICKED(IDC_CHECK_ON_OFFLINE, &CManagerSettingsDlg::OnBnClickedCheckOnOffline)
 END_MESSAGE_MAP()
 
 
@@ -86,6 +90,7 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 	m_bMaxIndustry = m_Manager->MaxIndustry();
 	m_bNeglectFood = m_Manager->NeglectFood();
 	m_bBombWarning = m_Manager->BombWarning();
+	m_bOnOffline = m_Manager->OnOffline();
 
 	m_ctrlProductionSlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
 	m_ctrlProductionSlider.SetTicFreq(tick_frequ);
@@ -156,6 +161,7 @@ void CManagerSettingsDlg::OnOK()
 	m_Manager->SetMaxIndustry(m_bMaxIndustry);
 	m_Manager->SetNeglectFood(m_bNeglectFood);
 	m_Manager->SetBombWarning(m_bBombWarning);
+	m_Manager->SetOnOffline(m_bOnOffline);
 
 	m_Manager->ClearPriorities();
 
@@ -197,9 +203,10 @@ void CManagerSettingsDlg::SetStates(BOOL active)
 	SetState(IDC_CHECK_NEGLECT_FOOD, active);
 
 	SetState(IDC_CHECK_BOMB_WARNING, active);
+	SetState(IDC_CHECK_ON_OFFLINE, active);
 
-	SetState(IDC_SLIDER_MIN_MORAL, active);
-	SetState(IDC_SLIDER_MIN_MORAL_PROD, active);
+	SetState(IDC_SLIDER_MIN_MORAL, m_bOnOffline && active);
+	SetState(IDC_SLIDER_MIN_MORAL_PROD, m_bOnOffline && active);
 }
 
 void CManagerSettingsDlg::OnBnClickedCheckActive()
@@ -307,4 +314,10 @@ void CManagerSettingsDlg::OnNMCustomdrawSliderMinMoralProd(NMHDR * /*pNMHDR*/, L
 	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
 	SetDisplayedStaticText(IDC_STATIC_MIN_MORAL_PROD, m_ctrlMinMoralProdSlider.GetPos(), true);
 	*pResult = 0;
+}
+
+void CManagerSettingsDlg::OnBnClickedCheckOnOffline()
+{
+	UpdateData(true);
+	SetStates(m_bActive);
 }
