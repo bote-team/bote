@@ -713,6 +713,13 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system, const CPoint& p)
 	return m_bBombWarning && bomb_warning;
 }
 
+bool CSystemManager::IsHandledEnergyConsumer(const CBuildingInfo& info)
+{
+	assert(info.GetNeededEnergy() >0);
+	return info.GetShipYard() || info.IsDefenseBuilding() || info.IsDeritiumRefinery()
+		|| info.IsAcceptableMinusMoral();
+}
+
 bool CSystemManager::CheckFamine(const CSystem& system)
 {
 	const int food_prod = system.GetProduction()->GetFoodProd();

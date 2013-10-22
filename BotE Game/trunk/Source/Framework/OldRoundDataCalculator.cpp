@@ -175,9 +175,10 @@ void COldRoundDataCalculator::FinishBuild(const int to_build, const CSector& sec
 		// genügend Arbeiter da sind
 		unsigned short CheckValue = system.SetNewBuildingOnline(&BuildingInfo);
 		// Nachricht generieren das das Gebäude nicht online genommen werden konnte
-		if (CheckValue == 1 && !system.Manager().Active())
+		const CSystemManager& manager = system.Manager();
+		if (CheckValue == 1 && !manager.Active())
 			SystemMessage(sector, pMajor, "NOT_ENOUGH_WORKER", EMPIRE_NEWS_TYPE::SOMETHING, 1);
-		else if (CheckValue == 2)
+		else if (CheckValue == 2 && (!manager.Active() || !manager.IsHandledEnergyConsumer(BuildingInfo[list-1])))
 			SystemMessage(sector, pMajor, "NOT_ENOUGH_ENERGY", EMPIRE_NEWS_TYPE::SOMETHING, 2);
 	}
 	else if (list < 0)	// Es wird ein Update gemacht
@@ -201,7 +202,8 @@ void COldRoundDataCalculator::FinishBuild(const int to_build, const CSector& sec
 			m_pDoc->BuildBuilding(list,co);
 
 			// falls das geupgradete Gebäude Energie benötigt wird versucht es gleich online zu setzen
-			if (m_pDoc->GetBuildingInfo(list).GetNeededEnergy() > 0 && system.SetNewBuildingOnline(&BuildingInfo) == 2)
+			const CSystemManager& manager = system.Manager();
+			if (m_pDoc->GetBuildingInfo(list).GetNeededEnergy() > 0 && system.SetNewBuildingOnline(&BuildingInfo) == 2 && (!manager.Active() || !manager.IsHandledEnergyConsumer(BuildingInfo[list-1])))
 				SystemMessage(sector, pMajor, "NOT_ENOUGH_ENERGY", EMPIRE_NEWS_TYPE::SOMETHING, 2);
 		}
 	}

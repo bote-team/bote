@@ -11,6 +11,7 @@
 #include "Constants.h"
 
 class CSystem;
+class CBuildingInfo;
 
 class CSystemManager
 {
@@ -78,6 +79,8 @@ public:
 
 	//@return true in case of expected famine
 	static bool CheckFamine(const CSystem& system);
+
+	static bool IsHandledEnergyConsumer(const CBuildingInfo& info);
 
 //////////////////////////////////////////////////////////////////////
 // Members
