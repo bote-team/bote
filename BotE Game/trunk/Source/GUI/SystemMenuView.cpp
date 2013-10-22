@@ -2969,7 +2969,8 @@ namespace
 
 	};
 
-	void ReflectPossibleResearchOrSecurityWorkerChange(CMajor* pMajor, CBotEDoc* pDoc, const CPoint& p, bool manager)
+	void ReflectPossibleResearchOrSecurityWorkerChange(CMajor* pMajor, CBotEDoc* pDoc, const CPoint& p,
+		bool manager, bool energy = true)
 	{
 		CSystem& system = pDoc->GetSystem(p.x,p.y);
 		const ResearchAndSecurityRecalcHelper help(pMajor->GetEmpire(), system.GetProduction());
@@ -2977,7 +2978,7 @@ namespace
 		// Variablen berechnen
 		system.CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
 		if(manager)
-			system.ExecuteManager(pDoc->GetKO(), *pMajor, false);
+			system.ExecuteManager(pDoc->GetKO(), *pMajor, false, energy);
 	}
 
 }
@@ -3387,7 +3388,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						pDoc->GetSystem(p.x, p.y).SetIsBuildingOnline(m_EnergyList.GetAt(i).index, FALSE);
 					}
 
-					ReflectPossibleResearchOrSecurityWorkerChange(pMajor, pDoc, p, true);
+					ReflectPossibleResearchOrSecurityWorkerChange(pMajor, pDoc, p, true, false);
 					// Wenn es eine Werft war, die wir an bzw. aus geschaltet haben, dann nochmal schauen ob ich auch
 					// noch alle Schiffe bauen kann. Denn wenn die aus ist, dann kann ich keine mehr bauen
 					if (buildingInfo->GetShipYard())

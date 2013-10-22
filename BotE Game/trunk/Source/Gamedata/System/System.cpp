@@ -606,14 +606,14 @@ static void ManagerMessage(const CString& text, CMajor& owner, const CPoint& p)
 }
 
 
-void CSystem::ExecuteManager(const CPoint& p, CMajor& owner, bool turn_change)
+void CSystem::ExecuteManager(const CPoint& p, CMajor& owner, bool turn_change, bool energy)
 {
 	if(!m_Manager.Active() || !owner.IsHumanPlayer())
 		return;
 
 	const CString& name = resources::pDoc->GetSector(p.x, p.y).GetName();
 
-	if(m_Manager.CheckEnergyConsumers(*this, p) && turn_change)
+	if(energy && m_Manager.CheckEnergyConsumers(*this, p) && turn_change)
 		ManagerMessage(CLoc::GetString("MANAGER_BOMB_WARNING",false, name), owner, p);
 	if(!m_Manager.DistributeWorkers(*this, p))
 		ManagerMessage(CLoc::GetString("MANAGER_MALFUNCTION",false, name), owner, p);
