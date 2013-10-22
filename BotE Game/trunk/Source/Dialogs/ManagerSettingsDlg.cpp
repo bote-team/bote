@@ -127,10 +127,10 @@ void CManagerSettingsDlg::OnOK()
 
 	UpdateData(true);
 
-	m_Manager->SetActive(m_bActive ? true : false);
-	m_Manager->SetSafeMoral(m_bSafeMoral ? true : false);
-	m_Manager->SetMaxIndustry(m_bMaxIndustry ? true : false);
-	m_Manager->SetNeglectFood(m_bNeglectFood ? true : false);
+	m_Manager->SetActive(m_bActive);
+	m_Manager->SetSafeMoral(m_bSafeMoral);
+	m_Manager->SetMaxIndustry(m_bMaxIndustry);
+	m_Manager->SetNeglectFood(m_bNeglectFood);
 
 	m_Manager->ClearPriorities();
 

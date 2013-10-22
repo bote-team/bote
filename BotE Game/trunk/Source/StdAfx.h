@@ -11,6 +11,7 @@
 #pragma warning(disable : 4239)//nonstandard extension used : 'token' : conversion from 'type' to 'type' )
 #pragma warning(disable : 4238)//nonstandard extension used : class rvalue used as lvalue
 #pragma warning(disable : 4245)//'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
+#pragma warning(disable: 4800)//"BOOL variable is set to bool"
 
 #ifndef _SECURE_ATL
 #define _SECURE_ATL 1
