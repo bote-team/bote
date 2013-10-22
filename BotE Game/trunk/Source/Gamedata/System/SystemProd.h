@@ -65,6 +65,8 @@ public:
 	int GetEnergyProd() const {return m_iEnergyProd;}
 	int GetMaxEnergyProd() const {return m_iMaxEnergyProd;}
 	int GetPotentialEnergyProd() const {return m_iPotentialEnergyProd;}
+	int GetEnergyConsumption() const { return m_iMaxEnergyProd - m_iEnergyProd; }
+	int GetAvailableEnergy() const { return m_iPotentialEnergyProd - GetEnergyConsumption(); }
 	int GetSecurityProd() const {return m_iSecurityProd;}
 	int GetResearchProd() const {return m_iResearchProd;}
 	int GetTitanProd() const {return m_iTitanProd;}

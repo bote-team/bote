@@ -667,8 +667,7 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system, const CPoint& p)
 	CArray<CBuilding>* buildings = system.GetAllBuildings();
 	bool bomb_warning = false;
 	const CSystemProd& prod = *system.GetProduction();
-	const int energy_consumption = prod.GetMaxEnergyProd() - prod.GetEnergyProd();
-	int additional_available_energy = prod.GetPotentialEnergyProd() - energy_consumption;
+	int additional_available_energy = prod.GetAvailableEnergy();
 	for(int i = 0; i < buildings->GetSize(); ++i)
 	{
 		CBuilding& building = buildings->GetAt(i);

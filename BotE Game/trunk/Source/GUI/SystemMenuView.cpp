@@ -3370,7 +3370,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Ins Energiezuweisungsmenü
 	if (m_bySubMenu == 2)
 	{
-		CPoint p = pDoc->GetKO();
+		const CPoint& p = pDoc->GetKO();
 		for (int i = m_iELPage * NOBIEL; i < m_EnergyList.GetSize(); i++)
 			// Wenn wir auf der richtigen Seite sind
 			if (i < m_iELPage * NOBIEL + NOBIEL)
@@ -3379,7 +3379,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					const CBuildingInfo *buildingInfo = &pDoc->BuildingInfo.GetAt(pDoc->GetSystem(p.x, p.y).GetAllBuildings()->GetAt(m_EnergyList.GetAt(i).index).GetRunningNumber() - 1);
 					if (m_EnergyList.GetAt(i).status == 0)
 					{
-						if (pDoc->GetSystem(p.x,p.y).GetProduction()->GetEnergyProd() >= buildingInfo->GetNeededEnergy())
+						if (pDoc->GetSystem(p.x,p.y).CanTakeOnline(*buildingInfo))
 							pDoc->GetSystem(p.x, p.y).SetIsBuildingOnline(m_EnergyList.GetAt(i).index, TRUE);
 					}
 					else
@@ -3387,7 +3387,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						pDoc->GetSystem(p.x, p.y).SetIsBuildingOnline(m_EnergyList.GetAt(i).index, FALSE);
 					}
 
-					ReflectPossibleResearchOrSecurityWorkerChange(pMajor, pDoc, p, false);
+					ReflectPossibleResearchOrSecurityWorkerChange(pMajor, pDoc, p, true);
 					// Wenn es eine Werft war, die wir an bzw. aus geschaltet haben, dann nochmal schauen ob ich auch
 					// noch alle Schiffe bauen kann. Denn wenn die aus ist, dann kann ich keine mehr bauen
 					if (buildingInfo->GetShipYard())

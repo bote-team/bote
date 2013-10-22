@@ -3192,3 +3192,10 @@ UINT CSystem::GetDeritiumStoreMax() const
 		multi = info->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(1);
 	return MAX_DERITIUM_STORE * multi;
 }
+
+bool CSystem::CanTakeOnline(const CBuildingInfo& info) const
+{
+	if(m_Manager.Active())
+		return info.GetNeededEnergy() <= m_Production.GetAvailableEnergy();
+	return m_Production.m_iEnergyProd >= info.GetNeededEnergy();
+}
