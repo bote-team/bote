@@ -10,7 +10,9 @@ IMPLEMENT_SERIAL (CSystemProd, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CSystemProd::CSystemProd(void)
+CSystemProd::CSystemProd(void) :
+	m_iPotentialIndustryProd(0),
+	m_iPotentialEnergyProd(0)
 {
 	Reset();
 }
