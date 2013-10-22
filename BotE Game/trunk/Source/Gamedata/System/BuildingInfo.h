@@ -409,6 +409,10 @@ public:
 	/// @return Wahrheitswert
 	bool IsBuildingBuildableNow(const BYTE reserachLevels[6]) const;
 
+	bool IsDefenseBuilding() const;
+	bool IsDeritiumRefinery() const;
+	bool IsAcceptableMinusMoral() const;
+
 private:
 	// Die laufende Nummer (ID) des Gebäudes
 	USHORT m_iRunningNumber;

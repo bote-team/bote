@@ -380,7 +380,7 @@ bool CSystem::HasStore(WORKER::Typ type) const
 		type == WORKER::FOOD_WORKER;
 }
 
-int CSystem::GetXStoreMax(RESOURCES::TYPE x)
+int CSystem::GetXStoreMax(RESOURCES::TYPE x) const
 {
 	switch(x)
 	{
@@ -432,7 +432,7 @@ int CSystem::GetResourceStore(WORKER::Typ type) const
 	return GetResourceStore(WorkerToResource(type));
 }
 
-int CSystem::GetXStoreMax(WORKER::Typ x)
+int CSystem::GetXStoreMax(WORKER::Typ x) const
 {
 	return GetXStoreMax(WorkerToResource(x));
 }
@@ -613,7 +613,8 @@ void CSystem::ExecuteManager(const CPoint& p, CMajor& owner, bool turn_change)
 
 	const CString& name = resources::pDoc->GetSector(p.x, p.y).GetName();
 
-	m_Manager.CheckShipyard(*this);
+	if(m_Manager.CheckEnergyConsumers(*this, p) && turn_change)
+		ManagerMessage(CLoc::GetString("MANAGER_BOMB_WARNING",false, name), owner, p);
 	if(!m_Manager.DistributeWorkers(*this, p))
 		ManagerMessage(CLoc::GetString("MANAGER_MALFUNCTION",false, name), owner, p);
 	if(turn_change && m_Manager.CheckFamine(*this))
@@ -1008,6 +1009,18 @@ void CSystem::CalculateVariables(const std::vector<CPlanet>& planets, const CMaj
 
 	// Jetzt noch die freien Arbeiter berechnen
 	m_Workers.CalculateFreeWorkers();
+}
+
+void CSystem::CalculateEnergyPotential(const std::vector<CPlanet>& planets, const CMajor* pOwner)
+{
+	const CWorker prev = m_Workers;
+	const int workers = min(GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 0), GetWorker(WORKER::ALL_WORKER));
+	m_Workers.FreeAll();
+	SetWorker(WORKER::ENERGY_WORKER, SET_WORKER_MODE_SET, workers);
+	CalculateVariables(planets, pOwner);
+	m_Production.m_iPotentialEnergyProd = m_Production.m_iMaxEnergyProd;
+	m_Workers = prev;
+	CalculateVariables(planets, pOwner);
 }
 
 // Funktion berechnet die Lagerinhalte des Systems. Aufrufen bei Ende bzw. Beginn einer neuen Runde.
@@ -3159,4 +3172,15 @@ bool CSystem::SanityCheckWorkersInRange(WORKER::Typ type) const
 {
 	const int workers = m_Workers.GetWorker(type);
 	return 0 <= workers && workers <= GetNumberOfWorkbuildings(type, 0);
+}
+
+UINT CSystem::GetDeritiumStoreMax() const
+{
+	short multi = 1;
+	const CMajor* major = dynamic_cast<CMajor*>(resources::pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
+	const CResearchInfo* info = major->GetEmpire()->GetResearch()->GetResearchInfo();
+	if (info->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->
+		GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
+		multi = info->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(1);
+	return MAX_DERITIUM_STORE * multi;
 }

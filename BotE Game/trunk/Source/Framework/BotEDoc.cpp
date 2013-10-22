@@ -3450,6 +3450,7 @@ void CBotEDoc::CalcNewRoundData()
 			new_round_data_calc.CheckRoutes(*sector, system, pMajor);
 
 			system.CalculateVariables(sector->GetPlanets(), pMajor);
+			system.CalculateEnergyPotential(sector->GetPlanets(), pMajor);
 
 			const CSystemProd* const production = system.GetProduction();
 			// Haben wir eine online Schiffswerft im System, dann ShipPort in dem Sektor setzen

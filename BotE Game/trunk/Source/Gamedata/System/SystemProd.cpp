@@ -25,6 +25,7 @@ CSystemProd::CSystemProd(const CSystemProd &other) :
 	m_iIndustryProd(other.m_iIndustryProd),
 	m_iEnergyProd(other.m_iEnergyProd),
 	m_iMaxEnergyProd(other.m_iMaxEnergyProd),
+	m_iPotentialEnergyProd(other.m_iPotentialEnergyProd),
 	m_iSecurityProd(other.m_iSecurityProd),
 	m_iResearchProd(other.m_iResearchProd),
 	m_iTitanProd(other.m_iTitanProd),
@@ -86,6 +87,7 @@ CSystemProd& CSystemProd::operator=(const CSystemProd& other)
 	m_iIndustryProd = other.m_iIndustryProd;
 	m_iEnergyProd = other.m_iEnergyProd;
 	m_iMaxEnergyProd = other.m_iMaxEnergyProd;
+	m_iPotentialEnergyProd = other.m_iPotentialEnergyProd;
 	m_iSecurityProd = other.m_iSecurityProd;
 	m_iResearchProd = other.m_iResearchProd;
 	m_iTitanProd = other.m_iTitanProd;
@@ -156,6 +158,7 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar << m_iIndustryProd;
 		ar << m_iEnergyProd;
 		ar << m_iMaxEnergyProd;
+		ar << m_iPotentialEnergyProd;
 		ar << m_iSecurityProd;
 		ar << m_iResearchProd;
 		ar << m_iTitanProd;
@@ -215,6 +218,7 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar >> m_iIndustryProd;
 		ar >> m_iEnergyProd;
 		ar >> m_iMaxEnergyProd;
+		ar >> m_iPotentialEnergyProd;
 		ar >> m_iSecurityProd;
 		ar >> m_iResearchProd;
 		ar >> m_iTitanProd;

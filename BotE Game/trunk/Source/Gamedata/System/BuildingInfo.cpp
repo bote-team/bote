@@ -893,3 +893,56 @@ bool CBuildingInfo::IsBuildingBuildableNow(const BYTE reserachLevels[6]) const
 
 	return true;
 }
+
+bool CBuildingInfo::IsDefenseBuilding() const
+{
+	return
+		m_iShieldPower > 0 ||
+		m_iShieldPowerBoni > 0 ||
+		m_iGroundDefend > 0 ||
+		m_iGroundDefendBoni > 0 ||
+		m_iShipDefend > 0 ||
+		m_iShipDefendBoni > 0;
+}
+
+bool CBuildingInfo::IsDeritiumRefinery() const
+{
+	return m_iDeritium > 0;
+}
+
+static bool GreaterThanEqualToZero(int value)
+{
+	return value >= 0;
+}
+
+bool CBuildingInfo::IsAcceptableMinusMoral() const
+{
+	return m_iMoral < 0 &&
+		GreaterThanEqualToZero(m_iAllRessourceBoni) &&
+		GreaterThanEqualToZero(m_iMoralEmpire) &&
+		GreaterThanEqualToZero(m_iFoodBoni) &&
+		GreaterThanEqualToZero(m_iIndustryBoni) &&
+		GreaterThanEqualToZero(m_iEnergyBoni) &&
+		GreaterThanEqualToZero(m_iSecurityBoni) &&
+		GreaterThanEqualToZero(m_iResearchBoni) &&
+		GreaterThanEqualToZero(m_iTitanBoni) &&
+		GreaterThanEqualToZero(m_iDeuteriumBoni) &&
+		GreaterThanEqualToZero(m_iDuraniumBoni) &&
+		GreaterThanEqualToZero(m_iCrystalBoni) &&
+		GreaterThanEqualToZero(m_iIridiumBoni) &&
+		GreaterThanEqualToZero(m_iDeritiumBoni) &&
+		GreaterThanEqualToZero(m_iCreditsBoni) &&
+		GreaterThanEqualToZero(m_iInnerSecurityBoni) &&
+		GreaterThanEqualToZero(m_iEconomySpyBoni) &&
+		GreaterThanEqualToZero(m_iEconomySabotageBoni) &&
+		GreaterThanEqualToZero(m_iResearchSpyBoni) &&
+		GreaterThanEqualToZero(m_iResearchSabotageBoni) &&
+		GreaterThanEqualToZero(m_iMilitarySpyBoni) &&
+		GreaterThanEqualToZero(m_iMilitarySabotageBoni) &&
+		GreaterThanEqualToZero(m_iBioTechBoni) &&
+		GreaterThanEqualToZero(m_iEnergyBoni) &&
+		GreaterThanEqualToZero(m_iCompTechBoni) &&
+		GreaterThanEqualToZero(m_iPropulsionTechBoni) &&
+		GreaterThanEqualToZero(m_iConstructionTechBoni) &&
+		GreaterThanEqualToZero(m_iWeaponTechBoni);
+}

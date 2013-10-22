@@ -64,6 +64,7 @@ public:
 	int GetIndustryProd() const {return m_iIndustryProd;}
 	int GetEnergyProd() const {return m_iEnergyProd;}
 	int GetMaxEnergyProd() const {return m_iMaxEnergyProd;}
+	int GetPotentialEnergyProd() const {return m_iPotentialEnergyProd;}
 	int GetSecurityProd() const {return m_iSecurityProd;}
 	int GetResearchProd() const {return m_iResearchProd;}
 	int GetTitanProd() const {return m_iTitanProd;}
@@ -152,6 +153,7 @@ private:
 	int m_iIndustryProd;			///< Industrieproduktion in dem System
 	int m_iEnergyProd;				///< Energyproduktion in dem System
 	int m_iMaxEnergyProd;			///< Energieproduktion ohne den Energieverbrauch mancher Gebäude
+	int m_iPotentialEnergyProd;		//all energy buildings filled as far as workers available
 	int m_iSecurityProd;			///< Geheimdienstproduktion in dem System
 	int m_iResearchProd;			///< Forschungspunkteproduktion in dem System
 	int m_iTitanProd;				///< Titanproduktion in dem System

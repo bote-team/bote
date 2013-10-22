@@ -125,9 +125,9 @@ public:
 	static UINT GetDuraniumStoreMax() {return MAX_RES_STORE;}
 	static UINT GetCrystalStoreMax() {return MAX_RES_STORE;}
 	static UINT GetIridiumStoreMax() {return MAX_RES_STORE;}
-	static UINT GetDeritiumStoreMax() {return MAX_DERITIUM_STORE;}
-	static int GetXStoreMax(RESOURCES::TYPE x);
-	static int GetXStoreMax(WORKER::Typ x);
+	UINT GetDeritiumStoreMax() const;
+	int GetXStoreMax(RESOURCES::TYPE x) const;
+	int GetXStoreMax(WORKER::Typ x) const;
 
 	// Funktion gibt den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
 	UINT GetResourceStore(USHORT res) const;
@@ -225,6 +225,8 @@ public:
 // sonstige Funktionen
 	// Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der Systemklasse.
 	void CalculateVariables(const std::vector<CPlanet>&, const CMajor* pOwner);
+
+	void CalculateEnergyPotential(const std::vector<CPlanet>& planets, const CMajor* pOwner);
 
 	// Funktion berechnet die Lagerinhalte des Systems. Aufrufen bei Ende bzw. Beginn einer neuen Runde.
 	// Gibt die Funktion TRUE zurück hat sich das System Aufgrund zu schlechter Moral vom Besitzer losgesagt.

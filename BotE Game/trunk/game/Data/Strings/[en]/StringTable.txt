@@ -511,10 +511,14 @@ The § (§) has been assigned as flagship
 We have established contact with the §
 [GET_CONTACT_TO_MAJOR]
 We found the § in sector §
+
+//manager
 [MANAGER_MALFUNCTION]
 The manager of the § system reports an error.
 [MANAGER_FAMINE_WARNING]
 The manager of the § system warns of expected famine in the next turn.
+[MANAGER_BOMB_WARNING]
+The manager of the § system warns of expected bombing in the next turn.
 
 // build menu
 [UPGRADING]

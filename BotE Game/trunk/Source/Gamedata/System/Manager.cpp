@@ -23,7 +23,10 @@ CSystemManager::CSystemManager(const CSystemManager& o) :
 	m_bSafeMoral(o.m_bSafeMoral),
 	m_bMaxIndustry(o.m_bMaxIndustry),
 	m_bNeglectFood(o.m_bNeglectFood),
-	m_PriorityMap(o.m_PriorityMap)
+	m_PriorityMap(o.m_PriorityMap),
+	m_iMinMoral(o.m_iMinMoral),
+	m_iMinMoralProd(o.m_iMinMoralProd),
+	m_bBombWarning(o.m_bBombWarning)
 {
 }
 
@@ -40,6 +43,9 @@ CSystemManager& CSystemManager::operator=(const CSystemManager& o)
 	m_bSafeMoral = o.m_bSafeMoral;
 	m_bMaxIndustry = o.m_bMaxIndustry;
 	m_bNeglectFood = o.m_bNeglectFood;
+	m_iMinMoral = o.m_iMinMoral;
+	m_iMinMoralProd = o.m_iMinMoralProd;
+	m_bBombWarning = o.m_bBombWarning;
 	m_PriorityMap = o.m_PriorityMap;
 
 	return *this;
@@ -51,6 +57,9 @@ void CSystemManager::Reset()
 	m_bSafeMoral = true;
 	m_bMaxIndustry = false;
 	m_bNeglectFood = false;
+	m_iMinMoral = max_min_moral;
+	m_iMinMoralProd = max_min_moral_prod;
+	m_bBombWarning = true;
 
 	ClearPriorities();
 }
@@ -67,6 +76,9 @@ void CSystemManager::Serialize(CArchive& ar)
 		ar << m_bSafeMoral;
 		ar << m_bMaxIndustry;
 		ar << m_bNeglectFood;
+		ar << m_iMinMoral;
+		ar << m_iMinMoralProd;
+		ar << m_bBombWarning;
 		ar << static_cast<int>(m_PriorityMap.size());
 		for(std::map<WORKER::Typ, int>::const_iterator it = m_PriorityMap.begin();
 				it != m_PriorityMap.end(); ++it)
@@ -82,6 +94,9 @@ void CSystemManager::Serialize(CArchive& ar)
 		ar >> m_bSafeMoral;
 		ar >> m_bMaxIndustry;
 		ar >> m_bNeglectFood;
+		ar >> m_iMinMoral;
+		ar >> m_iMinMoralProd;
+		ar >> m_bBombWarning;
 
 		ClearPriorities();
 		int map_size;
@@ -563,34 +578,139 @@ bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
 	return true;
 }
 
-static bool ShouldTakeShipyardOnline(const CSystem& system)
+class CEnergyConsumersChecker
 {
-	const CAssemblyList& assembly_list = *system.GetAssemblyList();
-	if(assembly_list.IsEmpty())
-		return false;
-	const int nAssemblyListEntry = assembly_list.GetAssemblyListEntry(0);
-	if(nAssemblyListEntry < 10000 || nAssemblyListEntry >= 20000)
-		return false;
-	return true;
-}
+public:
+	CEnergyConsumersChecker(CSystem& system, const CPoint& p) :
+		m_pSystem(&system),
+		m_Co(p)
+		{}
 
-void CSystemManager::CheckShipyard(CSystem& system)
+	bool ShouldTakeShipyardOnline() const
+	{
+		const CAssemblyList& assembly_list = *m_pSystem->GetAssemblyList();
+		if(assembly_list.IsEmpty())
+			return false;
+		const int nAssemblyListEntry = assembly_list.GetAssemblyListEntry(0);
+		if(nAssemblyListEntry < 10000 || nAssemblyListEntry >= 20000)
+			return false;
+		return true;
+	}
+
+	bool CheckDefense(bool& bomb_warning) const
+	{
+		bomb_warning |= BomberInSector();
+		return bomb_warning;
+	}
+
+	bool CheckMoral(const CBuildingInfo& info, const CBuilding& building, bool require_positive,
+		int min_moral = CSystemManager::max_min_moral,
+		int min_moral_prod = CSystemManager::max_min_moral_prod) const
+	{
+		if(info.GetMoralProd() > 0)
+			return true;
+		if(require_positive)
+			return false;
+		assert(info.GetMoralProd() < 0);
+		if(m_pSystem->GetMoral() < min_moral)
+			return false;
+		const int moral_prod = m_pSystem->GetProduction()->GetMoralProd();
+		if(building.GetIsBuildingOnline())
+			return moral_prod >= min_moral_prod;
+		return moral_prod + info.GetMoralProd() >= min_moral_prod;
+	}
+
+	bool CheckDeritiumRefinery(const CBuildingInfo& info, const CBuilding& building) const
+	{
+		const unsigned max_store = m_pSystem->GetDeritiumStoreMax();
+		if(building.GetIsBuildingOnline())
+			return m_pSystem->GetDeritiumStore() + m_pSystem->GetProduction()->GetDeritiumProd() <= max_store;
+		return m_pSystem->GetDeritiumStore() + m_pSystem->GetProduction()->GetDeritiumProd()
+			+ info.GetDeritiumProd() <= max_store;
+	}
+
+	void CalculateVariables() const
+	{
+		const CBotEDoc& doc = *resources::pDoc;
+		const CSector& sector = doc.GetSector(m_Co.x, m_Co.y);
+		const CMajor* major = dynamic_cast<CMajor*>(doc.GetRaceCtrl()->GetRace(m_pSystem->GetOwnerOfSystem()));
+		assert(major);
+		m_pSystem->CalculateVariables(sector.GetPlanets(), major);
+	}
+
+private:
+	CSystem* m_pSystem;
+	const CPoint m_Co;
+
+	bool BomberInSector() const
+	{
+		const CBotEDoc& doc = *resources::pDoc;
+		const CSector& sector = doc.GetSector(m_Co.x, m_Co.y);
+		const std::set<CString> races = sector.ShipsInSector();
+		for(std::set<CString>::const_iterator it = races.begin(); it != races.end(); ++it)
+		{
+			const DIPLOMATIC_AGREEMENT::Typ agreement = doc.GetRaceCtrl()->GetRace(*it)
+				->GetAgreement(m_pSystem->GetOwnerOfSystem());
+			if(agreement == DIPLOMATIC_AGREEMENT::WAR)
+				return true;
+		}
+		return false;
+	}
+};
+
+bool CSystemManager::CheckEnergyConsumers(CSystem& system, const CPoint& p)
 {
-	const bool should_be_online = ShouldTakeShipyardOnline(system);
+	CEnergyConsumersChecker checker(system, p);
 	CArray<CBuilding>* buildings = system.GetAllBuildings();
+	bool bomb_warning = false;
+	const CSystemProd& prod = *system.GetProduction();
+	const int energy_consumption = prod.GetMaxEnergyProd() - prod.GetEnergyProd();
+	int additional_available_energy = prod.GetPotentialEnergyProd() - energy_consumption;
 	for(int i = 0; i < buildings->GetSize(); ++i)
 	{
 		CBuilding& building = buildings->GetAt(i);
 		const CBuildingInfo& info = resources::BuildingInfo->GetAt(building.GetRunningNumber() - 1);
 		const int needed = info.GetNeededEnergy();
-		if(info.GetShipYard() && needed > 0)
+		if(needed == 0)
+			continue;
+		bool should_be_online = building.GetIsBuildingOnline();
+		if(info.GetShipYard())
 		{
-			if(should_be_online && system.GetProduction()->GetEnergyProd() >= needed)
-				building.SetIsBuildingOnline(should_be_online);
-			else if(!should_be_online && info.GetMoralProd() <= 0)
-				building.SetIsBuildingOnline(should_be_online);
+			assert(!info.IsDefenseBuilding());
+			should_be_online = checker.ShouldTakeShipyardOnline();
+			should_be_online = should_be_online || checker.CheckMoral(info, building, true);
+		}
+		if(info.IsDefenseBuilding())
+		{
+			assert(!info.GetShipYard());
+			should_be_online = checker.CheckDefense(bomb_warning);
+			should_be_online = should_be_online || checker.CheckMoral(info, building, true);
+		}
+		if(info.IsDeritiumRefinery())
+			should_be_online = checker.CheckDeritiumRefinery(info, building);
+		if(info.IsAcceptableMinusMoral())
+			should_be_online = checker.CheckMoral(info, building, false, m_iMinMoral, m_iMinMoralProd);
+
+		const bool is_online = building.GetIsBuildingOnline();
+		if(should_be_online && !is_online)
+		{
+			if(additional_available_energy >= needed)
+			{
+				building.SetIsBuildingOnline(true);
+				additional_available_energy -= needed;
+				checker.CalculateVariables();
+			}
+		}
+		else if (!should_be_online && is_online)
+		{
+			const int needed = info.GetNeededEnergy();
+			building.SetIsBuildingOnline(false);
+			additional_available_energy += needed;
+			checker.CalculateVariables();
 		}
 	}
+	assert(additional_available_energy >= 0);
+	return m_bBombWarning && bomb_warning;
 }
 
 bool CSystemManager::CheckFamine(const CSystem& system)

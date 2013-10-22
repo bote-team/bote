@@ -197,6 +197,8 @@ public:
 		return false;
 	}
 
+	std::set<CString> ShipsInSector() const { return m_bWhoIsOwnerOfShip; }
+
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob von irgendwem ein Schiff in diesem
 	/// Sektor ist
 	BOOLEAN GetIsShipInSector(void) const {return !m_bWhoIsOwnerOfShip.empty();}

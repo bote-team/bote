@@ -35,6 +35,8 @@ public:
 	afx_msg void OnNMCustomdrawSliderDuranium(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMCustomdrawSliderCrystal(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMCustomdrawSliderIridium(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNMCustomdrawSliderMinMoral(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNMCustomdrawSliderMinMoralProd(NMHDR *pNMHDR, LRESULT *pResult);
 
 protected:
 	virtual void OnOK();
@@ -43,7 +45,7 @@ private:
 	void SetState(int item, BOOL active);
 	void SetStates(BOOL active);
 	void SetDlgItem(int item, const CString& text);
-	void SetDisplayedPrio(int item, int prio);
+	void SetDisplayedStaticText(int item, int value, bool moral = false);
 
 	static const int tick_frequ = 5;
 
@@ -54,6 +56,7 @@ private:
 	BOOL m_bSafeMoral;
 	BOOL m_bMaxIndustry;
 	BOOL m_bNeglectFood;
+	BOOL m_bBombWarning;
 
 	CSliderCtrl m_ctrlSecuritySlider;
 	CSliderCtrl m_ctrlResearchSlider;
@@ -63,5 +66,7 @@ private:
 	CSliderCtrl m_ctrlCrystalSlider;
 	CSliderCtrl m_ctrlIridiumSlider;
 	CSliderCtrl m_ctrlProductionSlider;
+	CSliderCtrl m_ctrlMinMoralSlider;
+	CSliderCtrl m_ctrlMinMoralProdSlider;
 
 };

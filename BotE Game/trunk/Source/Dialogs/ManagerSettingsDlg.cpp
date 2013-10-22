@@ -19,6 +19,7 @@ CManagerSettingsDlg::CManagerSettingsDlg(CWnd* pParent /*=NULL*/)
 	, m_bSafeMoral(FALSE)
 	, m_bMaxIndustry(FALSE)
 	, m_bNeglectFood(FALSE)
+	, m_bBombWarning(FALSE)
 {
 
 }
@@ -28,7 +29,8 @@ CManagerSettingsDlg::CManagerSettingsDlg(CSystemManager* manager, CWnd* pParent)
 	m_bActive(FALSE),
 	m_bSafeMoral(FALSE),
 	m_bMaxIndustry(FALSE),
-	m_bNeglectFood(FALSE)
+	m_bNeglectFood(FALSE),
+	m_bBombWarning(FALSE)
 {
 
 }
@@ -52,6 +54,9 @@ void CManagerSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_MAX_INDUSTRY, m_bMaxIndustry);
 	DDX_Check(pDX, IDC_CHECK_NEGLECT_FOOD, m_bNeglectFood);
 	DDX_Control(pDX, IDC_SLIDER_PRODUCTION, m_ctrlProductionSlider);
+	DDX_Check(pDX, IDC_CHECK_BOMB_WARNING, m_bBombWarning);
+	DDX_Control(pDX, IDC_SLIDER_MIN_MORAL, m_ctrlMinMoralSlider);
+	DDX_Control(pDX, IDC_SLIDER_MIN_MORAL_PROD, m_ctrlMinMoralProdSlider);
 }
 
 
@@ -65,6 +70,8 @@ BEGIN_MESSAGE_MAP(CManagerSettingsDlg, CDialog)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_DURANIUM, &CManagerSettingsDlg::OnNMCustomdrawSliderDuranium)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_CRYSTAL, &CManagerSettingsDlg::OnNMCustomdrawSliderCrystal)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_IRIDIUM, &CManagerSettingsDlg::OnNMCustomdrawSliderIridium)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_MIN_MORAL, &CManagerSettingsDlg::OnNMCustomdrawSliderMinMoral)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_MIN_MORAL_PROD, &CManagerSettingsDlg::OnNMCustomdrawSliderMinMoralProd)
 END_MESSAGE_MAP()
 
 
@@ -78,6 +85,7 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 	m_bSafeMoral = m_Manager->SafeMoral();
 	m_bMaxIndustry = m_Manager->MaxIndustry();
 	m_bNeglectFood = m_Manager->NeglectFood();
+	m_bBombWarning = m_Manager->BombWarning();
 
 	m_ctrlProductionSlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
 	m_ctrlProductionSlider.SetTicFreq(tick_frequ);
@@ -96,6 +104,16 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 	m_ctrlIridiumSlider.SetRange(CSystemManager::min_priority, CSystemManager::max_priority);
 	m_ctrlIridiumSlider.SetTicFreq(tick_frequ);
 
+	const float factor = static_cast<float>(tick_frequ) /
+		(CSystemManager::max_priority - CSystemManager::min_priority);
+	const int min_moral_tick_frequ = factor * (CSystemManager::max_min_moral - CSystemManager::min_min_moral);
+	m_ctrlMinMoralSlider.SetRange(CSystemManager::min_min_moral, CSystemManager::max_min_moral);
+	m_ctrlMinMoralSlider.SetTicFreq(min_moral_tick_frequ);
+	const int min_moral_prod_tick_frequ = factor *
+		(CSystemManager::max_min_moral_prod - CSystemManager::min_min_moral_prod);
+	m_ctrlMinMoralProdSlider.SetRange(CSystemManager::min_min_moral_prod, CSystemManager::max_min_moral_prod);
+	m_ctrlMinMoralProdSlider.SetTicFreq(min_moral_prod_tick_frequ);
+
 	m_ctrlProductionSlider.SetPos(m_Manager->Priority(WORKER::INDUSTRY_WORKER));
 	m_ctrlSecuritySlider.SetPos(m_Manager->Priority(WORKER::SECURITY_WORKER));
 	m_ctrlResearchSlider.SetPos(m_Manager->Priority(WORKER::RESEARCH_WORKER));
@@ -105,14 +123,20 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 	m_ctrlCrystalSlider.SetPos(m_Manager->Priority(WORKER::CRYSTAL_WORKER));
 	m_ctrlIridiumSlider.SetPos(m_Manager->Priority(WORKER::IRIDIUM_WORKER));
 
-	SetDisplayedPrio(IDC_SLIDER_PRODUCTION, m_ctrlProductionSlider.GetPos());
-	SetDisplayedPrio(IDC_SLIDER_SECURITY, m_ctrlSecuritySlider.GetPos());
-	SetDisplayedPrio(IDC_SLIDER_RESEARCH, m_ctrlResearchSlider.GetPos());
-	SetDisplayedPrio(IDC_SLIDER_TITAN, m_ctrlTitanSlider.GetPos());
-	SetDisplayedPrio(IDC_SLIDER_DEUTERIUM, m_ctrlProductionSlider.GetPos());
-	SetDisplayedPrio(IDC_SLIDER_DURANIUM, m_ctrlDuraniumSlider.GetPos());
-	SetDisplayedPrio(IDC_SLIDER_CRYSTAL, m_ctrlCrystalSlider.GetPos());
-	SetDisplayedPrio(IDC_SLIDER_IRIDIUM, m_ctrlIridiumSlider.GetPos());
+	m_ctrlMinMoralSlider.SetPos(m_Manager->MinMoral());
+	m_ctrlMinMoralProdSlider.SetPos(m_Manager->MinMoralProd());
+
+	SetDisplayedStaticText(IDC_SLIDER_PRODUCTION, m_ctrlProductionSlider.GetPos());
+	SetDisplayedStaticText(IDC_SLIDER_SECURITY, m_ctrlSecuritySlider.GetPos());
+	SetDisplayedStaticText(IDC_SLIDER_RESEARCH, m_ctrlResearchSlider.GetPos());
+	SetDisplayedStaticText(IDC_SLIDER_TITAN, m_ctrlTitanSlider.GetPos());
+	SetDisplayedStaticText(IDC_SLIDER_DEUTERIUM, m_ctrlDeuteriumSlider.GetPos());
+	SetDisplayedStaticText(IDC_SLIDER_DURANIUM, m_ctrlDuraniumSlider.GetPos());
+	SetDisplayedStaticText(IDC_SLIDER_CRYSTAL, m_ctrlCrystalSlider.GetPos());
+	SetDisplayedStaticText(IDC_SLIDER_IRIDIUM, m_ctrlIridiumSlider.GetPos());
+
+	SetDisplayedStaticText(IDC_SLIDER_MIN_MORAL, m_ctrlMinMoralSlider.GetPos(), true);
+	SetDisplayedStaticText(IDC_SLIDER_MIN_MORAL_PROD, m_ctrlMinMoralProdSlider.GetPos(), true);
 
 	UpdateData(false);
 	SetStates(m_bActive);
@@ -131,6 +155,7 @@ void CManagerSettingsDlg::OnOK()
 	m_Manager->SetSafeMoral(m_bSafeMoral);
 	m_Manager->SetMaxIndustry(m_bMaxIndustry);
 	m_Manager->SetNeglectFood(m_bNeglectFood);
+	m_Manager->SetBombWarning(m_bBombWarning);
 
 	m_Manager->ClearPriorities();
 
@@ -142,6 +167,9 @@ void CManagerSettingsDlg::OnOK()
 	m_Manager->AddPriority(WORKER::DURANIUM_WORKER, m_ctrlDuraniumSlider.GetPos());
 	m_Manager->AddPriority(WORKER::CRYSTAL_WORKER, m_ctrlCrystalSlider.GetPos());
 	m_Manager->AddPriority(WORKER::IRIDIUM_WORKER, m_ctrlIridiumSlider.GetPos());
+
+	m_Manager->SetMinMoral(m_ctrlMinMoralSlider.GetPos());
+	m_Manager->SetMinMoralProd(m_ctrlMinMoralProdSlider.GetPos());
 
 	CDialog::OnOK();
 }
@@ -167,6 +195,11 @@ void CManagerSettingsDlg::SetStates(BOOL active)
 	SetState(IDC_CHECK_SAFE_MORAL, active);
 	SetState(IDC_CHECK_MAX_INDUSTRY, active);
 	SetState(IDC_CHECK_NEGLECT_FOOD, active);
+
+	SetState(IDC_CHECK_BOMB_WARNING, active);
+
+	SetState(IDC_SLIDER_MIN_MORAL, active);
+	SetState(IDC_SLIDER_MIN_MORAL_PROD, active);
 }
 
 void CManagerSettingsDlg::OnBnClickedCheckActive()
@@ -182,15 +215,17 @@ void CManagerSettingsDlg::SetDlgItem(int item, const CString& text)
 	pCtrl->SetWindowText(text);
 }
 
-void CManagerSettingsDlg::SetDisplayedPrio(int item, int prio)
+void CManagerSettingsDlg::SetDisplayedStaticText(int item, int value, bool moral)
 {
 	CString text;
-	if(prio == CSystemManager::min_priority)
-		text = "None";
-	else if(prio == CSystemManager::max_priority)
-		text = "Fill All";
-	else
-		text.Format("%u", prio);
+	text.Format("%i", value);
+	if(!moral)
+	{
+		if(value == CSystemManager::min_priority)
+			text = "None";
+		else if(value == CSystemManager::max_priority)
+			text = "Fill All";
+	}
 	SetDlgItem(item, text);
 }
 
@@ -198,7 +233,7 @@ void CManagerSettingsDlg::OnNMCustomdrawSliderProduction(NMHDR * /*pNMHDR*/, LRE
 {
 	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
 	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
-	SetDisplayedPrio(IDC_STATIC_PRODUCTION, m_ctrlProductionSlider.GetPos());
+	SetDisplayedStaticText(IDC_STATIC_PRODUCTION, m_ctrlProductionSlider.GetPos());
 	*pResult = 0;
 }
 
@@ -206,7 +241,7 @@ void CManagerSettingsDlg::OnNMCustomdrawSliderSecurity(NMHDR * /*pNMHDR*/, LRESU
 {
 	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
 	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
-	SetDisplayedPrio(IDC_STATIC_SECURITY, m_ctrlSecuritySlider.GetPos());
+	SetDisplayedStaticText(IDC_STATIC_SECURITY, m_ctrlSecuritySlider.GetPos());
 	*pResult = 0;
 }
 
@@ -214,7 +249,7 @@ void CManagerSettingsDlg::OnNMCustomdrawSliderResearch(NMHDR * /*pNMHDR*/, LRESU
 {
 	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
 	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
-	SetDisplayedPrio(IDC_STATIC_RESEARCH, m_ctrlResearchSlider.GetPos());
+	SetDisplayedStaticText(IDC_STATIC_RESEARCH, m_ctrlResearchSlider.GetPos());
 	*pResult = 0;
 }
 
@@ -222,7 +257,7 @@ void CManagerSettingsDlg::OnNMCustomdrawSliderTitan(NMHDR * /*pNMHDR*/, LRESULT 
 {
 	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
 	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
-	SetDisplayedPrio(IDC_STATIC_TITAN, m_ctrlTitanSlider.GetPos());
+	SetDisplayedStaticText(IDC_STATIC_TITAN, m_ctrlTitanSlider.GetPos());
 	*pResult = 0;
 }
 
@@ -230,7 +265,7 @@ void CManagerSettingsDlg::OnNMCustomdrawSliderDeuterium(NMHDR * /*pNMHDR*/, LRES
 {
 	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
 	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
-	SetDisplayedPrio(IDC_STATIC_DEUTERIUM, m_ctrlDeuteriumSlider.GetPos());
+	SetDisplayedStaticText(IDC_STATIC_DEUTERIUM, m_ctrlDeuteriumSlider.GetPos());
 	*pResult = 0;
 }
 
@@ -238,7 +273,7 @@ void CManagerSettingsDlg::OnNMCustomdrawSliderDuranium(NMHDR * /*pNMHDR*/, LRESU
 {
 	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
 	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
-	SetDisplayedPrio(IDC_STATIC_DURANIUM, m_ctrlDuraniumSlider.GetPos());
+	SetDisplayedStaticText(IDC_STATIC_DURANIUM, m_ctrlDuraniumSlider.GetPos());
 	*pResult = 0;
 }
 
@@ -246,7 +281,7 @@ void CManagerSettingsDlg::OnNMCustomdrawSliderCrystal(NMHDR * /*pNMHDR*/, LRESUL
 {
 	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
 	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
-	SetDisplayedPrio(IDC_STATIC_CRYSTAL, m_ctrlCrystalSlider.GetPos());
+	SetDisplayedStaticText(IDC_STATIC_CRYSTAL, m_ctrlCrystalSlider.GetPos());
 	*pResult = 0;
 }
 
@@ -254,6 +289,22 @@ void CManagerSettingsDlg::OnNMCustomdrawSliderIridium(NMHDR * /*pNMHDR*/, LRESUL
 {
 	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
 	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
-	SetDisplayedPrio(IDC_STATIC_IRIDIUM, m_ctrlIridiumSlider.GetPos());
+	SetDisplayedStaticText(IDC_STATIC_IRIDIUM, m_ctrlIridiumSlider.GetPos());
+	*pResult = 0;
+}
+
+void CManagerSettingsDlg::OnNMCustomdrawSliderMinMoral(NMHDR * /*pNMHDR*/, LRESULT *pResult)
+{
+	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
+	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
+	SetDisplayedStaticText(IDC_STATIC_MIN_MORAL, m_ctrlMinMoralSlider.GetPos(), true);
+	*pResult = 0;
+}
+
+void CManagerSettingsDlg::OnNMCustomdrawSliderMinMoralProd(NMHDR * /*pNMHDR*/, LRESULT *pResult)
+{
+	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
+	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
+	SetDisplayedStaticText(IDC_STATIC_MIN_MORAL_PROD, m_ctrlMinMoralProdSlider.GetPos(), true);
 	*pResult = 0;
 }

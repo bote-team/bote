@@ -124,6 +124,7 @@
 #define IDC_CHECK1                      1075
 #define IDC_CHECK_NEGLECT_FOOD          1075
 #define IDC_SLIDER_PRODUCTION           1076
+#define IDC_SLIDER_MIN_MORAL            1077
 #define IDC_STATIC_PRODUCTION           1078
 #define IDC_STATIC_SECURITY             1079
 #define IDC_STATIC_RESEARCH             1080
@@ -133,6 +134,11 @@
 #define IDC_STATIC_CRYSTAL              1084
 #define IDC_STATIC_PRODUCTION8          1085
 #define IDC_STATIC_IRIDIUM              1085
+#define IDC_SLIDER_PRODUCTION3          1086
+#define IDC_SLIDER_MIN_MORAL_PROD       1086
+#define IDC_CHECK_BOMB_WARNING          1087
+#define IDC_STATIC_MIN_MORAL            1088
+#define IDC_STATIC_MIN_MORAL_PROD       1089
 #define ID_OPTIONEN                     32773
 #define ID_INFORMATION                  32774
 #define ID_DATENBANK                    32775
@@ -158,7 +164,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        191
 #define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1079
+#define _APS_NEXT_CONTROL_VALUE         1089
 #define _APS_NEXT_SYMED_VALUE           107
 #endif
 #endif
