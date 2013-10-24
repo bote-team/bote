@@ -121,40 +121,26 @@ void CSanity::SanityCheckSectorAndSystem(const CSystem& system, const CBotEDoc& 
 {
 	CString s;
 	assert(!system.HasOutpost() || ! system.HasStarbase());
-	if(!system.GetSunSystem())
-		return;
 	const CString& sOwnerOfSystem = system.GetOwnerOfSystem();
-	if(sOwnerOfSystem.IsEmpty())
-		return;
 	const CString& sOwnerOfSector = system.GetOwnerOfSector();
-	const CPoint& co = system.GetKO();
-	if(sOwnerOfSector != sOwnerOfSystem) {
-		s.Format("OwnerOfSector != OwnerOfSystem in sector %s (%u,%u).",
-			system.GetName(TRUE),
-			co.x, co.y
-			);
-		Notify(s);
+	bool minor = false;
+	if(sOwnerOfSector != sOwnerOfSystem)
+	{
+		assert(sOwnerOfSystem.IsEmpty());
+		assert(!sOwnerOfSector.IsEmpty());
+		if(system.GetMinorRace())
+			minor = true;
+		else
+			assert(system.GetCurrentHabitants() == 0);
+	}
+	if(sOwnerOfSector.IsEmpty())
 		return;
-	}
 	const CRaceController& RaceCtrl = *doc.GetRaceCtrl();
-	if(system.GetMinorRace()) {
-		const CMinor* pMinor = RaceCtrl.GetMinorRace(system.GetName());
-		assert(pMinor);
-		assert(pMinor->GetRaceKO() == co);
-		if(!pMinor->IsMemberTo() && !pMinor->GetSubjugated()) {
-			if(sOwnerOfSystem != pMinor->GetRaceID()) {
-				s.Format("Independent minor doesn't own system in sector (%u,%u).", co.x, co.y);
-				Notify(s);
-			}
-			return;
-		}
-	}
 	const CRace* pRace = RaceCtrl.GetRace(sOwnerOfSector);
-	assert(pRace->IsMajor());
+	assert(pRace);
+	assert(minor ? pRace->IsMinor() : pRace->IsMajor());
 #pragma warning(push)
 #pragma warning(disable:4189)
-	const CMajor* pMajor = dynamic_cast<const CMajor*>(pRace);
-	assert(pMajor);
 }
 #pragma warning(pop)
 
