@@ -3006,7 +3006,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		if(temp == 5)
 		{
 			CSystem& system = pDoc->CurrentSystem();
-			CManagerSettingsDlg dlg(&system.Manager());
+			CManagerSettingsDlg dlg(&system.Manager(), system);
 			if(dlg.DoModal() == IDOK)
 				ReflectPossibleResearchOrSecurityWorkerChange(pMajor, pDoc, pDoc->GetKO(), true);
 		}

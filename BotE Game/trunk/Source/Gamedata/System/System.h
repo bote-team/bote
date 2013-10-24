@@ -355,6 +355,8 @@ public:
 
 	void Colonize(const CShips& ship, CMajor& major);
 
+	bool HasWorkerBuilding(WORKER::Typ type) const;
+
 private:
 	// Resetfunktion für die Klasse CSystem.
 	void ResetSystem();

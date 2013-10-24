@@ -3199,3 +3199,8 @@ int CSystem::GetXBuildings(WORKER::Typ x) const
 	assert(false);
 	return 0;
 }
+
+bool CSystem::HasWorkerBuilding(WORKER::Typ type) const
+{
+	return GetXBuildings(type) > 0;
+}

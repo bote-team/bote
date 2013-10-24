@@ -1,10 +1,12 @@
 #pragma once
 #include "afxcmn.h"
 
+#include "Constants.h"
 
 // CManagerSettingsDlg-Dialogfeld
 
 class CSystemManager;
+class CSystem;
 
 class CManagerSettingsDlg : public CDialog
 {
@@ -12,7 +14,7 @@ class CManagerSettingsDlg : public CDialog
 
 public:
 	CManagerSettingsDlg(CWnd* pParent = NULL);   // Standardkonstruktor
-	CManagerSettingsDlg(CSystemManager* manager, CWnd* pParent = NULL);
+	CManagerSettingsDlg(CSystemManager* manager, const CSystem& system, CWnd* pParent = NULL);
 	virtual ~CManagerSettingsDlg();
 
 // Dialogfelddaten
@@ -47,6 +49,7 @@ private:
 	void SetStates(BOOL active);
 	void SetDlgItem(int item, const CString& text);
 	void SetDisplayedStaticText(int item, int value, bool moral = false);
+	int SliderPos(WORKER::Typ type) const;
 
 	static const int tick_frequ = 5;
 
@@ -59,6 +62,8 @@ private:
 	BOOL m_bNeglectFood;
 	BOOL m_bBombWarning;
 	BOOL m_bOnOffline;
+
+	const CSystem* m_System;
 
 	CSliderCtrl m_ctrlSecuritySlider;
 	CSliderCtrl m_ctrlResearchSlider;

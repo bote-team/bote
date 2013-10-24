@@ -5,6 +5,7 @@
 #include "BotE.h"
 #include "ManagerSettingsDlg.h"
 #include "System/Manager.h"
+#include "System/system.h"
 
 #include <cassert>
 
@@ -21,18 +22,20 @@ CManagerSettingsDlg::CManagerSettingsDlg(CWnd* pParent /*=NULL*/)
 	, m_bNeglectFood(FALSE)
 	, m_bBombWarning(FALSE)
 	, m_bOnOffline(FALSE)
+	, m_System(NULL)
 {
 
 }
 
-CManagerSettingsDlg::CManagerSettingsDlg(CSystemManager* manager, CWnd* pParent)
+CManagerSettingsDlg::CManagerSettingsDlg(CSystemManager* manager, const CSystem& system, CWnd* pParent)
 	: CDialog(CManagerSettingsDlg::IDD, pParent), m_Manager(manager),
 	m_bActive(FALSE),
 	m_bSafeMoral(FALSE),
 	m_bMaxIndustry(FALSE),
 	m_bNeglectFood(FALSE),
 	m_bBombWarning(FALSE),
-	m_bOnOffline(FALSE)
+	m_bOnOffline(FALSE),
+	m_System(&system)
 {
 
 }
@@ -81,6 +84,11 @@ END_MESSAGE_MAP()
 
 // CManagerSettingsDlg-Meldungshandler
 
+int CManagerSettingsDlg::SliderPos(WORKER::Typ type) const
+{
+	return m_System->HasWorkerBuilding(type) ? m_Manager->Priority(type) : CSystemManager::min_priority;
+}
+
 BOOL CManagerSettingsDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
@@ -119,14 +127,14 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 	m_ctrlMinMoralProdSlider.SetRange(CSystemManager::min_min_moral_prod, CSystemManager::max_min_moral_prod);
 	m_ctrlMinMoralProdSlider.SetTicFreq(min_moral_prod_tick_frequ);
 
-	m_ctrlProductionSlider.SetPos(m_Manager->Priority(WORKER::INDUSTRY_WORKER));
-	m_ctrlSecuritySlider.SetPos(m_Manager->Priority(WORKER::SECURITY_WORKER));
-	m_ctrlResearchSlider.SetPos(m_Manager->Priority(WORKER::RESEARCH_WORKER));
-	m_ctrlTitanSlider.SetPos(m_Manager->Priority(WORKER::TITAN_WORKER));
-	m_ctrlDeuteriumSlider.SetPos(m_Manager->Priority(WORKER::DEUTERIUM_WORKER));
-	m_ctrlDuraniumSlider.SetPos(m_Manager->Priority(WORKER::DURANIUM_WORKER));
-	m_ctrlCrystalSlider.SetPos(m_Manager->Priority(WORKER::CRYSTAL_WORKER));
-	m_ctrlIridiumSlider.SetPos(m_Manager->Priority(WORKER::IRIDIUM_WORKER));
+	m_ctrlProductionSlider.SetPos(SliderPos(WORKER::INDUSTRY_WORKER));
+	m_ctrlSecuritySlider.SetPos(SliderPos(WORKER::SECURITY_WORKER));
+	m_ctrlResearchSlider.SetPos(SliderPos(WORKER::RESEARCH_WORKER));
+	m_ctrlTitanSlider.SetPos(SliderPos(WORKER::TITAN_WORKER));
+	m_ctrlDeuteriumSlider.SetPos(SliderPos(WORKER::DEUTERIUM_WORKER));
+	m_ctrlDuraniumSlider.SetPos(SliderPos(WORKER::DURANIUM_WORKER));
+	m_ctrlCrystalSlider.SetPos(SliderPos(WORKER::CRYSTAL_WORKER));
+	m_ctrlIridiumSlider.SetPos(SliderPos(WORKER::IRIDIUM_WORKER));
 
 	m_ctrlMinMoralSlider.SetPos(m_Manager->MinMoral());
 	m_ctrlMinMoralProdSlider.SetPos(m_Manager->MinMoralProd());
@@ -189,14 +197,14 @@ void CManagerSettingsDlg::SetState(int item, BOOL active)
 
 void CManagerSettingsDlg::SetStates(BOOL active)
 {
-	SetState(IDC_SLIDER_SECURITY, active);
-	SetState(IDC_SLIDER_RESEARCH, active);
-	SetState(IDC_SLIDER_TITAN, active);
-	SetState(IDC_SLIDER_DEUTERIUM, active);
-	SetState(IDC_SLIDER_DURANIUM, active);
-	SetState(IDC_SLIDER_CRYSTAL, active);
-	SetState(IDC_SLIDER_IRIDIUM, active);
-	SetState(IDC_SLIDER_PRODUCTION, active);
+	SetState(IDC_SLIDER_PRODUCTION, active && m_System->HasWorkerBuilding(WORKER::INDUSTRY_WORKER));
+	SetState(IDC_SLIDER_SECURITY, active && m_System->HasWorkerBuilding(WORKER::SECURITY_WORKER));
+	SetState(IDC_SLIDER_RESEARCH, active && m_System->HasWorkerBuilding(WORKER::RESEARCH_WORKER));
+	SetState(IDC_SLIDER_TITAN, active && m_System->HasWorkerBuilding(WORKER::TITAN_WORKER));
+	SetState(IDC_SLIDER_DEUTERIUM, active && m_System->HasWorkerBuilding(WORKER::DEUTERIUM_WORKER));
+	SetState(IDC_SLIDER_DURANIUM, active && m_System->HasWorkerBuilding(WORKER::DURANIUM_WORKER));
+	SetState(IDC_SLIDER_CRYSTAL, active && m_System->HasWorkerBuilding(WORKER::CRYSTAL_WORKER));
+	SetState(IDC_SLIDER_IRIDIUM, active && m_System->HasWorkerBuilding(WORKER::IRIDIUM_WORKER));
 
 	SetState(IDC_CHECK_SAFE_MORAL, active);
 	SetState(IDC_CHECK_MAX_INDUSTRY, active);
