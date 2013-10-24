@@ -50,7 +50,7 @@ public:
 	void CalcEvents(CMajor* pRace);
 
 	///Berechnet Events wenn ein Sektor erkundet wird
-	void CalcExploreEvent(const CPoint& ko, CMajor* pRace, CShipMap* ships);
+	void CalcExploreEvent(const CPoint& ko, CMajor* pRace, CShipMap* ships) const;
 
 	/// Funktion berechnet Schiffsevents
 	void CalcShipEvents() const;
@@ -58,11 +58,11 @@ public:
 private:
 	// Für Random Events die nur ein System betreffen
 	// @return true in case an event happened
-	bool SystemEvent(const CPoint &ko, CMajor* pRace);
+	static bool SystemEvent(const CPoint &ko, CMajor* pRace);
 
 	//Für globale Events
-	void GlobalEventResearch(CMajor* pRace);
-	void GlobalEventMinor(CMajor* pRace, CMinor* pMinor);
+	static void GlobalEventResearch(CMajor* pRace);
+	static void GlobalEventMinor(CMajor* pRace, CMinor* pMinor);
 
 	// Attribute
 	const unsigned m_uiGlobalProb;//0-100

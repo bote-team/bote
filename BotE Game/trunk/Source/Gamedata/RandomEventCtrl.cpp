@@ -153,7 +153,7 @@ void CRandomEventCtrl::GlobalEventMinor(CMajor* pRace, CMinor* pMinor)
 	pRace->GetEmpire()->AddMsg(message);
 }
 
-void CRandomEventCtrl::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMap* ships)
+void CRandomEventCtrl::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMap* ships) const
 {
 	if (!IsActivated())
 		return;

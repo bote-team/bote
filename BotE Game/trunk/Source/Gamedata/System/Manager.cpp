@@ -204,7 +204,7 @@ struct DistributionElem
 		m_dFPart(count - m_iCount)
 	{};
 
-	bool operator<(const DistributionElem& o)
+	bool operator<(const DistributionElem& o) const
 	{
 		return m_dFPart < o.m_dFPart;
 	}
