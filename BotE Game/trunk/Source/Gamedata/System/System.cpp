@@ -8,6 +8,8 @@
 #include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "General/Loc.h"
+#include "Ships/ships.h"
+#include "ClientWorker.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -3201,4 +3203,53 @@ bool CSystem::CanTakeOnline(const CBuildingInfo& info) const
 	if(m_Manager.Active())
 		return info.GetNeededEnergy() <= m_Production.GetAvailableEnergy();
 	return m_Production.m_iEnergyProd >= info.GetNeededEnergy();
+}
+
+void CSystem::Colonize(const CShips& ship, CMajor& major)
+{
+	const CString shipowner = ship.GetOwnerOfShip();
+	CEmpire* empire = major.GetEmpire();
+	// Gebäude bauen, wenn wir das System zum ersten Mal kolonisieren,
+	// sprich das System noch niemanden gehört
+	if (GetOwnerOfSystem().IsEmpty())
+	{
+		// Sector- und Systemwerte ändern
+		SetOwned(TRUE);
+		m_sOwnerOfSector = shipowner;
+		m_sColonyOwner = shipowner;
+		SetOwnerOfSystem(shipowner);
+		// Gebäude nach einer Kolonisierung bauen
+		BuildBuildingsAfterColonization(resources::BuildingInfo,ship.GetColonizePoints());
+		// Nachricht an das Imperium senden, das ein System neu kolonisiert wurde
+		CString s = CLoc::GetString("FOUND_COLONY_MESSAGE",FALSE,GetName());
+		CEmpireNews message;
+		message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,GetName(),m_KO);
+		empire->AddMsg(message);
+
+		// zusätzliche Eventnachricht (Colonize a system #12) wegen der Moral an das Imperium
+		message.CreateNews(major.GetMoralObserver()->AddEvent(12, major.GetRaceMoralNumber(), GetName()), EMPIRE_NEWS_TYPE::SOMETHING, "", m_KO);
+		empire->AddMsg(message);
+		if (major.IsHumanPlayer())
+		{
+			resources::pClientWorker->AddSoundMessage(SNDMGR_MSG_CLAIMSYSTEM, major , 0);
+			resources::pClientWorker->SetToEmpireViewFor(major);
+			CEventColonization* eventScreen = new CEventColonization(major.GetRaceID(), CLoc::GetString("COLOEVENT_HEADLINE", FALSE, GetName()), CLoc::GetString("COLOEVENT_TEXT_" + major.GetRaceID(), FALSE, GetName()));
+			empire->GetEvents()->Add(eventScreen);
+			s.Format("Added Colonization-Eventscreen for Race %s in System %s", major.GetRaceName(), GetName());
+			MYTRACE("general")(MT::LEVEL_INFO, s);
+		}
+	}
+	else
+	{
+		// Nachricht an das Imperium senden, das ein Planet kolonisiert wurde
+		CString s = CLoc::GetString("NEW_PLANET_COLONIZED",FALSE,GetName());
+		CEmpireNews message;
+		message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,GetName(),m_KO);
+		empire->AddMsg(message);
+		resources::pClientWorker->SetToEmpireViewFor(major);
+	}
+	SetHabitants(GetCurrentHabitants());
+
+	CalculateNumberOfWorkbuildings(resources::BuildingInfo);
+	CalculateVariables();
 }

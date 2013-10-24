@@ -27,7 +27,6 @@ class CBotEDoc;
 class CMajor;
 class CAnomaly;
 class CRace;
-class CSystem;
 class CShips;
 class CShip;
 
@@ -460,8 +459,6 @@ public:
 
 	void DistributeColonists(const float colonists);
 
-	void Colonize(CSystem& sy, const CShips& ship, CMajor& major);
-
 	void BuildStation(SHIP_TYPE::Typ station, const CString& race);
 
 	/// Diese Funktion lässt die Bevölkerung auf allen Planeten zusammen um den übergebenen Wert <code>Value</code>
@@ -510,6 +507,12 @@ protected:
 	/// Die Feld mit den einzelnen Planeten in dem Sektor
 	std::vector<CPlanet> m_Planets;
 
+	/// Wem gehört der Sektor?
+	CString m_sOwnerOfSector;
+
+	/// Wem gehört/gehörte der Sektor zuerst? Also eigene Kolonie und Heimatsystem
+	CString m_sColonyOwner;
+
 private:
 
 	/// Der Name des Sectors
@@ -517,12 +520,6 @@ private:
 
 	/// Diese Variable beinhaltet alle Sektorattribute.
 	int m_Attributes;
-
-	/// Wem gehört der Sektor?
-	CString m_sOwnerOfSector;
-
-	/// Wem gehört/gehörte der Sektor zuerst? Also eigene Kolonie und Heimatsystem
-	CString m_sColonyOwner;
 
 	/// Variable speichert den Status über diesen Sektor, wobei 0 -> nichts, 1 -> gescannt,
 	/// 2 -> Name bekannt, 3 -> alles inkl. Planeten bekannt, bedeutet

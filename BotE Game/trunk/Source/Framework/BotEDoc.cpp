@@ -3706,7 +3706,7 @@ void CBotEDoc::CalcShipOrders()
 			}
 			assert(y->second->GetTerraform() == -1);
 			pSector->DistributeColonists(y->second->GetStartHabitants() / terraformedPlanets);
-			pSector->Colonize(*pSystem, *y->second, *pMajor);
+			pSystem->Colonize(*y->second, *pMajor);
 			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 			CString s;
 			s.Format("%s %s",CLoc::GetString("COLONIZATION"), pSector->GetName());

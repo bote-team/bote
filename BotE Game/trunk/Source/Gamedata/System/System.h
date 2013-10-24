@@ -348,6 +348,8 @@ public:
 	/// Alle deaktivierten Produktionen zurücksetzen
 	void ClearDisabledProductions();
 
+	void Colonize(const CShips& ship, CMajor& major);
+
 private:
 	// Resetfunktion für die Klasse CSystem.
 	void ResetSystem();
