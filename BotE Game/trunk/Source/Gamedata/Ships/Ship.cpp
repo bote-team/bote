@@ -28,17 +28,17 @@ IMPLEMENT_SERIAL (CShip, CObject, 1)
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CShip::CShip() :
-	m_KO(-1, -1),
 	m_iID(0),
 	m_iMaintenanceCosts(0),
 	m_byManeuverability(0),
 	m_iSpeed(0),
 	m_iScanPower(0),
 	m_iScanRange(0),
-	m_iStealthGrade(0),
 	m_iStorageRoom(0),
 	m_iColonizePoints(0),
 	m_iStationBuildPoints(0),
+	m_iStealthGrade(0),
+	m_KO(-1, -1),
 	m_TargetKO(-1, -1)
 {
 	m_iCrewExperiance = 0;
@@ -64,10 +64,10 @@ CShip::~CShip()
 CShip::CShip(const CShip & rhs) :
 	m_Hull(rhs.m_Hull),
 	m_Shield(rhs.m_Shield),
-	m_KO(rhs.m_KO),
-	m_sOwnerOfShip(rhs.m_sOwnerOfShip),
 	m_strShipName(rhs.m_strShipName),
 	m_strShipClass(rhs.m_strShipClass),
+	m_sOwnerOfShip(rhs.m_sOwnerOfShip),
+	m_KO(rhs.m_KO),
 	m_TargetKO(rhs.m_TargetKO)
 {
 	m_TorpedoWeapons.RemoveAll();

@@ -11,6 +11,7 @@ IMPLEMENT_SERIAL (CEcoIntelObj, CObject, 1)
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CEcoIntelObj::CEcoIntelObj(void) :
+	m_KO(),
 	m_byNumber(0),
 	m_nID(0),
 	m_iCredits(0)
@@ -20,7 +21,7 @@ CEcoIntelObj::CEcoIntelObj(void) :
 }
 
 CEcoIntelObj::CEcoIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CPoint &ko, USHORT id, BYTE number)
-	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 0), m_KO(ko), m_nID(id), m_byNumber(number)
+	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 0), m_KO(ko), m_byNumber(number), m_nID(id)
 {
 	m_iCredits = NULL;
 }

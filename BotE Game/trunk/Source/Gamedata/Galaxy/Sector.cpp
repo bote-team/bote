@@ -45,10 +45,11 @@ CSector::CSector(int x, int y) :
 
 CSector::CSector(const CSector& other) :
 	m_KO(other.m_KO),
-	m_strSectorName(other.m_strSectorName),
-	m_Attributes(other.m_Attributes),
+	m_Planets(other.m_Planets),
 	m_sOwnerOfSector(other.m_sOwnerOfSector),
 	m_sColonyOwner(other.m_sColonyOwner),
+	m_strSectorName(other.m_strSectorName),
+	m_Attributes(other.m_Attributes),
 	m_Status(other.m_Status),
 	m_bShipPort(other.m_bShipPort),
 	m_Outpost(other.m_Outpost),
@@ -61,8 +62,7 @@ CSector::CSector(const CSector& other) :
 	m_iNeededStationPoints(other.m_iNeededStationPoints),
 	m_iStartStationPoints(other.m_iStartStationPoints),
 	m_bySunColor(other.m_bySunColor),
-	m_byOwnerPoints(other.m_byOwnerPoints),
-	m_Planets(other.m_Planets)
+	m_byOwnerPoints(other.m_byOwnerPoints)
 {
 	m_pAnomaly=NULL;
 	if(other.GetAnomaly())

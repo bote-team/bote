@@ -25,8 +25,8 @@ IMPLEMENT_DYNCREATE(CTransportMenuView, CMainBaseView)
 
 CTransportMenuView::CTransportMenuView() :
 bg_transportmenu(),
-m_nActiveTroopInShip(-1),
 m_nActiveTroopInSystem(-1),
+m_nActiveTroopInShip(-1),
 m_iTransportStorageQuantity(1),
 m_ptLastSector(-1, 1)
 {

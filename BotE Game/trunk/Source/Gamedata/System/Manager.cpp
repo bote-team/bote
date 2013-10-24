@@ -23,11 +23,11 @@ CSystemManager::CSystemManager(const CSystemManager& o) :
 	m_bSafeMoral(o.m_bSafeMoral),
 	m_bMaxIndustry(o.m_bMaxIndustry),
 	m_bNeglectFood(o.m_bNeglectFood),
-	m_PriorityMap(o.m_PriorityMap),
 	m_iMinMoral(o.m_iMinMoral),
 	m_iMinMoralProd(o.m_iMinMoralProd),
 	m_bBombWarning(o.m_bBombWarning),
-	m_bOnOffline(o.m_bOnOffline)
+	m_bOnOffline(o.m_bOnOffline),
+	m_PriorityMap(o.m_PriorityMap)
 {
 }
 

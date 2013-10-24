@@ -10,10 +10,10 @@
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CAttackSystem::CAttackSystem(void) :
-	m_KO(-1, -1),
 	m_pDefender(),
 	m_pSystem(),
 	m_pSector(),
+	m_KO(-1, -1),
 	m_bTroopsInvolved(FALSE),
 	m_bAssultShipInvolved(FALSE),
 	m_fKilledPop(0.0f),

@@ -165,8 +165,8 @@ private:
 	struct RememberedShip {
 		RememberedShip() : name(""), key(0) {}
 		RememberedShip(CString _name, unsigned _key) : name(_name), key(_key) {}
-		unsigned key;
 		CString name;
+		unsigned key;
 
 		RememberedShip& operator=(const RememberedShip &other) {
 			name = other.name; key = other.key; return *this;

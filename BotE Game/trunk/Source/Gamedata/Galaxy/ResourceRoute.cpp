@@ -8,9 +8,9 @@ IMPLEMENT_SERIAL (CResourceRoute, CObject, 1)
 // Konstruktion und Destruktion
 //////////////////////////////////////////////////////////////////////
 CResourceRoute::CResourceRoute(void) :
+	m_KO(-1, -1),
 	m_byPercent(0),
-	m_byResource(RESOURCES::TITAN),
-	m_KO(-1, -1)
+	m_byResource(RESOURCES::TITAN)
 {
 }
 

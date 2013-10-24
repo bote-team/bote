@@ -36,16 +36,16 @@ static char THIS_FILE[] = __FILE__;
 
 //! Construction
 CRoundButton2::CRoundButton2(void):
-	  m_bDefaultButton(false)
+	  m_rBtnSize(CRect(0, 0, 0, 0))
+	, m_sOldCaption(_T(""))
+	, m_bDefaultButton(false)
 	, m_bIsCheckButton(false)
 	, m_bIsRadioButton(false)
 	, m_bIsHotButton(false)
-	, m_bMouseOnButton(false)
 	, m_bIsChecked(false)
-	, m_ptRoundButtonStyle(NULL)
-	, m_rBtnSize(CRect(0, 0, 0, 0))
+	, m_bMouseOnButton(false)
 	, m_bRedraw(false)
-	, m_sOldCaption(_T(""))
+	, m_ptRoundButtonStyle(NULL)
 	  {
 	// Set Standards in Font-Style
 	m_tLogFont.lfHeight			= 16;

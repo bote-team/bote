@@ -11,6 +11,7 @@ IMPLEMENT_SERIAL (CMilitaryIntelObj, CObject, 1)
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CMilitaryIntelObj::CMilitaryIntelObj(void) :
+	m_KO(),
 	m_nID(0),
 	m_nNumber(0),
 	m_bTroop(FALSE),
@@ -23,7 +24,7 @@ CMilitaryIntelObj::CMilitaryIntelObj(void) :
 
 CMilitaryIntelObj::CMilitaryIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CPoint &ko, USHORT id, USHORT number,
 		BOOLEAN building, BOOLEAN ship, BOOLEAN troop)
-	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 2), m_KO(ko), m_nID(id), m_nNumber(number), m_bBuilding(building), m_bShip(ship), m_bTroop(troop)
+	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 2), m_KO(ko), m_nID(id), m_nNumber(number), m_bTroop(troop), m_bShip(ship), m_bBuilding(building)
 {
 }
 

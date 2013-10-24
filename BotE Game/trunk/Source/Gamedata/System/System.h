@@ -417,8 +417,8 @@ private:
 	BYTE m_iTitanMines;					// Anzahl der Titanminen in dem System
 	BYTE m_iDeuteriumMines;				// Anzahl der Deuteriumminen in dem System
 	BYTE m_iDuraniumMines;				// Anzahl der Duraniumminen in dem System
-	BYTE m_iIridiumMines;				// Anzahl der Iridiumminen in dem System
 	BYTE m_iCrystalMines;				// Anzahl der Crystalminen in dem System
+	BYTE m_iIridiumMines;				// Anzahl der Iridiumminen in dem System
 
 	CArray<CTradeRoute> m_TradeRoutes;			///< Die Handelsrouten in dem System
 

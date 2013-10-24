@@ -7,9 +7,14 @@
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CMyButton::CMyButton(CPoint point, CSize size, const CString& text, const CString& normGraphicName,
-					 const CString& inactiveGraphicName, const CString& activeGraphicName) : m_ptKO(point), m_szSize(size),
-					 m_sText(text), m_sNormal(normGraphicName), m_sInactive(inactiveGraphicName),
-					 m_sActive(activeGraphicName), m_nStatus(BUTTON_STATE::NORMAL)
+					 const CString& inactiveGraphicName, const CString& activeGraphicName) :
+	m_nStatus(BUTTON_STATE::NORMAL),
+	m_sText(text),
+	m_ptKO(point),
+	m_szSize(size),
+	m_sNormal(normGraphicName),
+	m_sInactive(inactiveGraphicName),
+	m_sActive(activeGraphicName)
 {
 }
 

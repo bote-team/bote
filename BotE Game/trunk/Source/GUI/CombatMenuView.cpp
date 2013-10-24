@@ -24,10 +24,10 @@ CCombatMenuView::CCombatMenuView() :
 	bg_combatordermenu(),
 	m_bInOrderMenu(false),
 	m_dWinningChance(0.01),
-	m_nPageEnemies(0),
 	m_nPageFriends(0),
-	m_nShipType(-1),
-	m_pMarkedShip()
+	m_nPageEnemies(0),
+	m_pMarkedShip(),
+	m_nShipType(-1)
 {
 }
 

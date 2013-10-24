@@ -4,7 +4,7 @@
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CIntelObject::CIntelObject(void) : m_sOwner(""), m_sEnemy(""), m_nRound(0), m_bIsSpy(TRUE), m_byType(0)
+CIntelObject::CIntelObject(void) : m_sOwner(""), m_sEnemy(""), m_byType(0), m_bIsSpy(TRUE), m_nRound(0)
 {
 	m_strEnemyDesc = "";
 	m_strOwnerDesc = "";
@@ -12,7 +12,7 @@ CIntelObject::CIntelObject(void) : m_sOwner(""), m_sEnemy(""), m_nRound(0), m_bI
 
 /// Konstruktor mit Paramterübergabe
 CIntelObject::CIntelObject(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, BYTE type)
-	: m_sOwner(sOwnerID), m_sEnemy(sEnemyID), m_nRound(round), m_bIsSpy(isSpy), m_byType(type)
+	: m_sOwner(sOwnerID), m_sEnemy(sEnemyID), m_byType(type), m_bIsSpy(isSpy), m_nRound(round)
 {
 	m_strEnemyDesc = "";
 	m_strOwnerDesc = "";

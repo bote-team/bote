@@ -4,9 +4,15 @@
 //////////////////////////////////////////////////////////////////////
 // Konstruktion und Destruktion
 //////////////////////////////////////////////////////////////////////
-COverlayBanner::COverlayBanner(const CPoint &ko, const CPoint &size, const CString &text, COLORREF textColor)
-	: m_KO(ko), m_Size(size), m_strText(text), m_TextColor(textColor), m_BackgroundColor(RGB(0,0,0)),
-	m_BorderColor(RGB(200,0,0)), m_iAlphaValue(180), m_iBorderWidth(2)
+COverlayBanner::COverlayBanner(const CPoint &ko, const CPoint &size, const CString &text, COLORREF textColor) :
+	m_KO(ko),
+	m_Size(size),
+	m_TextColor(textColor),
+	m_BackgroundColor(RGB(0,0,0)),
+	m_BorderColor(RGB(200,0,0)),
+	m_iAlphaValue(180),
+	m_iBorderWidth(2),
+	m_strText(text)
 {
 }
 

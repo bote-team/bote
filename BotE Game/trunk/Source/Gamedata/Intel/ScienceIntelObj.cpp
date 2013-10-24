@@ -23,7 +23,7 @@ m_nChoosenSpecialTech(-1)
 }
 
 CScienceIntelObj::CScienceIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CPoint &ko, USHORT id, BYTE number)
-	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 1), m_KO(ko), m_nID(id), m_byNumber(number)
+	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 1), m_KO(ko), m_byNumber(number), m_nID(id)
 {
 	m_iFP = NULL;
 	m_nTechlevel = -1;

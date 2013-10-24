@@ -33,17 +33,17 @@ BOOLEAN CShipBottomView::m_bShowStation = FALSE;
 IMPLEMENT_DYNCREATE(CShipBottomView, CBottomBaseView)
 
 CShipBottomView::CShipBottomView() :
-	m_iPage(1),
-	m_bShowNextButton(FALSE),
-	m_iTimeCounter(0),
-	m_iWhichMainShipOrderButton(MAIN_BUTTON_NONE),
-	m_LastKO(-1, -1),
-	m_dc(),
 	bw(120),
 	bh(30),
 	bd(5),
 	bt(35),
-	bb(bt + (MAIN_BUTTON_CANCEL -1) * (bh + bd) + bh)
+	bb(bt + (MAIN_BUTTON_CANCEL -1) * (bh + bd) + bh),
+	m_iPage(1),
+	m_LastKO(-1, -1),
+	m_bShowNextButton(FALSE),
+	m_iTimeCounter(0),
+	m_iWhichMainShipOrderButton(MAIN_BUTTON_NONE),
+	m_dc()
 {
 	m_pShipOrderButton = NULL;
 	m_vMainShipOrders.reserve(MAIN_BUTTON_CANCEL);

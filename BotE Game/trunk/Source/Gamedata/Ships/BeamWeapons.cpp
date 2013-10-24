@@ -40,8 +40,8 @@ CBeamWeapons::~CBeamWeapons()
 // Kopierkonstruktor
 //////////////////////////////////////////////////////////////////////
 CBeamWeapons::CBeamWeapons(const CBeamWeapons & rhs) :
-	m_Firearc(rhs.m_Firearc),
-	m_strBeamName(rhs.m_strBeamName)
+	m_strBeamName(rhs.m_strBeamName),
+	m_Firearc(rhs.m_Firearc)
 {
 	m_iBeamPower	= rhs.m_iBeamPower;
 	m_iBeamType		= rhs.m_iBeamType;
