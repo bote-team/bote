@@ -189,7 +189,7 @@ public:
 	// Funktion setzt alle vorhandenen Arbeiter soweit wie möglich in Gebäude, die Arbeiter benötigen.
 	void SetWorkersIntoBuildings();
 
-	void ExecuteManager(const CPoint& p, CMajor& owner, bool turn_change, bool energy = true);
+	void ExecuteManager(CMajor& owner, bool turn_change, bool energy = true);
 	void FreeAllWorkers();
 
 	// Funktion addiert moralAdd zu m_iMoral dazu und mach gleichzeitig noch die Überprüfen auf den richtigen Bereich.
@@ -228,9 +228,9 @@ public:
 
 // sonstige Funktionen
 	// Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der Systemklasse.
-	void CalculateVariables(const std::vector<CPlanet>&, const CMajor* pOwner);
+	void CalculateVariables();
 
-	void CalculatePotentials(const std::vector<CPlanet>& planets, const CMajor* pOwner);
+	void CalculatePotentials();
 
 	// Funktion berechnet die Lagerinhalte des Systems. Aufrufen bei Ende bzw. Beginn einer neuen Runde.
 	// Gibt die Funktion TRUE zurück hat sich das System Aufgrund zu schlechter Moral vom Besitzer losgesagt.
@@ -249,10 +249,10 @@ public:
 	bool DestroyBuildings(void);
 
 	// Funktion berechnet die baubaren Gebäude und Gebäudeupdates in dem System.
-	void CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* buildingInfo, CMajor* pMajor, CGlobalBuildings* globals);
+	void CalculateBuildableBuildings(CGlobalBuildings* globals);
 
 	// Funktion berechnet die baubaren Schiffe in dem System.
-	void CalculateBuildableShips(CBotEDoc* pDoc, const CPoint& p);
+	void CalculateBuildableShips();
 
 	// Diese Funktion berechnet die baubaren Truppen in diesem System
 	void CalculateBuildableTroops(const CArray<CTroopInfo>* troopInfos, const CResearch *research);
@@ -275,14 +275,14 @@ public:
 	bool CheckEnergyBuildings();
 
 	// Funktion fügt einen Baulistencheck durch
-	BOOLEAN AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuildings* globals);
+	BOOLEAN AssemblyListCheck(const BuildingInfoArray* buildingInfo, CGlobalBuildings* globals);
 
 	// Funktion baut die Gebäude der Minorrace, wenn wir eine Mitgliedschaft mit dieser erreicht haben.
-	void BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* buildingInfo, USHORT averageTechlevel, const CMinor* pMinor);
+	void BuildBuildingsForMinorRace(BuildingInfoArray* buildingInfo, USHORT averageTechlevel, const CMinor* pMinor);
 
 	// Funktion berechnet und baut die Startgebäude in einem System, nachdem wir einen Planeten
 	// in diesem kolonisiert haben.
-	void BuildBuildingsAfterColonization(const CSector* sector, const BuildingInfoArray* buildingInfo, USHORT ColonizationPoints);
+	void BuildBuildingsAfterColonization(const BuildingInfoArray* buildingInfo, USHORT ColonizationPoints);
 
 	/// Diese Funktion entfernt alle speziellen Gebäude aus der Gebäudeliste. Diese Funktion sollte nach Eroberung des Systems
 	/// aufgerufen werden. Danach sind keine Gebäude mehr vorhanden, die nur x mal pro Imperium baubar gewesen oder die nur die Rasse
@@ -321,7 +321,7 @@ public:
 	BYTE CheckTradeRoutes(CResearchInfo* researchInfo);
 	// Calculates diplomacy-related effects of and to this system's trade routes.
 	// @return number of deleted trade routes
-	unsigned CheckTradeRoutesDiplomacy(CBotEDoc& pDoc, const CPoint& ko);
+	unsigned CheckTradeRoutesDiplomacy(CBotEDoc& pDoc);
 
 	/// Funktion generiert eine neue Ressourcenroute. Wenn die Funktion <code>TRUE</code> zurückgibt, dann konnte die
 	/// Ressourcenroute erfolgreich angelegt werden. Als Parameter wird dabei die Koordinate <code>dest</code> des
@@ -434,8 +434,8 @@ private:
 	CSystemManager m_Manager;
 
 	// private Hilfsfunktionen (mal schauen ob wir die direkt in die cpp-Datei schreiben können)
-	BOOLEAN CheckGeneralConditions(CBuildingInfo* building, CSector* sector, CGlobalBuildings* globals, CMajor* pMajor);
-	BOOLEAN CheckFollower(BuildingInfoArray* buildings, USHORT ID, BOOLEAN flag = 0, BOOLEAN equivalence = 0);
+	BOOLEAN CheckGeneralConditions(const CBuildingInfo* building, CGlobalBuildings* globals, CMajor* pMajor);
+	BOOLEAN CheckFollower(const BuildingInfoArray* buildings, USHORT ID, BOOLEAN flag = 0, BOOLEAN equivalence = 0);
 
 	bool SanityCheckWorkersInRange(WORKER::Typ type) const;
 

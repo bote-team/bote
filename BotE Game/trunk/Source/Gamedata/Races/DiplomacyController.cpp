@@ -172,7 +172,7 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 				// Der Sector gilt jetzt als nicht eingenommen
 				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetTakenSector(FALSE);
 				// Nun Gebäude in neuen System bauen
-				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).BuildBuildingsForMinorRace(&pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y), &pDoc->BuildingInfo, pDoc->GetStatistics()->GetAverageTechLevel(), pMinor);
+				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).BuildBuildingsForMinorRace(&pDoc->BuildingInfo, pDoc->GetStatistics()->GetAverageTechLevel(), pMinor);
 				// Gebäude so weit wie möglich mit Arbeitern besetzen
 				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetWorkersIntoBuildings();
 				// alle Schiffe der Minor gehen nun an den Major

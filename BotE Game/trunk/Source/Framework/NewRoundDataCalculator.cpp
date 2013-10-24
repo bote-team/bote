@@ -68,7 +68,7 @@ void CNewRoundDataCalculator::CheckRoutes(CSystem& system, CMajor* pMajor) {
 	bool select_empire_view = false;
 
 	unsigned deletedTradeRoutes = 0;
-	deletedTradeRoutes += system.CheckTradeRoutesDiplomacy(*m_pDoc, co);
+	deletedTradeRoutes += system.CheckTradeRoutesDiplomacy(*m_pDoc);
 	deletedTradeRoutes += system.CheckTradeRoutes(pEmpire->GetResearch()->GetResearchInfo());
 	if(deletedTradeRoutes > 0) {
 		select_empire_view = true;

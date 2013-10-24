@@ -1667,7 +1667,7 @@ void CBotEDoc::ApplyBuildingsAtStartup()
 					// baubare Gebäude, Schiffe und Truppen berechnen
 					system->CalculateNumberOfWorkbuildings(&this->BuildingInfo);
 					system->SetWorkersIntoBuildings();
-					system->CalculateVariables(system->GetPlanets(), pMajor);
+					system->CalculateVariables();
 					// alle produzierten FP und SP der Imperien berechnen und zuweisen
 					int currentPoints;
 					currentPoints = system->GetProduction()->GetResearchProd();
@@ -1725,8 +1725,8 @@ void CBotEDoc::ApplyBuildingsAtStartup()
 		for (int i = 0; i < pMajor->GetEmpire()->GetSystemList()->GetSize(); i++)
 		{
 			CPoint p = pMajor->GetEmpire()->GetSystemList()->GetAt(i).ko;
-			GetSystem(p.x, p.y).CalculateBuildableBuildings(&GetSector(p.x, p.y), &BuildingInfo, pMajor, &m_GlobalBuildings);
-			GetSystem(p.x, p.y).CalculateBuildableShips(this, p);
+			GetSystem(p.x, p.y).CalculateBuildableBuildings(&m_GlobalBuildings);
+			GetSystem(p.x, p.y).CalculateBuildableShips();
 			GetSystem(p.x, p.y).CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
 		}
 	}
@@ -2565,7 +2565,7 @@ void CBotEDoc::CalcSystemAttack()
 					ASSERT(pMinor);
 					pMinor->SetSubjugated(true);
 					// Wenn das System noch keiner Majorrace gehört, dann Gebäude bauen
-					GetSystem(p.x, p.y).BuildBuildingsForMinorRace(&GetSector(p.x, p.y), &BuildingInfo, m_Statistics.GetAverageTechLevel(), pMinor);
+					GetSystem(p.x, p.y).BuildBuildingsForMinorRace(&BuildingInfo, m_Statistics.GetAverageTechLevel(), pMinor);
 					// Sektor gilt ab jetzt als erobert.
 					GetSector(p.x, p.y).SetTakenSector(TRUE);
 					GetSector(p.x, p.y).SetOwned(TRUE);
@@ -3367,7 +3367,7 @@ void CBotEDoc::CalcOldRoundData()
 		{
 			assert(it->GetOwnerOfSystem() != "");
 			calc.HandlePopulationEffects(*it, pMajor);
-			it->CalculateVariables(it->GetPlanets(), pMajor);
+			it->CalculateVariables();
 
 			// hier könnte die Energie durch Weltraummonster weggenommen werden!
 			// Gebäude die Energie benötigen checken
@@ -3422,8 +3422,8 @@ void CBotEDoc::CalcNewRoundData()
 			// Ressourcenrouten checken
 			new_round_data_calc.CheckRoutes(*it, pMajor);
 
-			it->CalculateVariables(it->GetPlanets(), pMajor);
-			it->CalculatePotentials(it->GetPlanets(), pMajor);
+			it->CalculateVariables();
+			it->CalculatePotentials();
 
 			const CSystemProd* const production = it->GetProduction();
 			// Haben wir eine online Schiffswerft im System, dann ShipPort in dem Sektor setzen
@@ -4926,10 +4926,10 @@ void CBotEDoc::CalcEndDataForNextRound()
 				continue;
 
 			// baubare Gebäude, Schiffe und Truppen berechnen
-			it->CalculateBuildableBuildings(&*it, &BuildingInfo, pMajor, &m_GlobalBuildings);
-			it->CalculateBuildableShips(this, it->GetKO());
+			it->CalculateBuildableBuildings(&m_GlobalBuildings);
+			it->CalculateBuildableShips();
 			it->CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
-			it->CalculateVariables(it->GetPlanets(), pMajor);
+			it->CalculateVariables();
 
 			// alle produzierten FP und SP der Imperien berechnen und zuweisen
 			int currentPoints;
@@ -4938,7 +4938,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 			currentPoints = it->GetProduction()->GetSecurityProd();
 			pMajor->GetEmpire()->AddSP(currentPoints);
 
-			it->ExecuteManager(it->GetKO(), *pMajor, true);
+			it->ExecuteManager(*pMajor, true);
 		}
 
 		// Gibt es eine Anomalie im Sektor, so vielleicht die Scanpower niedriger setzen

@@ -315,15 +315,6 @@ private:
 		return true;
 	}
 
-	void CalculateVariables() const
-	{
-		const CBotEDoc& doc = *resources::pDoc;
-		const CSector& sector = doc.GetSector(m_Co.x, m_Co.y);
-		const CMajor* major = dynamic_cast<CMajor*>(doc.GetRaceCtrl()->GetRace(m_pSystem->GetOwnerOfSystem()));
-		assert(major);
-		m_pSystem->CalculateVariables(sector.GetPlanets(), major);
-	}
-
 	int DecrementDueToFullStore(WORKER::Typ type)
 	{
 		int unset = 0;
@@ -335,7 +326,7 @@ private:
 			const int workers = m_pSystem->GetWorker(type);
 			if(workers == 0)
 				break;
-			CalculateVariables();
+			m_pSystem->CalculateVariables();
 			const int prod = m_pSystem->GetProduction()->GetXProd(type);
 			if(store + prod <= m_pSystem->GetXStoreMax(type))
 				break;
@@ -347,7 +338,7 @@ private:
 
 	int DecrementDueToWastedIndustry(bool max_industry)
 	{
-		CalculateVariables();
+		m_pSystem->CalculateVariables();
 		const CAssemblyList& assembly_list = *m_pSystem->GetAssemblyList();
 		int unset = 0;
 		if(assembly_list.IsEmpty() || assembly_list.GetWasBuildingBought())
@@ -360,7 +351,7 @@ private:
 		{
 			SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_DECREMENT);
 			++unset;
-			CalculateVariables();
+			m_pSystem->CalculateVariables();
 			if(min_rounds < m_pSystem->NeededRoundsToBuild(0, true))
 			{
 				SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
@@ -444,7 +435,7 @@ public:
 	void Prepare() const
 	{
 		m_pSystem->FreeAllWorkers();
-		CalculateVariables();
+		m_pSystem->CalculateVariables();
 	}
 
 	void Finish() const
@@ -453,7 +444,7 @@ public:
 		#ifdef CONSISTENCY_CHECKS
 			assert(m_pSystem->SanityCheckWorkers());
 		#endif
-		CalculateVariables();
+		m_pSystem->CalculateVariables();
 	}
 
 	bool IncreaseWorkersUntilSufficient(WORKER::Typ type, bool allow_insufficient)
@@ -472,7 +463,7 @@ public:
 			if(workers_set == number_of_buildings)
 				return allow_insufficient;
 			SetWorker(type, CSystem::SET_WORKER_MODE_INCREMENT);
-			CalculateVariables();
+			m_pSystem->CalculateVariables();
 		}
 	}
 
@@ -630,15 +621,6 @@ public:
 			+ info.GetDeritiumProd() <= max_store;
 	}
 
-	void CalculateVariables() const
-	{
-		const CBotEDoc& doc = *resources::pDoc;
-		const CSector& sector = doc.GetSector(m_Co.x, m_Co.y);
-		const CMajor* major = dynamic_cast<CMajor*>(doc.GetRaceCtrl()->GetRace(m_pSystem->GetOwnerOfSystem()));
-		assert(major);
-		m_pSystem->CalculateVariables(sector.GetPlanets(), major);
-	}
-
 private:
 	CSystem* m_pSystem;
 	const CPoint m_Co;
@@ -700,7 +682,7 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system, const CPoint& p)
 			{
 				building.SetIsBuildingOnline(true);
 				additional_available_energy -= needed;
-				checker.CalculateVariables();
+				system.CalculateVariables();
 			}
 		}
 		else if (!should_be_online && is_online)
@@ -708,7 +690,7 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system, const CPoint& p)
 			const int needed = info.GetNeededEnergy();
 			building.SetIsBuildingOnline(false);
 			additional_available_energy += needed;
-			checker.CalculateVariables();
+			system.CalculateVariables();
 		}
 	}
 	assert(additional_available_energy >= 0);

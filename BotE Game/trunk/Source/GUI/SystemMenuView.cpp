@@ -2976,9 +2976,9 @@ namespace
 		const ResearchAndSecurityRecalcHelper help(pMajor->GetEmpire(), system.GetProduction());
 
 		// Variablen berechnen
-		system.CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+		system.CalculateVariables();
 		if(manager)
-			system.ExecuteManager(pDoc->GetKO(), *pMajor, false, energy);
+			system.ExecuteManager(*pMajor, false, energy);
 	}
 
 }
@@ -3325,7 +3325,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					if (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker,0) > pDoc->GetSystem(p.x,p.y).GetWorker(nWorker))
 					{
 						pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,CSystem::SET_WORKER_MODE_INCREMENT);	// FoodWorker inkrementieren
-						pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+						pDoc->GetSystem(p.x, p.y).CalculateVariables();
 						Invalidate();
 						return;
 					}
@@ -3338,7 +3338,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					if (pDoc->GetSystem(p.x,p.y).GetWorker(nWorker) > 0)
 					{
 						pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,CSystem::SET_WORKER_MODE_DECREMENT);	// FoodWorker dekrementieren
-						pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+						pDoc->GetSystem(p.x, p.y).CalculateVariables();
 						Invalidate();
 						return;
 					}
@@ -3361,7 +3361,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						// Wenn wir ziemlich weit ganz links geklickt haben, dann Arbeiter auf null setzen, werden hier nur um eins dekrementiert
 						if (j == 0 && point.x < Timber[i][j].left+3)
 							pDoc->GetSystem(p.x, p.y).SetWorker(nWorker,CSystem::SET_WORKER_MODE_DECREMENT);
-						pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+						pDoc->GetSystem(p.x, p.y).CalculateVariables();
 						Invalidate();
 						return;
 					}
@@ -3392,7 +3392,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					// Wenn es eine Werft war, die wir an bzw. aus geschaltet haben, dann nochmal schauen ob ich auch
 					// noch alle Schiffe bauen kann. Denn wenn die aus ist, dann kann ich keine mehr bauen
 					if (buildingInfo->GetShipYard())
-						pDoc->GetSystem(p.x, p.y).CalculateBuildableShips(pDoc, p);
+						pDoc->GetSystem(p.x, p.y).CalculateBuildableShips();
 					Invalidate(FALSE);
 					break;
 				}

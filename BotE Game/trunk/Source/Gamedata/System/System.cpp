@@ -604,19 +604,19 @@ static void ManagerMessage(const CString& text, CMajor& owner, const CPoint& p)
 }
 
 
-void CSystem::ExecuteManager(const CPoint& p, CMajor& owner, bool turn_change, bool energy)
+void CSystem::ExecuteManager(CMajor& owner, bool turn_change, bool energy)
 {
 	if(!m_Manager.Active() || !owner.IsHumanPlayer())
 		return;
 
-	const CString& name = resources::pDoc->GetSector(p.x, p.y).GetName();
+	const CString& name = GetName();
 
-	if(energy && m_Manager.CheckEnergyConsumers(*this, p) && turn_change)
-		ManagerMessage(CLoc::GetString("MANAGER_BOMB_WARNING",false, name), owner, p);
-	if(!m_Manager.DistributeWorkers(*this, p))
-		ManagerMessage(CLoc::GetString("MANAGER_MALFUNCTION",false, name), owner, p);
+	if(energy && m_Manager.CheckEnergyConsumers(*this, m_KO) && turn_change)
+		ManagerMessage(CLoc::GetString("MANAGER_BOMB_WARNING",false, name), owner, m_KO);
+	if(!m_Manager.DistributeWorkers(*this, m_KO))
+		ManagerMessage(CLoc::GetString("MANAGER_MALFUNCTION",false, name), owner, m_KO);
 	if(turn_change && m_Manager.CheckFamine(*this))
-		ManagerMessage(CLoc::GetString("MANAGER_FAMINE_WARNING",false, name), owner, p);
+		ManagerMessage(CLoc::GetString("MANAGER_FAMINE_WARNING",false, name), owner, m_KO);
 }
 
 void CSystem::FreeAllWorkers()
@@ -695,8 +695,10 @@ BOOLEAN CSystem::SetHabitants(double habitants)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 // Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der System-Klasse.
-void CSystem::CalculateVariables(const std::vector<CPlanet>& planets, const CMajor* pOwner)
+void CSystem::CalculateVariables()
 {
+	const CMajor* pOwner = dynamic_cast<CMajor*>(resources::pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
+	assert(pOwner);
 	const CResearchInfo* const ResearchInfo = pOwner->GetEmpire()->GetResearch()->GetResearchInfo();
 	const BuildingInfoArray* const buildingInfos = resources::BuildingInfo;
 	const CString *const sMonopolOwner = CTrade::GetMonopolOwner();
@@ -891,28 +893,28 @@ void CSystem::CalculateVariables(const std::vector<CPlanet>& planets, const CMaj
 
 	// Jetzt werden noch eventuelle Boni durch die Planetenklassen dazugerechnet
 	BYTE deritiumProdMulti = 0;
-	for (int i = 0; i < static_cast<int>(planets.size()); i++)
+	for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
 	{
-		if (planets.at(i).GetColonized() == TRUE && planets.at(i).GetCurrentHabitant() > 0.0f)
+		if (m_Planets.at(i).GetColonized() == TRUE && m_Planets.at(i).GetCurrentHabitant() > 0.0f)
 		{
 			// pro Planetengröße gibt es 25% Bonus
-			if (planets.at(i).GetBoni()[RESOURCES::TITAN] == TRUE)
-				tmpTitanBoni	+= (planets.at(i).GetSize()+1) * 25;
-			if (planets.at(i).GetBoni()[RESOURCES::DEUTERIUM] == TRUE)
-				tmpDeuteriumBoni+= (planets.at(i).GetSize()+1) * 25;
-			if (planets.at(i).GetBoni()[RESOURCES::DURANIUM] == TRUE)
-				tmpDuraniumBoni	+= (planets.at(i).GetSize()+1) * 25;
-			if (planets.at(i).GetBoni()[RESOURCES::CRYSTAL] == TRUE)
-				tmpCrystalBoni	+= (planets.at(i).GetSize()+1) * 25;
-			if (planets.at(i).GetBoni()[RESOURCES::IRIDIUM] == TRUE)
-				tmpIridiumBoni	+= (planets.at(i).GetSize()+1) * 25;
-			if (planets.at(i).GetBoni()[6] == TRUE)	// food
-				tmpFoodBoni		+= (planets.at(i).GetSize()+1) * 25;
-			if (planets.at(i).GetBoni()[7] == TRUE)	// energy
-				tmpEnergyBoni	+= (planets.at(i).GetSize()+1) * 25;
+			if (m_Planets.at(i).GetBoni()[RESOURCES::TITAN] == TRUE)
+				tmpTitanBoni	+= (m_Planets.at(i).GetSize()+1) * 25;
+			if (m_Planets.at(i).GetBoni()[RESOURCES::DEUTERIUM] == TRUE)
+				tmpDeuteriumBoni+= (m_Planets.at(i).GetSize()+1) * 25;
+			if (m_Planets.at(i).GetBoni()[RESOURCES::DURANIUM] == TRUE)
+				tmpDuraniumBoni	+= (m_Planets.at(i).GetSize()+1) * 25;
+			if (m_Planets.at(i).GetBoni()[RESOURCES::CRYSTAL] == TRUE)
+				tmpCrystalBoni	+= (m_Planets.at(i).GetSize()+1) * 25;
+			if (m_Planets.at(i).GetBoni()[RESOURCES::IRIDIUM] == TRUE)
+				tmpIridiumBoni	+= (m_Planets.at(i).GetSize()+1) * 25;
+			if (m_Planets.at(i).GetBoni()[6] == TRUE)	// food
+				tmpFoodBoni		+= (m_Planets.at(i).GetSize()+1) * 25;
+			if (m_Planets.at(i).GetBoni()[7] == TRUE)	// energy
+				tmpEnergyBoni	+= (m_Planets.at(i).GetSize()+1) * 25;
 			// Menge des abgebauten Deritiums mit der Anzahl der kolonisierten Planeten mit Deritiumvorkommen
 			// multiplizieren
-			if (planets.at(i).GetBoni()[RESOURCES::DERITIUM] == TRUE)
+			if (m_Planets.at(i).GetBoni()[RESOURCES::DERITIUM] == TRUE)
 				deritiumProdMulti += 1;
 		}
 	}
@@ -1009,24 +1011,24 @@ void CSystem::CalculateVariables(const std::vector<CPlanet>& planets, const CMaj
 	m_Workers.CalculateFreeWorkers();
 }
 
-void CSystem::CalculatePotentials(const std::vector<CPlanet>& planets, const CMajor* pOwner)
+void CSystem::CalculatePotentials()
 {
 	const CWorker prev(m_Workers);
 
 	int workers = min(GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 0), GetWorker(WORKER::ALL_WORKER));
 	m_Workers.FreeAll();
 	SetWorker(WORKER::ENERGY_WORKER, SET_WORKER_MODE_SET, workers);
-	CalculateVariables(planets, pOwner);
+	CalculateVariables();
 	m_Production.m_iPotentialEnergyProd = m_Production.m_iMaxEnergyProd;
 
 	workers = min(GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 0), GetWorker(WORKER::ALL_WORKER));
 	m_Workers.FreeAll();
 	SetWorker(WORKER::INDUSTRY_WORKER, SET_WORKER_MODE_SET, workers);
-	CalculateVariables(planets, pOwner);
+	CalculateVariables();
 	m_Production.m_iPotentialIndustryProd = m_Production.m_iIndustryProd;
 
 	m_Workers = prev;
-	CalculateVariables(planets, pOwner);
+	CalculateVariables();
 }
 
 // Funktion berechnet die Lagerinhalte des Systems. Aufrufen bei Ende bzw. Beginn einer neuen Runde.
@@ -1142,7 +1144,7 @@ bool CSystem::DestroyBuildings(void)
 
 namespace //helpers for CalculateBuildableBuildings()
 {
-	BOOLEAN CheckTech(CBuildingInfo* building, CResearch* research)
+	BOOLEAN CheckTech(const CBuildingInfo* building, CResearch* research)
 	{
 		// nötige Forschungsstufen checken
 		if (research->GetBioTech() <  building->GetBioTech())
@@ -1160,7 +1162,7 @@ namespace //helpers for CalculateBuildableBuildings()
 		return 1;
 	}
 
-	BOOLEAN CheckPlanet(CBuildingInfo* building, CSector* sector)
+	BOOLEAN CheckPlanet(const CBuildingInfo* building, CSector* sector)
 	{
 		BOOLEAN Ok = FALSE;
 		BOOLEAN deritium = FALSE;
@@ -1232,8 +1234,11 @@ namespace //helpers for CalculateBuildableBuildings()
 }
 
 // Funktion berechnet die baubaren Gebäude und Gebäudeupdates in dem System.
-void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* buildingInfo, CMajor* pMajor, CGlobalBuildings* globals)
+void CSystem::CalculateBuildableBuildings(CGlobalBuildings* globals)
 {
+	const BuildingInfoArray* buildingInfo = resources::BuildingInfo;
+	CMajor* pMajor = dynamic_cast<CMajor*>(resources::pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
+
 	CEmpire* empire = pMajor->GetEmpire();
 	ASSERT(empire);
 
@@ -1309,9 +1314,9 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 					break;
 				}
 			// Checken ob wir es durch die vorhanden Planeten bauen können
-			if (found == FALSE && CheckPlanet(&buildingInfo->GetAt(id-1),sector))
+			if (found == FALSE && CheckPlanet(&buildingInfo->GetAt(id-1),this))
 				// allg. Voraussetzungen des Gebäudes checken
-				if (CheckGeneralConditions(&buildingInfo->GetAt(id-1),sector,globals,pMajor))
+				if (CheckGeneralConditions(&buildingInfo->GetAt(id-1),globals,pMajor))
 				{
 					// Wenn wir hier angekommen sind, dann könnten wir das Gebäude bauen.
 					// Ist es ein Gebäude, welches wir manchmal mindst immer bauen können (alle Gebäude, die Arbeiter
@@ -1398,9 +1403,9 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 		// jetzt die ganzen Voraussetzungen prüfen
 		if (found == FALSE && CheckTech(&buildingInfo->GetAt(i), empire->GetResearch()) == TRUE)
 			// Checken ob wir es durch die vorhanden Planeten bauen können
-			if (CheckPlanet(&buildingInfo->GetAt(i),sector))
+			if (CheckPlanet(&buildingInfo->GetAt(i),this))
 				// allg. Voraussetzungen des Gebäudes checken
-				if (CheckGeneralConditions(&buildingInfo->GetAt(i),sector,globals,pMajor))
+				if (CheckGeneralConditions(&buildingInfo->GetAt(i),globals,pMajor))
 				{
 					// Wenn wir hier sind sind wir mittlerweile schon bei Punkt (2.1) angekommen
 					// Überprüfen ob das Gebäude einen Vorgänger besitzt
@@ -1484,7 +1489,7 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 	c_arraysort<CArray<short,short>,short>(m_BuildableBuildings,sort_asc);
 }
 
-BOOLEAN CSystem::AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuildings* globals)
+BOOLEAN CSystem::AssemblyListCheck(const BuildingInfoArray* buildingInfo, CGlobalBuildings* globals)
 {
 	// zu allererst die Liste der baubaren Gebäude und Updates mit der Liste der in dieser Runde baubaren Gebäude
 	// vor dem AssemblyListCheck füllen
@@ -1605,9 +1610,9 @@ BOOLEAN CSystem::AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuild
 }
 
 // Funktion berechnet die baubaren Schiffe in dem System.
-void CSystem::CalculateBuildableShips(CBotEDoc* pDoc, const CPoint& p)
+void CSystem::CalculateBuildableShips()
 {
-	ASSERT(pDoc);
+	CBotEDoc* pDoc = resources::pDoc;
 	m_BuildableShips.RemoveAll();
 	m_BuildableShips.FreeExtra();
 	// Hier jetzt schauen ob wir eine Werft haben und anhand der größe der Werft können wir bestimmte
@@ -1621,9 +1626,9 @@ void CSystem::CalculateBuildableShips(CBotEDoc* pDoc, const CPoint& p)
 	{
 		// Array mit baubaren Minorraceschiffen füllen
 		int nMinorShipNumber = -1;
-		if (pDoc->GetSector(p.x, p.y).GetMinorRace())
+		if (GetMinorRace())
 		{
-			CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(p.x, p.y).GetName());
+			CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(GetName());
 			if (pMinor)
 				nMinorShipNumber = pMinor->GetRaceShipNumber();
 		}
@@ -1666,7 +1671,7 @@ void CSystem::CalculateBuildableShips(CBotEDoc* pDoc, const CPoint& p)
 				// Wenn das Schiff nur in einem bestimmten System gebaut werden kann, dann hier checken
 				if (!pShipInfo->GetOnlyInSystem().IsEmpty())
 				{
-					if (pShipInfo->GetOnlyInSystem() != pDoc->GetSector(p.x, p.y).GetName())
+					if (pShipInfo->GetOnlyInSystem() != GetName())
 						continue;
 					// der Besitzer der Schiffsklasse wird auf den Besitzer des Schiffes gesetzt. Somit kann
 					// eine Majorrace dann auch die Schiffe der Minorrace bauen
@@ -1879,7 +1884,7 @@ bool CSystem::CheckEnergyBuildings()
 }
 
 // Funktion baut die Gebäude der Minorrace, wenn wir eine Mitgliedschaft mit dieser erreicht haben.
-void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* buildingInfo, USHORT averageTechlevel, const CMinor* pMinor)
+void CSystem::BuildBuildingsForMinorRace(BuildingInfoArray* buildingInfo, USHORT averageTechlevel, const CMinor* pMinor)
 {
 	// alle Gebäude die wir nach Systemeroberung nicht haben dürfen werden aus der Liste der aktuellen Gebäude entfernt
 	RemoveSpecialRaceBuildings(buildingInfo);
@@ -1888,7 +1893,7 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 	{
 		// in exist[.] steht dann, ob wir einen Rohstoff abbauen können, wenn ja, dann können wir auch das Gebäude bauen
 		BOOLEAN exist[RESOURCES::DERITIUM + 1] = {0};
-		sector->GetAvailableResources(exist, true);
+		GetAvailableResources(exist, true);
 
 		// Schauen, welche Gebäudestufe ungefähr in dem System steht
 		// Jetzt nach der Fortschrittlichkeit der kleinen Rasse gehen
@@ -2230,12 +2235,12 @@ void CSystem::RemoveSpecialRaceBuildings(const BuildingInfoArray* pvBuildingInfo
 
 // Funktion berechnet und baut die Startgebäude in einem System, nachdem wir einen Planeten
 // in diesem kolonisiert haben.
-void CSystem::BuildBuildingsAfterColonization(const CSector *sector, const BuildingInfoArray *buildingInfo, USHORT colonizationPoints)
+void CSystem::BuildBuildingsAfterColonization(const BuildingInfoArray *buildingInfo, USHORT colonizationPoints)
 {
 	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
-	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sector->GetOwnerOfSector()));
+	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(GetOwnerOfSector()));
 	ASSERT(pMajor);
 
 	// alle Gebäude die wir nach Systemeroberung nicht haben dürfen werden aus der Liste der aktuellen Gebäude entfernt
@@ -2255,7 +2260,7 @@ void CSystem::BuildBuildingsAfterColonization(const CSector *sector, const Build
 
 	// in exist[.] steht dann, ob wir einen Rohstoff abbauen können, wenn ja, dann können wir auch das Gebäude bauen
 	BOOLEAN exist[RESOURCES::DERITIUM + 1] = {0};
-	sector->GetAvailableResources(exist, true);
+	GetAvailableResources(exist, true);
 
 	USHORT start = 0;
 	for (int i = 0; i < buildingInfo->GetSize(); i++)
@@ -2503,14 +2508,14 @@ BYTE CSystem::CheckTradeRoutes(CResearchInfo* researchInfo)
 	return number;
 }
 
-unsigned CSystem::CheckTradeRoutesDiplomacy(CBotEDoc& pDoc, const CPoint& ko) {
+unsigned CSystem::CheckTradeRoutesDiplomacy(CBotEDoc& pDoc) {
 	unsigned deletedTradeRoutes = 0;
 	for (int i = 0; i < m_TradeRoutes.GetSize(); i++)
 	{
 		CTradeRoute& trade_route = m_TradeRoutes.GetAt(i);
 		const CPoint& dest = trade_route.GetDestKO();
 		// Wenn die Handelsroute aus diplomatischen Gründen nicht mehr vorhanden sein kann
-		if (!trade_route.CheckTradeRoute(ko, dest, &pDoc))
+		if (!trade_route.CheckTradeRoute(m_KO, dest, &pDoc))
 		{
 			// dann müssen wir diese Route löschen
 			m_TradeRoutes.RemoveAt(i--);
@@ -2518,7 +2523,7 @@ unsigned CSystem::CheckTradeRoutesDiplomacy(CBotEDoc& pDoc, const CPoint& ko) {
 		}
 		// Ansonsten könnte sich die Beziehung zu der Minorrace verbessern
 		else
-			trade_route.PerhapsChangeRelationship(ko, dest, &pDoc);
+			trade_route.PerhapsChangeRelationship(m_KO, dest, &pDoc);
 	}
 	return deletedTradeRoutes;
 }
@@ -2697,7 +2702,7 @@ void CSystem::ResetSystem()
 // Hilfsfunktionen
 //////////////////////////////////////////////////////////////////////
 
-BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector, CGlobalBuildings* globals, CMajor* pMajor)
+BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBuildings* globals, CMajor* pMajor)
 {
 /*	Allgemeine Voraussetzungen
 	--------------------------
@@ -2720,7 +2725,7 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 		return FALSE;
 	// Nur baubar in System mit Name checken
 	if (building->GetOnlyInSystemWithName() != "0" && building->GetOnlyInSystemWithName() != "")
-		if (building->GetOnlyInSystemWithName() != sector->GetName())
+		if (building->GetOnlyInSystemWithName() != GetName())
 			return FALSE;
 	// Nur wirklicher Besitzer des Gebäudes
 	if (building->GetOnlyRace())
@@ -2767,23 +2772,23 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 	// Zuerst Heimatplanet checken
 	if (building->GetOnlyHomePlanet())
 	{
-		if (sector->GetName() == pMajor->GetHomesystemName())
+		if (GetName() == pMajor->GetHomesystemName())
 		{
 			return TRUE;
 		}
 		if (building->GetOnlyOwnColony())
 		{
-			if (sector->GetColonyOwner() == m_sOwnerOfSystem && sector->GetName() != pMajor->GetHomesystemName())
+			if (GetColonyOwner() == m_sOwnerOfSystem && GetName() != pMajor->GetHomesystemName())
 				return TRUE;
 		}
 		if (building->GetOnlyMinorRace())
 		{
-			if (sector->GetMinorRace() == TRUE)
+			if (GetMinorRace() == TRUE)
 				return TRUE;
 		}
 		if (building->GetOnlyTakenSystem())
 		{
-			if (sector->GetTakenSector() == TRUE)
+			if (GetTakenSector() == TRUE)
 				return TRUE;
 		}
 		return FALSE;
@@ -2791,23 +2796,23 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 	// Zuerst eigene Kolonie checken
 	if (building->GetOnlyOwnColony())
 	{
-		if (sector->GetColonyOwner() == m_sOwnerOfSystem && sector->GetName() != pMajor->GetHomesystemName())
+		if (GetColonyOwner() == m_sOwnerOfSystem && GetName() != pMajor->GetHomesystemName())
 		{
 			return TRUE;
 		}
 		if (building->GetOnlyHomePlanet())
 		{
-			if (sector->GetName() == pMajor->GetHomesystemName())
+			if (GetName() == pMajor->GetHomesystemName())
 				return TRUE;
 		}
 		if (building->GetOnlyMinorRace())
 		{
-			if (sector->GetMinorRace() == TRUE)
+			if (GetMinorRace() == TRUE)
 				return TRUE;
 		}
 		if (building->GetOnlyTakenSystem())
 		{
-			if (sector->GetTakenSector() == TRUE)
+			if (GetTakenSector() == TRUE)
 				return TRUE;
 		}
 		return FALSE;
@@ -2815,23 +2820,23 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 	// Zuerst Minorraceplanet checken
 	if (building->GetOnlyMinorRace())
 	{
-		if (sector->GetMinorRace() == TRUE)
+		if (GetMinorRace() == TRUE)
 		{
 			return TRUE;
 		}
 		if (building->GetOnlyHomePlanet())
 		{
-			if (sector->GetName() == pMajor->GetHomesystemName())
+			if (GetName() == pMajor->GetHomesystemName())
 				return TRUE;
 		}
 		if (building->GetOnlyOwnColony())
 		{
-			if (sector->GetColonyOwner() == m_sOwnerOfSystem && sector->GetName() != pMajor->GetHomesystemName())
+			if (GetColonyOwner() == m_sOwnerOfSystem && GetName() != pMajor->GetHomesystemName())
 				return TRUE;
 		}
 		if (building->GetOnlyTakenSystem())
 		{
-			if (sector->GetTakenSector() == TRUE)
+			if (GetTakenSector() == TRUE)
 				return TRUE;
 		}
 		return FALSE;
@@ -2839,23 +2844,23 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 	// Zuerst erobertes System checken
 	if (building->GetOnlyTakenSystem())
 	{
-		if (sector->GetTakenSector() == TRUE)
+		if (GetTakenSector() == TRUE)
 		{
 			return TRUE;
 		}
 		if (building->GetOnlyHomePlanet())
 		{
-			if (sector->GetName() == pMajor->GetHomesystemName())
+			if (GetName() == pMajor->GetHomesystemName())
 				return TRUE;
 		}
 		if (building->GetOnlyOwnColony())
 		{
-			if (sector->GetColonyOwner() == m_sOwnerOfSystem && sector->GetName() != pMajor->GetHomesystemName())
+			if (GetColonyOwner() == m_sOwnerOfSystem && GetName() != pMajor->GetHomesystemName())
 				return TRUE;
 		}
 		if (building->GetOnlyMinorRace())
 		{
-			if (sector->GetMinorRace() == TRUE)
+			if (GetMinorRace() == TRUE)
 				return TRUE;
 		}
 		return FALSE;
@@ -2866,7 +2871,7 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 // Diese private Hilfsfunktion überprüft, ob es einen Nachfolger zu unserem Gebäude in der Liste der baubaren
 // Gebäude (-> flag == 0) oder als stehendes Gebäude (-> flag == 1) im System schon steht. Die Funktion
 // gibt TRUE zurück, wenn wir einen Nachfolger gefunden haben, ansonsten FALSE.
-BOOLEAN CSystem::CheckFollower(BuildingInfoArray* buildings, USHORT id, BOOLEAN flag, BOOLEAN equivalence)
+BOOLEAN CSystem::CheckFollower(const BuildingInfoArray* buildings, USHORT id, BOOLEAN flag, BOOLEAN equivalence)
 {
 	// Checken ob ein potentieller Nachfolger in der Liste der baubaren Gebäude vorkommt
 	if (flag == 0)

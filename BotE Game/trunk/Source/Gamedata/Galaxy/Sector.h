@@ -507,6 +507,9 @@ protected:
 	/// Die Koordinate des Sektors auf der Map
 	CPoint m_KO;
 
+	/// Die Feld mit den einzelnen Planeten in dem Sektor
+	std::vector<CPlanet> m_Planets;
+
 private:
 
 	/// Der Name des Sectors
@@ -561,9 +564,6 @@ private:
 	/// Punktem welche angeben, wer den größten Einfluss auf diesen Sektor hat. Wer die meisten Punkte hat und kein
 	/// anderer in diesem Sektor einen Außenposten oder eine Kolonie besitzt, dem gehört der Sektor
 	map<CString, BYTE> m_byOwnerPoints;
-
-	/// Die Feld mit den einzelnen Planeten in dem Sektor
-	std::vector<CPlanet> m_Planets;
 
 	/// Mögliche Anomalie in dem Sektor (NULL wenn keine vorhanden)
 	CAnomaly* m_pAnomaly;

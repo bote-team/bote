@@ -911,7 +911,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					else
 						m_bDrawTradeRoute = FALSE;
 					// Anzeige gleich aktualisieren
-					pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+					pDoc->GetSystem(p.x, p.y).CalculateVariables();
 					Invalidate();
 				}
 				// konnten wie die Handelsroute aufgrund der diploamtischen Beziehungen nicht hinzufügen, so
@@ -923,7 +923,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 			// Wenn wir eine Handelsroute gelöscht haben, dann aktualisieren
 			else if (numberOfRoutes > pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetSize())
-				pDoc->GetSystem(p.x, p.y).CalculateVariables(pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor);
+				pDoc->GetSystem(p.x, p.y).CalculateVariables();
 		}
 		// Wenn wir eine Ressourcenroute festlegen wollen
 		else if (sector != struct::Sector(-1,-1) && m_bDrawResourceRoute == TRUE)

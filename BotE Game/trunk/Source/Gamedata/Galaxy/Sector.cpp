@@ -1150,7 +1150,7 @@ void CSector::Colonize(CSystem& sy, const CShips& ship, CMajor& major)
 		m_sColonyOwner = shipowner;
 		sy.SetOwnerOfSystem(shipowner);
 		// Gebäude nach einer Kolonisierung bauen
-		sy.BuildBuildingsAfterColonization(this,resources::BuildingInfo,ship.GetColonizePoints());
+		sy.BuildBuildingsAfterColonization(resources::BuildingInfo,ship.GetColonizePoints());
 		// Nachricht an das Imperium senden, das ein System neu kolonisiert wurde
 		CString s = CLoc::GetString("FOUND_COLONY_MESSAGE",FALSE,GetName());
 		CEmpireNews message;
@@ -1182,7 +1182,7 @@ void CSector::Colonize(CSystem& sy, const CShips& ship, CMajor& major)
 	sy.SetHabitants(GetCurrentHabitants());
 
 	sy.CalculateNumberOfWorkbuildings(resources::BuildingInfo);
-	sy.CalculateVariables(m_Planets, &major);
+	sy.CalculateVariables();
 }
 
 void CSector::SystemEventPlanetMovement(CString& message)
