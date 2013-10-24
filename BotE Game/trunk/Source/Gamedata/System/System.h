@@ -59,8 +59,10 @@ public:
 	double GetHabitants() const {return m_dHabitants;}
 
 	// Funktion gibt einen Zeiger auf die Bauliste des Systems zurück.
-	CAssemblyList* GetAssemblyList() {return &m_AssemblyList;}
 	const CAssemblyList* GetAssemblyList() const {
+		return &m_AssemblyList;
+	}
+	CAssemblyList* GetAssemblyList() {
 		return &m_AssemblyList;
 	}
 
@@ -68,21 +70,23 @@ public:
 	CSystemManager& Manager() { return m_Manager; }
 
 	// Funktion gibt einen Zeiger auf alle Produktionswerte und manche Boni des Systems zurück
-	CSystemProd* GetProduction() {return &m_Production;}
 	const CSystemProd* GetProduction() const {return &m_Production;}
+	CSystemProd* GetProduction() {return &m_Production;}
 
 	// Funktion gibt einen Zeiger auf das Feld aller Gebäude im System zurück.
-	BuildingArray* GetAllBuildings() {return &m_Buildings;}
 	const BuildingArray* GetAllBuildings() const {
+		return &m_Buildings;
+	}
+	BuildingArray* GetAllBuildings() {
 		return &m_Buildings;
 	}
 
 	// Funktionen geben jeweils einen Zeiger auf das Feld mit den Informationen über baubare Gebäude,
 	// baubare Updates oder baubaren Schiffen in dem System zurück.
-	CArray<short,short>* GetBuildableBuildings() {return &m_BuildableBuildings;}
-	CArray<short,short>* GetBuildableUpdates() {return &m_BuildableUpdates;}
-	CArray<short,short>* GetBuildableShips() {return &m_BuildableShips;}
-	CArray<BYTE,BYTE>*   GetBuildableTroops() {return &m_BuildableTroops;}
+	const CArray<short,short>* GetBuildableBuildings() const {return &m_BuildableBuildings;}
+	const CArray<short,short>* GetBuildableUpdates() const {return &m_BuildableUpdates;}
+	const CArray<short,short>* GetBuildableShips() const {return &m_BuildableShips;}
+	const CArray<BYTE,BYTE>*   GetBuildableTroops() const {return &m_BuildableTroops;}
 
 	// Funktion gibt die Anzahl oder die RunningNumber (ID) der Gebäude zurück, welche Arbeiter benötigen.
 	// Wir übergeben dafür als Parameter den Typ des Gebäudes (FARM, BAUHOF usw.) und einen Modus.
@@ -143,12 +147,15 @@ public:
 	USHORT GetBuildingDestroy(int RunningNumber);
 
 	/// Funktion gibt einen Zeiger auf die Handelsrouten von diesem System aus zurück
+	const CArray<CTradeRoute>* GetTradeRoutes() const {return &m_TradeRoutes;}
 	CArray<CTradeRoute>* GetTradeRoutes() {return &m_TradeRoutes;}
 
 	/// Funktion gibt einen Zeiger auf die Ressourcenrouten, welche in dieses System führen zurück.
+	const CArray<CResourceRoute>* GetResourceRoutes() const {return &m_ResourceRoutes;}
 	CArray<CResourceRoute>* GetResourceRoutes() {return &m_ResourceRoutes;}
 
 	/// Funktion gibt einen Zeiger auf die stationierten Truppen in diesem System zurück.
+	const CArray<CTroop>* GetTroops() const {return &m_Troops;}
 	CArray<CTroop>* GetTroops() {return &m_Troops;}
 
 	/// Funktion gibt zurück, ob die Autobaufunktion in dem System aktiviert ist.
