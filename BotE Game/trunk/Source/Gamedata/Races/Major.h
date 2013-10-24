@@ -176,6 +176,8 @@ public:
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
 	virtual void Reset(void);
 
+	float CreditsMulti() const;
+
 protected:
 	// Attribute
 	bool				m_bPlayer;						///< wird die Rasse von einem menschlichen Spieler gespielt?

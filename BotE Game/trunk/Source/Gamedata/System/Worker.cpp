@@ -303,3 +303,14 @@ void CWorker::FreeAll()
 	assert(m_iAllWorkers == m_iFreeWorkers);
 }
 
+int CWorker::Cap(WORKER::Typ type, int number)
+{
+	const int is = GetWorker(type);
+	if(number < is)
+	{
+		SetWorker(type, number);
+		return number;
+	}
+	return is;
+}
+

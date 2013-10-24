@@ -237,8 +237,6 @@ public:
 	// Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der Systemklasse.
 	void CalculateVariables();
 
-	void CalculatePotentials();
-
 	// Funktion berechnet die Lagerinhalte des Systems. Aufrufen bei Ende bzw. Beginn einer neuen Runde.
 	// Gibt die Funktion TRUE zurück hat sich das System Aufgrund zu schlechter Moral vom Besitzer losgesagt.
 	BOOLEAN CalculateStorages(CResearchInfo* researchInfo, int diliAdd);
@@ -441,6 +439,8 @@ private:
 	BOOLEAN m_bAutoBuild;
 
 	CSystemManager m_Manager;
+
+	int GetXBuildings(WORKER::Typ x) const;
 
 	// private Hilfsfunktionen (mal schauen ob wir die direkt in die cpp-Datei schreiben können)
 	BOOLEAN CheckGeneralConditions(const CBuildingInfo* building, CGlobalBuildings* globals, CMajor* pMajor);

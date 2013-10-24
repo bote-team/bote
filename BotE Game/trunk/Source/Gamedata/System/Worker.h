@@ -37,6 +37,7 @@ public:
 	void CalculateFreeWorkers();
 	void CheckWorkers();	// Fkt. überprüft, ob wir nicht zuviele Arbeiter eingestellt haben
 	void FreeAll();
+	int Cap(WORKER::Typ type, int number);
 
 private:
 	BYTE m_iFoodWorker;

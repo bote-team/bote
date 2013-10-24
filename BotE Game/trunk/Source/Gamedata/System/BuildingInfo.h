@@ -413,6 +413,8 @@ public:
 	bool IsDeritiumRefinery() const;
 	bool IsAcceptableMinusMoral() const;
 
+	int GetXProd(WORKER::Typ x) const;
+
 private:
 	// Die laufende Nummer (ID) des Gebäudes
 	USHORT m_iRunningNumber;

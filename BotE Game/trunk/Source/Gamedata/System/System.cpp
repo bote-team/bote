@@ -703,132 +703,67 @@ void CSystem::CalculateVariables()
 	assert(pOwner);
 	const CResearchInfo* const ResearchInfo = pOwner->GetEmpire()->GetResearch()->GetResearchInfo();
 	const BuildingInfoArray* const buildingInfos = resources::BuildingInfo;
-	const CString *const sMonopolOwner = CTrade::GetMonopolOwner();
 
-	int NumberOfBuildings;
-	NumberOfBuildings = m_Buildings.GetSize();
+	const int NumberOfBuildings = m_Buildings.GetSize();
 	// Alle werde wieder auf NULL setzen
 	m_Production.Reset();
 	// Die Anzahl der Arbeiter aus der aktuellen Bevölkerung berechnen und auch an die Klasse CWorker übergeben
 	m_Workers.SetWorker(WORKER::ALL_WORKER,(int)(m_dHabitants));
 	m_Workers.CheckWorkers();
+
 	// Die Creditsprod. aus der Bevölkerung berechnen und modifizieren durch jeweilige Rasseneigenschaft
 	m_Production.m_iCreditsProd = (int)(m_dHabitants);
+	m_Production.m_iCreditsProd = (int)(m_Production.m_iCreditsProd * pOwner->CreditsMulti());
 
-	float fCreditsMulti = 1.0f;
-	if (pOwner->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
-		fCreditsMulti += 0.5f;
-	if (pOwner->IsRaceProperty(RACE_PROPERTY::PRODUCER))
-		fCreditsMulti += 0.25f;
-	if (pOwner->IsRaceProperty(RACE_PROPERTY::WARLIKE) || pOwner->IsRaceProperty(RACE_PROPERTY::HOSTILE))
-		fCreditsMulti -= 0.1f;
-	if (pOwner->IsRaceProperty(RACE_PROPERTY::SNEAKY))
-		fCreditsMulti -= 0.2f;
-	if (pOwner->IsRaceProperty(RACE_PROPERTY::SECRET))
-		fCreditsMulti -= 0.25f;
-	if (pOwner->IsRaceProperty(RACE_PROPERTY::SOLOING))
-		fCreditsMulti -= 0.5f;
 
-	fCreditsMulti = max(fCreditsMulti, 0.0f);
-	m_Production.m_iCreditsProd = (int)(m_Production.m_iCreditsProd * fCreditsMulti);
 	// Die Gebäude online setzen, wenn das Objekt der Klasse CWorker das sagt
 	// zuerst die Anzahl der Arbeiter auslesen und schauen ob die Arbeiter vielleicht größer sind als die
 	// Anzahl der jeweiligen Gebäude (z.B. durch Abriß aus letzter Runde) -> dann Arbeiter auf Gebäudeanzahl verringern
-	if (m_Workers.GetWorker(WORKER::FOOD_WORKER) > m_iFoodBuildings) m_Workers.SetWorker(WORKER::FOOD_WORKER,m_iFoodBuildings);
-	unsigned short foodWorker = m_Workers.GetWorker(WORKER::FOOD_WORKER);
-	if (m_Workers.GetWorker(WORKER::INDUSTRY_WORKER) > m_iIndustryBuildings) m_Workers.SetWorker(WORKER::INDUSTRY_WORKER,m_iIndustryBuildings);
-	unsigned short industryWorker = m_Workers.GetWorker(WORKER::INDUSTRY_WORKER);
-	if (m_Workers.GetWorker(WORKER::ENERGY_WORKER) > m_iEnergyBuildings) m_Workers.SetWorker(WORKER::ENERGY_WORKER,m_iEnergyBuildings);
-	unsigned short energyWorker = m_Workers.GetWorker(WORKER::ENERGY_WORKER);
-	if (m_Workers.GetWorker(WORKER::SECURITY_WORKER) > m_iSecurityBuildings) m_Workers.SetWorker(WORKER::SECURITY_WORKER,m_iSecurityBuildings);
-	unsigned short securityWorker = m_Workers.GetWorker(WORKER::SECURITY_WORKER);
-	if (m_Workers.GetWorker(WORKER::RESEARCH_WORKER) > m_iResearchBuildings) m_Workers.SetWorker(WORKER::RESEARCH_WORKER,m_iResearchBuildings);
-	unsigned short researchWorker = m_Workers.GetWorker(WORKER::RESEARCH_WORKER);
-	if (m_Workers.GetWorker(WORKER::TITAN_WORKER) > m_iTitanMines) m_Workers.SetWorker(WORKER::TITAN_WORKER,m_iTitanMines);
-	unsigned short titanWorker = m_Workers.GetWorker(WORKER::TITAN_WORKER);
-	if (m_Workers.GetWorker(WORKER::DEUTERIUM_WORKER) > m_iDeuteriumMines) m_Workers.SetWorker(WORKER::DEUTERIUM_WORKER,m_iDeuteriumMines);
-	unsigned short deuteriumWorker = m_Workers.GetWorker(WORKER::DEUTERIUM_WORKER);
-	if (m_Workers.GetWorker(WORKER::DURANIUM_WORKER) > m_iDuraniumMines) m_Workers.SetWorker(WORKER::DURANIUM_WORKER,m_iDuraniumMines);
-	unsigned short duraniumWorker = m_Workers.GetWorker(WORKER::DURANIUM_WORKER);
-	if (m_Workers.GetWorker(WORKER::CRYSTAL_WORKER) > m_iCrystalMines) m_Workers.SetWorker(WORKER::CRYSTAL_WORKER,m_iCrystalMines);
-	unsigned short crystalWorker = m_Workers.GetWorker(WORKER::CRYSTAL_WORKER);
-	if (m_Workers.GetWorker(WORKER::IRIDIUM_WORKER) > m_iIridiumMines) m_Workers.SetWorker(WORKER::IRIDIUM_WORKER,m_iIridiumMines);
-	unsigned short iridiumWorker = m_Workers.GetWorker(WORKER::IRIDIUM_WORKER);
+	assert(WORKER::FOOD_WORKER == 0 && WORKER::IRIDIUM_WORKER == 9);
+	std::vector<int> workers;
+	workers.reserve(10);
+	for(int i = WORKER::FOOD_WORKER; i <= WORKER::IRIDIUM_WORKER; ++i)
+	{
+		WORKER::Typ type = static_cast<WORKER::Typ>(i);
+		workers.push_back(m_Workers.Cap(type, GetXBuildings(type)));
+	}
 
 	// Wenn wir Handelsgüter in der Bauliste stehen haben, dann Anzahl der Online-Fabs in Credits umrechnen
-	if (m_AssemblyList.GetAssemblyListEntry(0) == 0)
-		m_Production.m_iCreditsProd += industryWorker;
+	if (m_AssemblyList.IsEmpty())
+		m_Production.m_iCreditsProd += workers.at(static_cast<int>(WORKER::INDUSTRY_WORKER));
 
 	// Die einzelnen Produktionen berechnen
+	int ind_buildings_used = 0;//tracking variables for industry/energy potentials to not use more than ALL_WORKERS
+	int energy_buildings_used = 0;
 	for (int i = 0; i < NumberOfBuildings; i++)
 	{
 		const CBuildingInfo* buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
 
 		// Bei einer Blockade werden auch die Werften offline gesetzt
 		if (m_byBlockade >= 100 && buildingInfo->GetShipYard() && buildingInfo->GetNeededEnergy() > 0)
-			m_Buildings.GetAt(i).SetIsBuildingOnline(FALSE);
+			m_Buildings.ElementAt(i).SetIsBuildingOnline(FALSE);
 
 		// Gebäude offline setzen
 		if (buildingInfo->GetWorker() == TRUE)
 		{
 			m_Buildings.ElementAt(i).SetIsBuildingOnline(FALSE);
-			// Jetzt wieder wenn möglich online setzen
-			if (buildingInfo->GetFoodProd() > 0 && foodWorker > 0)
-			{
-				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-				foodWorker--;
-			}
-			else if (buildingInfo->GetIPProd() > 0 && industryWorker > 0)
-			{
-				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-				industryWorker--;
-			}
-			else if (buildingInfo->GetEnergyProd() > 0 && energyWorker > 0)
-			{
-				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-				energyWorker--;
-			}
-			else if (buildingInfo->GetSPProd() > 0 && securityWorker > 0)
-			{
-				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-				securityWorker--;
-			}
-			else if (buildingInfo->GetFPProd() > 0 && researchWorker > 0)
-			{
-				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-				researchWorker--;
-			}
-			else if (buildingInfo->GetTitanProd() > 0 && titanWorker > 0)
-			{
-				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-				titanWorker--;
-			}
-			else if (buildingInfo->GetDeuteriumProd() > 0 && deuteriumWorker > 0)
-			{
-				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-				deuteriumWorker--;
-			}
-			else if (buildingInfo->GetDuraniumProd() > 0 && duraniumWorker > 0)
-			{
-				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-				duraniumWorker--;
-			}
-			else if (buildingInfo->GetCrystalProd() > 0 && crystalWorker > 0)
-			{
-				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-				crystalWorker--;
-			}
-			else if (buildingInfo->GetIridiumProd() > 0 && iridiumWorker > 0)
-			{
-				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-				iridiumWorker--;
-			}
-		}
 
+			// Jetzt wieder wenn möglich online setzen
+			for(std::vector<int>::iterator it = workers.begin(); it != workers.end(); ++it)
+				if(*it > 0 && buildingInfo->GetXProd(static_cast<WORKER::Typ>(it - workers.begin())) > 0)
+				{
+					--*it;
+					m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
+				}
+			if(buildingInfo->GetEnergyProd() > 0)
+				++energy_buildings_used;
+			if(buildingInfo->GetIPProd() > 0)
+				++ind_buildings_used;
+		}
 		// Die einzelnen Produktionen berechnen (ohne Boni)
-		// vorher noch schauen, ob diese Gebäude auch online sind
-		if (m_Buildings.GetAt(i).GetIsBuildingOnline() == TRUE)
-			m_Production.CalculateProduction(buildingInfo);
+		m_Production.CalculateProduction(buildingInfo, m_Buildings.ElementAt(i).GetIsBuildingOnline(),
+			ind_buildings_used <= m_Workers.GetWorker(WORKER::ALL_WORKER),
+			energy_buildings_used <= m_Workers.GetWorker(WORKER::ALL_WORKER));
 	}
 
 	// falls vorhanden, deaktiverte Produktionen auf 0 setzen
@@ -838,6 +773,7 @@ void CSystem::CalculateVariables()
 	m_Production.m_iCreditsProd += CreditsFromTradeRoutes();
 
 	// Besitzt jemand ein Monopol auf eine Ressource, so verdoppelt sich seine Produktion
+	const CString *const sMonopolOwner = CTrade::GetMonopolOwner();
 	if (sMonopolOwner[RESOURCES::TITAN] == m_sOwnerOfSystem)
 		m_Production.m_iTitanProd *= 2;
 	if (sMonopolOwner[RESOURCES::DEUTERIUM] == m_sOwnerOfSystem)
@@ -870,8 +806,7 @@ void CSystem::CalculateVariables()
 		const CBuildingInfo* buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
 
 		// Hier die nötige Energie von der produzierten abziehen, geht aber nur hier, wenn wir keine Boni zur Energie reinmachen
-		if (m_Buildings.GetAt(i).GetIsBuildingOnline() == TRUE && buildingInfo->GetNeededEnergy() > 0)
-			//m_Production.m_iEnergyProd -= m_Buildings.GetAt(i).GetNeededEnergy();
+		if (m_Buildings.GetAt(i).GetIsBuildingOnline() && buildingInfo->GetNeededEnergy() > 0)
 			neededEnergy += buildingInfo->GetNeededEnergy();
 
 		if (m_Buildings.GetAt(i).GetIsBuildingOnline() == TRUE)
@@ -924,7 +859,9 @@ void CSystem::CalculateVariables()
 
 	m_Production.m_iFoodProd		+= (int)(tmpFoodBoni*m_Production.m_iFoodProd/100);
 	m_Production.m_iIndustryProd	+= (int)(tmpIndustryBoni*m_Production.m_iIndustryProd/100);
+	m_Production.m_iPotentialIndustryProd += tmpIndustryBoni*m_Production.m_iPotentialIndustryProd/100;
 	m_Production.m_iEnergyProd		+= (int)(tmpEnergyBoni*m_Production.m_iEnergyProd/100);
+	m_Production.m_iPotentialEnergyProd += tmpEnergyBoni*m_Production.m_iPotentialEnergyProd/100;
 	m_Production.m_iSecurityProd	+= (int)(tmpSecurityBoni*m_Production.m_iSecurityProd/100);
 	m_Production.m_iResearchProd	+= (int)(tmpResearchBoni*m_Production.m_iResearchProd/100);
 	m_Production.m_iTitanProd		+= (int)(tmpTitanBoni*m_Production.m_iTitanProd/100);
@@ -940,7 +877,9 @@ void CSystem::CalculateVariables()
 	{
 		//m_Production.m_iFoodProd		-= (int)(m_byBlockade * m_Production.m_iFoodProd/100);
 		m_Production.m_iIndustryProd	-= (int)(m_byBlockade * m_Production.m_iIndustryProd/100);
+		m_Production.m_iPotentialIndustryProd	-= m_byBlockade * m_Production.m_iPotentialIndustryProd/100;
 		//m_Production.m_iEnergyProd	-= (int)(m_byBlockade * m_Production.m_iEnergyProd/100);
+		//m_Production.m_iPotentialEnergyProd	-= m_byBlockade * m_Production.m_iPotentialEnergyProd/100;
 		m_Production.m_iSecurityProd	-= (int)(m_byBlockade * m_Production.m_iSecurityProd/100);
 		m_Production.m_iResearchProd	-= (int)(m_byBlockade * m_Production.m_iResearchProd/100);
 		m_Production.m_iTitanProd		-= (int)(m_byBlockade * m_Production.m_iTitanProd/100);
@@ -964,9 +903,15 @@ void CSystem::CalculateVariables()
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Wirtschaft" -> 10% mehr Industrie
 	if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
+	{
+
 		m_Production.m_iIndustryProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(1)*m_Production.m_iIndustryProd/100);
+		m_Production.m_iPotentialIndustryProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(1)*m_Production.m_iPotentialIndustryProd/100);
+	}
 	else if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+	{
 		m_Production.m_iCreditsProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(3) * m_Production.m_iCreditsProd / 100);
+	}
 	// Hier die Boni durch die Uniqueforschung "Produktion"
 	if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 		m_Production.m_iFoodProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(1)*m_Production.m_iFoodProd/100);
@@ -980,8 +925,10 @@ void CSystem::CalculateVariables()
 	}
 	// Wenn wir die Uniqueforschung "Produktion" gewählt haben, und dort mehr Energie haben wollen -> 20% mehr!
 	else if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+	{
 		m_Production.m_iEnergyProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(3)*m_Production.m_iEnergyProd/100);
-
+		m_Production.m_iPotentialEnergyProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(3)*m_Production.m_iPotentialEnergyProd/100);
+	}
 	// Hier die Boni durch die Uniqueforschung "Forschung und Sicherheit"
 	if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 		m_Production.m_iResearchProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY)->GetBonus(1)*m_Production.m_iResearchProd/100);
@@ -1011,26 +958,6 @@ void CSystem::CalculateVariables()
 
 	// Jetzt noch die freien Arbeiter berechnen
 	m_Workers.CalculateFreeWorkers();
-}
-
-void CSystem::CalculatePotentials()
-{
-	const CWorker prev(m_Workers);
-
-	int workers = min(GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 0), GetWorker(WORKER::ALL_WORKER));
-	m_Workers.FreeAll();
-	SetWorker(WORKER::ENERGY_WORKER, SET_WORKER_MODE_SET, workers);
-	CalculateVariables();
-	m_Production.m_iPotentialEnergyProd = m_Production.m_iMaxEnergyProd;
-
-	workers = min(GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 0), GetWorker(WORKER::ALL_WORKER));
-	m_Workers.FreeAll();
-	SetWorker(WORKER::INDUSTRY_WORKER, SET_WORKER_MODE_SET, workers);
-	CalculateVariables();
-	m_Production.m_iPotentialIndustryProd = m_Production.m_iIndustryProd;
-
-	m_Workers = prev;
-	CalculateVariables();
 }
 
 // Funktion berechnet die Lagerinhalte des Systems. Aufrufen bei Ende bzw. Beginn einer neuen Runde.
@@ -3252,4 +3179,23 @@ void CSystem::Colonize(const CShips& ship, CMajor& major)
 
 	CalculateNumberOfWorkbuildings(resources::BuildingInfo);
 	CalculateVariables();
+}
+
+int CSystem::GetXBuildings(WORKER::Typ x) const
+{
+	switch(x)
+	{
+		case WORKER::FOOD_WORKER: return m_iFoodBuildings;
+		case WORKER::INDUSTRY_WORKER: return m_iIndustryBuildings;
+		case WORKER::ENERGY_WORKER: return m_iEnergyBuildings;
+		case WORKER::SECURITY_WORKER: return m_iSecurityBuildings;
+		case WORKER::RESEARCH_WORKER: return m_iResearchBuildings;
+		case WORKER::TITAN_WORKER: return m_iTitanMines;
+		case WORKER::DEUTERIUM_WORKER: return m_iDeuteriumMines;
+		case WORKER::DURANIUM_WORKER: return m_iDuraniumMines;
+		case WORKER::CRYSTAL_WORKER: return m_iCrystalMines;
+		case WORKER::IRIDIUM_WORKER: return m_iIridiumMines;
+	}
+	assert(false);
+	return 0;
 }

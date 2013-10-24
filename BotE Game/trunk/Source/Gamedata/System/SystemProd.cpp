@@ -284,8 +284,14 @@ void CSystemProd::Serialize(CArchive &ar)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 // Funktion berechnet die neuen Produktionen im System die sich durch das übergebene Gebäude ergeben
-void CSystemProd::CalculateProduction(const CBuildingInfo* building)
+void CSystemProd::CalculateProduction(const CBuildingInfo* building, bool is_online, bool ind_pot, bool en_pot)
 {
+	if(ind_pot)
+		m_iPotentialIndustryProd +=  building->GetIPProd();
+	if(en_pot)
+		m_iPotentialEnergyProd += building->GetEnergyProd();
+	if(!is_online)
+		return;
 	m_iFoodProd			+= building->GetFoodProd();
 	m_iIndustryProd		+= building->GetIPProd();
 	m_iEnergyProd		+= building->GetEnergyProd();
@@ -357,10 +363,16 @@ void CSystemProd::DisableProductions(const bool* vDisabledProductions)
 		m_iFoodProd = m_iMaxFoodProd = 0;
 
 	if (vDisabledProductions[WORKER::INDUSTRY_WORKER])
+	{
 		m_iIndustryProd = 0;
+		m_iPotentialIndustryProd = 0;
+	}
 
 	if (vDisabledProductions[WORKER::ENERGY_WORKER])
+	{
 		m_iEnergyProd = m_iMaxEnergyProd = 0;
+		m_iPotentialEnergyProd = 0;
+	}
 
 	if (vDisabledProductions[WORKER::SECURITY_WORKER])
 		m_iSecurityProd = 0;
@@ -389,6 +401,7 @@ void CSystemProd::IncludeSystemMoral(short moral)
 	m_iFoodProd		= (int)(m_iFoodProd * moral/100);
 	m_iMaxFoodProd	= m_iFoodProd;
 	m_iIndustryProd = (int)(m_iIndustryProd * moral/100);	// Energie bis jetzt ausgeschlossen
+	m_iPotentialIndustryProd = (int)(m_iPotentialIndustryProd * moral/100);
 	m_iSecurityProd = (int)(m_iSecurityProd * moral/100);
 	m_iResearchProd = (int)(m_iResearchProd * moral/100);
 	m_iTitanProd	= (int)(m_iTitanProd * moral/100);
@@ -427,8 +440,10 @@ void CSystemProd::Reset()
 	m_iFoodProd = 10;				// Nahrungsproduktion in dem System
 	m_iMaxFoodProd = 0;				// Nahrungsproduktion in dem System ohne Bevölkerungsabzug
 	m_iIndustryProd = 5;			// Industrieproduktion in dem System
+	m_iPotentialIndustryProd = m_iIndustryProd;
 	m_iEnergyProd = 0;				// Energyproduktion in dem System
 	m_iMaxEnergyProd = 0;			// Energieproduktion in dem System ohne Abzug des Energieverbrauchs
+	m_iPotentialEnergyProd = m_iEnergyProd;
 	m_iSecurityProd = 0;			// Geheimdienstproduktion in dem System
 	m_iResearchProd = 0;			// Forschungspunkteproduktion in dem System
 	m_iTitanProd = 0;				// Titanproduktion in dem System

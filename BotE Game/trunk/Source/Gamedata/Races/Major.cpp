@@ -566,3 +566,23 @@ short CMajor::BestBuildableVariant(SHIP_TYPE::Typ type, const CArray<CShipInfo, 
 	}
 	return id;
 }
+
+float CMajor::CreditsMulti() const
+{
+	float fCreditsMulti = 1.0f;
+	if (IsRaceProperty(RACE_PROPERTY::FINANCIAL))
+		fCreditsMulti += 0.5f;
+	if (IsRaceProperty(RACE_PROPERTY::PRODUCER))
+		fCreditsMulti += 0.25f;
+	if (IsRaceProperty(RACE_PROPERTY::WARLIKE) || IsRaceProperty(RACE_PROPERTY::HOSTILE))
+		fCreditsMulti -= 0.1f;
+	if (IsRaceProperty(RACE_PROPERTY::SNEAKY))
+		fCreditsMulti -= 0.2f;
+	if (IsRaceProperty(RACE_PROPERTY::SECRET))
+		fCreditsMulti -= 0.25f;
+	if (IsRaceProperty(RACE_PROPERTY::SOLOING))
+		fCreditsMulti -= 0.5f;
+
+	fCreditsMulti = max(fCreditsMulti, 0.0f);
+	return fCreditsMulti;
+}

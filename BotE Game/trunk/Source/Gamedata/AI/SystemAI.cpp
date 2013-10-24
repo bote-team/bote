@@ -1025,8 +1025,7 @@ void CSystemAI::CalcProd()
 		}
 		// Die einzelnen Produktionen berechnen (ohne Boni)
 		// vorher noch schauen, ob diese Gebäude auch online sind
-		if (pSystem->GetAllBuildings()->GetAt(i).GetIsBuildingOnline() == TRUE)
-			pProduction->CalculateProduction(buildingInfo);
+		pProduction->CalculateProduction(buildingInfo, pSystem->GetAllBuildings()->GetAt(i).GetIsBuildingOnline() == TRUE);
 	}
 
 	// falls vorhanden, deaktiverte Produktionen auf 0 setzen

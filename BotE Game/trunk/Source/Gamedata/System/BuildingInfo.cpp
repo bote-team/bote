@@ -6,6 +6,8 @@
 #include "BuildingInfo.h"
 #include "General/Loc.h"
 
+#include <cassert>
+
 IMPLEMENT_SERIAL (CBuildingInfo, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -945,4 +947,23 @@ bool CBuildingInfo::IsAcceptableMinusMoral() const
 		GreaterThanEqualToZero(m_iPropulsionTechBoni) &&
 		GreaterThanEqualToZero(m_iConstructionTechBoni) &&
 		GreaterThanEqualToZero(m_iWeaponTechBoni);
+}
+
+int CBuildingInfo::GetXProd(WORKER::Typ x) const
+{
+	switch(x)
+	{
+		case WORKER::FOOD_WORKER: return m_iFood;
+		case WORKER::INDUSTRY_WORKER: return m_iIP;
+		case WORKER::ENERGY_WORKER: return m_iEnergy;
+		case WORKER::SECURITY_WORKER: return m_iSP;
+		case WORKER::RESEARCH_WORKER: return m_iFP;
+		case WORKER::TITAN_WORKER: return m_iTitan;
+		case WORKER::DEUTERIUM_WORKER: return m_iDeuterium;
+		case WORKER::DURANIUM_WORKER: return m_iDuranium;
+		case WORKER::CRYSTAL_WORKER: return m_iCrystal;
+		case WORKER::IRIDIUM_WORKER: return m_iIridium;
+	}
+	assert(false);
+	return 0;
 }

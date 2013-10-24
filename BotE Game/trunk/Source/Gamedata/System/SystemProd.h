@@ -130,7 +130,7 @@ public:
 
 // sonstige Funktionen
 	// Funktion berechnet die neuen Produktionen im System die sich durch das übergebene Gebäude ergeben
-	void CalculateProduction(const CBuildingInfo*);
+	void CalculateProduction(const CBuildingInfo*, bool is_online, bool ind_pot = false, bool en_pot = false);
 
 	/// Funktion zum deaktivieren bestimmter Produktionen
 	/// @param vDisabledProductions Array mit zu deaktiverenden Produktionen
@@ -153,10 +153,11 @@ private:
 	int m_iFoodProd;				///< Nahrungsproduktion in dem System
 	int m_iMaxFoodProd;				///< Nahrungsproduktion in dem System ohne Bevölkerungsabzug
 	int m_iIndustryProd;			///< Industrieproduktion in dem System
-	int m_iPotentialIndustryProd;
+	int m_iPotentialIndustryProd;	//not calculated correctly for AI probably
 	int m_iEnergyProd;				///< Energyproduktion in dem System
 	int m_iMaxEnergyProd;			///< Energieproduktion ohne den Energieverbrauch mancher Gebäude
-	int m_iPotentialEnergyProd;		//all energy buildings filled as far as workers available
+	int m_iPotentialEnergyProd;		//all energy buildings filled as far as workers available;
+	//not calculated correctly for AI probably
 	int m_iSecurityProd;			///< Geheimdienstproduktion in dem System
 	int m_iResearchProd;			///< Forschungspunkteproduktion in dem System
 	int m_iTitanProd;				///< Titanproduktion in dem System

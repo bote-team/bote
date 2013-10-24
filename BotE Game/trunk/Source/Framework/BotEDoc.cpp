@@ -3423,7 +3423,6 @@ void CBotEDoc::CalcNewRoundData()
 			new_round_data_calc.CheckRoutes(*it, pMajor);
 
 			it->CalculateVariables();
-			it->CalculatePotentials();
 
 			const CSystemProd* const production = it->GetProduction();
 			// Haben wir eine online Schiffswerft im System, dann ShipPort in dem Sektor setzen
