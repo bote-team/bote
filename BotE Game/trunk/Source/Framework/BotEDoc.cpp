@@ -139,15 +139,6 @@ CBotEDoc::~CBotEDoc()
 		m_pNetworkHandler = NULL;
 	}
 
-	for(std::vector<CSector>::iterator sector = m_Sectors.begin();
-		sector != m_Sectors.end(); ++sector) {
-		sector->Reset();
-	}
-	for(std::vector<CSystem>::iterator system = m_Systems.begin();
-		system != m_Systems.end(); ++system) {
-		system->ResetSystem();;
-	}
-
 	// stop MT
 	MYTRACE_DEINIT;
 }
@@ -267,7 +258,7 @@ void CBotEDoc::Serialize(CArchive& ar)
 		ar >> m_ptKO;
 		ar >> STARMAP_SECTORS_HCOUNT;
 		ar >> STARMAP_SECTORS_VCOUNT;
-		AllocateSectorsAndSystems();
+		AllocateSystems();
 
 		// Hauptrassen-Koordinaten laden
 		m_mRaceKO.clear();
@@ -338,7 +329,7 @@ void CBotEDoc::Serialize(CArchive& ar)
 		// Spieler den Majors zuweisen
 		map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-			it->second->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
+			it->second->GetEmpire()->GenerateSystemList(m_Systems);
 	}
 
 	m_VictoryObserver.Serialize(ar);
@@ -352,8 +343,8 @@ void CBotEDoc::SerializeSectorsAndSystems(CArchive& ar)
 		{
 			CSector& sector = GetSector(x,y);
 			CSystem& system = GetSystem(x,y);
-			if (ar.IsLoading())
-				system.ResetSystem();
+			//if (ar.IsLoading())
+			//	system.ResetSystem();
 			sector.Serialize(ar);
 			if (sector.GetSunSystem())
 			{
@@ -400,7 +391,7 @@ void CBotEDoc::SerializeBeginGameData(CArchive& ar)
 		// Kartengröße und Initialisierung
 		ar >> STARMAP_SECTORS_HCOUNT;
 		ar >> STARMAP_SECTORS_VCOUNT;
-		AllocateSectorsAndSystems();
+		AllocateSystems();
 		// Hauptrassen-Koordinaten empfangen
 		m_mRaceKO.clear();
 		size_t mapSize = 0;
@@ -545,7 +536,7 @@ void CBotEDoc::SerializeNextRoundData(CArchive &ar)
 		// Systemliste der Imperien erstellen
 		map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-			it->second->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
+			it->second->GetEmpire()->GenerateSystemList(m_Systems);
 	}
 	MYTRACE("general")(MT::LEVEL_INFO, "... serialization of NextRoundData succesfull\n");
 }
@@ -932,21 +923,8 @@ void CBotEDoc::GenerateGalaxy()
 		STARMAP_SECTORS_HCOUNT = nMapWidth;
 
 	// Vektoren für Sektoren und Systeme anlegen
-	AllocateSectorsAndSystems();
+	AllocateSystems();
 
-	///////////////////////////////////////////////////////////////////////
-	// Alles auf Ausgangswerte setzen
-	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-	{
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-		{
-			// Alle Werte der Systemklasse wieder auf NULL setzen
-			GetSystem(x, y).ResetSystem();
-			// Alle Werte der Sektorklasse wieder auf NULL setzen
-			GetSector(x, y).Reset();
-			GetSector(x, y).SetKO(x,y);
-		}
-	}
 	m_mRaceKO.clear();
 
 	///////////////////////////////////////////////////////////////////////
@@ -1672,40 +1650,39 @@ void CBotEDoc::ApplyBuildingsAtStartup()
 		pMajor->CreateStarmap();
 	}
 	// Anomalien beachten (ist für jede Starmap gleich, daher statisch)
-	CStarmap::SynchronizeWithAnomalies(m_Sectors);
+	CStarmap::SynchronizeWithAnomalies(m_Systems);
 
-	for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
+	for(std::vector<CSystem>::iterator system = m_Systems.begin(); system != m_Systems.end(); ++system)
 	{
-		CSystem& system = GetSystemForSector(*sector);
-		if (sector->GetSunSystem() == TRUE)
+		if (system->GetSunSystem() == TRUE)
 		{
-			system.SetHabitants(sector->GetCurrentHabitants());
+			system->SetHabitants(system->GetCurrentHabitants());
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			{
-				if (system.GetOwnerOfSystem() == it->first)
+				if (system->GetOwnerOfSystem() == it->first)
 				{
 					CMajor* pMajor = it->second;
 					ASSERT(pMajor);
 					// Anzahl aller Farmen, Bauhöfe usw. im System berechnen
 					// baubare Gebäude, Schiffe und Truppen berechnen
-					system.CalculateNumberOfWorkbuildings(&this->BuildingInfo);
-					system.SetWorkersIntoBuildings();
-					system.CalculateVariables(sector->GetPlanets(), pMajor);
+					system->CalculateNumberOfWorkbuildings(&this->BuildingInfo);
+					system->SetWorkersIntoBuildings();
+					system->CalculateVariables(system->GetPlanets(), pMajor);
 					// alle produzierten FP und SP der Imperien berechnen und zuweisen
 					int currentPoints;
-					currentPoints = system.GetProduction()->GetResearchProd();
+					currentPoints = system->GetProduction()->GetResearchProd();
 					pMajor->GetEmpire()->AddFP(currentPoints);
-					currentPoints = system.GetProduction()->GetSecurityProd();
+					currentPoints = system->GetProduction()->GetSecurityProd();
 					pMajor->GetEmpire()->AddSP(currentPoints);
 					// Schiffsunterstützungskosten eintragen
-					float fCurrentHabitants = sector->GetCurrentHabitants();
+					float fCurrentHabitants = system->GetCurrentHabitants();
 					pMajor->GetEmpire()->AddPopSupportCosts((UINT)fCurrentHabitants * POPSUPPORT_MULTI);
 				}
 			}
-			for (int i = 0; i < system.GetAllBuildings()->GetSize(); i++)
+			for (int i = 0; i < system->GetAllBuildings()->GetSize(); i++)
 			{
-				USHORT nID = system.GetAllBuildings()->GetAt(i).GetRunningNumber();
-				CString sRaceID = system.GetOwnerOfSystem();
+				USHORT nID = system->GetAllBuildings()->GetAt(i).GetRunningNumber();
+				CString sRaceID = system->GetOwnerOfSystem();
 				if (GetBuildingInfo(nID).GetMaxInEmpire() > 0)
 					m_GlobalBuildings.AddGlobalBuilding(sRaceID, nID);
 			}
@@ -1744,7 +1721,7 @@ void CBotEDoc::ApplyBuildingsAtStartup()
 			}
 
 		// Systemliste erstellen und baubare Gebäude, Schiffe und Truppen berechnen
-		pMajor->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
+		pMajor->GetEmpire()->GenerateSystemList(m_Systems);
 		for (int i = 0; i < pMajor->GetEmpire()->GetSystemList()->GetSize(); i++)
 		{
 			CPoint p = pMajor->GetEmpire()->GetSystemList()->GetAt(i).ko;
@@ -2357,12 +2334,11 @@ void CBotEDoc::GenerateStarmap(const CString& sOnlyForRaceID)
 		pMajor->CreateStarmap();
 	}
 	// Anomalien beachten (ist für jede Starmap gleich, daher statisch)
-	CStarmap::SynchronizeWithAnomalies(m_Sectors);
+	CStarmap::SynchronizeWithAnomalies(m_Systems);
 
 	// Starmaps generieren
-	for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
+	for(std::vector<CSystem>::iterator system = m_Systems.begin(); system != m_Systems.end(); ++system)
 	{
-		const CSystem& system = GetSystemForSector(*sector);
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			if (sOnlyForRaceID != "" && sOnlyForRaceID != it->first)
@@ -2370,19 +2346,19 @@ void CBotEDoc::GenerateStarmap(const CString& sOnlyForRaceID)
 
 			CMajor* pMajor = it->second;
 			// Wenn in dem System eine aktive Werft ist bzw. eine Station/Werft im Sektor ist
-			if ((system.GetProduction()->GetShipYard() == TRUE && system.GetOwnerOfSystem() == pMajor->GetRaceID())
-				|| sector->GetShipPort(pMajor->GetRaceID()))
+			if ((system->GetProduction()->GetShipYard() == TRUE && system->GetOwnerOfSystem() == pMajor->GetRaceID())
+				|| system->GetShipPort(pMajor->GetRaceID()))
 			{
-				pMajor->GetStarmap()->AddBase(Sector(sector->GetKO()),
+				pMajor->GetStarmap()->AddBase(Sector(system->GetKO()),
 					pMajor->GetEmpire()->GetResearch()->GetPropulsionTech());
 			}
 
-			if (sector->GetSunSystem())
+			if (system->GetSunSystem())
 			{
-				if (sector->GetOwnerOfSector() == it->first || sector->GetOwnerOfSector() == "")
+				if (system->GetOwnerOfSector() == it->first || system->GetOwnerOfSector() == "")
 				{
 					CMajor* pMajor = it->second;
-					pMajor->GetStarmap()->AddKnownSystem(Sector(sector->GetKO()));
+					pMajor->GetStarmap()->AddKnownSystem(Sector(system->GetKO()));
 				}
 			}
 		}
@@ -2399,7 +2375,7 @@ void CBotEDoc::GenerateStarmap(const CString& sOnlyForRaceID)
 			if (it->first != itt->first && it->second->GetAgreement(itt->first) == DIPLOMATIC_AGREEMENT::NAP)
 				NAPRaces.insert(itt->first);
 		// interne Starmap für KI syncronisieren
-		it->second->GetStarmap()->SynchronizeWithMap(m_Sectors, &NAPRaces);
+		it->second->GetStarmap()->SynchronizeWithMap(m_Systems, &NAPRaces);
 	}
 
 	// nun die Berechnung für den Außenpostenbau vornehmen
@@ -2410,7 +2386,7 @@ void CBotEDoc::GenerateStarmap(const CString& sOnlyForRaceID)
 
 		CMajor* pMajor = it->second;
 		if (!pMajor->AHumanPlays())
-			pMajor->GetStarmap()->SetBadAIBaseSectors(m_Sectors, it->first);
+			pMajor->GetStarmap()->SetBadAIBaseSectors(m_Systems, it->first);
 	}
 }
 
@@ -2467,13 +2443,12 @@ void CBotEDoc::CalcPreDataForNextRound()
 			m_ShipInfoArray.GetAt(i).SetRace(PLAYER_RACES::MINORNUMBER);
 
 
-	for(std::vector<CSector>::const_iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
+	for(std::vector<CSystem>::iterator it = m_Systems.begin(); it != m_Systems.end(); ++it)
 	{
-		if (sector->GetSunSystem())
+		if (it->GetSunSystem())
 		{
-			CSystem& system = GetSystemForSector(*sector);
-			system.SetBlockade(0);
-			system.ClearDisabledProductions();
+			it->SetBlockade(0);
+			it->ClearDisabledProductions();
 		}
 	}
 
@@ -2868,7 +2843,7 @@ void CBotEDoc::CalcSystemAttack()
 				{
 					CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 					// Anzahl der noch verbleibenden Systeme berechnen
-					pDefenderMajor->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
+					pDefenderMajor->GetEmpire()->GenerateSystemList(m_Systems);
 					// hat der Verteidiger keine Systeme mehr, so bekommt der neue Besitzer den Bonus
 					if (pDefenderMajor->GetEmpire()->GetSystemList()->GetSize() == 0)
 					{
@@ -2989,7 +2964,7 @@ void CBotEDoc::CalcSystemAttack()
 								continue;
 
 							// Anzahl der noch verbleibenden Systeme berechnen
-							pDefenderMajor->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
+							pDefenderMajor->GetEmpire()->GenerateSystemList(m_Systems);
 							// hat der Verteidiger keine Systeme mehr, so bekommt der neue Besitzer den Bonus
 							if (pDefenderMajor->GetEmpire()->GetSystemList()->IsEmpty())
 							{
@@ -3343,79 +3318,78 @@ void CBotEDoc::CalcOldRoundData()
 	m_GlobalBuildings.Reset();
 	ClearAllPoints(m_pRaceCtrl->GetMajors());
 
-	for (std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
+	for (std::vector<CSystem>::iterator it = m_Systems.begin(); it != m_Systems.end(); ++it)
 	{
-		CSystem& system = GetSystemForSector(*sector);
 		// Mögliche Is? Variablen für Terraforming und Stationbau erstmal auf FALSE setzen
-		sector->ClearAllPoints();
+		it->ClearAllPoints();
 
 		// Wenn im Sektor ein Sonnensystem existiert
-		if (!sector->GetSunSystem())
+		if (!it->GetSunSystem())
 			continue;
 
-		if (system.GetOwnerOfSystem() == "")
+		if (it->GetOwnerOfSystem() == "")
 		{
 			// Planetenwachstum in jedem Sektor durchführen
-			sector->LetPlanetsGrowth();
+			it->LetPlanetsGrowth();
 			continue;
 		}
 
-		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(system.GetOwnerOfSystem()));
+		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(it->GetOwnerOfSystem()));
 		assert(pMajor);
 		if (!pMajor)
 			continue;
 
 		// Jetzt das produzierte Credits im System dem jeweiligen Imperium geben, Gebäude abreisen, Moral im System berechnen
-		COldRoundDataCalculator::CreditsDestructionMoral(pMajor, system, this->BuildingInfo, m_fDifficultyLevel);
+		COldRoundDataCalculator::CreditsDestructionMoral(pMajor, *it, this->BuildingInfo, m_fDifficultyLevel);
 
 		// KI Anpassungen (KI bekommt zufälig etwas Deritium geschenkt)
-		int diliAdd = COldRoundDataCalculator::DeritiumForTheAI(pMajor->AHumanPlays(), *sector, system, m_fDifficultyLevel);
+		int diliAdd = COldRoundDataCalculator::DeritiumForTheAI(pMajor->AHumanPlays(), *it, m_fDifficultyLevel);
 
 		// Das Lager berechnen
-		const BOOLEAN bIsRebellion = system.CalculateStorages(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), diliAdd);
+		const BOOLEAN bIsRebellion = it->CalculateStorages(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), diliAdd);
 		// Wenn true zurückkommt, dann hat sich das System losgesagt
 		if (bIsRebellion)
-			calc.ExecuteRebellion(*sector, system, pMajor);
+			calc.ExecuteRebellion(*it, pMajor);
 
 		// Hier mit einbeziehen, wenn die Bevölkerung an Nahrungsmangel stirbt
-		if (system.GetFoodStore() < 0)
+		if (it->GetFoodStore() < 0)
 		{
-			calc.ExecuteFamine(*sector, system, pMajor);
+			calc.ExecuteFamine(*it, pMajor);
 		}
 		else
 		{
 			// Planetenwachstum für Hauptrassen durchführen
-			sector->LetPlanetsGrowth();
+			it->LetPlanetsGrowth();
 		}
 
 		// Wenn es keine Rebellion gab, dann Bau und KI im System berechnen
 		if (!bIsRebellion)
 		{
-			assert(system.GetOwnerOfSystem() != "");
-			calc.HandlePopulationEffects(*sector, system, pMajor);
-			system.CalculateVariables(sector->GetPlanets(), pMajor);
+			assert(it->GetOwnerOfSystem() != "");
+			calc.HandlePopulationEffects(*it, pMajor);
+			it->CalculateVariables(it->GetPlanets(), pMajor);
 
 			// hier könnte die Energie durch Weltraummonster weggenommen werden!
 			// Gebäude die Energie benötigen checken
-			if (system.CheckEnergyBuildings())
-				calc.SystemMessage(*sector, pMajor, "BUILDING_TURN_OFF", EMPIRE_NEWS_TYPE::SOMETHING, 2);
+			if (it->CheckEnergyBuildings())
+				calc.SystemMessage(static_cast<CSector>(*it), pMajor, "BUILDING_TURN_OFF", EMPIRE_NEWS_TYPE::SOMETHING, 2);
 
 			// Die Bauaufträge in dem System berechnen. Außerdem wird hier auch die System-KI ausgeführt.
-			if (!pMajor->AHumanPlays() || system.GetAutoBuild())
+			if (!pMajor->AHumanPlays() || it->GetAutoBuild())
 			{
 				CSystemAI SAI(this);
-				SAI.ExecuteSystemAI(sector->GetKO());
+				SAI.ExecuteSystemAI(it->GetKO());
 			}
 
-			calc.Build(*sector, system, pMajor, this->BuildingInfo);
+			calc.Build(*it, pMajor, this->BuildingInfo);
 			// Anzahl aller Farmen, Bauhöfe usw. im System berechnen
-			system.CalculateNumberOfWorkbuildings(&this->BuildingInfo);
+			it->CalculateNumberOfWorkbuildings(&this->BuildingInfo);
 			// freie Arbeiter den Gebäuden zuweisen
-			system.SetWorkersIntoBuildings();
+			it->SetWorkersIntoBuildings();
 		}
 
 		// Globale Gebäude (X mal pro Imperium baubar) hinzufügen
-		UpdateGlobalBuildings(system);
+		UpdateGlobalBuildings(*it);
 	}
 }
 
@@ -3433,13 +3407,12 @@ void CBotEDoc::CalcNewRoundData()
 	// Systemen berechnet. Können das nicht in obiger Hauptschleife machen, weil dort es alle globalen Gebäude
 	// gesammelt werden müssen und ich deswegen alle Systeme mit den fertigen Bauaufträgen in dieser Runde einmal
 	// durchgegangen sein muß.
-	for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector) {
-		CSystem& system = GetSystemForSector(*sector);
+	for(std::vector<CSystem>::iterator it = m_Systems.begin(); it != m_Systems.end(); ++it) {
 #ifdef CONSISTENCY_CHECKS
-		CSanity::GetInstance()->SanityCheckSectorAndSystem(*sector, system, *this);
+		CSanity::GetInstance()->SanityCheckSectorAndSystem(*it, *this);
 #endif
-		const CString& system_owner = system.GetOwnerOfSystem();
-		if (sector->GetSunSystem() && system_owner != "")
+		const CString& system_owner = it->GetOwnerOfSystem();
+		if (it->GetSunSystem() && system_owner != "")
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(system_owner));
 			assert(pMajor);
@@ -3447,23 +3420,23 @@ void CBotEDoc::CalcNewRoundData()
 
 			// Hier die Credits durch Handelsrouten berechnen und
 			// Ressourcenrouten checken
-			new_round_data_calc.CheckRoutes(*sector, system, pMajor);
+			new_round_data_calc.CheckRoutes(*it, pMajor);
 
-			system.CalculateVariables(sector->GetPlanets(), pMajor);
-			system.CalculatePotentials(sector->GetPlanets(), pMajor);
+			it->CalculateVariables(it->GetPlanets(), pMajor);
+			it->CalculatePotentials(it->GetPlanets(), pMajor);
 
-			const CSystemProd* const production = system.GetProduction();
+			const CSystemProd* const production = it->GetProduction();
 			// Haben wir eine online Schiffswerft im System, dann ShipPort in dem Sektor setzen
 			if (production->GetShipYard())
-				sector->SetShipPort(TRUE, system_owner);
-			CNewRoundDataCalculator::CalcMoral(*sector, system, m_TroopInfo);
+				it->SetShipPort(TRUE, system_owner);
+			CNewRoundDataCalculator::CalcMoral(*it, m_TroopInfo);
 
 			// Hier die gesamten Sicherheitsboni der Imperien berechnen
 			CNewRoundDataCalculator::CalcIntelligenceBoni(production, empire->GetIntelligence());
 
 			// Anzahl aller Ressourcen in allen eigenen Systemen berechnen
 			for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
-				empire->SetStorageAdd(res, system.GetResourceStore(res));
+				empire->SetStorageAdd(res, it->GetResourceStore(res));
 		}//if (sector.GetSunSystem() && system_owner != "")
 
 		// für jede Rasse Sektorsachen berechnen
@@ -3471,7 +3444,7 @@ void CBotEDoc::CalcNewRoundData()
 		// alles abhängig von unseren diplomatischen Beziehungen
 		// Nun auch überprüfen, ob sich unsere Grenzen erweitern, wenn die MinorRasse eine Spaceflight-Rasse ist und wir mit
 		// ihr eine Kooperations oder ein Bündnis haben
-		CNewRoundDataCalculator::CalcExtraVisibilityAndRangeDueToDiplomacy(*sector, pmMajors, m_pRaceCtrl->GetMinors());
+		CNewRoundDataCalculator::CalcExtraVisibilityAndRangeDueToDiplomacy(*it, pmMajors, m_pRaceCtrl->GetMinors());
 	}//for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector) {
 
 	// Forschungsboni aus Spezialforschungen setzen, nachdem wir diese aus allen Systemen geholt haben
@@ -3503,7 +3476,7 @@ void CBotEDoc::CalcTrade()
 			newTax = 1.0f + newTax / 100;
 			pMajor->GetTrade()->SetTax(newTax);
 		}
-		pMajor->GetTrade()->CalculateTradeActions(pMajor, m_Systems, m_Sectors, taxMoney);
+		pMajor->GetTrade()->CalculateTradeActions(pMajor, m_Systems, taxMoney);
 		for (int j = RESOURCES::TITAN; j <= RESOURCES::IRIDIUM; j++)
 		{
 			// plus Steuern, die durch Sofortkäufe von Bauaufträgen entstanden sind holen
@@ -3989,7 +3962,7 @@ void CBotEDoc::CalcShipMovement()
 		for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
 			if (it->first != itt->first && pMajor->GetAgreement(itt->first) == DIPLOMATIC_AGREEMENT::NAP)
 				races.insert(itt->first);
-		pMajor->GetStarmap()->SynchronizeWithMap(m_Sectors, &races);
+		pMajor->GetStarmap()->SynchronizeWithMap(m_Systems, &races);
 	}
 
 #ifdef CONSISTENCY_CHECKS
@@ -4079,7 +4052,7 @@ void CBotEDoc::CalcShipMovement()
 				// Anaerobe Makroben fliegen nur im freien Raum oder in Sektoren mit grünen Sonnen
 				if (y->second->GetOwnerOfShip() == StrToCStr(ANAEROBE_MAKROBE))
 				{
-					for (std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
+					for (std::vector<CSystem>::iterator sector = m_Systems.begin(); sector != m_Systems.end(); ++sector)
 					{
 						// Ausnahmen hinzufügen, wenn es sich um ein Sonnensystem mit nicht grüner Sonne handelt
 						// und es nicht der aktuelle Ort ist (wegfliegen soll immer möglich sein)
@@ -4732,7 +4705,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
-		pMajor->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
+		pMajor->GetEmpire()->GenerateSystemList(m_Systems);
 		pMajor->GetEmpire()->SetNumberOfSystems(pMajor->GetEmpire()->GetSystemList()->GetSize());
 
 		// Wenn das Imperium keine Systeme mehr besitzt, so wird es für alle anderen Rassen auf unbekannt gestellt.
@@ -4836,25 +4809,25 @@ void CBotEDoc::CalcEndDataForNextRound()
 			}
 
 			// Sektoren und Systeme neutral schalten
-			for(std::vector<CSector>::iterator se = m_Sectors.begin(); se != m_Sectors.end(); ++se) {
+			for(std::vector<CSystem>::iterator sy = m_Systems.begin(); sy != m_Systems.end(); ++sy) {
 				const CString& ID = pMajor->GetRaceID();
-				if (se->GetOwnerOfSector() == ID)
+				if (sy->GetOwnerOfSector() == ID)
 				{
-					se->SetOwnerOfSector("");
-					GetSystemForSector(*se).SetOwnerOfSystem("");
-					se->SetOwned(false);
-					se->SetTakenSector(false);
+					sy->SetOwnerOfSector("");
+					sy->SetOwnerOfSystem("");
+					sy->SetOwned(false);
+					sy->SetTakenSector(false);
 				}
 				// Den ersten Besitzer als Historie merken. Diese Variable nicht zurücksetzen!
 				// Sonst würde dieses System nicht mehr serialisiert werden, da es ja niemandem mehr gehört...
-				// se->SetColonyOwner("");
+				// sy->SetColonyOwner("");
 
 				// in allen Sektoren alle Schiffe aus den Sektoren nehmen
-				se->SetIsStationBuilding(SHIP_ORDER::NONE, ID);
-				se->UnsetOutpost(ID);
-				se->SetOwnerOfShip(false, ID);
-				se->SetShipPort(false, ID);
-				se->UnsetStarbase(ID);
+				sy->SetIsStationBuilding(SHIP_ORDER::NONE, ID);
+				sy->UnsetOutpost(ID);
+				sy->SetOwnerOfShip(false, ID);
+				sy->SetShipPort(false, ID);
+				sy->UnsetStarbase(ID);
 			}
 
 			// Wenn es ein menschlicher Spieler ist, so bekommt er den Eventscreen für die Niederlage angezeigt
@@ -4943,35 +4916,34 @@ void CBotEDoc::CalcEndDataForNextRound()
 	}
 
 	// Jetzt die Besitzer berechnen und die Variablen, welche nächste Runde auch angezeigt werden sollen.
-	for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
+	for(std::vector<CSystem>::iterator it = m_Systems.begin(); it != m_Systems.end(); ++it)
 	{
-		CSystem& system = GetSystemForSector(*sector);
-		sector->CalculateOwner(system.GetOwnerOfSystem());
-		if (sector->GetSunSystem() == TRUE && system.GetOwnerOfSystem() != "")
+		it->CalculateOwner(it->GetOwnerOfSystem());
+		if (it->GetSunSystem() == TRUE && it->GetOwnerOfSystem() != "")
 		{
-			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(system.GetOwnerOfSystem()));
+			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(it->GetOwnerOfSystem()));
 			if (!pMajor || !pMajor->IsMajor())
 				continue;
 
 			// baubare Gebäude, Schiffe und Truppen berechnen
-			system.CalculateBuildableBuildings(&*sector, &BuildingInfo, pMajor, &m_GlobalBuildings);
-			system.CalculateBuildableShips(this, sector->GetKO());
-			system.CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
-			system.CalculateVariables(sector->GetPlanets(), pMajor);
+			it->CalculateBuildableBuildings(&*it, &BuildingInfo, pMajor, &m_GlobalBuildings);
+			it->CalculateBuildableShips(this, it->GetKO());
+			it->CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
+			it->CalculateVariables(it->GetPlanets(), pMajor);
 
 			// alle produzierten FP und SP der Imperien berechnen und zuweisen
 			int currentPoints;
-			currentPoints = system.GetProduction()->GetResearchProd();
+			currentPoints = it->GetProduction()->GetResearchProd();
 			pMajor->GetEmpire()->AddFP(currentPoints);
-			currentPoints = system.GetProduction()->GetSecurityProd();
+			currentPoints = it->GetProduction()->GetSecurityProd();
 			pMajor->GetEmpire()->AddSP(currentPoints);
 
-			system.ExecuteManager(sector->GetKO(), *pMajor, true);
+			it->ExecuteManager(it->GetKO(), *pMajor, true);
 		}
 
 		// Gibt es eine Anomalie im Sektor, so vielleicht die Scanpower niedriger setzen
-		if (sector->GetAnomaly())
-			sector->GetAnomaly()->ReduceScanPower(sector->GetKO());
+		if (it->GetAnomaly())
+			it->GetAnomaly()->ReduceScanPower(it->GetKO());
 	}
 
 	// Nachdem die Besitzerpunkte der Sektoren berechnet wurden kann versucht werden neue Rassen kennenzuelernen
@@ -5718,15 +5690,18 @@ BOOL CBotEDoc::OnSaveDocument(LPCTSTR lpszPathName)
 	return TRUE;
 }
 
-void CBotEDoc::AllocateSectorsAndSystems()
+void CBotEDoc::AllocateSystems()
 {
 	STARMAP_TOTALWIDTH = STARMAP_SECTORS_HCOUNT * STARMAP_SECTOR_WIDTH;
 	STARMAP_TOTALHEIGHT = STARMAP_SECTORS_VCOUNT * STARMAP_SECTOR_HEIGHT;
 
 	const unsigned size = STARMAP_SECTORS_HCOUNT*STARMAP_SECTORS_VCOUNT;
-	m_Sectors.resize(size);
-	m_Systems.resize(size);
- }
+	m_Systems.clear();
+	m_Systems.reserve(size);
+	for(int y = 0; y < STARMAP_SECTORS_VCOUNT; ++y)
+		for(int x = 0; x < STARMAP_SECTORS_HCOUNT; ++x)
+			m_Systems.push_back(CSystem(x, y));
+}
 
 void CBotEDoc::RandomSeed(const int* OnlyIfDifferentThan) {
 	const CIniLoader* pIni = CIniLoader::GetInstance();

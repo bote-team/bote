@@ -192,24 +192,24 @@ void CStarmap::AddBase(const Sector &sector, BYTE propTech)
 // Nichtangriffspakt haben, werden von der Rangemap entfernt. Übergeben werden dafür ein Zeiger auf alle
 // Sektoren <code>sectors</code> und ein Wahrheitswert <code>races</code> für alle Rassen, ob wir einen
 // Nichtangriffspakt mit dieser Rasse haben.
-void CStarmap::SynchronizeWithMap(const std::vector<CSector>& sectors, const std::set<CString>* races)
+void CStarmap::SynchronizeWithMap(const std::vector<CSystem>& systems, const std::set<CString>* races)
 {
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "")
-				if (m_Range[x][y] > 0 && races->find(sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector()) != races->end())
+			if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "")
+				if (m_Range[x][y] > 0 && races->find(systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector()) != races->end())
 					m_Range[x][y] = 0;
 }
 
 // Führt für gefährliche Anomalien mathematische Gewichte hinzu, so dass dieser Sektor bei der automatischen
 // Wegsuche nicht überflogen wird. Außerdem wird solch ein Sektor auch nicht für einen Außenpostenbau bestimmt.
-void CStarmap::SynchronizeWithAnomalies(const std::vector<CSector>& sectors)
+void CStarmap::SynchronizeWithAnomalies(const std::vector<CSystem>& systems)
 {
-	for(std::vector<CSector>::const_iterator it = sectors.begin(); it != sectors.end(); ++it)
+	for(std::vector<CSystem>::const_iterator it = systems.begin(); it != systems.end(); ++it)
 	{
 		const CAnomaly* anomaly = it->GetAnomaly();
 		if (anomaly)
-			m_BadMapModifiers.at(it - sectors.begin()) = anomaly->GetWaySearchWeight();
+			m_BadMapModifiers.at(it - systems.begin()) = anomaly->GetWaySearchWeight();
 	}
 }
 
@@ -848,7 +848,7 @@ short CStarmap::GetPoints(const Sector &sector) const
 //	return m_AITargetPoints[sector.x][sector.y];
 }
 
-void CStarmap::SetBadAIBaseSectors(const std::vector<CSector>& sectors, const CString& race)
+void CStarmap::SetBadAIBaseSectors(const std::vector<CSystem>& systems, const CString& race)
 {
 	//memset(m_AIBadPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
 	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
@@ -860,22 +860,22 @@ void CStarmap::SetBadAIBaseSectors(const std::vector<CSector>& sectors, const CS
 			if (m_Range[x][y] >= m_nAIRange)
 			{
 				double dValue = 0.0;
-				if (sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == race || sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == "")
+				if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == race || systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == "")
 				{
 					int number = 0;
 					// in einem Umkreis von einem Sektor um den Sektor scannen
 					for (int j = -1; j <= 1; j++)
 						for (int i = -1; i <= 1; i++)
 							if (y + j > -1 && y + j < STARMAP_SECTORS_VCOUNT && x + i > -1 && x + i < STARMAP_SECTORS_HCOUNT)
-								if (sectors.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != race && sectors.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "")
+								if (systems.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != race && systems.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "")
 									number++;
 					dValue += (50.0 * number);
 				}
 				else
 					dValue += 1000.0;
 
-				if (sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly())
-					dValue += sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly()->GetWaySearchWeight() * 100.0;
+				if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly())
+					dValue += systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly()->GetWaySearchWeight() * 100.0;
 
 				if ((double)m_AIBadPoints[x][y] + dValue > MAXSHORT)
 					m_AIBadPoints[x][y] = MAXSHORT;

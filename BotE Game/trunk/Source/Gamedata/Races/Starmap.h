@@ -22,6 +22,8 @@
 #include <map>
 #include <vector>
 
+class CSystem;
+
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
@@ -243,13 +245,13 @@ public:
 	 * Sektoren <code>sectors</code> und ein Wahrheitswert <code>races</code> für alle Rassen, ob wir einen
 	 * Nichtangriffspakt mit dieser Rasse haben.
 	 */
-	void SynchronizeWithMap(const std::vector<CSector>& sectors, const std::set<CString>* races);
+	void SynchronizeWithMap(const std::vector<CSystem>& systems, const std::set<CString>* races);
 
 	/**
 	 * Führt für gefährliche Anomalien mathematische Gewichte hinzu, so dass dieser Sektor bei der automatischen
 	 * Wegsuche nicht überflogen wird.
 	 */
-	static void SynchronizeWithAnomalies(const std::vector<CSector>& sectors);
+	static void SynchronizeWithAnomalies(const std::vector<CSystem>& systems);
 
 	/**
 	 * Löscht alle Basen und setzt die Einträge in der Rangemap wieder auf Ausgangswert
@@ -292,7 +294,7 @@ public:
 	 * einen Außenposten genutzt werden soll. Übergeben werden dafür ein Zeiger auf alle
 	 * Sektoren <code>sectors</code> und die Rasse, zu welcher das Starmap Objekt gehört <code>race</code>.
 	 */
-	void SetBadAIBaseSectors(const std::vector<CSector>& sectors, const CString& race);
+	void SetBadAIBaseSectors(const std::vector<CSystem>& systems, const CString& race);
 
 	/**
 	 * Ermittelt einen Sektor, in dem günstig ein Außenposten gebaut werden könnte. Liefert <code>Sector(-1, -1)</code> im

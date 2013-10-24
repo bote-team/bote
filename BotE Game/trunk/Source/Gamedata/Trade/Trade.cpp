@@ -189,7 +189,7 @@ void CTrade::SellRessource(USHORT res, ULONG number, CPoint system, bool bNotAtM
 
 // Funktion berechnet die ganzen Handelsaktionen, lagert also Ressourcen ein oder gibt das Credits, welches
 // wir durch den Verkauf bekommen haben an das jeweilige Imperium
-void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<CSystem>& systems, const std::vector<CSector>& sectors, USHORT* taxes)
+void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<CSystem>& systems, USHORT* taxes)
 {
 	ASSERT(pMajor);
 
@@ -242,7 +242,7 @@ void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<CSystem>& systems
 						CString s;
 						s.Format("%d %s",sum[x][y][i],resName);
 						CEmpireNews message;
-						message.CreateNews(CLoc::GetString("GET_RESOURCES",0,s,sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName()), EMPIRE_NEWS_TYPE::ECONOMY, "", sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetKO());
+						message.CreateNews(CLoc::GetString("GET_RESOURCES",0,s,systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName()), EMPIRE_NEWS_TYPE::ECONOMY, "", systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetKO());
 						pMajor->GetEmpire()->AddMsg(message);
 					}
 }

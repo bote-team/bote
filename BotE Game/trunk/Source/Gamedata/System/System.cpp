@@ -19,27 +19,25 @@ static char THIS_FILE[]=__FILE__;
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CSystem::CSystem()
+CSystem::CSystem() :
+	CSector()
+{
+	ResetSystem();
+}
+
+CSystem::CSystem(int x, int y) :
+	CSector(x, y)
 {
 	ResetSystem();
 }
 
 CSystem::~CSystem()
 {
-	m_BuildingDestroy.RemoveAll();
-	m_Buildings.RemoveAll();
-	m_BuildableBuildings.RemoveAll();
-	m_AllwaysBuildableBuildings.RemoveAll();
-	m_BuildableUpdates.RemoveAll();
-	m_BuildableWithoutAssemblylistCheck.RemoveAll();
-	m_BuildableShips.RemoveAll();
-	m_BuildableTroops.RemoveAll();
-	m_TradeRoutes.RemoveAll();
-	m_ResourceRoutes.RemoveAll();
-	m_Troops.RemoveAll();
+	ResetSystem();
 }
 
 CSystem::CSystem(const CSystem &other) :
+	CSector(other),
 	m_sOwnerOfSystem(other.m_sOwnerOfSystem),
 	m_dHabitants(other.m_dHabitants),
 	m_AssemblyList(other.m_AssemblyList),

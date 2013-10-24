@@ -18,10 +18,10 @@ public:
 
 	//Function checks, whether trade and resource routes starting in this system are still valid.
 	//If not, removes them and queues messages about that.
-	void CheckRoutes(const CSector& sector, CSystem& system, CMajor* pMajor);
+	void CheckRoutes(CSystem& system, CMajor* pMajor);
 
 	static void CalcIntelligenceBoni(const CSystemProd* production, CIntelligence* intelligence);
-	static void CalcMoral(const CSector& sector, CSystem& system, CArray<CTroopInfo>& TroopInfo);
+	static void CalcMoral(CSystem& system, CArray<CTroopInfo>& TroopInfo);
 
 	//Function calculates and transfers additional knowledge about the given sector, scan powers and
 	//movement range due to diplomatic contracts from minor races or other major ones.

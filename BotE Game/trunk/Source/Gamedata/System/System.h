@@ -23,6 +23,7 @@
 #include "array_sort.h"
 #include "General/GlobalTypes.h"
 #include "Manager.h"
+#include "Galaxy/Sector.h"
 
 // forward declaration
 class CMajor;
@@ -31,11 +32,12 @@ class CBotEDoc;
 class CPlanet;
 class CGlobalBuildings;
 
-class CSystem
+class CSystem : public CSector
 {
 public:
 	// Standardkonstruktor
 	CSystem(void);
+	CSystem(int x, int y);
 
 	//Kopierkontruktor (weil vector und braucht das)
 	CSystem(const CSystem& other);
@@ -46,7 +48,7 @@ public:
 	virtual ~CSystem(void);
 
 	// Serialisierungsfunktion
-	virtual void Serialize(CArchive &ar);
+	void Serialize(CArchive &ar);
 
 // Zugriffsfunktionen
 	// zum Lesen der Membervariablen
@@ -346,10 +348,11 @@ public:
 	/// Alle deaktivierten Produktionen zurücksetzen
 	void ClearDisabledProductions();
 
+private:
 	// Resetfunktion für die Klasse CSystem.
 	void ResetSystem();
 
-private:
+
 	// Der Besitzer des Systems
 	CString m_sOwnerOfSystem;
 

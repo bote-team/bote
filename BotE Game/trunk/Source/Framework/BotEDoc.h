@@ -35,7 +35,6 @@ protected: // Nur aus Serialisierung erzeugen
 	float m_fStardate;					///< Startrek Sternzeit
 	CPoint m_ptKO;						///< Koordinaten des aktuell angeklickten Sektors
 
-	std::vector<CSector> m_Sectors;
 	std::vector<CSystem> m_Systems;
 
 	CGenShipName m_GenShipName;			///< Variable, die alle möglichen Schiffsnamen beinhaltet
@@ -141,10 +140,10 @@ public:
 	CPoint GetRaceKO(const CString& sMajorID) const;
 
 	CSector& GetSector(int x, int y) {
-		return m_Sectors.at(x+y*STARMAP_SECTORS_HCOUNT);
+		return static_cast<CSector&>(GetSystem(x, y));
 	}
 	const CSector& GetSector(int x, int y) const {
-		return m_Sectors.at(x+y*STARMAP_SECTORS_HCOUNT);
+		return static_cast<const CSector&>(GetSystem(x, y));
 	}
 
 	//returns sector at m_ptKO
@@ -170,13 +169,6 @@ public:
 	//returns system at m_ptKO
 	CSystem& CurrentSystem() {
 		return GetSystem(m_ptKO.x, m_ptKO.y);
-	}
-
-	CSystem& GetSystemForSector(const CSector& s) {
-		return GetSystem(s.GetKO().x, s.GetKO().y);
-	}
-	const CSystem& GetSystemForSector(const CSector& s) const {
-		return GetSystem(s.GetKO().x, s.GetKO().y);
 	}
 
 	CBuildingInfo& GetBuildingInfo(int id) {ASSERT(id > 0); return BuildingInfo[id-1];}
@@ -366,7 +358,7 @@ protected:
 	void GenerateGalaxy();
 
 private:
-	void AllocateSectorsAndSystems();
+	void AllocateSystems();
 	void SerializeSectorsAndSystems(CArchive& ar);
 
 #ifdef _DEBUG

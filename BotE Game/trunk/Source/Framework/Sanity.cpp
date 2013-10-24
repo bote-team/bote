@@ -117,28 +117,28 @@ void CSanity::CheckShipUniqueness(const CShips& ship, std::set<CString>& already
 	Notify(s);
 }
 
-void CSanity::SanityCheckSectorAndSystem(const CSector& sector, const CSystem& system, const CBotEDoc& doc)
+void CSanity::SanityCheckSectorAndSystem(const CSystem& system, const CBotEDoc& doc)
 {
 	CString s;
-	assert(!sector.HasOutpost() || ! sector.HasStarbase());
-	if(!sector.GetSunSystem())
+	assert(!system.HasOutpost() || ! system.HasStarbase());
+	if(!system.GetSunSystem())
 		return;
 	const CString& sOwnerOfSystem = system.GetOwnerOfSystem();
 	if(sOwnerOfSystem.IsEmpty())
 		return;
-	const CString& sOwnerOfSector = sector.GetOwnerOfSector();
-	const CPoint& co = sector.GetKO();
+	const CString& sOwnerOfSector = system.GetOwnerOfSector();
+	const CPoint& co = system.GetKO();
 	if(sOwnerOfSector != sOwnerOfSystem) {
 		s.Format("OwnerOfSector != OwnerOfSystem in sector %s (%u,%u).",
-			sector.GetName(TRUE),
+			system.GetName(TRUE),
 			co.x, co.y
 			);
 		Notify(s);
 		return;
 	}
 	const CRaceController& RaceCtrl = *doc.GetRaceCtrl();
-	if(sector.GetMinorRace()) {
-		const CMinor* pMinor = RaceCtrl.GetMinorRace(sector.GetName());
+	if(system.GetMinorRace()) {
+		const CMinor* pMinor = RaceCtrl.GetMinorRace(system.GetName());
 		assert(pMinor);
 		assert(pMinor->GetRaceKO() == co);
 		if(!pMinor->IsMemberTo() && !pMinor->GetSubjugated()) {

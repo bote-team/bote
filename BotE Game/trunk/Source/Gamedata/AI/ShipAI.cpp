@@ -222,10 +222,9 @@ void CShipAI::CalculateAlienShipOrders(CShips& ship)
 	if (ship.GetOwnerOfShip() == StrToCStr(MIDWAY_ZEITREISENDE))
 	{
 		const CPoint& co = ship.GetKO();
-		const CSector& sector = m_pDoc->GetSector(co.x, co.y);
-		if (sector.GetSunSystem())
+		const CSystem& system = m_pDoc->GetSystem(co.x, co.y);
+		if (system.GetSunSystem())
 		{
-			const CSystem& system = m_pDoc->GetSystemForSector(sector);
 			const CRace* owner = m_pDoc->GetRaceCtrl()->GetRace(system.GetOwnerOfSystem());
 			if (owner && owner->IsMajor() && owner->GetAgreement(StrToCStr(MIDWAY_ZEITREISENDE)) == DIPLOMATIC_AGREEMENT::WAR)
 			{

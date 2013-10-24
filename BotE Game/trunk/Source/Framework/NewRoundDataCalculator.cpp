@@ -61,10 +61,10 @@ static void EmitLostRouteMessage(unsigned deletedRoutes, const CString& single_k
 	pEmpire->AddMsg(message);
 }
 
-void CNewRoundDataCalculator::CheckRoutes(const CSector& sector, CSystem& system, CMajor* pMajor) {
+void CNewRoundDataCalculator::CheckRoutes(CSystem& system, CMajor* pMajor) {
 	CEmpire* pEmpire = pMajor->GetEmpire();
-	const CPoint& co = sector.GetKO();
-	const CString& sector_name = sector.GetName();
+	const CPoint& co = system.GetKO();
+	const CString& sector_name = system.GetName();
 	bool select_empire_view = false;
 
 	unsigned deletedTradeRoutes = 0;
@@ -99,9 +99,9 @@ void CNewRoundDataCalculator::CalcIntelligenceBoni(const CSystemProd* production
 	intelligence->AddMilitaryBonus(production->GetMilitarySabotageBoni(), 1);
 }
 
-void CNewRoundDataCalculator::CalcMoral(const CSector& sector, CSystem& system, CArray<CTroopInfo>& TroopInfo) {
+void CNewRoundDataCalculator::CalcMoral(CSystem& system, CArray<CTroopInfo>& TroopInfo) {
 	// Wurde das System militärisch erobert, so verringert sich die Moral pro Runde etwas
-	if (sector.GetTakenSector() && system.GetMoral() > 70)
+	if (system.GetTakenSector() && system.GetMoral() > 70)
 		system.SetMoral(-rand()%2);
 	// möglicherweise wird die Moral durch stationierte Truppen etwas stabilisiert
 	system.IncludeTroopMoralValue(&TroopInfo);
@@ -111,16 +111,15 @@ void CNewRoundDataCalculator::CalcPreLoop() {
 	CSystemProd::ResetMoralEmpireWide();
 	// Hier müssen wir nochmal die Systeme durchgehen und die imperienweite Moralproduktion auf die anderen System
 	// übertragen
-	for(std::vector<CSector>::iterator se = m_pDoc->m_Sectors.begin(); se != m_pDoc->m_Sectors.end(); ++se) {
-		CSystem* sy = &m_pDoc->GetSystemForSector(*se);
-		if(se->GetSunSystem()) {
+	for(std::vector<CSystem>::iterator sy = m_pDoc->m_Systems.begin(); sy != m_pDoc->m_Systems.end(); ++sy) {
+		if(sy->GetSunSystem()) {
 			const bool system_owner_exists = !sy->GetOwnerOfSystem().IsEmpty();
 			if(system_owner_exists) {
 				// imperiumsweite Moralproduktion aus diesem System berechnen
 				sy->CalculateEmpireWideMoralProd(&m_pDoc->BuildingInfo);
 			}
-			if(system_owner_exists || se->GetMinorRace()) {
-				const CString& sector_owner = se->GetOwnerOfSector();
+			if(system_owner_exists || sy->GetMinorRace()) {
+				const CString& sector_owner = sy->GetOwnerOfSector();
 				assert(!sector_owner.IsEmpty());
 				//Building scan power and range in a system isn't influenced by other systems, is it...?
 				//This needs to be here in the first loop, since when calculating the scan power that
@@ -131,7 +130,7 @@ void CNewRoundDataCalculator::CalcPreLoop() {
 				const CSystemProd& production = *sy->GetProduction();
 				const int scan_power = production.GetScanPower();
 				if(scan_power > 0)
-					se->PutScannedSquare(production.GetScanRange(), scan_power,
+					sy->PutScannedSquare(production.GetScanRange(), scan_power,
 						*m_pDoc->m_pRaceCtrl->GetRace(sector_owner));
 			}
 		}

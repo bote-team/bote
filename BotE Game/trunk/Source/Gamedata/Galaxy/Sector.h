@@ -59,6 +59,7 @@ public:
 
 	/// Konstruktor
 	CSector(void);
+	CSector(int x, int y);
 
 	///Kopierkontruktor
 	CSector(const CSector& other);
@@ -69,7 +70,7 @@ public:
 	virtual ~CSector(void);
 
 	/// Serialisierungsfunktion
-	virtual void Serialize(CArchive &ar);
+	void Serialize(CArchive &ar);
 
 	//iterators
 	typedef std::vector<CPlanet>::const_iterator const_iterator;
@@ -287,10 +288,6 @@ public:
 	/// die Ressourcen <code>res</code>.
 	void GetAvailableResources(BOOLEAN bResources[RESOURCES::DERITIUM + 1], BOOLEAN bOnlyColonized = true) const;
 
-// zum Schreiben der Membervariablen
-	/// Diese Funktion setzt die Koordinaten des Sektors und übernimmt dabei die beiden Koordinatenwerte.
-	void SetKO(int x, int y) {m_KO = CPoint(x,y);}
-
 	/// Funktion legt den Namen des Sektors fest.
 	void SetSectorsName(const CString& nameOfSunSystem) {m_strSectorName = nameOfSunSystem;}
 
@@ -480,8 +477,10 @@ public:
 	/// gehört. Übergeben wird dafür auch der mögliche Besitzer des Systems in diesem Sektor.
 	void CalculateOwner(const CString& sSystemOwner);
 
+private:
 	/// Resetfunktion für die Klasse CSector
 	void Reset();
+public:
 
 // Zeichenfunktionen für diese Klasse
 	/// Diese Funktion zeichnet den Namen des Sektors.
@@ -504,9 +503,11 @@ public:
 	bool Terraform(const CShips& ship);
 
 
-private:
+protected:
 	/// Die Koordinate des Sektors auf der Map
 	CPoint m_KO;
+
+private:
 
 	/// Der Name des Sectors
 	CString m_strSectorName;

@@ -31,6 +31,16 @@ CSector::CSector(void) :
 	m_bySunColor(0)
 {
 	m_pAnomaly = NULL;
+	Reset();
+}
+
+CSector::CSector(int x, int y) :
+	m_KO(x, y),
+	m_Attributes(0),
+	m_bySunColor(0),
+	m_pAnomaly(NULL)
+{
+	Reset();
 }
 
 CSector::CSector(const CSector& other) :
@@ -91,11 +101,7 @@ CSector& CSector::operator=(const CSector& other){
 
 CSector::~CSector(void)
 {
-	if (m_pAnomaly!=NULL)
-	{
-		delete m_pAnomaly;
-		m_pAnomaly = NULL;
-	}
+	Reset();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -773,11 +779,8 @@ void CSector::Reset()
 	m_strSectorName = "";
 	m_Planets.clear();
 
-	if (m_pAnomaly)
-	{
-		delete m_pAnomaly;
-		m_pAnomaly = NULL;
-	}
+	delete m_pAnomaly;
+	m_pAnomaly = NULL;
 }
 
 ////////////////////////////////////////////////////////////////
