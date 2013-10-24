@@ -275,11 +275,6 @@ public:
 	/// Diese Funktion gibt einen Zeiger auf eine eventuell vorhandene Anomalie zurück (<code>NULL</code> wenn kein vorhanden)
 	CAnomaly* GetAnomaly(void) const {return m_pAnomaly;}
 
-	/// Diese Funktion gibt eine Referenz auf das Feld mit den Planeten in diesem System zurück.
-	const std::vector<CPlanet>& GetPlanets() const {
-		return m_Planets;
-	}
-
 	/// Funktion gibt alle Einwohner aller Planeten in dem Sektor zurück.
 	float GetCurrentHabitants() const;
 
