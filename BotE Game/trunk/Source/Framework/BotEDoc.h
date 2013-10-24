@@ -146,15 +146,6 @@ public:
 		return static_cast<const CSector&>(GetSystem(x, y));
 	}
 
-	//returns sector at m_ptKO
-	const CSector& CurrentSector() const {
-		return GetSector(m_ptKO.x, m_ptKO.y);
-	}
-	//returns sector at m_ptKO
-	CSector& CurrentSector() {
-		return GetSector(m_ptKO.x, m_ptKO.y);
-	}
-
 	CSystem& GetSystem(int x, int y) {
 		return m_Systems.at(x+y*STARMAP_SECTORS_HCOUNT);
 	}

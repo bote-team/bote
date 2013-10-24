@@ -309,7 +309,7 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 	// System, in dem die Handelsaktivitäten stattfinden sollen hinschreiben
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontBrush.SetColor(markColor);
-	s.Format("%s: %s",CLoc::GetString("TRADE_IN_SYSTEM"), pDoc->CurrentSector().GetName());
+	s.Format("%s: %s",CLoc::GetString("TRADE_IN_SYSTEM"), pDoc->CurrentSystem().GetName());
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,90,m_TotalSize.cx,45), &fontFormat, &fontBrush);
 }
 
@@ -575,7 +575,7 @@ void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 	// System, in dem die Handelsaktivitäten stattfinden werden
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontBrush.SetColor(markColor);
-	s = CLoc::GetString("TRANSFERS_NEXT_ROUND",FALSE,pDoc->CurrentSector().GetName());
+	s = CLoc::GetString("TRANSFERS_NEXT_ROUND",FALSE,pDoc->CurrentSystem().GetName());
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,90,m_TotalSize.cx,45), &fontFormat, &fontBrush);
 }
 

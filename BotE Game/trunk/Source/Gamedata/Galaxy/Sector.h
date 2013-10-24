@@ -243,7 +243,7 @@ public:
 
 	/// Diese Funktion gibt die benötigten Punkte zum Stationenbau zurück, die die Majorrace
 	/// <code>Race</code> in diesem Sektor noch zur Fertigstellung einer Station benötigt.
-	short GetNeededStationPoints(const CString& sRace)
+	short GetNeededStationPoints(const CString& sRace) const
 	{
 		map<CString, short>::const_iterator it = m_iNeededStationPoints.find(sRace);
 		if (it != m_iNeededStationPoints.end())
@@ -254,7 +254,7 @@ public:
 
 	/// Diese Funktion gibt die Punkte zum Stationenbau zurück, die die Majorrace
 	/// <code>Race</code> zu Beginn des Stationenbaus benötigt hat.
-	short GetStartStationPoints(const CString& sRace)
+	short GetStartStationPoints(const CString& sRace) const
 	{
 		map<CString, short>::const_iterator it = m_iStartStationPoints.find(sRace);
 		if (it != m_iStartStationPoints.end())

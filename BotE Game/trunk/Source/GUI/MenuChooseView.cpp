@@ -444,7 +444,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 			 }
 		}
 		if (pDoc->CurrentSystem().GetOwnerOfSystem() == pMajor->GetRaceID() &&
-			pDoc->CurrentSector().GetSunSystem() == TRUE)
+			pDoc->CurrentSystem().GetSunSystem() == TRUE)
 		{
 			resources::pMainFrame->SelectMainView(VIEWS::SYSTEM_VIEW, pMajor->GetRaceID());
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));

@@ -165,7 +165,7 @@ private:
 	// OnDraw Helper Functions
 	stDrawingContext m_dc;
 
-	bool CheckDisplayShip(CShips *pShip, CSector *csec );
+	bool CheckDisplayShip(CShips *pShip, const CSystem *csec );
 	void DrawShipContent();
 	bool TimeDoDraw(short counter) const;
 	void DrawMaincommandMenu();

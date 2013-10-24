@@ -76,21 +76,20 @@ void CShipBottomView::OnNewRound()
 
 // CShipBottomView drawing
 
-static bool ShipCanHaveOrder(const CShips& ships, SHIP_ORDER::Typ order,
-		const CSector* sector = NULL, const CSystem* system = NULL) {
+static bool ShipCanHaveOrder(const CShips& ships, SHIP_ORDER::Typ order, const CSystem* system = NULL) {
 	switch(order) {
 		case SHIP_ORDER::TRAIN_SHIP:
-			return sector->GetSunSystem() && system->GetOwnerOfSystem() == ships.GetOwnerOfShip()
+			return system->GetSunSystem() && system->GetOwnerOfSystem() == ships.GetOwnerOfShip()
 				&& system->GetProduction()->GetShipTraining() > 0 && ships.CanHaveOrder(order, true);
 		case SHIP_ORDER::REPAIR:
 			return ships.CanHaveOrder(SHIP_ORDER::REPAIR, true)
-				&& sector->GetShipPort(ships.GetOwnerOfShip());
+				&& system->GetShipPort(ships.GetOwnerOfShip());
 		case SHIP_ORDER::TRANSPORT:
 			return ships.CanHaveOrder(order, true, false);
 		case SHIP_ORDER::TERRAFORM:
 			return ships.CanHaveOrder(order, false);
 		case SHIP_ORDER::IMPROVE_SHIELDS:
-			return ships.CanHaveOrder(order, true) && sector->GetAnomaly() && sector->GetAnomaly()
+			return ships.CanHaveOrder(order, true) && system->GetAnomaly() && system->GetAnomaly()
 				->GetType() == IONSTORM;
 	}
 	return ships.CanHaveOrder(order, true);
@@ -169,7 +168,7 @@ void CShipBottomView::DrawSmallButton( const CString& resString, const CPoint& c
 	}
 }
 
-bool CShipBottomView::CheckDisplayShip(CShips *pShip, CSector *csec ) {
+bool CShipBottomView::CheckDisplayShip(CShips *pShip, const CSystem *system ) {
 	if (m_LastKO != pShip->GetKO())
 		return false;
 
@@ -184,7 +183,7 @@ bool CShipBottomView::CheckDisplayShip(CShips *pShip, CSector *csec ) {
 
 	CString rid = m_pPlayersRace->GetRaceID();
 	if (   pShip->GetOwnerOfShip() != rid				// Schiff gehört anderer Rasse als der aktuellen
-		&& csec->GetScanPower(rid) < stealthPower		// Scanpower im Sektor ist kleiner stealthpower des Schiffs
+		&& system->GetScanPower(rid) < stealthPower		// Scanpower im Sektor ist kleiner stealthpower des Schiffs
 		&& m_pPlayersRace->GetAgreement(pShip->GetOwnerOfShip()) < DIPLOMATIC_AGREEMENT::AFFILIATION) // Diplomatie ist kleiner "Affiliation"
 			return false;
 	return true;
@@ -205,12 +204,12 @@ void CShipBottomView::DrawShipContent()
 	m_vShipRects.clear();
 
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
-	CSector csec = m_dc.pDoc->CurrentSector();
+	const CSystem& system = m_dc.pDoc->CurrentSystem();
 
 	for (CShipMap::iterator i = m_dc.pDoc->m_ShipMap.begin(); i != m_dc.pDoc->m_ShipMap.end(); ++i)
 	{
 		pShip = i->second;
-		if (!CheckDisplayShip( pShip, &csec ) )
+		if (!CheckDisplayShip( pShip, &system ) )
 			continue;
 
 		// mehrere Spalten anlegen, falls mehr als 3 Schiffe in dem System sind
@@ -232,7 +231,7 @@ void CShipBottomView::DrawShipContent()
 		// großes Bild der Station zeichnen
 		if (m_bShowStation)
 		{
-			if (m_dc.pDoc->CurrentSector().GetIsStationInSector())
+			if (m_dc.pDoc->CurrentSystem().GetIsStationInSector())
 			{
 				// gehört uns die Station oder kennen wir die andere Rasse
 				if (pMajor->GetRaceID() == pShip->GetOwnerOfShip() || pMajor->IsRaceContacted(pShip->GetOwnerOfShip()))
@@ -391,7 +390,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 	const CShips& pShip = *m_dc.pDoc->CurrentShip()->second;
 	const CRect r(m_dc.r);
 	short counter = 0;
-	CSector& csec = m_dc.pDoc->CurrentSector();
+	const CSystem& system = m_dc.pDoc->CurrentSystem();
 	const CMajor* pMajor = m_pPlayersRace;
 
 	const bool top_down = false;
@@ -406,7 +405,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 		counter++;
 	}
 	// trainieren
-	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::TRAIN_SHIP, &csec, &m_dc.pDoc->CurrentSystem()))
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::TRAIN_SHIP, &system))
 	{
 		DrawSmallButton("BTN_TRAIN_SHIP",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::TRAIN_SHIP);
 		counter++;
@@ -415,18 +414,18 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::ATTACK_SYSTEM))
 	{
 		// Wenn im Sektor ein Sonnensystem ist
-		if (csec.GetSunSystem() == TRUE &&
+		if (system.GetSunSystem() == TRUE &&
 			// Wenn im System noch Bevölkerung vorhanden ist
-			csec.GetCurrentHabitants() > 0.0f &&
+			system.GetCurrentHabitants() > 0.0f &&
 			// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
 			m_dc.pDoc->CurrentSystem().GetOwnerOfSystem() != pShip.GetOwnerOfShip())
 		{
-			CRace* pOwnerOfSector = m_dc.pDoc->GetRaceCtrl()->GetRace(csec.GetOwnerOfSector());
+			CRace* pOwnerOfSector = m_dc.pDoc->GetRaceCtrl()->GetRace(system.GetOwnerOfSector());
 
 			// Wenn im System eine Rasse lebt und wir mit ihr im Krieg sind
 			if (pOwnerOfSector != NULL && pMajor->GetAgreement(pOwnerOfSector->GetRaceID()) == DIPLOMATIC_AGREEMENT::WAR
 			// Wenn das System niemanden mehr gehört, aber noch Bevölkerung drauf lebt (z.B. durch Rebellion)
-				|| m_dc.pDoc->CurrentSystem().GetOwnerOfSystem() == "" && csec.GetMinorRace() == FALSE)
+				|| m_dc.pDoc->CurrentSystem().GetOwnerOfSystem() == "" && system.GetMinorRace() == FALSE)
 			{
 				// nur wenn die Schiffe ungetarnt sind können sie Bombardieren
 				// Ab hier check wegen Flotten
@@ -455,9 +454,9 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 	// der Flotte auch terraformen kann)
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::TERRAFORM))
 	{
-		for (int l = 0; l < csec.GetNumberOfPlanets(); l++)
-			if (csec.GetPlanet(l)->GetHabitable() == TRUE &&
-				csec.GetPlanet(l)->GetTerraformed() == FALSE)
+		for (int l = 0; l < system.GetNumberOfPlanets(); l++)
+			if (system.GetPlanet(l)->GetHabitable() == TRUE &&
+				system.GetPlanet(l)->GetTerraformed() == FALSE)
 			{
 				DrawSmallButton("BTN_TERRAFORM",CalcSecondaryButtonTopLeft(counter, top_down), SHIP_ORDER::TERRAFORM);
 				counter++;
@@ -474,7 +473,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 		// hier schauen, ob ich in der Schiffsinfoliste schon einen Außenposten habe den ich bauen kann, wenn in dem
 		// Sector noch kein Außenposten steht und ob ich diesen in dem Sector überhaupt bauen kann. Das geht nur
 		// wenn der Sektor mir oder niemanden gehört
-		if(csec.IsStationBuildable(SHIP_ORDER::BUILD_OUTPOST, pShip.GetOwnerOfShip()))
+		if(system.IsStationBuildable(SHIP_ORDER::BUILD_OUTPOST, pShip.GetOwnerOfShip()))
 		{
 			// Hier überprüfen, ob ich einen Außenposten technologisch überhaupt bauen kann
 			for (int l = 0; l < m_dc.pDoc->m_ShipInfoArray.GetSize(); l++)
@@ -487,7 +486,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 				}
 		}
 		// Wenn hier schon ein Außenposten steht, können wir vielleicht auch eine Sternbasis bauen
-		if (csec.IsStationBuildable(SHIP_ORDER::BUILD_STARBASE, pShip.GetOwnerOfShip()))
+		if (system.IsStationBuildable(SHIP_ORDER::BUILD_STARBASE, pShip.GetOwnerOfShip()))
 		{
 			// Hier überprüfen, ob ich eine Sternbasis technologisch überhaupt bauen kann
 			for (int l = 0; l < m_dc.pDoc->m_ShipInfoArray.GetSize(); l++)
@@ -500,12 +499,12 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 				}
 		}
 		// If a better outpost is available and buildable in this sector draw the upgrade button
-		if (csec.IsStationBuildable(SHIP_ORDER::UPGRADE_OUTPOST, pShip.GetOwnerOfShip())) {
+		if (system.IsStationBuildable(SHIP_ORDER::UPGRADE_OUTPOST, pShip.GetOwnerOfShip())) {
 			DrawSmallButton("BTN_UPGRADE_OUTPOST",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::UPGRADE_OUTPOST);
 			counter++;
 		}
 		// If a better starbase is available and buildable in this sector draw the upgrade button
-		if (csec.IsStationBuildable(SHIP_ORDER::UPGRADE_STARBASE, pShip.GetOwnerOfShip())) {
+		if (system.IsStationBuildable(SHIP_ORDER::UPGRADE_STARBASE, pShip.GetOwnerOfShip())) {
 			DrawSmallButton("BTN_UPGRADE_STARBASE",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::UPGRADE_STARBASE);
 			counter++;
 		}
@@ -513,7 +512,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 	// shield improvement
 	// Only possible if we are at an ionstorm and we haven't yet reached the max max shields
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::IMPROVE_SHIELDS,
-			&m_dc.pDoc->GetSector(pShip.GetKO().x, pShip.GetKO().y)))
+			&m_dc.pDoc->GetSystem(pShip.GetKO().x, pShip.GetKO().y)))
 	{
 		DrawSmallButton("IMPROVE_SHIELDS_SHIP_ORDER",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::IMPROVE_SHIELDS);
 		counter++;
@@ -523,7 +522,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 	// 1) the ship or any of the ships in its fleet are actually damaged.
 	// 2) we (or an allied race) have a ship port in this sector.
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::REPAIR,
-			&m_dc.pDoc->GetSector(
+			&m_dc.pDoc->GetSystem(
 				pShip.GetKO().x,
 				pShip.GetKO().y
 			)
@@ -539,7 +538,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 short CShipBottomView::DrawSingleTurnOrderMenu() {
 	const CShips& pShip = *m_dc.pDoc->CurrentShip()->second;
 	const CRect r(m_dc.r);
-	CSector& csec = m_dc.pDoc->CurrentSector();
+	const CSystem& system = m_dc.pDoc->CurrentSystem();
 	short counter = 0;
 
 	//maximum orders in this category: 5; in an own system with a colonizable planet, a coloship, a cloakable ship
@@ -572,10 +571,10 @@ short CShipBottomView::DrawSingleTurnOrderMenu() {
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::COLONIZE))
 	{
 		// Wenn das System uns bzw. niemanden gehört können wir nur kolonisieren
-		if (csec.GetOwnerOfSector() == "" || csec.GetOwnerOfSector() == pShip.GetOwnerOfShip())
-			for (int l = 0; l < csec.GetNumberOfPlanets(); l++)
-				if (csec.GetPlanet(l)->GetTerraformed() == TRUE
-					&& csec.GetPlanet(l)->GetCurrentHabitant() == 0.0f)
+		if (system.GetOwnerOfSector() == "" || system.GetOwnerOfSector() == pShip.GetOwnerOfShip())
+			for (int l = 0; l < system.GetNumberOfPlanets(); l++)
+				if (system.GetPlanet(l)->GetTerraformed() == TRUE
+					&& system.GetPlanet(l)->GetCurrentHabitant() == 0.0f)
 				{
 					DrawSmallButton("BTN_COLONIZE", CalcSecondaryButtonTopLeft(counter), SHIP_ORDER::COLONIZE);
 					counter++;
@@ -614,7 +613,7 @@ short CShipBottomView::DrawImmediateOrderMenu() {
 
 void CShipBottomView::DrawStationData() {
 	CMajor* pMajor = m_pPlayersRace;
-	CSector csec = m_dc.pDoc->CurrentSector();
+	const CSystem& system = m_dc.pDoc->CurrentSystem();
 	BYTE count = 0;
 
 	// Wenn wir in dem Sektor gerade einen Außenposten bauen, dann prozentualen Fortschritt anzeigen.
@@ -622,12 +621,12 @@ void CShipBottomView::DrawStationData() {
 	// von jeder der Rasse den Fortschritt beim Stationsbau angeben
 	map<CString, CMajor*>* pmMajors = m_dc.pDoc->GetRaceCtrl()->GetMajors();
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-		if (csec.GetIsStationBuilding(it->first) == TRUE) {
+		if (system.GetIsStationBuilding(it->first) == TRUE) {
 			m_dc.fontBrush->SetColor(Color(170,170,170));
 			CString percent;
-			percent.Format("%d",((csec.GetStartStationPoints(it->first)
-				- csec.GetNeededStationPoints(it->first)) * 100
-				/ csec.GetStartStationPoints(it->first)));
+			percent.Format("%d",((system.GetStartStationPoints(it->first)
+				- system.GetNeededStationPoints(it->first)) * 100
+				/ system.GetStartStationPoints(it->first)));
 
 			CString sRaceName;
 			if (pMajor == it->second || pMajor->IsRaceContacted(it->first))
@@ -637,7 +636,7 @@ void CShipBottomView::DrawStationData() {
 
 			CString station;
 			// If an outpost is under construction
-			const SHIP_ORDER::Typ type = csec.StationWork(it->first);
+			const SHIP_ORDER::Typ type = system.StationWork(it->first);
 			if (type == SHIP_ORDER::BUILD_OUTPOST)
 				station = CLoc::GetString("OUTPOST") + CLoc::GetString("STATION_BUILDING", FALSE, sRaceName, percent);
 			// If a starbase is under construction

@@ -384,8 +384,8 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 			{
 				// Lange Abfrage hie notwendig, weil bei Kolonisierung brauchen wir nen geterraformten Planeten und
 				// beim Terraforming nen bewohnbaren noch nicht geterraformten Planeten
-				if (pDoc->CurrentSector().GetPlanet(i)->GetTerraformed() == FALSE
-					&& pDoc->CurrentSector().GetPlanet(i)->GetHabitable() == TRUE)
+				if (pDoc->CurrentSystem().GetPlanet(i)->GetTerraformed() == FALSE
+					&& pDoc->CurrentSystem().GetPlanet(i)->GetHabitable() == TRUE)
 				{
 					CGalaxyMenuView::SetMoveShip(FALSE);
 					CShipBottomView::SetShowStation(false);
