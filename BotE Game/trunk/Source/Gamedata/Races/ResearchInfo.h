@@ -114,6 +114,8 @@ public:
 	 */
 	static void GetTechInfos(BYTE tech, BYTE level, CString& sTechName, CString& sTechDesc);
 
+	int IsResearchedThenGetBonus(RESEARCH_COMPLEX::Typ type, int field) const;
+
 private:
 	/// Die derzeit 12 Objekte für die einzelnen Komplexe der Spezialforschung
 	CResearchComplex m_ResearchComplex[NoUC];

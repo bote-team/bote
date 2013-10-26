@@ -693,6 +693,16 @@ BOOLEAN CSystem::SetHabitants(double habitants)
 	return FALSE;
 }
 
+static void AddBonusToProd(int& prod, int bonus)
+{
+	prod += bonus * prod / 100;
+}
+
+static void AddPlanetBonusToBonus(short& base_bonus, int size)
+{
+	base_bonus += size * 25;
+}
+
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
@@ -738,22 +748,23 @@ void CSystem::CalculateVariables()
 	for (int i = 0; i < NumberOfBuildings; i++)
 	{
 		const CBuildingInfo* buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
+		CBuilding& building = m_Buildings.GetAt(i);
 
 		// Bei einer Blockade werden auch die Werften offline gesetzt
 		if (m_byBlockade >= 100 && buildingInfo->GetShipYard() && buildingInfo->GetNeededEnergy() > 0)
-			m_Buildings.ElementAt(i).SetIsBuildingOnline(FALSE);
+			building.SetIsBuildingOnline(FALSE);
 
 		// Gebäude offline setzen
 		if (buildingInfo->GetWorker() == TRUE)
 		{
-			m_Buildings.ElementAt(i).SetIsBuildingOnline(FALSE);
+			building.SetIsBuildingOnline(FALSE);
 
 			// Jetzt wieder wenn möglich online setzen
 			for(std::vector<int>::iterator it = workers.begin(); it != workers.end(); ++it)
 				if(*it > 0 && buildingInfo->GetXProd(static_cast<WORKER::Typ>(it - workers.begin())) > 0)
 				{
 					--*it;
-					m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
+					building.SetIsBuildingOnline(TRUE);
 				}
 			if(buildingInfo->GetEnergyProd() > 0)
 				++energy_buildings_used;
@@ -761,7 +772,7 @@ void CSystem::CalculateVariables()
 				++ind_buildings_used;
 		}
 		// Die einzelnen Produktionen berechnen (ohne Boni)
-		m_Production.CalculateProduction(buildingInfo, m_Buildings.ElementAt(i).GetIsBuildingOnline(),
+		m_Production.CalculateProduction(buildingInfo, building.GetIsBuildingOnline(),
 			ind_buildings_used <= m_Workers.GetWorker(WORKER::ALL_WORKER),
 			energy_buildings_used <= m_Workers.GetWorker(WORKER::ALL_WORKER));
 	}
@@ -804,12 +815,13 @@ void CSystem::CalculateVariables()
 	for (int i = 0; i < NumberOfBuildings; i++)
 	{
 		const CBuildingInfo* buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
-
-		// Hier die nötige Energie von der produzierten abziehen, geht aber nur hier, wenn wir keine Boni zur Energie reinmachen
-		if (m_Buildings.GetAt(i).GetIsBuildingOnline() && buildingInfo->GetNeededEnergy() > 0)
+		const CBuilding& building = m_Buildings.GetAt(i);
+		// Hier die nötige Energie von der produzierten abziehen,
+		// geht aber nur hier, wenn wir keine Boni zur Energie reinmachen
+		if (building.GetIsBuildingOnline() && buildingInfo->GetNeededEnergy() > 0)
 			neededEnergy += buildingInfo->GetNeededEnergy();
 
-		if (m_Buildings.GetAt(i).GetIsBuildingOnline() == TRUE)
+		if (building.GetIsBuildingOnline())
 		{
 			// Es wird IMMER abgerundet, gemacht durch "floor"
 			tmpFoodBoni			+= buildingInfo->GetFoodBoni();
@@ -829,115 +841,113 @@ void CSystem::CalculateVariables()
 	}
 
 	// Jetzt werden noch eventuelle Boni durch die Planetenklassen dazugerechnet
-	BYTE deritiumProdMulti = 0;
-	for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
+	int deritiumProdMulti = 0;
+	for(std::vector<CPlanet>::const_iterator it = m_Planets.begin(); it != m_Planets.end(); ++it)
 	{
-		if (m_Planets.at(i).GetColonized() == TRUE && m_Planets.at(i).GetCurrentHabitant() > 0.0f)
-		{
-			// pro Planetengröße gibt es 25% Bonus
-			if (m_Planets.at(i).GetBoni()[RESOURCES::TITAN] == TRUE)
-				tmpTitanBoni	+= (m_Planets.at(i).GetSize()+1) * 25;
-			if (m_Planets.at(i).GetBoni()[RESOURCES::DEUTERIUM] == TRUE)
-				tmpDeuteriumBoni+= (m_Planets.at(i).GetSize()+1) * 25;
-			if (m_Planets.at(i).GetBoni()[RESOURCES::DURANIUM] == TRUE)
-				tmpDuraniumBoni	+= (m_Planets.at(i).GetSize()+1) * 25;
-			if (m_Planets.at(i).GetBoni()[RESOURCES::CRYSTAL] == TRUE)
-				tmpCrystalBoni	+= (m_Planets.at(i).GetSize()+1) * 25;
-			if (m_Planets.at(i).GetBoni()[RESOURCES::IRIDIUM] == TRUE)
-				tmpIridiumBoni	+= (m_Planets.at(i).GetSize()+1) * 25;
-			if (m_Planets.at(i).GetBoni()[6] == TRUE)	// food
-				tmpFoodBoni		+= (m_Planets.at(i).GetSize()+1) * 25;
-			if (m_Planets.at(i).GetBoni()[7] == TRUE)	// energy
-				tmpEnergyBoni	+= (m_Planets.at(i).GetSize()+1) * 25;
-			// Menge des abgebauten Deritiums mit der Anzahl der kolonisierten Planeten mit Deritiumvorkommen
-			// multiplizieren
-			if (m_Planets.at(i).GetBoni()[RESOURCES::DERITIUM] == TRUE)
-				deritiumProdMulti += 1;
-		}
+		if(!it->GetColonized() || it->GetCurrentHabitant() <= 0.0f)
+			continue;
+		const int size_plus_one = it->GetSize() + 1;
+		const BOOLEAN* boni = it->GetBoni();
+		// pro Planetengröße gibt es 25% Bonus
+		if (boni[RESOURCES::TITAN])
+			AddPlanetBonusToBonus(tmpTitanBoni, size_plus_one);
+		if (boni[RESOURCES::DEUTERIUM])
+			AddPlanetBonusToBonus(tmpDeuteriumBoni, size_plus_one);
+		if (boni[RESOURCES::DURANIUM])
+			AddPlanetBonusToBonus(tmpDuraniumBoni, size_plus_one);
+		if (boni[RESOURCES::CRYSTAL])
+			AddPlanetBonusToBonus(tmpCrystalBoni, size_plus_one);
+		if (boni[RESOURCES::IRIDIUM])
+			AddPlanetBonusToBonus(tmpIridiumBoni, size_plus_one);
+		if (boni[RESOURCES::FOOD])	// food
+			AddPlanetBonusToBonus(tmpFoodBoni, size_plus_one);
+		if (boni[7])	// energy
+			AddPlanetBonusToBonus(tmpEnergyBoni, size_plus_one);
+		// Menge des abgebauten Deritiums mit der Anzahl der kolonisierten Planeten mit Deritiumvorkommen
+		// multiplizieren
+		if (boni[RESOURCES::DERITIUM])
+			deritiumProdMulti += 1;
 	}
 	m_Production.m_iDeritiumProd	*= deritiumProdMulti;
 
-	m_Production.m_iFoodProd		+= (int)(tmpFoodBoni*m_Production.m_iFoodProd/100);
-	m_Production.m_iIndustryProd	+= (int)(tmpIndustryBoni*m_Production.m_iIndustryProd/100);
-	m_Production.m_iPotentialIndustryProd += tmpIndustryBoni*m_Production.m_iPotentialIndustryProd/100;
-	m_Production.m_iEnergyProd		+= (int)(tmpEnergyBoni*m_Production.m_iEnergyProd/100);
-	m_Production.m_iPotentialEnergyProd += tmpEnergyBoni*m_Production.m_iPotentialEnergyProd/100;
-	m_Production.m_iSecurityProd	+= (int)(tmpSecurityBoni*m_Production.m_iSecurityProd/100);
-	m_Production.m_iResearchProd	+= (int)(tmpResearchBoni*m_Production.m_iResearchProd/100);
-	m_Production.m_iTitanProd		+= (int)(tmpTitanBoni*m_Production.m_iTitanProd/100);
-	m_Production.m_iDeuteriumProd	+= (int)(tmpDeuteriumBoni*m_Production.m_iDeuteriumProd/100);
-	m_Production.m_iDuraniumProd	+= (int)(tmpDuraniumBoni*m_Production.m_iDuraniumProd/100);
-	m_Production.m_iCrystalProd		+= (int)(tmpCrystalBoni*m_Production.m_iCrystalProd/100);
-	m_Production.m_iIridiumProd		+= (int)(tmpIridiumBoni*m_Production.m_iIridiumProd/100);
-	m_Production.m_iDeritiumProd	+= (int)(tmpDeritiumBoni*m_Production.m_iDeritiumProd/100);
-	m_Production.m_iCreditsProd		+= (int)(tmpCreditsBoni*m_Production.m_iCreditsProd/100);
+	AddBonusToProd(m_Production.m_iFoodProd, tmpFoodBoni);
+	AddBonusToProd(m_Production.m_iIndustryProd, tmpIndustryBoni);
+	AddBonusToProd(m_Production.m_iPotentialIndustryProd, tmpIndustryBoni);
+	AddBonusToProd(m_Production.m_iEnergyProd, tmpEnergyBoni);
+	AddBonusToProd(m_Production.m_iPotentialEnergyProd, tmpEnergyBoni);
+	AddBonusToProd(m_Production.m_iSecurityProd, tmpSecurityBoni);
+	AddBonusToProd(m_Production.m_iResearchProd, tmpResearchBoni);
+	AddBonusToProd(m_Production.m_iTitanProd, tmpTitanBoni);
+	AddBonusToProd(m_Production.m_iDeuteriumProd, tmpDeuteriumBoni);
+	AddBonusToProd(m_Production.m_iDuraniumProd, tmpDuraniumBoni);
+	AddBonusToProd(m_Production.m_iCrystalProd, tmpCrystalBoni);
+	AddBonusToProd(m_Production.m_iIridiumProd, tmpIridiumBoni);
+	AddBonusToProd(m_Production.m_iDeritiumProd, tmpDeritiumBoni);
+	AddBonusToProd(m_Production.m_iCreditsProd, tmpCreditsBoni);
 
 	// Wenn das System blockiert wird, dann verringern sich bestimmte Produktionswerte
 	if (m_byBlockade > NULL)
 	{
-		//m_Production.m_iFoodProd		-= (int)(m_byBlockade * m_Production.m_iFoodProd/100);
-		m_Production.m_iIndustryProd	-= (int)(m_byBlockade * m_Production.m_iIndustryProd/100);
-		m_Production.m_iPotentialIndustryProd	-= m_byBlockade * m_Production.m_iPotentialIndustryProd/100;
-		//m_Production.m_iEnergyProd	-= (int)(m_byBlockade * m_Production.m_iEnergyProd/100);
-		//m_Production.m_iPotentialEnergyProd	-= m_byBlockade * m_Production.m_iPotentialEnergyProd/100;
-		m_Production.m_iSecurityProd	-= (int)(m_byBlockade * m_Production.m_iSecurityProd/100);
-		m_Production.m_iResearchProd	-= (int)(m_byBlockade * m_Production.m_iResearchProd/100);
-		m_Production.m_iTitanProd		-= (int)(m_byBlockade * m_Production.m_iTitanProd/100);
-		m_Production.m_iDeuteriumProd	-= (int)(m_byBlockade * m_Production.m_iDeuteriumProd/100);
-		m_Production.m_iDuraniumProd	-= (int)(m_byBlockade * m_Production.m_iDuraniumProd/100);
-		m_Production.m_iCrystalProd		-= (int)(m_byBlockade * m_Production.m_iCrystalProd/100);
-		m_Production.m_iIridiumProd		-= (int)(m_byBlockade * m_Production.m_iIridiumProd/100);
-		m_Production.m_iDeritiumProd	-= (int)(m_byBlockade * m_Production.m_iDeritiumProd/100);
-		m_Production.m_iCreditsProd		-= (int)(m_byBlockade * m_Production.m_iCreditsProd/100);
+		const int bonus = -m_byBlockade;
+		AddBonusToProd(m_Production.m_iIndustryProd, bonus);
+		AddBonusToProd(m_Production.m_iPotentialIndustryProd, bonus);
+		AddBonusToProd(m_Production.m_iSecurityProd, bonus);
+		AddBonusToProd(m_Production.m_iResearchProd, bonus);
+		AddBonusToProd(m_Production.m_iTitanProd, bonus);
+		AddBonusToProd(m_Production.m_iDeuteriumProd, bonus);
+		AddBonusToProd(m_Production.m_iDuraniumProd, bonus);
+		AddBonusToProd(m_Production.m_iCrystalProd, bonus);
+		AddBonusToProd(m_Production.m_iIridiumProd, bonus);
+		AddBonusToProd(m_Production.m_iDeritiumProd, bonus);
+		AddBonusToProd(m_Production.m_iCreditsProd, bonus);
 		if (m_byBlockade >= 100)
 			m_Production.m_bShipYard	= false;
 	}
 
 	// Hier noch Boni auf das Spezialzeug geben (z.B. Scanpower usw.)
-	m_Production.m_iScanPower		+= (int)(m_Production.m_iScanPowerBoni*m_Production.m_iScanPower/100);
-	m_Production.m_iScanRange		+= (int)(m_Production.m_iScanRangeBoni*m_Production.m_iScanRange/100);
-	m_Production.m_iGroundDefend	+= (int)(m_Production.m_iGroundDefendBoni*m_Production.m_iGroundDefend/100);
-	m_Production.m_iShipDefend		+= (int)(m_Production.m_iShipDefendBoni*m_Production.m_iShipDefend/100);
-	m_Production.m_iShieldPower		+= (int)(m_Production.m_iShieldPowerBoni*m_Production.m_iShieldPower/100);
+	AddBonusToProd(m_Production.m_iScanPower, m_Production.m_iScanPowerBoni);
+	AddBonusToProd(m_Production.m_iScanRange, m_Production.m_iScanRangeBoni);
+	AddBonusToProd(m_Production.m_iGroundDefend, m_Production.m_iGroundDefendBoni);
+	AddBonusToProd(m_Production.m_iShipDefend, m_Production.m_iShipDefendBoni);
+	AddBonusToProd(m_Production.m_iShieldPower, m_Production.m_iShieldPowerBoni);
 
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Wirtschaft" -> 10% mehr Industrie
-	if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
+	if(const int bonus = ResearchInfo->IsResearchedThenGetBonus(RESEARCH_COMPLEX::ECONOMY, 1))
 	{
+		AddBonusToProd(m_Production.m_iIndustryProd, bonus);
+		AddBonusToProd(m_Production.m_iPotentialIndustryProd, bonus);
+	}
+	else if(const int bonus = ResearchInfo->IsResearchedThenGetBonus(RESEARCH_COMPLEX::ECONOMY, 3))
+		AddBonusToProd(m_Production.m_iCreditsProd, bonus);
 
-		m_Production.m_iIndustryProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(1)*m_Production.m_iIndustryProd/100);
-		m_Production.m_iPotentialIndustryProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(1)*m_Production.m_iPotentialIndustryProd/100);
-	}
-	else if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
-	{
-		m_Production.m_iCreditsProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(3) * m_Production.m_iCreditsProd / 100);
-	}
 	// Hier die Boni durch die Uniqueforschung "Produktion"
-	if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
-		m_Production.m_iFoodProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(1)*m_Production.m_iFoodProd/100);
-	else if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
+	if(const int bonus = ResearchInfo->IsResearchedThenGetBonus(RESEARCH_COMPLEX::PRODUCTION, 1))
+		AddBonusToProd(m_Production.m_iFoodProd, bonus);
+	else if (const int bonus = ResearchInfo->IsResearchedThenGetBonus(RESEARCH_COMPLEX::PRODUCTION, 2))
 	{
-		m_Production.m_iTitanProd		+= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(2)*m_Production.m_iTitanProd/100);
-		m_Production.m_iDeuteriumProd	+= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(2)*m_Production.m_iDeuteriumProd/100);
-		m_Production.m_iDuraniumProd	+= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(2)*m_Production.m_iDuraniumProd/100);
-		m_Production.m_iCrystalProd		+= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(2)*m_Production.m_iCrystalProd/100);
-		m_Production.m_iIridiumProd		+= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(2)*m_Production.m_iIridiumProd/100);
+		AddBonusToProd(m_Production.m_iTitanProd, bonus);
+		AddBonusToProd(m_Production.m_iDeuteriumProd, bonus);
+		AddBonusToProd(m_Production.m_iDuraniumProd, bonus);
+		AddBonusToProd(m_Production.m_iCrystalProd, bonus);
+		AddBonusToProd(m_Production.m_iIridiumProd, bonus);
 	}
 	// Wenn wir die Uniqueforschung "Produktion" gewählt haben, und dort mehr Energie haben wollen -> 20% mehr!
-	else if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+	else if (const int bonus = ResearchInfo->IsResearchedThenGetBonus(RESEARCH_COMPLEX::PRODUCTION, 3))
 	{
-		m_Production.m_iEnergyProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(3)*m_Production.m_iEnergyProd/100);
-		m_Production.m_iPotentialEnergyProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(3)*m_Production.m_iPotentialEnergyProd/100);
+		AddBonusToProd(m_Production.m_iEnergyProd, bonus);
+		AddBonusToProd(m_Production.m_iPotentialEnergyProd, bonus);
 	}
+
 	// Hier die Boni durch die Uniqueforschung "Forschung und Sicherheit"
-	if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
-		m_Production.m_iResearchProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY)->GetBonus(1)*m_Production.m_iResearchProd/100);
-	else if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
-		m_Production.m_iSecurityProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY)->GetBonus(1)*m_Production.m_iSecurityProd/100);
-	else if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+	if(const int bonus = ResearchInfo->IsResearchedThenGetBonus(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY, 1))
+		AddBonusToProd(m_Production.m_iResearchProd, bonus);
+	else if (const int bonus = ResearchInfo->IsResearchedThenGetBonus(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY, 2))
+		AddBonusToProd(m_Production.m_iSecurityProd, bonus);
+	else if (const int bonus = ResearchInfo->IsResearchedThenGetBonus(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY, 3))
 	{
-		m_Production.m_iResearchProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY)->GetBonus(3)*m_Production.m_iResearchProd/100);
-		m_Production.m_iSecurityProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY)->GetBonus(3)*m_Production.m_iSecurityProd/100);
+		AddBonusToProd(m_Production.m_iResearchProd, bonus);
+		AddBonusToProd(m_Production.m_iSecurityProd, bonus);
 	}
 
 	// Maximalenergie, also hier noch ohne Abzüge durch energiebedürftige Gebäude

@@ -75,8 +75,8 @@ public:
 	int GetCrystalProd() const {return m_iCrystalProd;}
 	int GetIridiumProd() const {return m_iIridiumProd;}
 	int GetResourceProd(BYTE res) const;
-	short GetDeritiumProd() const {return m_iDeritiumProd;}
-	short GetCreditsProd() const {return m_iCreditsProd;}
+	int GetDeritiumProd() const {return m_iDeritiumProd;}
+	int GetCreditsProd() const {return m_iCreditsProd;}
 	short GetMoralProd() const {return m_iMoralProd;}
 	static short GetMoralProdEmpireWide(const CString& sRaceID) {return m_iMoralProdEmpireWide[sRaceID];}
 	static std::map<CString, short>* GetMoralProdEmpireWide(void) {return &m_iMoralProdEmpireWide;}
@@ -106,7 +106,7 @@ public:
 	int GetGroundDefend() const {return m_iGroundDefend;}
 	short GetGroundDefendBoni() const {return m_iGroundDefendBoni;}
 	int GetScanPower() const {return m_iScanPower;}
-	BYTE GetScanRange() const {return m_iScanRange;}
+	int GetScanRange() const {return m_iScanRange;}
 	short GetShipTraining() const {return m_iShipTraining;}
 	short GetTroopTraining() const {return m_iTroopTraining;}
 	short GetResistance() const {return m_iResistance;}
@@ -165,8 +165,8 @@ private:
 	int m_iDuraniumProd;			///< Duraniumproduktion in dem System
 	int m_iCrystalProd;				///< Crystalproduktion in dem System
 	int m_iIridiumProd;				///< Iridiumproduktion in dem System
-	short m_iDeritiumProd;			///< Deritiumproduktion in dem System
-	short m_iCreditsProd;			///< Creditsproduktion in dem System, abhängig von der Bevölkerung
+	int m_iDeritiumProd;			///< Deritiumproduktion in dem System
+	int m_iCreditsProd;			///< Creditsproduktion in dem System, abhängig von der Bevölkerung
 	short m_iMoralProd;				///< Moralproduktion aller Gebäude (also die +x Moral)
 	static std::map<CString, short> m_iMoralProdEmpireWide;	///< Moralproduktion imperiumsweit für alle Imperien
 	// Forschungstechboni
@@ -198,7 +198,7 @@ private:
 	short m_iGroundDefendBoni;
 	int m_iScanPower;
 	short m_iScanPowerBoni;
-	BYTE m_iScanRange;
+	int m_iScanRange;
 	short m_iScanRangeBoni;
 	short m_iShipTraining;
 	short m_iTroopTraining;

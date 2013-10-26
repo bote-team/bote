@@ -261,3 +261,10 @@ ULONG CResearchInfo::GetWeapon( USHORT nTechLevel ) const
 {
 	return (ULONG)(pow(2.25f, nTechLevel) * 175.0 * m_dResearchSpeedFactor);
 }
+
+int CResearchInfo::IsResearchedThenGetBonus(RESEARCH_COMPLEX::Typ type, int field) const
+{
+	if(GetResearchComplex(type)->GetFieldStatus(field) == RESEARCH_STATUS::RESEARCHED)
+		return GetResearchComplex(type)->GetBonus(field);
+	return 0;
+}
