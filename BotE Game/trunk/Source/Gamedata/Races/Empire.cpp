@@ -81,14 +81,9 @@ void CEmpire::Serialize(CArchive &ar)
 void CEmpire::GenerateSystemList(const std::vector<CSystem>& systems)
 {
 	m_SystemList.RemoveAll();
-	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++) {
-		const unsigned vertical_pos = y * STARMAP_SECTORS_HCOUNT;
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++) {
-			const unsigned index = vertical_pos + x;
-			if (systems.at(index).GetOwnerOfSystem() == m_sEmpireID)
-				m_SystemList.Add(EMPIRE_SYSTEMS(systems.at(index).GetName(), CPoint(x,y)));
-		}
-	}
+	for(std::vector<CSystem>::const_iterator it = systems.begin(); it != systems.end(); ++it)
+		if(it->GetOwnerOfSystem() == m_sEmpireID)
+			m_SystemList.Add(EMPIRE_SYSTEMS(it->GetName(), it->GetKO()));
 }
 
 /// Funktion addiert die übergebene Anzahl an Forschungspunkten zu den Forschungspunkten des Imperiums.
