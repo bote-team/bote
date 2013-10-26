@@ -37,7 +37,7 @@ public:
 	void Serialize(CArchive& ar);
 
 //////////////////////////////////////////////////////////////////////
-// getting info
+// getting
 //////////////////////////////////////////////////////////////////////
 
 	bool Active() const;
@@ -53,7 +53,7 @@ public:
 	int Priority(WORKER::Typ type) const;
 
 //////////////////////////////////////////////////////////////////////
-// setters
+// setting
 //////////////////////////////////////////////////////////////////////
 
 	void SetActive(bool is);
@@ -74,14 +74,17 @@ public:
 // other functions
 //////////////////////////////////////////////////////////////////////
 
+	//Distributes workers according to priorities and other manager settings
 	//@return false in case of an error
 	bool DistributeWorkers(CSystem& system, const CPoint& p) const;
 
+	//Takes energy buildings in the system on/offline
 	bool CheckEnergyConsumers(CSystem& system, const CPoint& p);
 
 	//@return true in case of expected famine
 	static bool CheckFamine(const CSystem& system);
 
+	//@return true in case this building is taken on/offline by system manager by default
 	static bool IsHandledEnergyConsumer(const CBuildingInfo& info);
 
 //////////////////////////////////////////////////////////////////////
@@ -106,6 +109,7 @@ private:
 	int m_iMinMoralProd;
 	bool m_bBombWarning;
 	bool m_bOnOffline;
-	std::map<WORKER::Typ, int> m_PriorityMap;//1-100 each
+	std::map<WORKER::Typ, int> m_PriorityMap;//min_priority + 1 till max_priority each, borders included
+	//priorities with min_priority are not added
 
 };

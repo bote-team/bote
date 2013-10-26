@@ -119,7 +119,7 @@ void CSystemManager::Serialize(CArchive& ar)
 }
 
 //////////////////////////////////////////////////////////////////////
-// getting info
+// getting
 //////////////////////////////////////////////////////////////////////
 
 bool CSystemManager::Active() const
@@ -151,7 +151,7 @@ int CSystemManager::Priority(WORKER::Typ type) const
 }
 
 //////////////////////////////////////////////////////////////////////
-// setters
+// setting
 //////////////////////////////////////////////////////////////////////
 
 void CSystemManager::SetActive(bool is)
@@ -187,9 +187,10 @@ void CSystemManager::AddPriority(WORKER::Typ type, int value)
 }
 
 //////////////////////////////////////////////////////////////////////
-// other functions
+// workers distribution
 //////////////////////////////////////////////////////////////////////
 
+//holds the relation data between a producible resource needing workers and the amount of workers it gets
 struct DistributionElem
 {
 	WORKER::Typ m_Type;
@@ -210,6 +211,22 @@ struct DistributionElem
 	}
 };
 
+//Class which calculates a default distribution (that is, without considering number of buildings) onto (currently)
+//cathegories industry, security, research, titan, deuterium, duranium, crystal, iridium.
+//Energy and food are currently not passed to this class.
+//The only deciding factors are given priorities and number of all_workers (determined by system population).
+//The whole class is basically an implementation of the following mathematical formula:
+//workers_i = (all_workers - sum(workers_j, j = 1..(i-1))) / (1 + (1 / priority_i) * sum(priority_j, j = (i + 1)..n))
+//where i = 1..n with n = 8 in our case (count of priorities).
+//This means that workers_i : workers_j = priority_i : priority_j for i,j = 1..n; i and j symbolizing one of the
+//cathegories from above.
+//
+//The algorithm first distributes workers according to the integer part of the resulting double worker counts,
+//then sorts it according to the floating point part, and distributes any remaining workers onto those results
+//with the highest floating point parts.
+//
+//The result is sorted according to number of workers the cathegory got (by the foating point result,
+//not the integer one).
 class DefaultDistributionCalculator
 {
 public:
@@ -225,7 +242,12 @@ public:
 	{
 		if(m_Priorities.empty() || m_iAllWorkers == 0)
 			return std::vector<DistributionElem>();
+
+		//calculate the distribution with floating point results
 		CalcDefaultWorkersDistributionDouble();
+
+		//give any workers which remain after considering the integer parts
+		//to those cthegories with the highest floating point parts
 		DistributeRemaining();
 
 		std::sort(m_Result.begin(), m_Result.end(), &comp);
@@ -294,14 +316,19 @@ private:
 	}
 };
 
+//Class handling the actual distribution of workers.
 class CWorkersDistributionCalculator
 {
 private:
 	CSystem* m_pSystem;
 	const CSystemProd* const m_pProd;
 	const CPoint m_Co;
+
+	//currently remaining workers
+	//At the start of the algorithm all workers are unset, thus this is the same as system population at that point.
 	int m_WorkersLeftToSet;
 
+	//fills all remaining empty buildings of the given cathegory, only considering available workers and buildings
 	bool FillRemainingSlots(WORKER::Typ type)
 	{
 		assert(m_WorkersLeftToSet >= 0);
@@ -315,6 +342,8 @@ private:
 		return true;
 	}
 
+	//removes workers from a cathegory which has a store until production + store <= store,
+	//so that nothing will be wasted on next turn change
 	int DecrementDueToFullStore(WORKER::Typ type)
 	{
 		int unset = 0;
@@ -336,6 +365,8 @@ private:
 		return unset;
 	}
 
+	//removes workers from factories until they are the minimum number to finish the current project
+	//in still the same number of turns (as at the start of the function)
 	int DecrementDueToWastedIndustry(bool max_industry)
 	{
 		m_pSystem->CalculateVariables();
@@ -362,6 +393,8 @@ private:
 		}
 	}
 
+	//worker setting function which makes according changes to m_WorkersLeftToSet, tracking how many
+	//we still have to distribute at all
 	void SetWorker(WORKER::Typ type, CSystem::SetWorkerMode mode, int value = -1)
 	{
 		if(mode == CSystem::SET_WORKER_MODE_INCREMENT)
@@ -385,6 +418,9 @@ private:
 		assert(m_WorkersLeftToSet >= 0);
 	}
 
+	//if "safe moral" feature is active, we need to reserve a worker before distributing the others
+	//onto the cathegories to be able to put him into industry afterwards
+	// (it's unknown from which cathegory we should take this worker away otherwise)
 	struct SafeMoralWorkerReserve
 	{
 		CWorkersDistributionCalculator* m_Calc;
@@ -404,6 +440,8 @@ private:
 		}
 	};
 
+	//distributes workers onto the cathegories which are on max; these are removed from the map afterwards
+	//and no longer considered
 	void DoMaxPriorities(std::map<WORKER::Typ, int>& prios, bool max_industry)
 	{
 		for(std::map<WORKER::Typ, int>::const_iterator it = prios.begin(); it != prios.end();)
@@ -447,6 +485,7 @@ public:
 		m_pSystem->CalculateVariables();
 	}
 
+	//Indreases workers in cathegories energy and food until we produce enough to suffice for the consumption we have
 	bool IncreaseWorkersUntilSufficient(WORKER::Typ type, bool allow_insufficient)
 	{
 		assert(type == WORKER::ENERGY_WORKER || type == WORKER::FOOD_WORKER);
@@ -467,6 +506,9 @@ public:
 		}
 	}
 
+	//distributes workers onto priorities remaining after max priorities have been processed
+	//workers that cannot be set because of number of buildings are tried to be set into
+	//the cathegory with next less workers
 	void DoPriorities(const std::map<WORKER::Typ, int>& priorities, bool max_industry, bool safe_moral)
 	{
 		SafeMoralWorkerReserve reserve(*this, safe_moral);
@@ -505,6 +547,9 @@ public:
 		}
 	}
 
+	//fills any workers remaining into remaining worker slots, with decreasing order of sense
+	//at first we try to only put them if store isn't already full, then we produce industry
+	//(gives a little money), at last we produce superfluous energy
 	void DoRemaining()
 	{
 		if(FillRemainingSlots(WORKER::FOOD_WORKER))
@@ -537,6 +582,8 @@ public:
 		FillRemainingSlots(WORKER::ENERGY_WORKER);
 	}
 
+	//puts an additional worker into industry, to prevent not finishing the project because
+	//industry prod decreased due to loss of moral
 	void SafeMoral()
 	{
 		const CAssemblyList& assembly_list = *m_pSystem->GetAssemblyList();
