@@ -383,6 +383,8 @@ private:
 			SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_DECREMENT);
 			++unset;
 			m_pSystem->CalculateVariables();
+			if(m_pSystem->GetWorker(WORKER::INDUSTRY_WORKER) == 0)
+				return unset;
 			if(min_rounds < m_pSystem->NeededRoundsToBuild(0, true))
 			{
 				SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
