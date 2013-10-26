@@ -8,6 +8,7 @@
 #include "Resources.h"
 #include "BotEDoc.h"
 #include "Races/RaceController.h"
+#include "Ships/Ships.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -642,12 +643,6 @@ public:
 		return true;
 	}
 
-	bool CheckDefense(bool& bomb_warning) const
-	{
-		bomb_warning |= BomberInSector();
-		return bomb_warning;
-	}
-
 	bool CheckMoral(const CBuildingInfo& info, const CBuilding& building,
 		int min_moral = CSystemManager::max_min_moral,
 		int min_moral_prod = CSystemManager::max_min_moral_prod) const
@@ -670,24 +665,42 @@ public:
 			+ info.GetDeritiumProd() <= max_store;
 	}
 
+	bool BomberInSector() const
+	{
+		const CRaceController& race_ctrl = *resources::pDoc->GetRaceCtrl();
+		std::set<CString> races = m_pSystem->ShipsInSector();
+		for(std::set<CString>::const_iterator it = races.begin(); it != races.end();)
+		{
+			const DIPLOMATIC_AGREEMENT::Typ agreement = race_ctrl.GetRace(*it)
+				->GetAgreement(m_pSystem->GetOwnerOfSystem());
+			if(agreement != DIPLOMATIC_AGREEMENT::WAR)
+			{
+				it = races.erase(it);
+				continue;
+			}
+			++it;
+		}
+		return races.empty() ? false : CheckShips(races);
+	}
+
 private:
 	CSystem* m_pSystem;
 	const CPoint m_Co;
 
-	bool BomberInSector() const
+	bool CheckShips(const std::set<CString>& enemies) const
 	{
-		const CBotEDoc& doc = *resources::pDoc;
-		const CSector& sector = doc.GetSector(m_Co.x, m_Co.y);
-		const std::set<CString> races = sector.ShipsInSector();
-		for(std::set<CString>::const_iterator it = races.begin(); it != races.end(); ++it)
+		const CShipMap& ships = resources::pDoc->m_ShipMap;
+		const int scan_power = m_pSystem->GetScanPower(m_pSystem->GetOwnerOfSystem(), true);
+		for(CShipMap::const_iterator it = ships.begin(); it != ships.end(); ++it)
 		{
-			const DIPLOMATIC_AGREEMENT::Typ agreement = doc.GetRaceCtrl()->GetRace(*it)
-				->GetAgreement(m_pSystem->GetOwnerOfSystem());
-			if(agreement == DIPLOMATIC_AGREEMENT::WAR)
+			if(it->second->GetKO() != m_pSystem->GetKO() || enemies.find(it->second->GetOwnerOfShip()) == enemies.end())
+				continue;
+			if(!it->second->GetCloak() && m_pSystem->GetNeededScanPower(it->second->GetOwnerOfShip()) <= scan_power)
 				return true;
 		}
 		return false;
 	}
+
 };
 
 bool CSystemManager::CheckEnergyConsumers(CSystem& system, const CPoint& p)
@@ -697,6 +710,7 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system, const CPoint& p)
 	CEnergyConsumersChecker checker(system, p);
 	CArray<CBuilding>* buildings = system.GetAllBuildings();
 	bool bomb_warning = false;
+	bool defense_checked = false;
 	const CSystemProd& prod = *system.GetProduction();
 	int additional_available_energy = prod.GetAvailableEnergy();
 	for(int i = 0; i < buildings->GetSize(); ++i)
@@ -715,7 +729,16 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system, const CPoint& p)
 		if(info.IsDefenseBuilding())
 		{
 			assert(!info.GetShipYard());
-			should_be_online = checker.CheckDefense(bomb_warning);
+			if(bomb_warning)
+				should_be_online = true;
+			else if(!defense_checked)
+			{
+				bomb_warning = checker.BomberInSector();
+				should_be_online = bomb_warning;
+				defense_checked = true;
+			}
+			else
+				should_be_online = false;
 		}
 		if(info.IsDeritiumRefinery())
 			should_be_online = checker.CheckDeritiumRefinery(info, building);
