@@ -19,7 +19,7 @@ static char THIS_FILE[]=__FILE__;
 
 
 //////////////////////////////////////////////////////////////////////
-// Konstruktion/Destruktion
+// construction/destruction
 //////////////////////////////////////////////////////////////////////
 CSystem::CSystem() :
 	CSector()
@@ -29,11 +29,6 @@ CSystem::CSystem() :
 
 CSystem::CSystem(int x, int y) :
 	CSector(x, y)
-{
-	ResetSystem();
-}
-
-CSystem::~CSystem()
 {
 	ResetSystem();
 }
@@ -80,6 +75,10 @@ CSystem::CSystem(const CSystem &other) :
 
 }
 
+CSystem::~CSystem()
+{
+	ResetSystem();
+}
 
 CSystem& CSystem::operator=(const CSystem& other)
 {
@@ -124,9 +123,50 @@ CSystem& CSystem::operator=(const CSystem& other)
 	return (*this);
 };
 
-///////////////////////////////////////////////////////////////////////
-// Speichern / Laden
-///////////////////////////////////////////////////////////////////////
+// Funktion setzt alle Werte wieder zurück auf standard.
+void CSystem::ResetSystem()
+{
+	m_sOwnerOfSystem = "";			// Der Besitzer des Systems
+	m_dHabitants = 0.0f;			// Einwohner in dem System
+	m_iMoral = 100;					// Moral im System
+	m_byBlockade = 0;				// Prozentwert der Blockade im System
+	// Anzahl der Gebäude des Types
+	m_iFoodBuildings = 0;			// Anzahl der Nahrungsgebäude in dem System
+	m_iIndustryBuildings = 0;		// Anzahl der Industriegebäude in dem System
+	m_iEnergyBuildings = 0;			// Anzahl der Energiegebäude in dem System
+	m_iSecurityBuildings = 0;		// Anzahl der Geheimdienstgebäude in dem System
+	m_iResearchBuildings = 0;		// Anzahl der Forschungsgebäude in dem System
+	m_iTitanMines = 0;				// Anzahl der Titanminen in dem System
+	m_iDeuteriumMines = 0;			// Anzahl der Deuteriumminen in dem System
+	m_iDuraniumMines = 0;			// Anzahl der Duraniumminen in dem System
+	m_iIridiumMines = 0;			// Anzahl der Iridiumminen in dem System
+	m_iCrystalMines = 0;			// Anzahl der Crystalminen in dem System
+	// Lagerkapazitäten
+	m_Store.Reset();
+	m_BuildingDestroy.RemoveAll();
+	m_Production.Reset();
+	m_AssemblyList.Reset();
+	m_Buildings.RemoveAll();
+	m_BuildableBuildings.RemoveAll();
+	m_AllwaysBuildableBuildings.RemoveAll();
+	m_BuildableUpdates.RemoveAll();
+	m_BuildableWithoutAssemblylistCheck.RemoveAll();
+	m_BuildableShips.RemoveAll();
+	m_BuildableTroops.RemoveAll();
+	m_TradeRoutes.RemoveAll();
+	m_ResourceRoutes.RemoveAll();
+	m_byMaxTradeRoutesFromHab = 0;
+	m_Troops.RemoveAll();
+	m_bAutoBuild = FALSE;
+	m_Manager.Reset();
+
+	// Deaktivierte Produktionen zurücksetzen
+	ClearDisabledProductions();
+}
+
+//////////////////////////////////////////////////////////////////////
+// serialization
+//////////////////////////////////////////////////////////////////////
 void CSystem::Serialize(CArchive &ar)
 {
 	m_AssemblyList.Serialize(ar);
@@ -236,7 +276,7 @@ void CSystem::Serialize(CArchive &ar)
 }
 
 //////////////////////////////////////////////////////////////////////
-// Zugriffsfunktionen
+// proper getting
 //////////////////////////////////////////////////////////////////////
 
 // Funktion gibt die Anzahl oder die RunningNumber (ID) der Gebäude zurück, welche Arbeiter benötigen.
@@ -369,15 +409,15 @@ USHORT CSystem::GetNumberOfBuilding(USHORT runningNumber) const
 	return number;
 }
 
-bool CSystem::HasStore(WORKER::Typ type) const
+UINT CSystem::GetDeritiumStoreMax() const
 {
-	return
-		type == WORKER::TITAN_WORKER ||
-		type == WORKER::DEUTERIUM_WORKER ||
-		type == WORKER::DURANIUM_WORKER ||
-		type == WORKER::CRYSTAL_WORKER ||
-		type == WORKER::IRIDIUM_WORKER ||
-		type == WORKER::FOOD_WORKER;
+	short multi = 1;
+	const CMajor* major = dynamic_cast<CMajor*>(resources::pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
+	const CResearchInfo* info = major->GetEmpire()->GetResearch()->GetResearchInfo();
+	if (info->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->
+		GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
+		multi = info->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(1);
+	return MAX_DERITIUM_STORE * multi;
 }
 
 int CSystem::GetXStoreMax(RESOURCES::TYPE x) const
@@ -396,6 +436,25 @@ int CSystem::GetXStoreMax(RESOURCES::TYPE x) const
 	return 0;
 }
 
+static RESOURCES::TYPE WorkerToResource(WORKER::Typ type)
+{
+	std::map<WORKER::Typ, RESOURCES::TYPE> transformer;
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::TITAN_WORKER, RESOURCES::TITAN));
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::DEUTERIUM_WORKER, RESOURCES::DEUTERIUM));
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::DURANIUM_WORKER, RESOURCES::DURANIUM));
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::CRYSTAL_WORKER, RESOURCES::CRYSTAL));
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::IRIDIUM_WORKER, RESOURCES::IRIDIUM));
+	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::FOOD_WORKER, RESOURCES::FOOD));
+	const std::map<WORKER::Typ, RESOURCES::TYPE>::const_iterator it = transformer.find(type);
+	assert(it != transformer.end());
+	return it->second;
+}
+
+int CSystem::GetXStoreMax(WORKER::Typ x) const
+{
+	return GetXStoreMax(WorkerToResource(x));
+}
+
 // Funktion gibt den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
 UINT CSystem::GetResourceStore(USHORT res) const
 {
@@ -412,32 +471,61 @@ UINT CSystem::GetResourceStore(USHORT res) const
 	return 0;
 }
 
-static RESOURCES::TYPE WorkerToResource(WORKER::Typ type)
-{
-	std::map<WORKER::Typ, RESOURCES::TYPE> transformer;
-	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::TITAN_WORKER, RESOURCES::TITAN));
-	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::DEUTERIUM_WORKER, RESOURCES::DEUTERIUM));
-	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::DURANIUM_WORKER, RESOURCES::DURANIUM));
-	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::CRYSTAL_WORKER, RESOURCES::CRYSTAL));
-	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::IRIDIUM_WORKER, RESOURCES::IRIDIUM));
-	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::FOOD_WORKER, RESOURCES::FOOD));
-	const std::map<WORKER::Typ, RESOURCES::TYPE>::const_iterator it = transformer.find(type);
-	assert(it != transformer.end());
-	return it->second;
-}
-
 int CSystem::GetResourceStore(WORKER::Typ type) const
 {
 	assert(HasStore(type));
 	return GetResourceStore(WorkerToResource(type));
 }
 
-int CSystem::GetXStoreMax(WORKER::Typ x) const
+// Funktion gibt die Anzahl der aktuell in dem Feld gespeicherten Gebäude mit der RunningNumber == number zurück.
+// Diese Gebäude sollen am Ende der Runde abgerissen werden.
+USHORT CSystem::GetBuildingDestroy(int RunningNumber) const
 {
-	return GetXStoreMax(WorkerToResource(x));
+	USHORT number = 0;
+	for (int i = 0; i < m_BuildingDestroy.GetSize(); i++)
+		if (m_BuildingDestroy.GetAt(i) == RunningNumber)
+			number++;
+	return number;
 }
 
+int CSystem::GetXBuildings(WORKER::Typ x) const
+{
+	switch(x)
+	{
+		case WORKER::FOOD_WORKER: return m_iFoodBuildings;
+		case WORKER::INDUSTRY_WORKER: return m_iIndustryBuildings;
+		case WORKER::ENERGY_WORKER: return m_iEnergyBuildings;
+		case WORKER::SECURITY_WORKER: return m_iSecurityBuildings;
+		case WORKER::RESEARCH_WORKER: return m_iResearchBuildings;
+		case WORKER::TITAN_WORKER: return m_iTitanMines;
+		case WORKER::DEUTERIUM_WORKER: return m_iDeuteriumMines;
+		case WORKER::DURANIUM_WORKER: return m_iDuraniumMines;
+		case WORKER::CRYSTAL_WORKER: return m_iCrystalMines;
+		case WORKER::IRIDIUM_WORKER: return m_iIridiumMines;
+	}
+	assert(false);
+	return 0;
+}
+
+//////////////////////////////////////////////////////////////////////
+// questionable getting
+//////////////////////////////////////////////////////////////////////
+
 // Funktion gibt einen Zeiger auf den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
+const int* CSystem::GetResourceStorages(USHORT res) const
+{
+	switch (res)
+	{
+	case RESOURCES::TITAN: {return &m_Store.Titan;}
+	case RESOURCES::DEUTERIUM: {return &m_Store.Deuterium;}
+	case RESOURCES::DURANIUM: {return &m_Store.Duranium;}
+	case RESOURCES::CRYSTAL: {return &m_Store.Crystal;}
+	case RESOURCES::IRIDIUM: {return &m_Store.Iridium;}
+	case RESOURCES::DERITIUM: {return &m_Store.Deritium;}
+	}
+	return 0;
+}
+
 int* CSystem::GetResourceStorages(USHORT res)
 {
 	switch (res)
@@ -452,33 +540,9 @@ int* CSystem::GetResourceStorages(USHORT res)
 	return 0;
 }
 
-// Funktion gibt die Anzahl der aktuell in dem Feld gespeicherten Gebäude mit der RunningNumber == number zurück.
-// Diese Gebäude sollen am Ende der Runde abgerissen werden.
-USHORT CSystem::GetBuildingDestroy(int RunningNumber)
-{
-	USHORT number = 0;
-	for (int i = 0; i < m_BuildingDestroy.GetSize(); i++)
-		if (m_BuildingDestroy.GetAt(i) == RunningNumber)
-			number++;
-	return number;
-}
-
-// Funktion sagt ob ein bestimmtes Gebäude in dem System baubar ist oder nicht. Als Parameter werden dafür
-// die RunningNumber des gewünschten Gebäudes und der Wert übergeben.
-void CSystem::SetBuildableBuildings(int RunningNumber, BOOLEAN TrueOrFalse)
-{
-	if (TrueOrFalse == FALSE)
-	{
-		for (int t = 0; t < m_BuildableBuildings.GetSize(); t++)
-			if (m_BuildableBuildings.GetAt(t) == RunningNumber)
-			{
-				m_BuildableBuildings.RemoveAt(t);
-				break;
-			}
-	}
-	else
-		m_BuildableBuildings.Add(RunningNumber);
-}
+//////////////////////////////////////////////////////////////////////
+// setting
+//////////////////////////////////////////////////////////////////////
 
 // Funktion setzt den neuen Besitzer des Systems. Übergeben wird der Besitzer.
 void CSystem::SetOwnerOfSystem(const CString& sOwnerOfSystem)
@@ -499,6 +563,42 @@ void CSystem::SetOwnerOfSystem(const CString& sOwnerOfSystem)
 
 	// Bauliste hart löschen
 	m_AssemblyList.Reset();
+}
+
+// Funktion setzt die Bevölkerungsanzahl des Systems. Übergeben wird die Bevölkerung aller Planeten des Sektors.
+// Gleichzeitig überprüft die Funktion auch, ob man eine weitere Handelsroute aufgrund der Bevölkerung bekommt, dann
+// gibt die Funktion ein <code>TRUE</code> zurück, ansonsten <code>FALSE</code>.
+BOOLEAN CSystem::SetHabitants(double habitants)
+{
+	m_dHabitants = habitants;
+
+	if (((USHORT)m_dHabitants / TRADEROUTEHAB) > m_byMaxTradeRoutesFromHab)
+	{
+		m_byMaxTradeRoutesFromHab++;
+		if (m_sOwnerOfSystem != "")
+			return TRUE;
+	}
+	// Wenn die Bevölkerung wieder zu niedrig ist, dann die Varibale wieder runterzählen
+	else if (((USHORT)m_dHabitants / TRADEROUTEHAB) < m_byMaxTradeRoutesFromHab)
+		m_byMaxTradeRoutesFromHab--;
+	return FALSE;
+}
+
+// Funktion sagt ob ein bestimmtes Gebäude in dem System baubar ist oder nicht. Als Parameter werden dafür
+// die RunningNumber des gewünschten Gebäudes und der Wert übergeben.
+void CSystem::SetBuildableBuildings(int RunningNumber, BOOLEAN TrueOrFalse)
+{
+	if (TrueOrFalse == FALSE)
+	{
+		for (int t = 0; t < m_BuildableBuildings.GetSize(); t++)
+			if (m_BuildableBuildings.GetAt(t) == RunningNumber)
+			{
+				m_BuildableBuildings.RemoveAt(t);
+				break;
+			}
+	}
+	else
+		m_BuildableBuildings.Add(RunningNumber);
 }
 
 // Funktion sagt ob ein bestimmtes Gebäudeupdate in dem System baubar ist oder nicht. Als Parameter werden dafür
@@ -545,35 +645,6 @@ void CSystem::SetWorker(WORKER::Typ nWhatWorker, SetWorkerMode Modus, int Value)
 		m_Workers.SetWorker(nWhatWorker, Value);
 }
 
-bool CSystem::SanityCheckWorkers()
-{
-	m_Workers.CalculateFreeWorkers();
-	const bool in_range = SanityCheckWorkersInRange(WORKER::FOOD_WORKER)
-		&& SanityCheckWorkersInRange(WORKER::INDUSTRY_WORKER)
-		&& SanityCheckWorkersInRange(WORKER::ENERGY_WORKER)
-		&& SanityCheckWorkersInRange(WORKER::SECURITY_WORKER)
-		&& SanityCheckWorkersInRange(WORKER::RESEARCH_WORKER)
-		&& SanityCheckWorkersInRange(WORKER::TITAN_WORKER)
-		&& SanityCheckWorkersInRange(WORKER::DEUTERIUM_WORKER)
-		&& SanityCheckWorkersInRange(WORKER::DURANIUM_WORKER)
-		&& SanityCheckWorkersInRange(WORKER::CRYSTAL_WORKER)
-		&& SanityCheckWorkersInRange(WORKER::IRIDIUM_WORKER);
-	if(!in_range)
-		return false;
-
-	return m_Workers.GetWorker(WORKER::ALL_WORKER) == m_Workers.GetWorker(WORKER::FREE_WORKER)
-		+ m_Workers.GetWorker(WORKER::FOOD_WORKER)
-		+ m_Workers.GetWorker(WORKER::INDUSTRY_WORKER)
-		+ m_Workers.GetWorker(WORKER::ENERGY_WORKER)
-		+ m_Workers.GetWorker(WORKER::SECURITY_WORKER)
-		+ m_Workers.GetWorker(WORKER::RESEARCH_WORKER)
-		+ m_Workers.GetWorker(WORKER::TITAN_WORKER)
-		+ m_Workers.GetWorker(WORKER::DEUTERIUM_WORKER)
-		+ m_Workers.GetWorker(WORKER::DURANIUM_WORKER)
-		+ m_Workers.GetWorker(WORKER::CRYSTAL_WORKER)
-		+ m_Workers.GetWorker(WORKER::IRIDIUM_WORKER);
-}
-
 // Funktion setzt alle vorhandenen Arbeiter soweit wie möglich in Gebäude, die Arbeiter benötigen.
 void CSystem::SetWorkersIntoBuildings()
 {
@@ -596,34 +667,6 @@ void CSystem::SetWorkersIntoBuildings()
 		if(all_buildings_full)
 			break;
 	}
-}
-
-static void ManagerMessage(const CString& text, CMajor& owner, const CPoint& p)
-{
-	CEmpireNews message;
-	message.CreateNews(text,EMPIRE_NEWS_TYPE::ECONOMY,"",p);
-	owner.GetEmpire()->AddMsg(message);
-}
-
-
-void CSystem::ExecuteManager(CMajor& owner, bool turn_change, bool energy)
-{
-	if(!m_Manager.Active() || !owner.IsHumanPlayer())
-		return;
-
-	const CString& name = GetName();
-
-	if(energy && m_Manager.CheckEnergyConsumers(*this, m_KO) && turn_change)
-		ManagerMessage(CLoc::GetString("MANAGER_BOMB_WARNING",false, name), owner, m_KO);
-	if(!m_Manager.DistributeWorkers(*this, m_KO))
-		ManagerMessage(CLoc::GetString("MANAGER_MALFUNCTION",false, name), owner, m_KO);
-	if(turn_change && m_Manager.CheckFamine(*this))
-		ManagerMessage(CLoc::GetString("MANAGER_FAMINE_WARNING",false, name), owner, m_KO);
-}
-
-void CSystem::FreeAllWorkers()
-{
-	m_Workers.FreeAll();
 }
 
 void CSystem::SetStores(const GameResources& add)
@@ -674,38 +717,96 @@ void CSystem::SetBuildingDestroy(int RunningNumber, BOOLEAN add)
 	}
 }
 
-// Funktion setzt die Bevölkerungsanzahl des Systems. Übergeben wird die Bevölkerung aller Planeten des Sektors.
-// Gleichzeitig überprüft die Funktion auch, ob man eine weitere Handelsroute aufgrund der Bevölkerung bekommt, dann
-// gibt die Funktion ein <code>TRUE</code> zurück, ansonsten <code>FALSE</code>.
-BOOLEAN CSystem::SetHabitants(double habitants)
+void CSystem::FreeAllWorkers()
 {
-	m_dHabitants = habitants;
+	m_Workers.FreeAll();
+}
 
-	if (((USHORT)m_dHabitants / TRADEROUTEHAB) > m_byMaxTradeRoutesFromHab)
+// Alle deaktivierten Produktionen zurücksetzen
+void CSystem::ClearDisabledProductions()
+{
+	memset(m_bDisabledProductions, false, sizeof(m_bDisabledProductions));
+}
+
+//////////////////////////////////////////////////////////////////////
+// bool info
+//////////////////////////////////////////////////////////////////////
+
+bool CSystem::HasWorkerBuilding(WORKER::Typ type) const
+{
+	return GetXBuildings(type) > 0;
+}
+
+bool CSystem::HasStore(WORKER::Typ type) const
+{
+	return
+		type == WORKER::TITAN_WORKER ||
+		type == WORKER::DEUTERIUM_WORKER ||
+		type == WORKER::DURANIUM_WORKER ||
+		type == WORKER::CRYSTAL_WORKER ||
+		type == WORKER::IRIDIUM_WORKER ||
+		type == WORKER::FOOD_WORKER;
+}
+
+bool CSystem::CanTakeOnline(const CBuildingInfo& info) const
+{
+	if(m_Manager.Active())
+		return info.GetNeededEnergy() <= m_Production.GetAvailableEnergy();
+	return m_Production.m_iEnergyProd >= info.GetNeededEnergy();
+}
+
+bool CSystem::SanityCheckWorkers()
+{
+	m_Workers.CalculateFreeWorkers();
+	const bool in_range = SanityCheckWorkersInRange(WORKER::FOOD_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::INDUSTRY_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::ENERGY_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::SECURITY_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::RESEARCH_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::TITAN_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::DEUTERIUM_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::DURANIUM_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::CRYSTAL_WORKER)
+		&& SanityCheckWorkersInRange(WORKER::IRIDIUM_WORKER);
+	if(!in_range)
+		return false;
+
+	return m_Workers.GetWorker(WORKER::ALL_WORKER) == m_Workers.GetWorker(WORKER::FREE_WORKER)
+		+ m_Workers.GetWorker(WORKER::FOOD_WORKER)
+		+ m_Workers.GetWorker(WORKER::INDUSTRY_WORKER)
+		+ m_Workers.GetWorker(WORKER::ENERGY_WORKER)
+		+ m_Workers.GetWorker(WORKER::SECURITY_WORKER)
+		+ m_Workers.GetWorker(WORKER::RESEARCH_WORKER)
+		+ m_Workers.GetWorker(WORKER::TITAN_WORKER)
+		+ m_Workers.GetWorker(WORKER::DEUTERIUM_WORKER)
+		+ m_Workers.GetWorker(WORKER::DURANIUM_WORKER)
+		+ m_Workers.GetWorker(WORKER::CRYSTAL_WORKER)
+		+ m_Workers.GetWorker(WORKER::IRIDIUM_WORKER);
+}
+
+bool CSystem::SanityCheckWorkersInRange(WORKER::Typ type) const
+{
+	const int workers = m_Workers.GetWorker(type);
+	return 0 <= workers && workers <= GetNumberOfWorkbuildings(type, 0);
+}
+
+//////////////////////////////////////////////////////////////////////
+// calculation of member variables
+//////////////////////////////////////////////////////////////////////
+
+namespace //helpers for CalculateVariables()
+{
+	void AddBonusToProd(int& prod, int bonus)
 	{
-		m_byMaxTradeRoutesFromHab++;
-		if (m_sOwnerOfSystem != "")
-			return TRUE;
+		prod += bonus * prod / 100;
 	}
-	// Wenn die Bevölkerung wieder zu niedrig ist, dann die Varibale wieder runterzählen
-	else if (((USHORT)m_dHabitants / TRADEROUTEHAB) < m_byMaxTradeRoutesFromHab)
-		m_byMaxTradeRoutesFromHab--;
-	return FALSE;
+
+	void AddPlanetBonusToBonus(short& base_bonus, int size)
+	{
+		base_bonus += size * 25;
+	}
 }
 
-static void AddBonusToProd(int& prod, int bonus)
-{
-	prod += bonus * prod / 100;
-}
-
-static void AddPlanetBonusToBonus(short& base_bonus, int size)
-{
-	base_bonus += size * 25;
-}
-
-//////////////////////////////////////////////////////////////////////
-// sonstige Funktionen
-//////////////////////////////////////////////////////////////////////
 // Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der System-Klasse.
 void CSystem::CalculateVariables()
 {
@@ -1041,44 +1142,501 @@ BOOLEAN CSystem::CalculateStorages(CResearchInfo* researchInfo, int diliAdd)
 	return FALSE;
 }
 
-// Funktion löscht alle Gebäude, die die übergebene RunningNumber haben und gibt deren Anzahl zurück.
-// -> Danach muß AddBuilding() mit dem Nachfolger gleich der Anzahl aufgerufen werden.
-int CSystem::UpdateBuildings(int nRunningNumber, int nNeededEnergy)
+// Funktion berechnet die baubaren Schiffe in dem System.
+void CSystem::CalculateBuildableShips()
 {
-	int nCount = 0;
-	for (int i = 0; i < m_Buildings.GetSize(); i++)
-		if (m_Buildings.GetAt(i).GetRunningNumber() == nRunningNumber)
-		{
-			// Wenn das Gebäude online war, dann Energie freigeben
-			if (nNeededEnergy > 0 && m_Buildings.GetAt(i).GetIsBuildingOnline())
-				m_Production.m_iEnergyProd += nNeededEnergy;
+	CBotEDoc* pDoc = resources::pDoc;
+	m_BuildableShips.RemoveAll();
+	m_BuildableShips.FreeExtra();
+	// Hier jetzt schauen ob wir eine Werft haben und anhand der größe der Werft können wir bestimmte
+	// Schiffstypen bauen
+	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
+	if (!pMajor)
+		return;
 
-			// Gebäude aus der Liste löschen
-			m_Buildings.RemoveAt(i--);
-			nCount++;
+	// exisitiert eine Werft?
+	if (m_Production.GetShipYard())
+	{
+		// Array mit baubaren Minorraceschiffen füllen
+		int nMinorShipNumber = -1;
+		if (GetMinorRace())
+		{
+			CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(GetName());
+			if (pMinor)
+				nMinorShipNumber = pMinor->GetRaceShipNumber();
 		}
 
-	return nCount;
+		CResearch* pResearch = pMajor->GetEmpire()->GetResearch();
+		CArray<USHORT> obsoleteClasses;
+
+		for (int i = 0; i < pDoc->GetShipInfos()->GetSize(); i++)
+		{
+			CShipInfo* pShipInfo = &(pDoc->GetShipInfos()->GetAt(i));
+			// Außenposten und Sternenbasen können wir natürlich nicht hier bauen
+			if ((pShipInfo->GetRace() == pMajor->GetRaceShipNumber() || pShipInfo->GetRace() == nMinorShipNumber)
+				&& !pShipInfo->IsStation())
+			{
+				// Forschungsstufen checken
+				BYTE researchLevels[6] =
+				{
+					pResearch->GetBioTech(),
+					pResearch->GetEnergyTech(),
+					pResearch->GetCompTech(),
+					pResearch->GetPropulsionTech(),
+					pResearch->GetConstructionTech(),
+					pResearch->GetWeaponTech()
+				};
+
+				if (!pShipInfo->IsThisShipBuildableNow(researchLevels))
+					continue;
+
+				// Wenn durch dieses Schiff ein anderes Schiff veraltet ist (nur wenn es technologisch baubar ist)
+				if (pShipInfo->GetObsoleteShipClass() != "")
+				{
+					for (int j = 0; j < pDoc->GetShipInfos()->GetSize(); j++)
+						if (pDoc->GetShipInfos()->GetAt(j).GetShipClass() == pShipInfo->GetObsoleteShipClass())
+						{
+							obsoleteClasses.Add(pDoc->GetShipInfos()->GetAt(j).GetID());
+							break;
+						}
+				}
+
+				// Wenn das Schiff nur in einem bestimmten System gebaut werden kann, dann hier checken
+				if (!pShipInfo->GetOnlyInSystem().IsEmpty())
+				{
+					if (pShipInfo->GetOnlyInSystem() != GetName())
+						continue;
+					// der Besitzer der Schiffsklasse wird auf den Besitzer des Schiffes gesetzt. Somit kann
+					// eine Majorrace dann auch die Schiffe der Minorrace bauen
+					else
+						pShipInfo->SetRace(pMajor->GetRaceShipNumber());
+				}
+				else if (pShipInfo->GetRace() == nMinorShipNumber)
+					continue;
+
+				// gibt es eine Werft welche diese Schiffsgröße bauen kann?
+				if (pShipInfo->GetShipSize() > m_Production.GetMaxBuildableShipSize())
+					continue;
+
+				// wenn die Credits unter 0 gefallen sind können keine Kampfschiffe mehr gebaut werden
+				if (pShipInfo->IsNonCombat() == false && pMajor->GetEmpire()->GetCredits() < 0)
+					continue;
+
+				// Schiff in die Liste der baubaren Schiffe aufnehmen
+				m_BuildableShips.Add(pShipInfo->GetID());
+			}
+		}
+		// Nochmal die jetzt baubare Schiffsliste durchgehen und schauen, ob manche Schiffe veraltet sind und somit
+		// nicht mehr baubar sind
+		for (int i = 0; i < obsoleteClasses.GetSize(); i++)
+		{
+			for (int j = 0; j < m_BuildableShips.GetSize(); j++)
+				if (m_BuildableShips.GetAt(j) == obsoleteClasses.GetAt(i))
+				{
+					m_BuildableShips.RemoveAt(j);
+					break;
+				}
+		}
+	}
 }
 
-// Funktion reißt alle Gebäude ab, die in der Variable m_BuildingDestroy stehen. Funktion wird in der Doc
-// bei NextRound() aufgerufen.
-bool CSystem::DestroyBuildings(void)
+// Funktion berechnet die Anzahl aller Farmen, Bauhöfe usw., also alle Gebäude die Arbeiter benötigen.
+// Sie muß am Rundenanfang vor CalculateVariables() aufgerufen werden und sortiert gleichzeitig das
+// CArray m_Buildings nach der RunningNumber.
+// In der Doc-Klasse nach der Funktion DestroyBuildings() und zu Beginn aufrufen!
+void CSystem::CalculateNumberOfWorkbuildings(const BuildingInfoArray *buildingInfos)
 {
-	bool destroy = !m_BuildingDestroy.IsEmpty();
-	for (int i = 0; i < m_BuildingDestroy.GetSize(); i++)
-		// Schleife von hinten durchlaufen, weil Arbeiter die Gebäude von "vorn" besetzten
-		// und ich nicht gerade die online-Gebäude abreißen will, sondern die wahrscheinlich offline
-		for (int j = m_Buildings.GetUpperBound(); j >= 0; j--)
-			if (m_Buildings.GetAt(j).GetRunningNumber() == m_BuildingDestroy.GetAt(i))
-			{
-				m_Buildings.RemoveAt(j);
-				m_BuildingDestroy.RemoveAt(i--);
+	// Sortierung
+	c_arraysort<CArray<CBuilding>,CBuilding>(m_Buildings,sort_asc);
+
+	// Berechnung der Gebäude
+	m_iFoodBuildings = 0;
+	m_iIndustryBuildings = 0;
+	m_iEnergyBuildings = 0;
+	m_iSecurityBuildings = 0;
+	m_iResearchBuildings = 0;
+	m_iTitanMines = 0;
+	m_iDeuteriumMines = 0;
+	m_iDuraniumMines = 0;
+	m_iIridiumMines = 0;
+	m_iCrystalMines = 0;
+	for (int i = 0; i < m_Buildings.GetSize(); i++)
+	{
+		const CBuildingInfo* buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
+
+		if (buildingInfo->GetWorker() == TRUE)
+		{
+			if (buildingInfo->GetFoodProd() > 0)
+				m_iFoodBuildings++;
+			else if (buildingInfo->GetIPProd() > 0)
+				m_iIndustryBuildings++;
+			else if (buildingInfo->GetEnergyProd() > 0)
+				m_iEnergyBuildings++;
+			else if (buildingInfo->GetSPProd() > 0)
+				m_iSecurityBuildings++;
+			else if (buildingInfo->GetFPProd() > 0)
+				m_iResearchBuildings++;
+			else if (buildingInfo->GetTitanProd() > 0)
+				m_iTitanMines++;
+			else if (buildingInfo->GetDeuteriumProd() > 0)
+				m_iDeuteriumMines++;
+			else if (buildingInfo->GetDuraniumProd() > 0)
+				m_iDuraniumMines++;
+			else if (buildingInfo->GetCrystalProd() > 0)
+				m_iCrystalMines++;
+			else if (buildingInfo->GetIridiumProd() > 0)
+				m_iIridiumMines++;
+		}
+	}
+}
+
+// Funktion berechnet die imperiumweite Moralproduktion, welche aus diesem System generiert wird.
+void CSystem::CalculateEmpireWideMoralProd(const BuildingInfoArray *buildingInfos)
+{
+	for (int i = 0; i < m_Buildings.GetSize(); i++)
+		if (m_Buildings.GetAt(i).GetIsBuildingOnline())
+		{
+			const CBuildingInfo *buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
+			m_Production.m_iMoralProdEmpireWide[m_sOwnerOfSystem] += buildingInfo->GetMoralProdEmpire();
+		}
+}
+
+//////////////////////////////////////////////////////////////////////
+// buildings
+//////////////////////////////////////////////////////////////////////
+
+BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBuildings* globals, CMajor* pMajor)
+{
+/*	Allgemeine Voraussetzungen
+	--------------------------
+	benötigte Anzahl eigener Systeme
+	Nur baubar in System mit Name
+	Nur wirklicher Besitzer des Gebäudes
+	minimale Bevölkerung im System
+	mindst. X Gebäude von ID im System
+	max X mal pro System
+	max X mal pro Imperium
+
+	mindst. eins trifft zu von:
+	Heimatsystem
+	Eigene Kolonie
+	Minorracesystem
+	Erobertes System
+*/
+	// benötigte Anzahl eigener Systeme
+	if (building->GetNeededSystems() > pMajor->GetEmpire()->CountSystems())
+		return FALSE;
+	// Nur baubar in System mit Name checken
+	if (building->GetOnlyInSystemWithName() != "0" && building->GetOnlyInSystemWithName() != "")
+		if (building->GetOnlyInSystemWithName() != GetName())
+			return FALSE;
+	// Nur wirklicher Besitzer des Gebäudes
+	if (building->GetOnlyRace())
+		if (pMajor->GetRaceBuildingNumber() != building->GetOwnerOfBuilding())
+			return FALSE;
+	// Minimale Bevölkerungsanzahl checken
+	if (building->GetMinHabitants() > 0)
+		if (m_dHabitants < (double)building->GetMinHabitants())
+			return FALSE;
+	// mindst. X Gebäude von ID im System
+	if (building->GetMinInSystem().Number > 0)
+	{
+		USHORT number = 0;
+		for (int i = 0; i < m_Buildings.GetSize(); i++)
+		{
+			if (m_Buildings.GetAt(i).GetRunningNumber() == building->GetMinInSystem().RunningNumber)
+				number++;
+			if (number >= building->GetMinInSystem().Number)
 				break;
+		}
+		if (number < building->GetMinInSystem().Number)
+			return FALSE;
+	}
+	// max. X Gebäude von ID im System
+	if (building->GetMaxInSystem().Number > 0)
+	{
+		USHORT number = 0;
+		for (int i = 0; i < m_Buildings.GetSize(); i++)
+		{
+			if (m_Buildings.GetAt(i).GetRunningNumber() == building->GetMaxInSystem().RunningNumber)
+				number++;
+			if (number >= building->GetMaxInSystem().Number)
+				return FALSE;
+		}
+	}
+	// max. X Gebäude von ID im Imperium
+	if (building->GetMaxInEmpire() > 0)
+	{
+		int nCount = globals->GetCountGlobalBuilding(m_sOwnerOfSystem, building->GetRunningNumber());
+		if (nCount >= building->GetMaxInEmpire())
+			return FALSE;
+	}
+	// Checken ob zumindest eine der Voraussetzungen zutrifft: Heimatplanet, eigene Kolonie, Minorraceplanet oder Erobertes System
+	// Zuerst Heimatplanet checken
+	if (building->GetOnlyHomePlanet())
+	{
+		if (GetName() == pMajor->GetHomesystemName())
+		{
+			return TRUE;
+		}
+		if (building->GetOnlyOwnColony())
+		{
+			if (GetColonyOwner() == m_sOwnerOfSystem && GetName() != pMajor->GetHomesystemName())
+				return TRUE;
+		}
+		if (building->GetOnlyMinorRace())
+		{
+			if (GetMinorRace() == TRUE)
+				return TRUE;
+		}
+		if (building->GetOnlyTakenSystem())
+		{
+			if (GetTakenSector() == TRUE)
+				return TRUE;
+		}
+		return FALSE;
+	}
+	// Zuerst eigene Kolonie checken
+	if (building->GetOnlyOwnColony())
+	{
+		if (GetColonyOwner() == m_sOwnerOfSystem && GetName() != pMajor->GetHomesystemName())
+		{
+			return TRUE;
+		}
+		if (building->GetOnlyHomePlanet())
+		{
+			if (GetName() == pMajor->GetHomesystemName())
+				return TRUE;
+		}
+		if (building->GetOnlyMinorRace())
+		{
+			if (GetMinorRace() == TRUE)
+				return TRUE;
+		}
+		if (building->GetOnlyTakenSystem())
+		{
+			if (GetTakenSector() == TRUE)
+				return TRUE;
+		}
+		return FALSE;
+	}
+	// Zuerst Minorraceplanet checken
+	if (building->GetOnlyMinorRace())
+	{
+		if (GetMinorRace() == TRUE)
+		{
+			return TRUE;
+		}
+		if (building->GetOnlyHomePlanet())
+		{
+			if (GetName() == pMajor->GetHomesystemName())
+				return TRUE;
+		}
+		if (building->GetOnlyOwnColony())
+		{
+			if (GetColonyOwner() == m_sOwnerOfSystem && GetName() != pMajor->GetHomesystemName())
+				return TRUE;
+		}
+		if (building->GetOnlyTakenSystem())
+		{
+			if (GetTakenSector() == TRUE)
+				return TRUE;
+		}
+		return FALSE;
+	}
+	// Zuerst erobertes System checken
+	if (building->GetOnlyTakenSystem())
+	{
+		if (GetTakenSector() == TRUE)
+		{
+			return TRUE;
+		}
+		if (building->GetOnlyHomePlanet())
+		{
+			if (GetName() == pMajor->GetHomesystemName())
+				return TRUE;
+		}
+		if (building->GetOnlyOwnColony())
+		{
+			if (GetColonyOwner() == m_sOwnerOfSystem && GetName() != pMajor->GetHomesystemName())
+				return TRUE;
+		}
+		if (building->GetOnlyMinorRace())
+		{
+			if (GetMinorRace() == TRUE)
+				return TRUE;
+		}
+		return FALSE;
+	}
+	return TRUE;
+}
+
+// Diese private Hilfsfunktion überprüft, ob es einen Nachfolger zu unserem Gebäude in der Liste der baubaren
+// Gebäude (-> flag == 0) oder als stehendes Gebäude (-> flag == 1) im System schon steht. Die Funktion
+// gibt TRUE zurück, wenn wir einen Nachfolger gefunden haben, ansonsten FALSE.
+BOOLEAN CSystem::CheckFollower(const BuildingInfoArray* buildings, USHORT id, BOOLEAN flag, BOOLEAN equivalence)
+{
+	// Checken ob ein potentieller Nachfolger in der Liste der baubaren Gebäude vorkommt
+	if (flag == 0)
+	{
+		/*	zum Algorithmus:
+			Ich durchsuche jede ID im Feld der baubaren Gebäude nach potentiellen Vorgängern. Ist dann einer
+			der Vorgänger meine ID, dann können wir abbrechen.
+		*/
+		for (int i = 0; i < m_BuildableWithoutAssemblylistCheck.GetSize(); i++)
+		{
+			// Weil zu diesem Zeitpunkt auch Gebäudeupgrades (negative ID) in diesem Feld vorkommen können, darf ich
+			// nur die echten Gebäude betrachten
+			if (m_BuildableWithoutAssemblylistCheck.GetAt(i) > 0)
+			{
+				// VorgängerID eines Gebäudes aus der Liste der baubaren Gebäude holen
+				USHORT pre = buildings->GetAt(m_BuildableWithoutAssemblylistCheck.GetAt(i)-1).GetPredecessorID();
+				// Haben wir jetzt schon den Vorgänger gefunden (eher unwahrscheinlich)
+				if (pre == id)
+					return TRUE;
+				// jetzt in die Schleife um sich immer neue ID´s zu holen
+				do {
+					// VorgängerID des Vorgängers holen
+					if (pre > 0)
+					{
+						USHORT oldPre = pre;
+						pre = buildings->GetAt(pre-1).GetPredecessorID();
+						if (oldPre == pre)
+						{
+							CString s;
+							s.Format("ERROR with Buildings Predecessor ID:\nBuilding: %s\n\nID: %d\nit is the same like the ID of the building", buildings->GetAt(oldPre-1).GetBuildingName(), oldPre);
+							AfxMessageBox(s);
+							break;
+						}
+					}
+				} while (pre != id && pre != 0);// mache das solange wir keinen Vorgänger gefunden haben oder es keinen Vorgänger gibt
+				// Gibt es einen Vorgänger
+				if (pre == id)
+					return TRUE;
+
+				// So, sind wir jetzt noch dabei und haben in dem System auch Gebäude von anderen Rassen stehen (also der
+				// Parameter equivalence == TRUE), dannn müssen wir auch noch bei dem Äquivalenzgebäude nach Vorgängern suchen
+				if (equivalence == TRUE)
+				{
+					// VorgängerID des entsprechenden Äquivalenzgebäudes holen
+					USHORT race = buildings->GetAt(id-1).GetOwnerOfBuilding();
+					//USHORT race = buildings->GetAt(m_BuildableWithoutAssemblylistCheck.GetAt(i)-1).GetOwnerOfBuilding();
+					USHORT equi = buildings->GetAt(m_BuildableWithoutAssemblylistCheck.GetAt(i)-1).GetEquivalent(race);
+/*					if (equi > 0)
+					{
+						pre = buildings->GetAt(equi-1).GetPredecessorID();	// pre ist Vorgänger des Äquivalenzgebäudes
+						// Jetzt wie oben die do - while Schleife durchlaufen
+						do {
+							// VorgängerID des "Vorgängers holen
+							if (pre > 0)
+								pre = buildings->GetAt(pre-1).GetPredecessorID();
+						} while (pre != equi && pre != 0);// mache das solange wir keinen Vorgänger gefunden haben oder es keinen Vorgänger gibt
+						// Gibt es einen Vorgänger
+						if (pre == equi)
+							return TRUE;
+					}*/
+					if (equi == id)
+						return TRUE;
+					pre = buildings->GetAt(m_BuildableWithoutAssemblylistCheck.GetAt(i)-1).GetPredecessorID();
+					// Jetzt wir oben die do - while Schleife durchlaufen
+					do {
+						// VorgängerID des "Vorgängers holen
+						if (pre > 0)
+						{
+							USHORT oldPre = pre;
+							equi = buildings->GetAt(pre-1).GetEquivalent(race);
+							pre = buildings->GetAt(pre-1).GetPredecessorID();
+							if (oldPre == pre)
+							{
+								CString s;
+								s.Format("ERROR with Buildings Predecessor ID:\nBuilding: %s\n\nID: %d\nit is the same like the ID of the building", buildings->GetAt(oldPre-1).GetBuildingName(), oldPre);
+								AfxMessageBox(s);
+								break;
+							}
+						}
+					} while (id != equi && pre != 0); // mache das solange wir keinen Vorgänger gefunden haben oder es keinen Vorgänger gibt
+					// Gibt es einen Vorgänger
+					if (equi == id)
+						return TRUE;
+				}
 			}
-	if (destroy)
-		m_BuildingDestroy.RemoveAll();
-	return destroy;
+		}
+	}
+	// Checken ob ein potentieller Nachfolger schon im System steht. Normalerweise ist dieser schon in der Liste
+	// der baubaren Gebäude, aber z.B. Gebäude die nur einmal pro System gebaut werden können sind nicht in dieser Liste.
+	// z.B. wenn wir eine geupdatede Werft einer anderen Rasse in dem System stehen haben, darf ich nicht einen
+	// potentiellen äquivalenten Vorgänger dieser Werft unsererseits bauen.
+	else
+	{
+		USHORT minID = 0;
+		// Der Algorithmus ist wie der obere. Nur wird hier das Feld der stehenden Gebäude im System durchlaufen
+		for (int i = 0; i < m_Buildings.GetSize(); i++)
+		{
+			// Da das Gebäudefeld nach der RunningNumber geordnet ist, brauchen wir erst wieder checken
+			// wenn wir ein Gebäude mit einer neune RunningNumber haben
+			if (m_Buildings.GetAt(i).GetRunningNumber() > minID)
+				minID = m_Buildings.GetAt(i).GetRunningNumber();
+			{
+				// VorgängerID eines Gebäudes aus der Liste der stehenden Gebäude holen
+				USHORT pre = buildings->GetAt(m_Buildings.GetAt(i).GetRunningNumber()-1).GetPredecessorID();
+				// Haben wir jetzt schon den Vorgänger gefunden (eher unwahrscheinlich)
+				if (pre == id)
+					return TRUE;
+				// jetzt in die Schleife um sich immer neue ID´s zu holen
+				do {
+					// VorgängerID des "Vorgängers holen
+					if (pre > 0)
+					{
+						USHORT oldPre = pre;
+						pre = buildings->GetAt(pre-1).GetPredecessorID();
+						if (oldPre == pre)
+						{
+							CString s;
+							s.Format("ERROR with Buildings Predecessor ID:\nBuilding: %s\n\nID: %d\nit is the same like the ID of the building", buildings->GetAt(oldPre-1).GetBuildingName(), oldPre);
+							AfxMessageBox(s);
+							break;
+						}
+					}
+				} while (pre != id && pre != 0);// mache das solange wir keinen Vorgänger gefunden haben oder es keinen Vorgänger gibt
+				// Gibt es einen Vorgänger
+				if (pre == id)
+					return TRUE;
+
+				// So, sind wir jetzt noch dabei und haben in dem System auch Gebäude von anderen Rassen stehen (also der
+				// Parameter equivalence == TRUE), dannn müssen wir auch noch bei dem Äquivalenzgebäude nach Vorgängern suchen
+				if (equivalence == TRUE)
+				{
+					// VorgängerID des entsprechenden Äquivalenzgebäudes holen
+					USHORT race = buildings->GetAt(id-1).GetOwnerOfBuilding();
+					USHORT equi = buildings->GetAt(m_Buildings.GetAt(i).GetRunningNumber()-1).GetEquivalent(race);
+					if (equi == id)
+						return TRUE;
+					pre = buildings->GetAt(m_Buildings.GetAt(i).GetRunningNumber()-1).GetPredecessorID();
+					// Jetzt wir oben die do - while Schleife durchlaufen
+					do {
+						// VorgängerID des "Vorgängers holen
+						if (pre > 0)
+						{
+							USHORT oldPre = pre;
+							equi = buildings->GetAt(pre-1).GetEquivalent(race);
+							pre = buildings->GetAt(pre-1).GetPredecessorID();
+							if (oldPre == pre)
+							{
+								CString s;
+								s.Format("ERROR with Buildings Predecessor ID:\nBuilding: %s\n\nID: %d\nit is the same like the ID of the building", buildings->GetAt(oldPre-1).GetBuildingName(), oldPre);
+								AfxMessageBox(s);
+								break;
+							}
+						}
+					} while (id != equi && pre != 0);// mache das solange wir keinen Vorgänger gefunden haben oder es keinen Vorgänger gibt
+					// Gibt es einen Vorgänger
+					if (id == equi)
+						return TRUE;
+				}
+			}
+		}
+	}
+	return FALSE;
 }
 
 namespace //helpers for CalculateBuildableBuildings()
@@ -1428,398 +1986,204 @@ void CSystem::CalculateBuildableBuildings(CGlobalBuildings* globals)
 	c_arraysort<CArray<short,short>,short>(m_BuildableBuildings,sort_asc);
 }
 
-BOOLEAN CSystem::AssemblyListCheck(const BuildingInfoArray* buildingInfo, CGlobalBuildings* globals)
+// Funktion löscht alle Gebäude, die die übergebene RunningNumber haben und gibt deren Anzahl zurück.
+// -> Danach muß AddBuilding() mit dem Nachfolger gleich der Anzahl aufgerufen werden.
+int CSystem::UpdateBuildings(int nRunningNumber, int nNeededEnergy)
 {
-	// zu allererst die Liste der baubaren Gebäude und Updates mit der Liste der in dieser Runde baubaren Gebäude
-	// vor dem AssemblyListCheck füllen
-	m_BuildableBuildings.RemoveAll();
-	m_BuildableUpdates.RemoveAll();
-	m_BuildableBuildings.FreeExtra();
-	m_BuildableUpdates.FreeExtra();
-	for (int i = 0; i < m_BuildableWithoutAssemblylistCheck.GetSize(); i++)
-	{
-		// Unterscheidung zwischen Upgrades und normalen Gebäuden. Auch bei den Upgrades muss geschaut werden, dass dieses Gebäude
-		// noch nicht zu oft vorkommt
-		int entry = m_BuildableWithoutAssemblylistCheck.GetAt(i);
-		if (entry < 0)
-			entry *= (-1);
+	int nCount = 0;
+	for (int i = 0; i < m_Buildings.GetSize(); i++)
+		if (m_Buildings.GetAt(i).GetRunningNumber() == nRunningNumber)
+		{
+			// Wenn das Gebäude online war, dann Energie freigeben
+			if (nNeededEnergy > 0 && m_Buildings.GetAt(i).GetIsBuildingOnline())
+				m_Production.m_iEnergyProd += nNeededEnergy;
 
-		// wenn dieses Gebäude nur X mal pro Imperium vorkommen darf, dann darf dieses Gebäude nicht mehr als X mal
-		// als globales Gebäude vorkommen
-		bool bFound = false;
-		if (buildingInfo->GetAt(entry - 1).GetMaxInEmpire() > 0)
-		{
-			short ID = buildingInfo->GetAt(entry - 1).GetRunningNumber();
-			short nCount = globals->GetCountGlobalBuilding(m_sOwnerOfSystem, ID);
-			if (nCount >= buildingInfo->GetAt(entry - 1).GetMaxInEmpire())
-				bFound = true;
+			// Gebäude aus der Liste löschen
+			m_Buildings.RemoveAt(i--);
+			nCount++;
 		}
-		// wir haben das Gebäude nicht in der Liste der globalen Gebäude gefunden
-		if (!bFound)
-		{
-			if (m_BuildableWithoutAssemblylistCheck.GetAt(i) > 0)
-				m_BuildableBuildings.Add(entry);
-			else
-				m_BuildableUpdates.Add(entry);
-		}
-	}
-	// nach Updates in der Bauliste suchen. Wenn wir ein Update in der Bauliste gefunden haben, so
-	// müssen wir dieses und all deren Vorgänger aus der Liste der baubaren Gebäude entfernen
-	for (int i = 0; i < ALE; i++)
-	{
-		if (m_AssemblyList.GetAssemblyListEntry(i) < 0)
-		{
-			// Vorgänger des Updates aus der Liste entfernen
-			for (int t = 0; t < m_BuildableBuildings.GetSize(); t++)
-			{
-				USHORT pre = buildingInfo->GetAt(m_AssemblyList.GetAssemblyListEntry(i)*(-1)-1).GetPredecessorID();
-				if (pre == m_BuildableBuildings.GetAt(t))
-				{
-					m_BuildableBuildings.RemoveAt(t--);
-					// Haben wir einen Vorgänger entfernt, dann auch alle Updates des Vorgängers, die in der Liste
-					// der Updates sind entfernen
 
-					// HIER FIXEN: Auch wenn ein Vorgänger nicht mehr baubar war müssen wir das Update aus der Bauliste
-					// entfernen!!!
-					/*
-					for (int s = 0; s < m_BuildableUpdates.GetSize(); s++)
-					{
-						USHORT pre2 = buildingInfo->GetAt(m_BuildableUpdates.GetAt(s)-1).GetPredecessorID();
-						if (pre2 == pre)
-							m_BuildableUpdates.RemoveAt(s--);
-					}*/
-				}
-				for (int s = 0; s < m_BuildableUpdates.GetSize(); s++)
-				{
-					USHORT pre2 = buildingInfo->GetAt(m_BuildableUpdates.GetAt(s)-1).GetPredecessorID();
-					if (pre2 == pre)
-						m_BuildableUpdates.RemoveAt(s--);
-				}
-			}
-		}
-		else if (m_AssemblyList.GetAssemblyListEntry(i) < 10000 && m_AssemblyList.GetAssemblyListEntry(i) != 0)
-		{
-			// hier die maximal baubaren Gebäude pro Imperium checken
-			// Die Gebäude befinden sich auch schon in der GlobalBuildings Variable, wenn sie schon in der
-			// Bauliste sind
-			USHORT nID = m_AssemblyList.GetAssemblyListEntry(i);
-			if (buildingInfo->GetAt(nID - 1).GetMaxInEmpire() > 0)
-			{
-				int nCount = globals->GetCountGlobalBuilding(m_sOwnerOfSystem, nID);
-				// Haben wir dieses Gebäude schon "oft genug" stehen und in der Bauliste der Systeme, dann aus der
-				// Bauliste nehmen
-				if (nCount >= buildingInfo->GetAt(nID - 1).GetMaxInEmpire())
-					for (int t = 0; t < m_BuildableBuildings.GetSize(); t++)
-						if (nID == m_BuildableBuildings.GetAt(t))
-						{
-							m_BuildableBuildings.RemoveAt(t--);
-							break;
-						}
-			}
-			// hier die maximal baubaren Gebäude pro System checken
-			if (buildingInfo->GetAt(m_AssemblyList.GetAssemblyListEntry(i)-1).GetMaxInSystem().Number > 0)
-			{
-				USHORT n = 0;
-				for (int j = 0; j < m_Buildings.GetSize(); j++)
-				{
-					if (m_Buildings.GetAt(j).GetRunningNumber() == buildingInfo->GetAt(m_AssemblyList.GetAssemblyListEntry(i)-1).GetMaxInSystem().RunningNumber)
-						n++;
-					if (n >= buildingInfo->GetAt(m_AssemblyList.GetAssemblyListEntry(i)-1).GetMaxInSystem().Number)
-						break;
-				}
-				// Bauliste durchgehen und wenn dieses Gebeäude in dieser vorkommt, dann auch mitzählen
-				for (int j = 0; j < ALE; j++)
-					if (m_AssemblyList.GetAssemblyListEntry(i) == m_AssemblyList.GetAssemblyListEntry(j))
-						if (m_AssemblyList.GetAssemblyListEntry(j) > 0 && m_AssemblyList.GetAssemblyListEntry(j) < 10000)
-							if (m_AssemblyList.GetAssemblyListEntry(j) == buildingInfo->GetAt(m_AssemblyList.GetAssemblyListEntry(j)-1).GetMaxInSystem().RunningNumber)
-								n++;
-				// Haben wir dieses Gebäude schon "oft genug" stehen und in der Bauliste des Systems, dann aus der
-				// Bauliste nehmen
-				if (n >= buildingInfo->GetAt(m_AssemblyList.GetAssemblyListEntry(i)-1).GetMaxInSystem().Number)
-					for (int t = 0; t < m_BuildableBuildings.GetSize(); t++)
-						if (m_AssemblyList.GetAssemblyListEntry(i) == m_BuildableBuildings.GetAt(t))
-						{
-							m_BuildableBuildings.RemoveAt(t--);
-							break;
-						}
-			}
-		}
-	}
-	return FALSE;
+	return nCount;
 }
 
-// Funktion berechnet die baubaren Schiffe in dem System.
-void CSystem::CalculateBuildableShips()
+void CSystem::Colonize(const CShips& ship, CMajor& major)
+{
+	const CString shipowner = ship.GetOwnerOfShip();
+	CEmpire* empire = major.GetEmpire();
+	// Gebäude bauen, wenn wir das System zum ersten Mal kolonisieren,
+	// sprich das System noch niemanden gehört
+	if (GetOwnerOfSystem().IsEmpty())
+	{
+		// Sector- und Systemwerte ändern
+		SetOwned(TRUE);
+		m_sOwnerOfSector = shipowner;
+		m_sColonyOwner = shipowner;
+		SetOwnerOfSystem(shipowner);
+		// Gebäude nach einer Kolonisierung bauen
+		BuildBuildingsAfterColonization(resources::BuildingInfo,ship.GetColonizePoints());
+		// Nachricht an das Imperium senden, das ein System neu kolonisiert wurde
+		CString s = CLoc::GetString("FOUND_COLONY_MESSAGE",FALSE,GetName());
+		CEmpireNews message;
+		message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,GetName(),m_KO);
+		empire->AddMsg(message);
+
+		// zusätzliche Eventnachricht (Colonize a system #12) wegen der Moral an das Imperium
+		message.CreateNews(major.GetMoralObserver()->AddEvent(12, major.GetRaceMoralNumber(), GetName()), EMPIRE_NEWS_TYPE::SOMETHING, "", m_KO);
+		empire->AddMsg(message);
+		if (major.IsHumanPlayer())
+		{
+			resources::pClientWorker->AddSoundMessage(SNDMGR_MSG_CLAIMSYSTEM, major , 0);
+			resources::pClientWorker->SetToEmpireViewFor(major);
+			CEventColonization* eventScreen = new CEventColonization(major.GetRaceID(), CLoc::GetString("COLOEVENT_HEADLINE", FALSE, GetName()), CLoc::GetString("COLOEVENT_TEXT_" + major.GetRaceID(), FALSE, GetName()));
+			empire->GetEvents()->Add(eventScreen);
+			s.Format("Added Colonization-Eventscreen for Race %s in System %s", major.GetRaceName(), GetName());
+			MYTRACE("general")(MT::LEVEL_INFO, s);
+		}
+	}
+	else
+	{
+		// Nachricht an das Imperium senden, das ein Planet kolonisiert wurde
+		CString s = CLoc::GetString("NEW_PLANET_COLONIZED",FALSE,GetName());
+		CEmpireNews message;
+		message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,GetName(),m_KO);
+		empire->AddMsg(message);
+		resources::pClientWorker->SetToEmpireViewFor(major);
+	}
+	SetHabitants(GetCurrentHabitants());
+
+	CalculateNumberOfWorkbuildings(resources::BuildingInfo);
+	CalculateVariables();
+}
+
+// Funktion berechnet und baut die Startgebäude in einem System, nachdem wir einen Planeten
+// in diesem kolonisiert haben.
+void CSystem::BuildBuildingsAfterColonization(const BuildingInfoArray *buildingInfo, USHORT colonizationPoints)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	m_BuildableShips.RemoveAll();
-	m_BuildableShips.FreeExtra();
-	// Hier jetzt schauen ob wir eine Werft haben und anhand der größe der Werft können wir bestimmte
-	// Schiffstypen bauen
-	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
-	if (!pMajor)
-		return;
+	ASSERT(pDoc);
 
-	// exisitiert eine Werft?
-	if (m_Production.GetShipYard())
-	{
-		// Array mit baubaren Minorraceschiffen füllen
-		int nMinorShipNumber = -1;
-		if (GetMinorRace())
+	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(GetOwnerOfSector()));
+	ASSERT(pMajor);
+
+	// alle Gebäude die wir nach Systemeroberung nicht haben dürfen werden aus der Liste der aktuellen Gebäude entfernt
+	RemoveSpecialRaceBuildings(buildingInfo);
+
+	BYTE byRaceBuildingID = pMajor->GetRaceBuildingNumber();
+
+	BYTE researchLevels[6] =
 		{
-			CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(GetName());
-			if (pMinor)
-				nMinorShipNumber = pMinor->GetRaceShipNumber();
+			pMajor->GetEmpire()->GetResearch()->GetBioTech(),
+			pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
+			pMajor->GetEmpire()->GetResearch()->GetCompTech(),
+			pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
+			pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
+			pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
+		};
+
+	// in exist[.] steht dann, ob wir einen Rohstoff abbauen können, wenn ja, dann können wir auch das Gebäude bauen
+	BOOLEAN exist[RESOURCES::DERITIUM + 1] = {0};
+	GetAvailableResources(exist, true);
+
+	USHORT start = 0;
+	for (int i = 0; i < buildingInfo->GetSize(); i++)
+		if (buildingInfo->GetAt(i).GetOwnerOfBuilding() == byRaceBuildingID)
+		{
+			start = i;
+			break;
 		}
 
-		CResearch* pResearch = pMajor->GetEmpire()->GetResearch();
-		CArray<USHORT> obsoleteClasses;
+	short counter[10] = {0};
+	USHORT runningNumber[10] = {0,0,0,0,0,0,0,0,0,0};
+	for (int i = start; i < buildingInfo->GetSize(); i++)
+	{
+		// Abbruchbedingung, wenn das Gebäude eh nicht mehr zu den Gebäuden des Sektorbesitzers gehören.
+		// Dafür muss aber die Gebäudeliste geordnet nach den Besitzern vorliegen (das sie aktuell auch ist)
+		if (buildingInfo->GetAt(i).GetOwnerOfBuilding() != byRaceBuildingID)
+			break;
+		// wenn das Gebäude nicht gebaut werden kann, dann mit dem nächsten weitermachen
+		if (!buildingInfo->GetAt(i).IsBuildingBuildableNow(researchLevels))
+			continue;
 
-		for (int i = 0; i < pDoc->GetShipInfos()->GetSize(); i++)
+		if (buildingInfo->GetAt(i).GetFoodProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[0] < colonizationPoints)
 		{
-			CShipInfo* pShipInfo = &(pDoc->GetShipInfos()->GetAt(i));
-			// Außenposten und Sternenbasen können wir natürlich nicht hier bauen
-			if ((pShipInfo->GetRace() == pMajor->GetRaceShipNumber() || pShipInfo->GetRace() == nMinorShipNumber)
-				&& !pShipInfo->IsStation())
+			counter[0]++;
+			runningNumber[0] = buildingInfo->GetAt(i).GetRunningNumber();
+
+		}
+		else if (buildingInfo->GetAt(i).GetIPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[1] < colonizationPoints)
+		{
+			counter[1]++;
+			runningNumber[1] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+		else if (buildingInfo->GetAt(i).GetEnergyProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[2] < colonizationPoints)
+		{
+			counter[2]++;
+			runningNumber[2] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+		else if (buildingInfo->GetAt(i).GetSPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[3] < colonizationPoints)
+		{
+			counter[3]++;
+			runningNumber[3] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+		else if (buildingInfo->GetAt(i).GetFPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[4] < colonizationPoints)
+		{
+			counter[4]++;
+			runningNumber[4] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+		else if (buildingInfo->GetAt(i).GetTitanProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[5] < colonizationPoints && exist[0] == TRUE)
+		{
+			counter[5]++;
+			runningNumber[5] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+		else if (buildingInfo->GetAt(i).GetDeuteriumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[6] < colonizationPoints && exist[1] == TRUE)
+		{
+			counter[6]++;
+			runningNumber[6] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+		else if (buildingInfo->GetAt(i).GetDuraniumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[7] < colonizationPoints && exist[2] == TRUE)
+		{
+			counter[7]++;
+			runningNumber[7] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+		else if (buildingInfo->GetAt(i).GetCrystalProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[8] < colonizationPoints && exist[3] == TRUE)
+		{
+			counter[8]++;
+			runningNumber[8] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+		else if (buildingInfo->GetAt(i).GetIridiumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[9] < colonizationPoints && exist[4] == TRUE)
+		{
+			counter[9]++;
+			runningNumber[9] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+	}
+	// wenn schon Gebäude eines Typs stehen, dann dürfen keine des gleichen Typ zusätzlich gebaut werden. Z.B. wenn
+	// schon Typ 4 Automatikfarmen stehen darf das Kolonieschiff nicht auch noch Primitive Farmen bauen.
+	this->CalculateNumberOfWorkbuildings(buildingInfo);
+	for (int build = WORKER::FOOD_WORKER; build <= WORKER::IRIDIUM_WORKER; build++)
+	{
+		WORKER::Typ nWorker = (WORKER::Typ)build;
+		if (this->GetNumberOfWorkbuildings(nWorker, 0) > 0)
+			runningNumber[build] = 0;
+		if (runningNumber[build] != 0)
+		{
+			// Gebäude anlegen, umso besser das Kolonieschiff ist, desto mehr Gebäude stehen dann auf dem System
+			for (int i = 0; i < colonizationPoints*2; i++)
 			{
-				// Forschungsstufen checken
-				BYTE researchLevels[6] =
-				{
-					pResearch->GetBioTech(),
-					pResearch->GetEnergyTech(),
-					pResearch->GetCompTech(),
-					pResearch->GetPropulsionTech(),
-					pResearch->GetConstructionTech(),
-					pResearch->GetWeaponTech()
-				};
-
-				if (!pShipInfo->IsThisShipBuildableNow(researchLevels))
-					continue;
-
-				// Wenn durch dieses Schiff ein anderes Schiff veraltet ist (nur wenn es technologisch baubar ist)
-				if (pShipInfo->GetObsoleteShipClass() != "")
-				{
-					for (int j = 0; j < pDoc->GetShipInfos()->GetSize(); j++)
-						if (pDoc->GetShipInfos()->GetAt(j).GetShipClass() == pShipInfo->GetObsoleteShipClass())
-						{
-							obsoleteClasses.Add(pDoc->GetShipInfos()->GetAt(j).GetID());
-							break;
-						}
-				}
-
-				// Wenn das Schiff nur in einem bestimmten System gebaut werden kann, dann hier checken
-				if (!pShipInfo->GetOnlyInSystem().IsEmpty())
-				{
-					if (pShipInfo->GetOnlyInSystem() != GetName())
-						continue;
-					// der Besitzer der Schiffsklasse wird auf den Besitzer des Schiffes gesetzt. Somit kann
-					// eine Majorrace dann auch die Schiffe der Minorrace bauen
-					else
-						pShipInfo->SetRace(pMajor->GetRaceShipNumber());
-				}
-				else if (pShipInfo->GetRace() == nMinorShipNumber)
-					continue;
-
-				// gibt es eine Werft welche diese Schiffsgröße bauen kann?
-				if (pShipInfo->GetShipSize() > m_Production.GetMaxBuildableShipSize())
-					continue;
-
-				// wenn die Credits unter 0 gefallen sind können keine Kampfschiffe mehr gebaut werden
-				if (pShipInfo->IsNonCombat() == false && pMajor->GetEmpire()->GetCredits() < 0)
-					continue;
-
-				// Schiff in die Liste der baubaren Schiffe aufnehmen
-				m_BuildableShips.Add(pShipInfo->GetID());
+				CBuilding building(runningNumber[build]);
+				building.SetIsBuildingOnline(buildingInfo->GetAt(runningNumber[build]-1).GetAllwaysOnline());
+				m_Buildings.Add(building);
 			}
-		}
-		// Nochmal die jetzt baubare Schiffsliste durchgehen und schauen, ob manche Schiffe veraltet sind und somit
-		// nicht mehr baubar sind
-		for (int i = 0; i < obsoleteClasses.GetSize(); i++)
-		{
-			for (int j = 0; j < m_BuildableShips.GetSize(); j++)
-				if (m_BuildableShips.GetAt(j) == obsoleteClasses.GetAt(i))
-				{
-					m_BuildableShips.RemoveAt(j);
-					break;
-				}
+			// Gebäude mit Arbeitern besetzen
+			this->SetWorker(nWorker,SET_WORKER_MODE_SET, colonizationPoints*2);
 		}
 	}
-}
+	this->CalculateNumberOfWorkbuildings(buildingInfo);
 
-// Diese Funktion berechnet die baubaren Truppen in diesem System
-void CSystem::CalculateBuildableTroops(const CArray<CTroopInfo>* troopInfos, const CResearch *research)
-{
-	m_BuildableTroops.RemoveAll();
-	m_BuildableTroops.FreeExtra();
-	// Hier jetzt schauen ob wir eine Kaserne haben
-	if (m_Production.GetBarrack())
-		for (int i = 0; i < troopInfos->GetSize(); i++)
-			if (troopInfos->GetAt(i).GetOwner() == m_sOwnerOfSystem)
-			{
-				BOOLEAN buildable = TRUE;
-				// zuerstmal die Forschungsstufen checken
-				if (research->GetBioTech() < troopInfos->GetAt(i).GetNeededTechlevel(0))
-					buildable = FALSE;
-				else if (research->GetEnergyTech() < troopInfos->GetAt(i).GetNeededTechlevel(1))
-					buildable = FALSE;
-				else if (research->GetCompTech() < troopInfos->GetAt(i).GetNeededTechlevel(2))
-					buildable = FALSE;
-				else if (research->GetPropulsionTech() < troopInfos->GetAt(i).GetNeededTechlevel(3))
-					buildable = FALSE;
-				else if (research->GetConstructionTech() < troopInfos->GetAt(i).GetNeededTechlevel(4))
-					buildable = FALSE;
-				else if (research->GetWeaponTech() < troopInfos->GetAt(i).GetNeededTechlevel(5))
-					buildable = FALSE;
-				if (buildable == TRUE)
-					m_BuildableTroops.Add(troopInfos->GetAt(i).GetID());
-			}
-}
+	// Wenn das System nach einer Bombardierung komplett ausgelöscht wurde und von uns wieder neu kolonisiert wurde,
+	// so müssen die mindst. immer baubaren Gebäude gelöscht werden. Dies wird hier jedesmal gemacht, wenn man
+	// eine neue Kolonie gründet
+	m_AllwaysBuildableBuildings.RemoveAll();
 
-// Funktion berechnet die Anzahl aller Farmen, Bauhöfe usw., also alle Gebäude die Arbeiter benötigen.
-// Sie muß am Rundenanfang vor CalculateVariables() aufgerufen werden und sortiert gleichzeitig das
-// CArray m_Buildings nach der RunningNumber.
-// In der Doc-Klasse nach der Funktion DestroyBuildings() und zu Beginn aufrufen!
-void CSystem::CalculateNumberOfWorkbuildings(const BuildingInfoArray *buildingInfos)
-{
-	// Sortierung
-	c_arraysort<CArray<CBuilding>,CBuilding>(m_Buildings,sort_asc);
-
-	// Berechnung der Gebäude
-	m_iFoodBuildings = 0;
-	m_iIndustryBuildings = 0;
-	m_iEnergyBuildings = 0;
-	m_iSecurityBuildings = 0;
-	m_iResearchBuildings = 0;
-	m_iTitanMines = 0;
-	m_iDeuteriumMines = 0;
-	m_iDuraniumMines = 0;
-	m_iIridiumMines = 0;
-	m_iCrystalMines = 0;
-	for (int i = 0; i < m_Buildings.GetSize(); i++)
-	{
-		const CBuildingInfo* buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
-
-		if (buildingInfo->GetWorker() == TRUE)
-		{
-			if (buildingInfo->GetFoodProd() > 0)
-				m_iFoodBuildings++;
-			else if (buildingInfo->GetIPProd() > 0)
-				m_iIndustryBuildings++;
-			else if (buildingInfo->GetEnergyProd() > 0)
-				m_iEnergyBuildings++;
-			else if (buildingInfo->GetSPProd() > 0)
-				m_iSecurityBuildings++;
-			else if (buildingInfo->GetFPProd() > 0)
-				m_iResearchBuildings++;
-			else if (buildingInfo->GetTitanProd() > 0)
-				m_iTitanMines++;
-			else if (buildingInfo->GetDeuteriumProd() > 0)
-				m_iDeuteriumMines++;
-			else if (buildingInfo->GetDuraniumProd() > 0)
-				m_iDuraniumMines++;
-			else if (buildingInfo->GetCrystalProd() > 0)
-				m_iCrystalMines++;
-			else if (buildingInfo->GetIridiumProd() > 0)
-				m_iIridiumMines++;
-		}
-	}
-}
-
-// Funktion berechnet die imperiumweite Moralproduktion, welche aus diesem System generiert wird.
-void CSystem::CalculateEmpireWideMoralProd(const BuildingInfoArray *buildingInfos)
-{
-	for (int i = 0; i < m_Buildings.GetSize(); i++)
-		if (m_Buildings.GetAt(i).GetIsBuildingOnline())
-		{
-			const CBuildingInfo *buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
-			m_Production.m_iMoralProdEmpireWide[m_sOwnerOfSystem] += buildingInfo->GetMoralProdEmpire();
-		}
-}
-
-// Funktion setzt das letzte Gebäude, welches gebaut wurde online, sofern dies möglich ist.
-int CSystem::SetNewBuildingOnline(const BuildingInfoArray *buildingInfos)
-{
-	// 0: dann konnte das Gebäude in Betrieb genommen werden
-	// 1: dann fehlen Arbeiter
-	// 2: dann fehlt Energie im System
-
-	unsigned short nLastBuilding = m_Buildings.GetUpperBound();
-	// Ist das Gebäude schon online
-	if (m_Buildings.GetAt(nLastBuilding).GetIsBuildingOnline())
-		return 0;
-
-	const CBuildingInfo *pBuildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(nLastBuilding).GetRunningNumber() - 1);
-
-	// Gebäude braucht Arbeiter, aber keine sind frei
-	if (pBuildingInfo->GetWorker() == TRUE && m_Workers.GetWorker(WORKER::FREE_WORKER) == 0)
-		return 1;
-
-	// Gebäude braucht Energie, aber nicht genügend vorhanden
-	if (pBuildingInfo->GetNeededEnergy() > m_Production.m_iEnergyProd)
-		return 2;
-
-	// Arbeiter reduzieren
-	if (pBuildingInfo->GetWorker() == TRUE)
-	{
-		if (pBuildingInfo->GetFoodProd() > 0)
-			m_Workers.InkrementWorker(WORKER::FOOD_WORKER);
-		else if (pBuildingInfo->GetIPProd() > 0)
-			m_Workers.InkrementWorker(WORKER::INDUSTRY_WORKER);
-		else if (pBuildingInfo->GetEnergyProd() > 0)
-			m_Workers.InkrementWorker(WORKER::ENERGY_WORKER);
-		else if (pBuildingInfo->GetSPProd() > 0)
-			m_Workers.InkrementWorker(WORKER::SECURITY_WORKER);
-		else if (pBuildingInfo->GetFPProd() > 0)
-			m_Workers.InkrementWorker(WORKER::RESEARCH_WORKER);
-		else if (pBuildingInfo->GetTitanProd() > 0)
-			m_Workers.InkrementWorker(WORKER::TITAN_WORKER);
-		else if (pBuildingInfo->GetDeuteriumProd() > 0)
-			m_Workers.InkrementWorker(WORKER::DEUTERIUM_WORKER);
-		else if (pBuildingInfo->GetDuraniumProd() > 0)
-			m_Workers.InkrementWorker(WORKER::DURANIUM_WORKER);
-		else if (pBuildingInfo->GetCrystalProd() > 0)
-			m_Workers.InkrementWorker(WORKER::CRYSTAL_WORKER);
-		else if (pBuildingInfo->GetIridiumProd() > 0)
-			m_Workers.InkrementWorker(WORKER::IRIDIUM_WORKER);
-		else
-			ASSERT(FALSE);
-	}
-
-	// Energie von der Produktion abziehen
-	m_Production.m_iEnergyProd -= pBuildingInfo->GetNeededEnergy();
-
-	// Gebäude online setzen
-	m_Buildings.ElementAt(nLastBuilding).SetIsBuildingOnline(TRUE);
-	return 0;
-}
-
-// Funktion überprüft Gebäude die Energie benötigen und schaltet diese gegebenfalls ab,
-// falls zuwenig Energie im System vorhanden ist.
-// Diese Funktion aufrufen, bevor wir CalculateVariables() usw. aufrufen, weil wir ja die bösen Onlinegebäude vorher
-// ausschalten wollen.
-bool CSystem::CheckEnergyBuildings()
-{
-	const BuildingInfoArray* const pvBuildingInfos = resources::BuildingInfo;
-	bool bRet = false;
-	for (int i = 0; i < m_Buildings.GetSize(); i++)
-	{
-		// ist genügend Energie vorhanden, so muss nichts überprüft werden
-		if (m_Production.m_iEnergyProd >= 0)
-			return bRet;
-
-		// anderenfalls müssen die Gebäude nacheinander solange abgeschaltet werden, bis wieder genügend Energie vorhanden ist
-		const CBuildingInfo* pBuildingInfo = &pvBuildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
-		if (m_Production.m_iEnergyProd < 0 && pBuildingInfo->GetNeededEnergy() > 0 && m_Buildings[i].GetIsBuildingOnline())
-		{
-			// Gebäude abschalten
-			m_Buildings[i].SetIsBuildingOnline(FALSE);
-			// vorhande Energie um den Differenzbetrag erhöhen
-			m_Production.m_iEnergyProd += pBuildingInfo->GetNeededEnergy();
-			bRet = true;
-		}
-	}
-	// Wenn bRet == false, dann ist genug Energie vorhanden, ansonsten wurde mindst. ein Gebäude abgeschaltet
-	return bRet;
 }
 
 // Funktion baut die Gebäude der Minorrace, wenn wir eine Mitgliedschaft mit dieser erreicht haben.
@@ -2158,6 +2522,232 @@ void CSystem::BuildBuildingsForMinorRace(BuildingInfoArray* buildingInfo, USHORT
 	}
 }
 
+// Funktion reißt alle Gebäude ab, die in der Variable m_BuildingDestroy stehen. Funktion wird in der Doc
+// bei NextRound() aufgerufen.
+bool CSystem::DestroyBuildings(void)
+{
+	bool destroy = !m_BuildingDestroy.IsEmpty();
+	for (int i = 0; i < m_BuildingDestroy.GetSize(); i++)
+		// Schleife von hinten durchlaufen, weil Arbeiter die Gebäude von "vorn" besetzten
+		// und ich nicht gerade die online-Gebäude abreißen will, sondern die wahrscheinlich offline
+		for (int j = m_Buildings.GetUpperBound(); j >= 0; j--)
+			if (m_Buildings.GetAt(j).GetRunningNumber() == m_BuildingDestroy.GetAt(i))
+			{
+				m_Buildings.RemoveAt(j);
+				m_BuildingDestroy.RemoveAt(i--);
+				break;
+			}
+	if (destroy)
+		m_BuildingDestroy.RemoveAll();
+	return destroy;
+}
+
+// Funktion setzt das letzte Gebäude, welches gebaut wurde online, sofern dies möglich ist.
+int CSystem::SetNewBuildingOnline(const BuildingInfoArray *buildingInfos)
+{
+	// 0: dann konnte das Gebäude in Betrieb genommen werden
+	// 1: dann fehlen Arbeiter
+	// 2: dann fehlt Energie im System
+
+	unsigned short nLastBuilding = m_Buildings.GetUpperBound();
+	// Ist das Gebäude schon online
+	if (m_Buildings.GetAt(nLastBuilding).GetIsBuildingOnline())
+		return 0;
+
+	const CBuildingInfo *pBuildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(nLastBuilding).GetRunningNumber() - 1);
+
+	// Gebäude braucht Arbeiter, aber keine sind frei
+	if (pBuildingInfo->GetWorker() == TRUE && m_Workers.GetWorker(WORKER::FREE_WORKER) == 0)
+		return 1;
+
+	// Gebäude braucht Energie, aber nicht genügend vorhanden
+	if (pBuildingInfo->GetNeededEnergy() > m_Production.m_iEnergyProd)
+		return 2;
+
+	// Arbeiter reduzieren
+	if (pBuildingInfo->GetWorker() == TRUE)
+	{
+		if (pBuildingInfo->GetFoodProd() > 0)
+			m_Workers.InkrementWorker(WORKER::FOOD_WORKER);
+		else if (pBuildingInfo->GetIPProd() > 0)
+			m_Workers.InkrementWorker(WORKER::INDUSTRY_WORKER);
+		else if (pBuildingInfo->GetEnergyProd() > 0)
+			m_Workers.InkrementWorker(WORKER::ENERGY_WORKER);
+		else if (pBuildingInfo->GetSPProd() > 0)
+			m_Workers.InkrementWorker(WORKER::SECURITY_WORKER);
+		else if (pBuildingInfo->GetFPProd() > 0)
+			m_Workers.InkrementWorker(WORKER::RESEARCH_WORKER);
+		else if (pBuildingInfo->GetTitanProd() > 0)
+			m_Workers.InkrementWorker(WORKER::TITAN_WORKER);
+		else if (pBuildingInfo->GetDeuteriumProd() > 0)
+			m_Workers.InkrementWorker(WORKER::DEUTERIUM_WORKER);
+		else if (pBuildingInfo->GetDuraniumProd() > 0)
+			m_Workers.InkrementWorker(WORKER::DURANIUM_WORKER);
+		else if (pBuildingInfo->GetCrystalProd() > 0)
+			m_Workers.InkrementWorker(WORKER::CRYSTAL_WORKER);
+		else if (pBuildingInfo->GetIridiumProd() > 0)
+			m_Workers.InkrementWorker(WORKER::IRIDIUM_WORKER);
+		else
+			ASSERT(FALSE);
+	}
+
+	// Energie von der Produktion abziehen
+	m_Production.m_iEnergyProd -= pBuildingInfo->GetNeededEnergy();
+
+	// Gebäude online setzen
+	m_Buildings.ElementAt(nLastBuilding).SetIsBuildingOnline(TRUE);
+	return 0;
+}
+
+// Funktion überprüft Gebäude die Energie benötigen und schaltet diese gegebenfalls ab,
+// falls zuwenig Energie im System vorhanden ist.
+// Diese Funktion aufrufen, bevor wir CalculateVariables() usw. aufrufen, weil wir ja die bösen Onlinegebäude vorher
+// ausschalten wollen.
+bool CSystem::CheckEnergyBuildings()
+{
+	const BuildingInfoArray* const pvBuildingInfos = resources::BuildingInfo;
+	bool bRet = false;
+	for (int i = 0; i < m_Buildings.GetSize(); i++)
+	{
+		// ist genügend Energie vorhanden, so muss nichts überprüft werden
+		if (m_Production.m_iEnergyProd >= 0)
+			return bRet;
+
+		// anderenfalls müssen die Gebäude nacheinander solange abgeschaltet werden, bis wieder genügend Energie vorhanden ist
+		const CBuildingInfo* pBuildingInfo = &pvBuildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
+		if (m_Production.m_iEnergyProd < 0 && pBuildingInfo->GetNeededEnergy() > 0 && m_Buildings[i].GetIsBuildingOnline())
+		{
+			// Gebäude abschalten
+			m_Buildings[i].SetIsBuildingOnline(FALSE);
+			// vorhande Energie um den Differenzbetrag erhöhen
+			m_Production.m_iEnergyProd += pBuildingInfo->GetNeededEnergy();
+			bRet = true;
+		}
+	}
+	// Wenn bRet == false, dann ist genug Energie vorhanden, ansonsten wurde mindst. ein Gebäude abgeschaltet
+	return bRet;
+}
+
+BOOLEAN CSystem::AssemblyListCheck(const BuildingInfoArray* buildingInfo, CGlobalBuildings* globals)
+{
+	// zu allererst die Liste der baubaren Gebäude und Updates mit der Liste der in dieser Runde baubaren Gebäude
+	// vor dem AssemblyListCheck füllen
+	m_BuildableBuildings.RemoveAll();
+	m_BuildableUpdates.RemoveAll();
+	m_BuildableBuildings.FreeExtra();
+	m_BuildableUpdates.FreeExtra();
+	for (int i = 0; i < m_BuildableWithoutAssemblylistCheck.GetSize(); i++)
+	{
+		// Unterscheidung zwischen Upgrades und normalen Gebäuden. Auch bei den Upgrades muss geschaut werden, dass dieses Gebäude
+		// noch nicht zu oft vorkommt
+		int entry = m_BuildableWithoutAssemblylistCheck.GetAt(i);
+		if (entry < 0)
+			entry *= (-1);
+
+		// wenn dieses Gebäude nur X mal pro Imperium vorkommen darf, dann darf dieses Gebäude nicht mehr als X mal
+		// als globales Gebäude vorkommen
+		bool bFound = false;
+		if (buildingInfo->GetAt(entry - 1).GetMaxInEmpire() > 0)
+		{
+			short ID = buildingInfo->GetAt(entry - 1).GetRunningNumber();
+			short nCount = globals->GetCountGlobalBuilding(m_sOwnerOfSystem, ID);
+			if (nCount >= buildingInfo->GetAt(entry - 1).GetMaxInEmpire())
+				bFound = true;
+		}
+		// wir haben das Gebäude nicht in der Liste der globalen Gebäude gefunden
+		if (!bFound)
+		{
+			if (m_BuildableWithoutAssemblylistCheck.GetAt(i) > 0)
+				m_BuildableBuildings.Add(entry);
+			else
+				m_BuildableUpdates.Add(entry);
+		}
+	}
+	// nach Updates in der Bauliste suchen. Wenn wir ein Update in der Bauliste gefunden haben, so
+	// müssen wir dieses und all deren Vorgänger aus der Liste der baubaren Gebäude entfernen
+	for (int i = 0; i < ALE; i++)
+	{
+		if (m_AssemblyList.GetAssemblyListEntry(i) < 0)
+		{
+			// Vorgänger des Updates aus der Liste entfernen
+			for (int t = 0; t < m_BuildableBuildings.GetSize(); t++)
+			{
+				USHORT pre = buildingInfo->GetAt(m_AssemblyList.GetAssemblyListEntry(i)*(-1)-1).GetPredecessorID();
+				if (pre == m_BuildableBuildings.GetAt(t))
+				{
+					m_BuildableBuildings.RemoveAt(t--);
+					// Haben wir einen Vorgänger entfernt, dann auch alle Updates des Vorgängers, die in der Liste
+					// der Updates sind entfernen
+
+					// HIER FIXEN: Auch wenn ein Vorgänger nicht mehr baubar war müssen wir das Update aus der Bauliste
+					// entfernen!!!
+					/*
+					for (int s = 0; s < m_BuildableUpdates.GetSize(); s++)
+					{
+						USHORT pre2 = buildingInfo->GetAt(m_BuildableUpdates.GetAt(s)-1).GetPredecessorID();
+						if (pre2 == pre)
+							m_BuildableUpdates.RemoveAt(s--);
+					}*/
+				}
+				for (int s = 0; s < m_BuildableUpdates.GetSize(); s++)
+				{
+					USHORT pre2 = buildingInfo->GetAt(m_BuildableUpdates.GetAt(s)-1).GetPredecessorID();
+					if (pre2 == pre)
+						m_BuildableUpdates.RemoveAt(s--);
+				}
+			}
+		}
+		else if (m_AssemblyList.GetAssemblyListEntry(i) < 10000 && m_AssemblyList.GetAssemblyListEntry(i) != 0)
+		{
+			// hier die maximal baubaren Gebäude pro Imperium checken
+			// Die Gebäude befinden sich auch schon in der GlobalBuildings Variable, wenn sie schon in der
+			// Bauliste sind
+			USHORT nID = m_AssemblyList.GetAssemblyListEntry(i);
+			if (buildingInfo->GetAt(nID - 1).GetMaxInEmpire() > 0)
+			{
+				int nCount = globals->GetCountGlobalBuilding(m_sOwnerOfSystem, nID);
+				// Haben wir dieses Gebäude schon "oft genug" stehen und in der Bauliste der Systeme, dann aus der
+				// Bauliste nehmen
+				if (nCount >= buildingInfo->GetAt(nID - 1).GetMaxInEmpire())
+					for (int t = 0; t < m_BuildableBuildings.GetSize(); t++)
+						if (nID == m_BuildableBuildings.GetAt(t))
+						{
+							m_BuildableBuildings.RemoveAt(t--);
+							break;
+						}
+			}
+			// hier die maximal baubaren Gebäude pro System checken
+			if (buildingInfo->GetAt(m_AssemblyList.GetAssemblyListEntry(i)-1).GetMaxInSystem().Number > 0)
+			{
+				USHORT n = 0;
+				for (int j = 0; j < m_Buildings.GetSize(); j++)
+				{
+					if (m_Buildings.GetAt(j).GetRunningNumber() == buildingInfo->GetAt(m_AssemblyList.GetAssemblyListEntry(i)-1).GetMaxInSystem().RunningNumber)
+						n++;
+					if (n >= buildingInfo->GetAt(m_AssemblyList.GetAssemblyListEntry(i)-1).GetMaxInSystem().Number)
+						break;
+				}
+				// Bauliste durchgehen und wenn dieses Gebeäude in dieser vorkommt, dann auch mitzählen
+				for (int j = 0; j < ALE; j++)
+					if (m_AssemblyList.GetAssemblyListEntry(i) == m_AssemblyList.GetAssemblyListEntry(j))
+						if (m_AssemblyList.GetAssemblyListEntry(j) > 0 && m_AssemblyList.GetAssemblyListEntry(j) < 10000)
+							if (m_AssemblyList.GetAssemblyListEntry(j) == buildingInfo->GetAt(m_AssemblyList.GetAssemblyListEntry(j)-1).GetMaxInSystem().RunningNumber)
+								n++;
+				// Haben wir dieses Gebäude schon "oft genug" stehen und in der Bauliste des Systems, dann aus der
+				// Bauliste nehmen
+				if (n >= buildingInfo->GetAt(m_AssemblyList.GetAssemblyListEntry(i)-1).GetMaxInSystem().Number)
+					for (int t = 0; t < m_BuildableBuildings.GetSize(); t++)
+						if (m_AssemblyList.GetAssemblyListEntry(i) == m_BuildableBuildings.GetAt(t))
+						{
+							m_BuildableBuildings.RemoveAt(t--);
+							break;
+						}
+			}
+		}
+	}
+	return FALSE;
+}
+
 // Diese Funktion entfernt alle speziellen Gebäude aus der Gebäudeliste. Diese Funktion sollte nach Eroberung des Systems
 // aufgerufen werden. Danach sind keine Gebäude mehr vorhanden, die nur x mal pro Imperium baubar gewesen oder die nur die Rasse
 // selbst bauen darf.
@@ -2172,841 +2762,9 @@ void CSystem::RemoveSpecialRaceBuildings(const BuildingInfoArray* pvBuildingInfo
 	}
 }
 
-// Funktion berechnet und baut die Startgebäude in einem System, nachdem wir einen Planeten
-// in diesem kolonisiert haben.
-void CSystem::BuildBuildingsAfterColonization(const BuildingInfoArray *buildingInfo, USHORT colonizationPoints)
-{
-	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
-
-	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(GetOwnerOfSector()));
-	ASSERT(pMajor);
-
-	// alle Gebäude die wir nach Systemeroberung nicht haben dürfen werden aus der Liste der aktuellen Gebäude entfernt
-	RemoveSpecialRaceBuildings(buildingInfo);
-
-	BYTE byRaceBuildingID = pMajor->GetRaceBuildingNumber();
-
-	BYTE researchLevels[6] =
-		{
-			pMajor->GetEmpire()->GetResearch()->GetBioTech(),
-			pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
-			pMajor->GetEmpire()->GetResearch()->GetCompTech(),
-			pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
-			pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
-			pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
-		};
-
-	// in exist[.] steht dann, ob wir einen Rohstoff abbauen können, wenn ja, dann können wir auch das Gebäude bauen
-	BOOLEAN exist[RESOURCES::DERITIUM + 1] = {0};
-	GetAvailableResources(exist, true);
-
-	USHORT start = 0;
-	for (int i = 0; i < buildingInfo->GetSize(); i++)
-		if (buildingInfo->GetAt(i).GetOwnerOfBuilding() == byRaceBuildingID)
-		{
-			start = i;
-			break;
-		}
-
-	short counter[10] = {0};
-	USHORT runningNumber[10] = {0,0,0,0,0,0,0,0,0,0};
-	for (int i = start; i < buildingInfo->GetSize(); i++)
-	{
-		// Abbruchbedingung, wenn das Gebäude eh nicht mehr zu den Gebäuden des Sektorbesitzers gehören.
-		// Dafür muss aber die Gebäudeliste geordnet nach den Besitzern vorliegen (das sie aktuell auch ist)
-		if (buildingInfo->GetAt(i).GetOwnerOfBuilding() != byRaceBuildingID)
-			break;
-		// wenn das Gebäude nicht gebaut werden kann, dann mit dem nächsten weitermachen
-		if (!buildingInfo->GetAt(i).IsBuildingBuildableNow(researchLevels))
-			continue;
-
-		if (buildingInfo->GetAt(i).GetFoodProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[0] < colonizationPoints)
-		{
-			counter[0]++;
-			runningNumber[0] = buildingInfo->GetAt(i).GetRunningNumber();
-
-		}
-		else if (buildingInfo->GetAt(i).GetIPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[1] < colonizationPoints)
-		{
-			counter[1]++;
-			runningNumber[1] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetEnergyProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[2] < colonizationPoints)
-		{
-			counter[2]++;
-			runningNumber[2] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetSPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[3] < colonizationPoints)
-		{
-			counter[3]++;
-			runningNumber[3] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetFPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[4] < colonizationPoints)
-		{
-			counter[4]++;
-			runningNumber[4] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetTitanProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[5] < colonizationPoints && exist[0] == TRUE)
-		{
-			counter[5]++;
-			runningNumber[5] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetDeuteriumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[6] < colonizationPoints && exist[1] == TRUE)
-		{
-			counter[6]++;
-			runningNumber[6] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetDuraniumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[7] < colonizationPoints && exist[2] == TRUE)
-		{
-			counter[7]++;
-			runningNumber[7] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetCrystalProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[8] < colonizationPoints && exist[3] == TRUE)
-		{
-			counter[8]++;
-			runningNumber[8] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetIridiumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[9] < colonizationPoints && exist[4] == TRUE)
-		{
-			counter[9]++;
-			runningNumber[9] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-	}
-	// wenn schon Gebäude eines Typs stehen, dann dürfen keine des gleichen Typ zusätzlich gebaut werden. Z.B. wenn
-	// schon Typ 4 Automatikfarmen stehen darf das Kolonieschiff nicht auch noch Primitive Farmen bauen.
-	this->CalculateNumberOfWorkbuildings(buildingInfo);
-	for (int build = WORKER::FOOD_WORKER; build <= WORKER::IRIDIUM_WORKER; build++)
-	{
-		WORKER::Typ nWorker = (WORKER::Typ)build;
-		if (this->GetNumberOfWorkbuildings(nWorker, 0) > 0)
-			runningNumber[build] = 0;
-		if (runningNumber[build] != 0)
-		{
-			// Gebäude anlegen, umso besser das Kolonieschiff ist, desto mehr Gebäude stehen dann auf dem System
-			for (int i = 0; i < colonizationPoints*2; i++)
-			{
-				CBuilding building(runningNumber[build]);
-				building.SetIsBuildingOnline(buildingInfo->GetAt(runningNumber[build]-1).GetAllwaysOnline());
-				m_Buildings.Add(building);
-			}
-			// Gebäude mit Arbeitern besetzen
-			this->SetWorker(nWorker,SET_WORKER_MODE_SET, colonizationPoints*2);
-		}
-	}
-	this->CalculateNumberOfWorkbuildings(buildingInfo);
-
-	// Wenn das System nach einer Bombardierung komplett ausgelöscht wurde und von uns wieder neu kolonisiert wurde,
-	// so müssen die mindst. immer baubaren Gebäude gelöscht werden. Dies wird hier jedesmal gemacht, wenn man
-	// eine neue Kolonie gründet
-	m_AllwaysBuildableBuildings.RemoveAll();
-
-}
-// Funktion überprüft, ob wie aufgrund der Bevölkerung hier im System überhaupt (noch) eine Handelsroute
-// anlegen können
-BOOLEAN CSystem::CanAddTradeRoute(CResearchInfo* researchInfo)
-{
-	// aller 20Mrd. Bevölkerung bekommt man eine neue Handelsroute
-	USHORT currentTradeRoutes = m_TradeRoutes.GetSize();
-	short addResRoute = 1;
-	USHORT maxTradeRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes();
-	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
-	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> eine Ressourcenroute mehr
-	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
-		addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(3);
-	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
-	// Bei dieser Spezialforschung gibt es womöglich auch eine Ressourcenroute mehr
-	// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
-	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
-	{
-		if (maxTradeRoutes == NULL)
-		{
-			addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
-			maxTradeRoutes += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
-		}
-	}
-	if (m_ResourceRoutes.GetSize() > addResRoute)
-		currentTradeRoutes += m_ResourceRoutes.GetSize() - addResRoute;
-	return (currentTradeRoutes < maxTradeRoutes);
-}
-
-// Funktion generiert eine neue Handelsroute. Wenn die Funktion <code>TRUE</code> zurückgibt, dann konnte die
-// Handelsroute erfolgreich angelegt werden. Als Parameter wird dabei die Koordinate <code>dest</code>des
-// Zielsektors übergeben sowie ein Zeiger auf alle Systeme <code>systems</code> auf der Map..
-BOOLEAN CSystem::AddTradeRoute(CPoint dest, std::vector<CSystem>& systems, CResearchInfo* researchInfo)
-{
-	BOOLEAN canAddTradeRoute = CanAddTradeRoute(researchInfo);
-	// als erstes überprüfen, das noch keine Handelsroute aus einem System, welches den gleichen Besitzer wie
-	// dieses System hat, zu diesem Ziel führt. Man kann immer nur eine Handelsroute zu einem bestimmten
-	// System haben.
-	if (canAddTradeRoute)
-		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == this->GetOwnerOfSystem())
-					if (&systems.at(x+(y)*STARMAP_SECTORS_HCOUNT) != this)
-						for (int i = 0; i < systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize(); i++)
-							if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetAt(i).GetDestKO() == dest)
-								return FALSE;
-
-	// nachschauen, das nicht schon eine Handelsroute mit dem Ziel vorhanden ist, wenn dies der Fall ist, dann wird
-	// diese Handelsroute gelöscht
-	for (int i = 0; i < m_TradeRoutes.GetSize(); i++)
-		if (m_TradeRoutes.GetAt(i).GetDestKO() == dest)
-		{
-			// Wenn wir eine Route aufheben wollen, so die Dauer der Handelsroute negativ setzen. Wenn die Handelsroute
-			// eh nur noch weniger als 5 Runden dauert, dann wird die Kündigungsdauer auf diese kürzere Zeit eingestellt.
-			if (m_TradeRoutes.GetAt(i).GetDuration() > 0)
-			{
-				// weniger als 5 Runden
-				if (m_TradeRoutes.GetAt(i).GetDuration() < 5)
-					m_TradeRoutes.ElementAt(i).SetDuration(m_TradeRoutes.GetAt(i).GetDuration()-6);
-				// ansonsten normal einstellen
-				else
-					m_TradeRoutes.ElementAt(i).SetDuration(-1);
-				return TRUE;
-			}
-			else
-				return FALSE;
-		}
-
-	if (canAddTradeRoute)
-	{
-		CTradeRoute route;
-		route.GenerateTradeRoute(dest);
-		m_TradeRoutes.Add(route);
-		return TRUE;
-	}
-	return FALSE;
-}
-
-// Funktion gibt das gesamte Credits zurück, was alle Handelsrouten aus diesem System generiert haben.
-USHORT CSystem::CreditsFromTradeRoutes()
-{
-	USHORT credits = 0;
-	for (int i = 0; i < m_TradeRoutes.GetSize(); i++)
-		credits += m_TradeRoutes.GetAt(i).GetCredits(this->m_Production.GetIncomeOnTradeRoutes());
-	return credits;
-}
-
-// Funkt überprüft alle Handelsrouten in dem System, ob sie Aufgrund der Bevölkerung oder der Gebäude noch
-// da sein können. Wurden Handelsrouten gelöscht, so gibt die Funktion die Anzahl der Löschungen zurück
-BYTE CSystem::CheckTradeRoutes(CResearchInfo* researchInfo)
-{
-	BYTE number = 0;
-	// Dauer der Handelsrouten überprüfen. Wenn eine negative Dauer von -5 erreicht wurde, so wird die Handelsroute
-	// gelöscht, wenn eine positive Dauer von 1 erreicht wurde, so verlängert sich die Dauer wieder auf 20 Runden.
-	// Bei allen anderen Fällen wird um eins dekrementiert.
-	for (int i = 0; i < m_TradeRoutes.GetSize(); i++)
-	{
-		// Wenn das System blockiert wird, dann produziert die Handelsroute kein Credits
-		if (GetBlockade() > NULL)
-			m_TradeRoutes.GetAt(i).SetCredits(0);
-		if (m_TradeRoutes.GetAt(i).GetDuration() <= -5)
-		{
-			m_TradeRoutes.RemoveAt(i--);
-			number++;
-		}
-		else if (m_TradeRoutes.GetAt(i).GetDuration() == 1)
-			m_TradeRoutes.ElementAt(i).SetDuration(20);
-		else
-			m_TradeRoutes.ElementAt(i).SetDuration(m_TradeRoutes.GetAt(i).GetDuration()-1);
-	}
-
-	// Hier Bevölkerungs und Gebäudecheck durchführen
-	USHORT currentTradeRoutes = m_TradeRoutes.GetSize();
-	short addResRoute = 1;
-	USHORT maxTradeRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes();
-	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
-	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> eine Ressourcenroute mehr
-	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
-		addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(3);
-	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
-	// Bei dieser Spezialforschung gibt es womöglich auch eine Ressourcenroute mehr
-	// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
-	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
-	{
-		if (maxTradeRoutes == NULL)
-		{
-			addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
-			maxTradeRoutes += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
-		}
-	}
-	if (m_ResourceRoutes.GetSize() > addResRoute)
-		currentTradeRoutes += m_ResourceRoutes.GetSize() - addResRoute;
-	while (currentTradeRoutes > maxTradeRoutes)
-	{
-		if (m_TradeRoutes.GetSize() > 0)
-		{
-			m_TradeRoutes.RemoveAt(m_TradeRoutes.GetUpperBound());
-			number++;
-			currentTradeRoutes--;
-		}
-		else
-			break;
-	}
-	return number;
-}
-
-unsigned CSystem::CheckTradeRoutesDiplomacy(CBotEDoc& pDoc) {
-	unsigned deletedTradeRoutes = 0;
-	for (int i = 0; i < m_TradeRoutes.GetSize(); i++)
-	{
-		CTradeRoute& trade_route = m_TradeRoutes.GetAt(i);
-		const CPoint& dest = trade_route.GetDestKO();
-		// Wenn die Handelsroute aus diplomatischen Gründen nicht mehr vorhanden sein kann
-		if (!trade_route.CheckTradeRoute(m_KO, dest, &pDoc))
-		{
-			// dann müssen wir diese Route löschen
-			m_TradeRoutes.RemoveAt(i--);
-			deletedTradeRoutes++;
-		}
-		// Ansonsten könnte sich die Beziehung zu der Minorrace verbessern
-		else
-			trade_route.PerhapsChangeRelationship(m_KO, dest, &pDoc);
-	}
-	return deletedTradeRoutes;
-}
-
-// Funktion generiert eine neue Ressourcenroute. Wenn die Funktion <code>TRUE</code> zurückgibt, dann konnte die
-// Ressourcenroute erfolgreich angelegt werden. Als Parameter wird dabei die Koordinate <code>dest</code> des
-// Zielsektors übergeben sowie die Art der betroffenen Ressource <code>res</code> und einen Zeiger auf alle
-// Systeme <code>systems</code> auf der Map.
-BOOLEAN CSystem::AddResourceRoute(CPoint dest, BYTE res, const std::vector<CSystem>& systems, CResearchInfo* researchInfo)
-{
-	// Es gibt immer mindst. eine Ressourcenroute pro System. Insgesamt stehen "Anzahl Handelsrouten + 1" Ressourcen-
-	// routen zur Vrefügung.
-	short addResRoute = 1;
-	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
-	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> eine Ressourcenroute mehr
-	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
-		addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(3);
-	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
-	// Bei dieser Spezialforschung gibt es womöglich auch eine Ressourcenroute mehr
-	// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
-	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
-	{
-		USHORT maxTradeRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes();
-		if (maxTradeRoutes == NULL)
-			addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
-	}
-
-	USHORT maxResourceRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes() + addResRoute;
-
-	if (systems.at(dest.x+(dest.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != this->GetOwnerOfSystem())
-		return FALSE;
-	if (systems.at(dest.x+(dest.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() == 0.0f || this->GetHabitants() == 0.0f)
-		return FALSE;
-	if (maxResourceRoutes <= m_ResourceRoutes.GetSize() + m_TradeRoutes.GetSize())
-		return FALSE;
-	// gibt es schon eine Route mit dem Rohstoff ins Zielsystem?
-	for (int i = 0; i < m_ResourceRoutes.GetSize(); i++)
-		if (m_ResourceRoutes.GetAt(i).GetResource() == res && m_ResourceRoutes.GetAt(i).GetKO() == dest)
-			return FALSE;
-
-	CResourceRoute route;
-	route.GenerateResourceRoute(dest, res);
-	m_ResourceRoutes.Add(route);
-	return TRUE;
-}
-
-// Funktion überprüft alle Ressourcenrouten in dem System, ob sie Aufgrund der Bevölkerung oder der Gebäude noch
-// da sein dürfen. Wurden Ressourcenrouten gelöscht, so gibt die Funktion die Anzahl der Löschungen zurück.
-BYTE CSystem::CheckResourceRoutes(CResearchInfo* researchInfo)
-{
-	// Es gibt immer mindst. eine Ressourcenroute pro System. Insgesamt stehen "Anzahl Handelsrouten + 1" Ressourcen-
-	// routen zur Vrefügung.
-	short addResRoute = 1;
-	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
-	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> eine Ressourcenroute mehr
-	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
-		addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(3);
-	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
-	// Bei dieser Spezialforschung gibt es womöglich auch eine Ressourcenroute mehr
-	// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
-	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
-	{
-		USHORT maxTradeRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes();
-		if (maxTradeRoutes == NULL)
-			addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
-	}
-
-	USHORT maxResourceRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes() + addResRoute;
-	USHORT currentResourceRoutes = m_ResourceRoutes.GetSize() + m_TradeRoutes.GetSize();
-	BYTE number = 0;
-	while (currentResourceRoutes > maxResourceRoutes)
-	{
-		if (m_ResourceRoutes.GetSize() > 0)
-		{
-			m_ResourceRoutes.RemoveAt(m_ResourceRoutes.GetUpperBound());
-			number++;
-			currentResourceRoutes--;
-		}
-		else
-			break;
-	}
-	return number;
-}
-
-unsigned CSystem::CheckResourceRoutesExistence(CBotEDoc& pDoc) {
-	unsigned deletedResourceRoutes = 0;
-	// checken ob das System noch der Rasse gehört, welcher auch das Startsystem der Route gehört
-	for (int i = 0; i < m_ResourceRoutes.GetSize(); i++)
-	{
-		CResourceRoute& res_route = m_ResourceRoutes.GetAt(i);
-		const CPoint dest = res_route.GetKO();
-
-		if (!res_route.CheckResourceRoute(m_sOwnerOfSystem, &pDoc.GetSector(dest.x, dest.y)))
-		{
-			m_ResourceRoutes.RemoveAt(i--);
-			deletedResourceRoutes++;
-		}
-	}
-	return deletedResourceRoutes;
-}
-
-// Wenn in diesem System Truppen stationiert sind, dann wird deren Moralwert mit einbezogen.
-// Ist die Moral im System unter 100, so wird der Moralwert der Einheit dazuaddiert, wenn er über 100 ist, dann wird
-// der Moralwert abgezogen.
-void CSystem::IncludeTroopMoralValue(CArray<CTroopInfo>* troopInfo)
-{
-	if (m_Troops.GetSize() > 0 && m_iMoral != 100)
-		for (int i = 0; i < m_Troops.GetSize(); i++)
-		{
-			BYTE id = m_Troops.GetAt(i).GetID();
-			// Wenn die Systemmoral kleiner als 100 ist, dann wird der Moralwert der Truppe dazuaddiert
-			if (m_iMoral < 100)
-			{
-				m_iMoral += troopInfo->GetAt(id).GetMoralValue();
-				if (m_iMoral > 100)
-					m_iMoral = 100;
-			}
-			// Wenn die Systemmoral größer als 100 ist, dann wird der Moralwert der Truppe abgezogen
-			else if (m_iMoral > 100)
-			{
-				m_iMoral -= troopInfo->GetAt(id).GetMoralValue();
-				if (m_iMoral < 100)
-					m_iMoral = 100;
-			}
-		}
-}
-
-// Alle deaktivierten Produktionen zurücksetzen
-void CSystem::ClearDisabledProductions()
-{
-	memset(m_bDisabledProductions, false, sizeof(m_bDisabledProductions));
-}
-
-// Funktion setzt alle Werte wieder zurück auf standard.
-void CSystem::ResetSystem()
-{
-	m_sOwnerOfSystem = "";			// Der Besitzer des Systems
-	m_dHabitants = 0.0f;			// Einwohner in dem System
-	m_iMoral = 100;					// Moral im System
-	m_byBlockade = 0;				// Prozentwert der Blockade im System
-	// Anzahl der Gebäude des Types
-	m_iFoodBuildings = 0;			// Anzahl der Nahrungsgebäude in dem System
-	m_iIndustryBuildings = 0;		// Anzahl der Industriegebäude in dem System
-	m_iEnergyBuildings = 0;			// Anzahl der Energiegebäude in dem System
-	m_iSecurityBuildings = 0;		// Anzahl der Geheimdienstgebäude in dem System
-	m_iResearchBuildings = 0;		// Anzahl der Forschungsgebäude in dem System
-	m_iTitanMines = 0;				// Anzahl der Titanminen in dem System
-	m_iDeuteriumMines = 0;			// Anzahl der Deuteriumminen in dem System
-	m_iDuraniumMines = 0;			// Anzahl der Duraniumminen in dem System
-	m_iIridiumMines = 0;			// Anzahl der Iridiumminen in dem System
-	m_iCrystalMines = 0;			// Anzahl der Crystalminen in dem System
-	// Lagerkapazitäten
-	m_Store.Reset();
-	m_BuildingDestroy.RemoveAll();
-	m_Production.Reset();
-	m_AssemblyList.Reset();
-	m_Buildings.RemoveAll();
-	m_BuildableBuildings.RemoveAll();
-	m_AllwaysBuildableBuildings.RemoveAll();
-	m_BuildableUpdates.RemoveAll();
-	m_BuildableWithoutAssemblylistCheck.RemoveAll();
-	m_BuildableShips.RemoveAll();
-	m_BuildableTroops.RemoveAll();
-	m_TradeRoutes.RemoveAll();
-	m_ResourceRoutes.RemoveAll();
-	m_byMaxTradeRoutesFromHab = 0;
-	m_Troops.RemoveAll();
-	m_bAutoBuild = FALSE;
-	m_Manager.Reset();
-
-	// Deaktivierte Produktionen zurücksetzen
-	ClearDisabledProductions();
-}
-
 //////////////////////////////////////////////////////////////////////
-// Hilfsfunktionen
+// calculate something and return it
 //////////////////////////////////////////////////////////////////////
-
-BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBuildings* globals, CMajor* pMajor)
-{
-/*	Allgemeine Voraussetzungen
-	--------------------------
-	benötigte Anzahl eigener Systeme
-	Nur baubar in System mit Name
-	Nur wirklicher Besitzer des Gebäudes
-	minimale Bevölkerung im System
-	mindst. X Gebäude von ID im System
-	max X mal pro System
-	max X mal pro Imperium
-
-	mindst. eins trifft zu von:
-	Heimatsystem
-	Eigene Kolonie
-	Minorracesystem
-	Erobertes System
-*/
-	// benötigte Anzahl eigener Systeme
-	if (building->GetNeededSystems() > pMajor->GetEmpire()->CountSystems())
-		return FALSE;
-	// Nur baubar in System mit Name checken
-	if (building->GetOnlyInSystemWithName() != "0" && building->GetOnlyInSystemWithName() != "")
-		if (building->GetOnlyInSystemWithName() != GetName())
-			return FALSE;
-	// Nur wirklicher Besitzer des Gebäudes
-	if (building->GetOnlyRace())
-		if (pMajor->GetRaceBuildingNumber() != building->GetOwnerOfBuilding())
-			return FALSE;
-	// Minimale Bevölkerungsanzahl checken
-	if (building->GetMinHabitants() > 0)
-		if (m_dHabitants < (double)building->GetMinHabitants())
-			return FALSE;
-	// mindst. X Gebäude von ID im System
-	if (building->GetMinInSystem().Number > 0)
-	{
-		USHORT number = 0;
-		for (int i = 0; i < m_Buildings.GetSize(); i++)
-		{
-			if (m_Buildings.GetAt(i).GetRunningNumber() == building->GetMinInSystem().RunningNumber)
-				number++;
-			if (number >= building->GetMinInSystem().Number)
-				break;
-		}
-		if (number < building->GetMinInSystem().Number)
-			return FALSE;
-	}
-	// max. X Gebäude von ID im System
-	if (building->GetMaxInSystem().Number > 0)
-	{
-		USHORT number = 0;
-		for (int i = 0; i < m_Buildings.GetSize(); i++)
-		{
-			if (m_Buildings.GetAt(i).GetRunningNumber() == building->GetMaxInSystem().RunningNumber)
-				number++;
-			if (number >= building->GetMaxInSystem().Number)
-				return FALSE;
-		}
-	}
-	// max. X Gebäude von ID im Imperium
-	if (building->GetMaxInEmpire() > 0)
-	{
-		int nCount = globals->GetCountGlobalBuilding(m_sOwnerOfSystem, building->GetRunningNumber());
-		if (nCount >= building->GetMaxInEmpire())
-			return FALSE;
-	}
-	// Checken ob zumindest eine der Voraussetzungen zutrifft: Heimatplanet, eigene Kolonie, Minorraceplanet oder Erobertes System
-	// Zuerst Heimatplanet checken
-	if (building->GetOnlyHomePlanet())
-	{
-		if (GetName() == pMajor->GetHomesystemName())
-		{
-			return TRUE;
-		}
-		if (building->GetOnlyOwnColony())
-		{
-			if (GetColonyOwner() == m_sOwnerOfSystem && GetName() != pMajor->GetHomesystemName())
-				return TRUE;
-		}
-		if (building->GetOnlyMinorRace())
-		{
-			if (GetMinorRace() == TRUE)
-				return TRUE;
-		}
-		if (building->GetOnlyTakenSystem())
-		{
-			if (GetTakenSector() == TRUE)
-				return TRUE;
-		}
-		return FALSE;
-	}
-	// Zuerst eigene Kolonie checken
-	if (building->GetOnlyOwnColony())
-	{
-		if (GetColonyOwner() == m_sOwnerOfSystem && GetName() != pMajor->GetHomesystemName())
-		{
-			return TRUE;
-		}
-		if (building->GetOnlyHomePlanet())
-		{
-			if (GetName() == pMajor->GetHomesystemName())
-				return TRUE;
-		}
-		if (building->GetOnlyMinorRace())
-		{
-			if (GetMinorRace() == TRUE)
-				return TRUE;
-		}
-		if (building->GetOnlyTakenSystem())
-		{
-			if (GetTakenSector() == TRUE)
-				return TRUE;
-		}
-		return FALSE;
-	}
-	// Zuerst Minorraceplanet checken
-	if (building->GetOnlyMinorRace())
-	{
-		if (GetMinorRace() == TRUE)
-		{
-			return TRUE;
-		}
-		if (building->GetOnlyHomePlanet())
-		{
-			if (GetName() == pMajor->GetHomesystemName())
-				return TRUE;
-		}
-		if (building->GetOnlyOwnColony())
-		{
-			if (GetColonyOwner() == m_sOwnerOfSystem && GetName() != pMajor->GetHomesystemName())
-				return TRUE;
-		}
-		if (building->GetOnlyTakenSystem())
-		{
-			if (GetTakenSector() == TRUE)
-				return TRUE;
-		}
-		return FALSE;
-	}
-	// Zuerst erobertes System checken
-	if (building->GetOnlyTakenSystem())
-	{
-		if (GetTakenSector() == TRUE)
-		{
-			return TRUE;
-		}
-		if (building->GetOnlyHomePlanet())
-		{
-			if (GetName() == pMajor->GetHomesystemName())
-				return TRUE;
-		}
-		if (building->GetOnlyOwnColony())
-		{
-			if (GetColonyOwner() == m_sOwnerOfSystem && GetName() != pMajor->GetHomesystemName())
-				return TRUE;
-		}
-		if (building->GetOnlyMinorRace())
-		{
-			if (GetMinorRace() == TRUE)
-				return TRUE;
-		}
-		return FALSE;
-	}
-	return TRUE;
-}
-
-// Diese private Hilfsfunktion überprüft, ob es einen Nachfolger zu unserem Gebäude in der Liste der baubaren
-// Gebäude (-> flag == 0) oder als stehendes Gebäude (-> flag == 1) im System schon steht. Die Funktion
-// gibt TRUE zurück, wenn wir einen Nachfolger gefunden haben, ansonsten FALSE.
-BOOLEAN CSystem::CheckFollower(const BuildingInfoArray* buildings, USHORT id, BOOLEAN flag, BOOLEAN equivalence)
-{
-	// Checken ob ein potentieller Nachfolger in der Liste der baubaren Gebäude vorkommt
-	if (flag == 0)
-	{
-		/*	zum Algorithmus:
-			Ich durchsuche jede ID im Feld der baubaren Gebäude nach potentiellen Vorgängern. Ist dann einer
-			der Vorgänger meine ID, dann können wir abbrechen.
-		*/
-		for (int i = 0; i < m_BuildableWithoutAssemblylistCheck.GetSize(); i++)
-		{
-			// Weil zu diesem Zeitpunkt auch Gebäudeupgrades (negative ID) in diesem Feld vorkommen können, darf ich
-			// nur die echten Gebäude betrachten
-			if (m_BuildableWithoutAssemblylistCheck.GetAt(i) > 0)
-			{
-				// VorgängerID eines Gebäudes aus der Liste der baubaren Gebäude holen
-				USHORT pre = buildings->GetAt(m_BuildableWithoutAssemblylistCheck.GetAt(i)-1).GetPredecessorID();
-				// Haben wir jetzt schon den Vorgänger gefunden (eher unwahrscheinlich)
-				if (pre == id)
-					return TRUE;
-				// jetzt in die Schleife um sich immer neue ID´s zu holen
-				do {
-					// VorgängerID des Vorgängers holen
-					if (pre > 0)
-					{
-						USHORT oldPre = pre;
-						pre = buildings->GetAt(pre-1).GetPredecessorID();
-						if (oldPre == pre)
-						{
-							CString s;
-							s.Format("ERROR with Buildings Predecessor ID:\nBuilding: %s\n\nID: %d\nit is the same like the ID of the building", buildings->GetAt(oldPre-1).GetBuildingName(), oldPre);
-							AfxMessageBox(s);
-							break;
-						}
-					}
-				} while (pre != id && pre != 0);// mache das solange wir keinen Vorgänger gefunden haben oder es keinen Vorgänger gibt
-				// Gibt es einen Vorgänger
-				if (pre == id)
-					return TRUE;
-
-				// So, sind wir jetzt noch dabei und haben in dem System auch Gebäude von anderen Rassen stehen (also der
-				// Parameter equivalence == TRUE), dannn müssen wir auch noch bei dem Äquivalenzgebäude nach Vorgängern suchen
-				if (equivalence == TRUE)
-				{
-					// VorgängerID des entsprechenden Äquivalenzgebäudes holen
-					USHORT race = buildings->GetAt(id-1).GetOwnerOfBuilding();
-					//USHORT race = buildings->GetAt(m_BuildableWithoutAssemblylistCheck.GetAt(i)-1).GetOwnerOfBuilding();
-					USHORT equi = buildings->GetAt(m_BuildableWithoutAssemblylistCheck.GetAt(i)-1).GetEquivalent(race);
-/*					if (equi > 0)
-					{
-						pre = buildings->GetAt(equi-1).GetPredecessorID();	// pre ist Vorgänger des Äquivalenzgebäudes
-						// Jetzt wie oben die do - while Schleife durchlaufen
-						do {
-							// VorgängerID des "Vorgängers holen
-							if (pre > 0)
-								pre = buildings->GetAt(pre-1).GetPredecessorID();
-						} while (pre != equi && pre != 0);// mache das solange wir keinen Vorgänger gefunden haben oder es keinen Vorgänger gibt
-						// Gibt es einen Vorgänger
-						if (pre == equi)
-							return TRUE;
-					}*/
-					if (equi == id)
-						return TRUE;
-					pre = buildings->GetAt(m_BuildableWithoutAssemblylistCheck.GetAt(i)-1).GetPredecessorID();
-					// Jetzt wir oben die do - while Schleife durchlaufen
-					do {
-						// VorgängerID des "Vorgängers holen
-						if (pre > 0)
-						{
-							USHORT oldPre = pre;
-							equi = buildings->GetAt(pre-1).GetEquivalent(race);
-							pre = buildings->GetAt(pre-1).GetPredecessorID();
-							if (oldPre == pre)
-							{
-								CString s;
-								s.Format("ERROR with Buildings Predecessor ID:\nBuilding: %s\n\nID: %d\nit is the same like the ID of the building", buildings->GetAt(oldPre-1).GetBuildingName(), oldPre);
-								AfxMessageBox(s);
-								break;
-							}
-						}
-					} while (id != equi && pre != 0); // mache das solange wir keinen Vorgänger gefunden haben oder es keinen Vorgänger gibt
-					// Gibt es einen Vorgänger
-					if (equi == id)
-						return TRUE;
-				}
-			}
-		}
-	}
-	// Checken ob ein potentieller Nachfolger schon im System steht. Normalerweise ist dieser schon in der Liste
-	// der baubaren Gebäude, aber z.B. Gebäude die nur einmal pro System gebaut werden können sind nicht in dieser Liste.
-	// z.B. wenn wir eine geupdatede Werft einer anderen Rasse in dem System stehen haben, darf ich nicht einen
-	// potentiellen äquivalenten Vorgänger dieser Werft unsererseits bauen.
-	else
-	{
-		USHORT minID = 0;
-		// Der Algorithmus ist wie der obere. Nur wird hier das Feld der stehenden Gebäude im System durchlaufen
-		for (int i = 0; i < m_Buildings.GetSize(); i++)
-		{
-			// Da das Gebäudefeld nach der RunningNumber geordnet ist, brauchen wir erst wieder checken
-			// wenn wir ein Gebäude mit einer neune RunningNumber haben
-			if (m_Buildings.GetAt(i).GetRunningNumber() > minID)
-				minID = m_Buildings.GetAt(i).GetRunningNumber();
-			{
-				// VorgängerID eines Gebäudes aus der Liste der stehenden Gebäude holen
-				USHORT pre = buildings->GetAt(m_Buildings.GetAt(i).GetRunningNumber()-1).GetPredecessorID();
-				// Haben wir jetzt schon den Vorgänger gefunden (eher unwahrscheinlich)
-				if (pre == id)
-					return TRUE;
-				// jetzt in die Schleife um sich immer neue ID´s zu holen
-				do {
-					// VorgängerID des "Vorgängers holen
-					if (pre > 0)
-					{
-						USHORT oldPre = pre;
-						pre = buildings->GetAt(pre-1).GetPredecessorID();
-						if (oldPre == pre)
-						{
-							CString s;
-							s.Format("ERROR with Buildings Predecessor ID:\nBuilding: %s\n\nID: %d\nit is the same like the ID of the building", buildings->GetAt(oldPre-1).GetBuildingName(), oldPre);
-							AfxMessageBox(s);
-							break;
-						}
-					}
-				} while (pre != id && pre != 0);// mache das solange wir keinen Vorgänger gefunden haben oder es keinen Vorgänger gibt
-				// Gibt es einen Vorgänger
-				if (pre == id)
-					return TRUE;
-
-				// So, sind wir jetzt noch dabei und haben in dem System auch Gebäude von anderen Rassen stehen (also der
-				// Parameter equivalence == TRUE), dannn müssen wir auch noch bei dem Äquivalenzgebäude nach Vorgängern suchen
-				if (equivalence == TRUE)
-				{
-					// VorgängerID des entsprechenden Äquivalenzgebäudes holen
-					USHORT race = buildings->GetAt(id-1).GetOwnerOfBuilding();
-					USHORT equi = buildings->GetAt(m_Buildings.GetAt(i).GetRunningNumber()-1).GetEquivalent(race);
-					if (equi == id)
-						return TRUE;
-					pre = buildings->GetAt(m_Buildings.GetAt(i).GetRunningNumber()-1).GetPredecessorID();
-					// Jetzt wir oben die do - while Schleife durchlaufen
-					do {
-						// VorgängerID des "Vorgängers holen
-						if (pre > 0)
-						{
-							USHORT oldPre = pre;
-							equi = buildings->GetAt(pre-1).GetEquivalent(race);
-							pre = buildings->GetAt(pre-1).GetPredecessorID();
-							if (oldPre == pre)
-							{
-								CString s;
-								s.Format("ERROR with Buildings Predecessor ID:\nBuilding: %s\n\nID: %d\nit is the same like the ID of the building", buildings->GetAt(oldPre-1).GetBuildingName(), oldPre);
-								AfxMessageBox(s);
-								break;
-							}
-						}
-					} while (id != equi && pre != 0);// mache das solange wir keinen Vorgänger gefunden haben oder es keinen Vorgänger gibt
-					// Gibt es einen Vorgänger
-					if (id == equi)
-						return TRUE;
-				}
-			}
-		}
-	}
-	return FALSE;
-}
-
-int CSystem::CalcIPProd(const CArray<CBuildingInfo, CBuildingInfo>& BuildingInfo, const int list) const {
-	int IPProd = m_Production.GetIndustryProd();
-	// Wenn ein Auftrag in der Bauliste ist, der niemals fertig ist z.B. Kriegsrecht, dann dies
-	// einzeln beachten
-	if (list > 0 && list < 10000 && BuildingInfo[list-1].GetNeverReady() == TRUE)
-	{
-		// dann zählen die industriellen Baukosten des Auftrags als Anzahl Runden, wie lange
-		// es in der Liste stehen bleibt und den Bonus gibt
-		// Also wird immer nur ein IP abgezogen, außer wenn die Moral größer gleich 80 ist,
-		// dann wird der Auftrag gleich abgebrochen
-		if (m_iMoral >= 85)
-			IPProd = static_cast<int>(m_AssemblyList.GetNeededIndustryForBuild());
-		else
-			IPProd = 1;
-	}
-	// Wenn ein Update in der Liste ist die mögliche UpdateBuildSpeed-Boni beachten
-	else if (list < 0)
-		IPProd = (int)floor((float)IPProd * (100 + m_Production.GetUpdateBuildSpeed()) / 100);
-	// Wenn ein Gebäude in der Liste ist die mögliche BuildingBuildSpeed-Boni beachten
-	else if (list < 10000)
-		IPProd = (int)floor((float)IPProd * (100 + m_Production.GetBuildingBuildSpeed()) / 100);
-	// Wenn es ein Schiff ist, dann die Effiziens der Werft und möglichen ShipBuildSpeed-Boni beachten
-	else if (list < 20000)
-		IPProd = (int)floor((float)IPProd * m_Production.GetShipYardEfficiency() / 100
-					* (100 + m_Production.GetShipBuildSpeed()) / 100);
-	// Wenn es eine Truppe ist, dann Effizienz der Werft und möglichen TroopBuildSpeed-Boni beachten
-	else
-		IPProd = (int)floor((float)IPProd * m_Production.GetBarrackEfficiency() / 100
-					* (100 + m_Production.GetTroopBuildSpeed()) / 100);
-
-	return IPProd;
-}
 
 class TurnsCalc //helpers for NeededRoundsToBuild()
 {
@@ -3111,6 +2869,368 @@ int CSystem::NeededRoundsToBuild(int index_or_id, bool already_in_list, bool use
 	return TurnsCalc::Turns(needed, prod, m_Production.GetTroopBuildSpeed(), eff);
 }
 
+int CSystem::CalcIPProd(const CArray<CBuildingInfo, CBuildingInfo>& BuildingInfo, const int list) const {
+	int IPProd = m_Production.GetIndustryProd();
+	// Wenn ein Auftrag in der Bauliste ist, der niemals fertig ist z.B. Kriegsrecht, dann dies
+	// einzeln beachten
+	if (list > 0 && list < 10000 && BuildingInfo[list-1].GetNeverReady() == TRUE)
+	{
+		// dann zählen die industriellen Baukosten des Auftrags als Anzahl Runden, wie lange
+		// es in der Liste stehen bleibt und den Bonus gibt
+		// Also wird immer nur ein IP abgezogen, außer wenn die Moral größer gleich 80 ist,
+		// dann wird der Auftrag gleich abgebrochen
+		if (m_iMoral >= 85)
+			IPProd = static_cast<int>(m_AssemblyList.GetNeededIndustryForBuild());
+		else
+			IPProd = 1;
+	}
+	// Wenn ein Update in der Liste ist die mögliche UpdateBuildSpeed-Boni beachten
+	else if (list < 0)
+		IPProd = (int)floor((float)IPProd * (100 + m_Production.GetUpdateBuildSpeed()) / 100);
+	// Wenn ein Gebäude in der Liste ist die mögliche BuildingBuildSpeed-Boni beachten
+	else if (list < 10000)
+		IPProd = (int)floor((float)IPProd * (100 + m_Production.GetBuildingBuildSpeed()) / 100);
+	// Wenn es ein Schiff ist, dann die Effiziens der Werft und möglichen ShipBuildSpeed-Boni beachten
+	else if (list < 20000)
+		IPProd = (int)floor((float)IPProd * m_Production.GetShipYardEfficiency() / 100
+					* (100 + m_Production.GetShipBuildSpeed()) / 100);
+	// Wenn es eine Truppe ist, dann Effizienz der Werft und möglichen TroopBuildSpeed-Boni beachten
+	else
+		IPProd = (int)floor((float)IPProd * m_Production.GetBarrackEfficiency() / 100
+					* (100 + m_Production.GetTroopBuildSpeed()) / 100);
+
+	return IPProd;
+}
+
+//////////////////////////////////////////////////////////////////////
+// trade routes, resource routes
+//////////////////////////////////////////////////////////////////////
+
+// Funktion überprüft, ob wie aufgrund der Bevölkerung hier im System überhaupt (noch) eine Handelsroute
+// anlegen können
+BOOLEAN CSystem::CanAddTradeRoute(CResearchInfo* researchInfo)  const
+{
+	// aller 20Mrd. Bevölkerung bekommt man eine neue Handelsroute
+	USHORT currentTradeRoutes = m_TradeRoutes.GetSize();
+	short addResRoute = 1;
+	USHORT maxTradeRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes();
+	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
+	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> eine Ressourcenroute mehr
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+		addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(3);
+	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
+	// Bei dieser Spezialforschung gibt es womöglich auch eine Ressourcenroute mehr
+	// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+	{
+		if (maxTradeRoutes == NULL)
+		{
+			addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
+			maxTradeRoutes += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
+		}
+	}
+	if (m_ResourceRoutes.GetSize() > addResRoute)
+		currentTradeRoutes += m_ResourceRoutes.GetSize() - addResRoute;
+	return (currentTradeRoutes < maxTradeRoutes);
+}
+
+// Funktion generiert eine neue Handelsroute. Wenn die Funktion <code>TRUE</code> zurückgibt, dann konnte die
+// Handelsroute erfolgreich angelegt werden. Als Parameter wird dabei die Koordinate <code>dest</code>des
+// Zielsektors übergeben sowie ein Zeiger auf alle Systeme <code>systems</code> auf der Map..
+BOOLEAN CSystem::AddTradeRoute(CPoint dest, std::vector<CSystem>& systems, CResearchInfo* researchInfo)
+{
+	BOOLEAN canAddTradeRoute = CanAddTradeRoute(researchInfo);
+	// als erstes überprüfen, das noch keine Handelsroute aus einem System, welches den gleichen Besitzer wie
+	// dieses System hat, zu diesem Ziel führt. Man kann immer nur eine Handelsroute zu einem bestimmten
+	// System haben.
+	if (canAddTradeRoute)
+		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+				if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == this->GetOwnerOfSystem())
+					if (&systems.at(x+(y)*STARMAP_SECTORS_HCOUNT) != this)
+						for (int i = 0; i < systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize(); i++)
+							if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetAt(i).GetDestKO() == dest)
+								return FALSE;
+
+	// nachschauen, das nicht schon eine Handelsroute mit dem Ziel vorhanden ist, wenn dies der Fall ist, dann wird
+	// diese Handelsroute gelöscht
+	for (int i = 0; i < m_TradeRoutes.GetSize(); i++)
+		if (m_TradeRoutes.GetAt(i).GetDestKO() == dest)
+		{
+			// Wenn wir eine Route aufheben wollen, so die Dauer der Handelsroute negativ setzen. Wenn die Handelsroute
+			// eh nur noch weniger als 5 Runden dauert, dann wird die Kündigungsdauer auf diese kürzere Zeit eingestellt.
+			if (m_TradeRoutes.GetAt(i).GetDuration() > 0)
+			{
+				// weniger als 5 Runden
+				if (m_TradeRoutes.GetAt(i).GetDuration() < 5)
+					m_TradeRoutes.ElementAt(i).SetDuration(m_TradeRoutes.GetAt(i).GetDuration()-6);
+				// ansonsten normal einstellen
+				else
+					m_TradeRoutes.ElementAt(i).SetDuration(-1);
+				return TRUE;
+			}
+			else
+				return FALSE;
+		}
+
+	if (canAddTradeRoute)
+	{
+		CTradeRoute route;
+		route.GenerateTradeRoute(dest);
+		m_TradeRoutes.Add(route);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+// Funktion gibt das gesamte Credits zurück, was alle Handelsrouten aus diesem System generiert haben.
+USHORT CSystem::CreditsFromTradeRoutes() const
+{
+	USHORT credits = 0;
+	for (int i = 0; i < m_TradeRoutes.GetSize(); i++)
+		credits += m_TradeRoutes.GetAt(i).GetCredits(this->m_Production.GetIncomeOnTradeRoutes());
+	return credits;
+}
+
+// Funkt überprüft alle Handelsrouten in dem System, ob sie Aufgrund der Bevölkerung oder der Gebäude noch
+// da sein können. Wurden Handelsrouten gelöscht, so gibt die Funktion die Anzahl der Löschungen zurück
+BYTE CSystem::CheckTradeRoutes(CResearchInfo* researchInfo)
+{
+	BYTE number = 0;
+	// Dauer der Handelsrouten überprüfen. Wenn eine negative Dauer von -5 erreicht wurde, so wird die Handelsroute
+	// gelöscht, wenn eine positive Dauer von 1 erreicht wurde, so verlängert sich die Dauer wieder auf 20 Runden.
+	// Bei allen anderen Fällen wird um eins dekrementiert.
+	for (int i = 0; i < m_TradeRoutes.GetSize(); i++)
+	{
+		// Wenn das System blockiert wird, dann produziert die Handelsroute kein Credits
+		if (GetBlockade() > NULL)
+			m_TradeRoutes.GetAt(i).SetCredits(0);
+		if (m_TradeRoutes.GetAt(i).GetDuration() <= -5)
+		{
+			m_TradeRoutes.RemoveAt(i--);
+			number++;
+		}
+		else if (m_TradeRoutes.GetAt(i).GetDuration() == 1)
+			m_TradeRoutes.ElementAt(i).SetDuration(20);
+		else
+			m_TradeRoutes.ElementAt(i).SetDuration(m_TradeRoutes.GetAt(i).GetDuration()-1);
+	}
+
+	// Hier Bevölkerungs und Gebäudecheck durchführen
+	USHORT currentTradeRoutes = m_TradeRoutes.GetSize();
+	short addResRoute = 1;
+	USHORT maxTradeRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes();
+	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
+	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> eine Ressourcenroute mehr
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+		addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(3);
+	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
+	// Bei dieser Spezialforschung gibt es womöglich auch eine Ressourcenroute mehr
+	// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+	{
+		if (maxTradeRoutes == NULL)
+		{
+			addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
+			maxTradeRoutes += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
+		}
+	}
+	if (m_ResourceRoutes.GetSize() > addResRoute)
+		currentTradeRoutes += m_ResourceRoutes.GetSize() - addResRoute;
+	while (currentTradeRoutes > maxTradeRoutes)
+	{
+		if (m_TradeRoutes.GetSize() > 0)
+		{
+			m_TradeRoutes.RemoveAt(m_TradeRoutes.GetUpperBound());
+			number++;
+			currentTradeRoutes--;
+		}
+		else
+			break;
+	}
+	return number;
+}
+
+unsigned CSystem::CheckTradeRoutesDiplomacy(CBotEDoc& pDoc) {
+	unsigned deletedTradeRoutes = 0;
+	for (int i = 0; i < m_TradeRoutes.GetSize(); i++)
+	{
+		CTradeRoute& trade_route = m_TradeRoutes.GetAt(i);
+		const CPoint& dest = trade_route.GetDestKO();
+		// Wenn die Handelsroute aus diplomatischen Gründen nicht mehr vorhanden sein kann
+		if (!trade_route.CheckTradeRoute(m_KO, dest, &pDoc))
+		{
+			// dann müssen wir diese Route löschen
+			m_TradeRoutes.RemoveAt(i--);
+			deletedTradeRoutes++;
+		}
+		// Ansonsten könnte sich die Beziehung zu der Minorrace verbessern
+		else
+			trade_route.PerhapsChangeRelationship(m_KO, dest, &pDoc);
+	}
+	return deletedTradeRoutes;
+}
+
+//////////////////////////////////////////////////////////////////////
+// resource routes
+//////////////////////////////////////////////////////////////////////
+
+// Funktion generiert eine neue Ressourcenroute. Wenn die Funktion <code>TRUE</code> zurückgibt, dann konnte die
+// Ressourcenroute erfolgreich angelegt werden. Als Parameter wird dabei die Koordinate <code>dest</code> des
+// Zielsektors übergeben sowie die Art der betroffenen Ressource <code>res</code> und einen Zeiger auf alle
+// Systeme <code>systems</code> auf der Map.
+BOOLEAN CSystem::AddResourceRoute(CPoint dest, BYTE res, const std::vector<CSystem>& systems, CResearchInfo* researchInfo)
+{
+	// Es gibt immer mindst. eine Ressourcenroute pro System. Insgesamt stehen "Anzahl Handelsrouten + 1" Ressourcen-
+	// routen zur Vrefügung.
+	short addResRoute = 1;
+	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
+	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> eine Ressourcenroute mehr
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+		addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(3);
+	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
+	// Bei dieser Spezialforschung gibt es womöglich auch eine Ressourcenroute mehr
+	// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+	{
+		USHORT maxTradeRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes();
+		if (maxTradeRoutes == NULL)
+			addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
+	}
+
+	USHORT maxResourceRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes() + addResRoute;
+
+	if (systems.at(dest.x+(dest.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != this->GetOwnerOfSystem())
+		return FALSE;
+	if (systems.at(dest.x+(dest.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() == 0.0f || this->GetHabitants() == 0.0f)
+		return FALSE;
+	if (maxResourceRoutes <= m_ResourceRoutes.GetSize() + m_TradeRoutes.GetSize())
+		return FALSE;
+	// gibt es schon eine Route mit dem Rohstoff ins Zielsystem?
+	for (int i = 0; i < m_ResourceRoutes.GetSize(); i++)
+		if (m_ResourceRoutes.GetAt(i).GetResource() == res && m_ResourceRoutes.GetAt(i).GetKO() == dest)
+			return FALSE;
+
+	CResourceRoute route;
+	route.GenerateResourceRoute(dest, res);
+	m_ResourceRoutes.Add(route);
+	return TRUE;
+}
+
+// Funktion überprüft alle Ressourcenrouten in dem System, ob sie Aufgrund der Bevölkerung oder der Gebäude noch
+// da sein dürfen. Wurden Ressourcenrouten gelöscht, so gibt die Funktion die Anzahl der Löschungen zurück.
+BYTE CSystem::CheckResourceRoutes(CResearchInfo* researchInfo)
+{
+	// Es gibt immer mindst. eine Ressourcenroute pro System. Insgesamt stehen "Anzahl Handelsrouten + 1" Ressourcen-
+	// routen zur Vrefügung.
+	short addResRoute = 1;
+	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
+	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> eine Ressourcenroute mehr
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+		addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(3);
+	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
+	// Bei dieser Spezialforschung gibt es womöglich auch eine Ressourcenroute mehr
+	// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+	{
+		USHORT maxTradeRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes();
+		if (maxTradeRoutes == NULL)
+			addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
+	}
+
+	USHORT maxResourceRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes() + addResRoute;
+	USHORT currentResourceRoutes = m_ResourceRoutes.GetSize() + m_TradeRoutes.GetSize();
+	BYTE number = 0;
+	while (currentResourceRoutes > maxResourceRoutes)
+	{
+		if (m_ResourceRoutes.GetSize() > 0)
+		{
+			m_ResourceRoutes.RemoveAt(m_ResourceRoutes.GetUpperBound());
+			number++;
+			currentResourceRoutes--;
+		}
+		else
+			break;
+	}
+	return number;
+}
+
+unsigned CSystem::CheckResourceRoutesExistence(CBotEDoc& pDoc) {
+	unsigned deletedResourceRoutes = 0;
+	// checken ob das System noch der Rasse gehört, welcher auch das Startsystem der Route gehört
+	for (int i = 0; i < m_ResourceRoutes.GetSize(); i++)
+	{
+		CResourceRoute& res_route = m_ResourceRoutes.GetAt(i);
+		const CPoint dest = res_route.GetKO();
+
+		if (!res_route.CheckResourceRoute(m_sOwnerOfSystem, &pDoc.GetSector(dest.x, dest.y)))
+		{
+			m_ResourceRoutes.RemoveAt(i--);
+			deletedResourceRoutes++;
+		}
+	}
+	return deletedResourceRoutes;
+}
+
+//////////////////////////////////////////////////////////////////////
+// troops
+//////////////////////////////////////////////////////////////////////
+
+// Diese Funktion berechnet die baubaren Truppen in diesem System
+void CSystem::CalculateBuildableTroops(const CArray<CTroopInfo>* troopInfos, const CResearch *research)
+{
+	m_BuildableTroops.RemoveAll();
+	m_BuildableTroops.FreeExtra();
+	// Hier jetzt schauen ob wir eine Kaserne haben
+	if (m_Production.GetBarrack())
+		for (int i = 0; i < troopInfos->GetSize(); i++)
+			if (troopInfos->GetAt(i).GetOwner() == m_sOwnerOfSystem)
+			{
+				BOOLEAN buildable = TRUE;
+				// zuerstmal die Forschungsstufen checken
+				if (research->GetBioTech() < troopInfos->GetAt(i).GetNeededTechlevel(0))
+					buildable = FALSE;
+				else if (research->GetEnergyTech() < troopInfos->GetAt(i).GetNeededTechlevel(1))
+					buildable = FALSE;
+				else if (research->GetCompTech() < troopInfos->GetAt(i).GetNeededTechlevel(2))
+					buildable = FALSE;
+				else if (research->GetPropulsionTech() < troopInfos->GetAt(i).GetNeededTechlevel(3))
+					buildable = FALSE;
+				else if (research->GetConstructionTech() < troopInfos->GetAt(i).GetNeededTechlevel(4))
+					buildable = FALSE;
+				else if (research->GetWeaponTech() < troopInfos->GetAt(i).GetNeededTechlevel(5))
+					buildable = FALSE;
+				if (buildable == TRUE)
+					m_BuildableTroops.Add(troopInfos->GetAt(i).GetID());
+			}
+}
+
+// Wenn in diesem System Truppen stationiert sind, dann wird deren Moralwert mit einbezogen.
+// Ist die Moral im System unter 100, so wird der Moralwert der Einheit dazuaddiert, wenn er über 100 ist, dann wird
+// der Moralwert abgezogen.
+void CSystem::IncludeTroopMoralValue(CArray<CTroopInfo>* troopInfo)
+{
+	if (m_Troops.GetSize() > 0 && m_iMoral != 100)
+		for (int i = 0; i < m_Troops.GetSize(); i++)
+		{
+			BYTE id = m_Troops.GetAt(i).GetID();
+			// Wenn die Systemmoral kleiner als 100 ist, dann wird der Moralwert der Truppe dazuaddiert
+			if (m_iMoral < 100)
+			{
+				m_iMoral += troopInfo->GetAt(id).GetMoralValue();
+				if (m_iMoral > 100)
+					m_iMoral = 100;
+			}
+			// Wenn die Systemmoral größer als 100 ist, dann wird der Moralwert der Truppe abgezogen
+			else if (m_iMoral > 100)
+			{
+				m_iMoral -= troopInfo->GetAt(id).GetMoralValue();
+				if (m_iMoral < 100)
+					m_iMoral = 100;
+			}
+		}
+}
+
 void CSystem::TrainTroops()
 {
 	const int xp = m_Production.GetTroopTraining();
@@ -3118,99 +3238,28 @@ void CSystem::TrainTroops()
 		m_Troops.GetAt(i).AddExperiancePoints(xp);
 }
 
-bool CSystem::SanityCheckWorkersInRange(WORKER::Typ type) const
+//////////////////////////////////////////////////////////////////////
+// other functions
+//////////////////////////////////////////////////////////////////////
+
+static void ManagerMessage(const CString& text, CMajor& owner, const CPoint& p)
 {
-	const int workers = m_Workers.GetWorker(type);
-	return 0 <= workers && workers <= GetNumberOfWorkbuildings(type, 0);
+	CEmpireNews message;
+	message.CreateNews(text,EMPIRE_NEWS_TYPE::ECONOMY,"",p);
+	owner.GetEmpire()->AddMsg(message);
 }
 
-UINT CSystem::GetDeritiumStoreMax() const
+void CSystem::ExecuteManager(CMajor& owner, bool turn_change, bool energy)
 {
-	short multi = 1;
-	const CMajor* major = dynamic_cast<CMajor*>(resources::pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
-	const CResearchInfo* info = major->GetEmpire()->GetResearch()->GetResearchInfo();
-	if (info->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->
-		GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
-		multi = info->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(1);
-	return MAX_DERITIUM_STORE * multi;
-}
+	if(!m_Manager.Active() || !owner.IsHumanPlayer())
+		return;
 
-bool CSystem::CanTakeOnline(const CBuildingInfo& info) const
-{
-	if(m_Manager.Active())
-		return info.GetNeededEnergy() <= m_Production.GetAvailableEnergy();
-	return m_Production.m_iEnergyProd >= info.GetNeededEnergy();
-}
+	const CString& name = GetName();
 
-void CSystem::Colonize(const CShips& ship, CMajor& major)
-{
-	const CString shipowner = ship.GetOwnerOfShip();
-	CEmpire* empire = major.GetEmpire();
-	// Gebäude bauen, wenn wir das System zum ersten Mal kolonisieren,
-	// sprich das System noch niemanden gehört
-	if (GetOwnerOfSystem().IsEmpty())
-	{
-		// Sector- und Systemwerte ändern
-		SetOwned(TRUE);
-		m_sOwnerOfSector = shipowner;
-		m_sColonyOwner = shipowner;
-		SetOwnerOfSystem(shipowner);
-		// Gebäude nach einer Kolonisierung bauen
-		BuildBuildingsAfterColonization(resources::BuildingInfo,ship.GetColonizePoints());
-		// Nachricht an das Imperium senden, das ein System neu kolonisiert wurde
-		CString s = CLoc::GetString("FOUND_COLONY_MESSAGE",FALSE,GetName());
-		CEmpireNews message;
-		message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,GetName(),m_KO);
-		empire->AddMsg(message);
-
-		// zusätzliche Eventnachricht (Colonize a system #12) wegen der Moral an das Imperium
-		message.CreateNews(major.GetMoralObserver()->AddEvent(12, major.GetRaceMoralNumber(), GetName()), EMPIRE_NEWS_TYPE::SOMETHING, "", m_KO);
-		empire->AddMsg(message);
-		if (major.IsHumanPlayer())
-		{
-			resources::pClientWorker->AddSoundMessage(SNDMGR_MSG_CLAIMSYSTEM, major , 0);
-			resources::pClientWorker->SetToEmpireViewFor(major);
-			CEventColonization* eventScreen = new CEventColonization(major.GetRaceID(), CLoc::GetString("COLOEVENT_HEADLINE", FALSE, GetName()), CLoc::GetString("COLOEVENT_TEXT_" + major.GetRaceID(), FALSE, GetName()));
-			empire->GetEvents()->Add(eventScreen);
-			s.Format("Added Colonization-Eventscreen for Race %s in System %s", major.GetRaceName(), GetName());
-			MYTRACE("general")(MT::LEVEL_INFO, s);
-		}
-	}
-	else
-	{
-		// Nachricht an das Imperium senden, das ein Planet kolonisiert wurde
-		CString s = CLoc::GetString("NEW_PLANET_COLONIZED",FALSE,GetName());
-		CEmpireNews message;
-		message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,GetName(),m_KO);
-		empire->AddMsg(message);
-		resources::pClientWorker->SetToEmpireViewFor(major);
-	}
-	SetHabitants(GetCurrentHabitants());
-
-	CalculateNumberOfWorkbuildings(resources::BuildingInfo);
-	CalculateVariables();
-}
-
-int CSystem::GetXBuildings(WORKER::Typ x) const
-{
-	switch(x)
-	{
-		case WORKER::FOOD_WORKER: return m_iFoodBuildings;
-		case WORKER::INDUSTRY_WORKER: return m_iIndustryBuildings;
-		case WORKER::ENERGY_WORKER: return m_iEnergyBuildings;
-		case WORKER::SECURITY_WORKER: return m_iSecurityBuildings;
-		case WORKER::RESEARCH_WORKER: return m_iResearchBuildings;
-		case WORKER::TITAN_WORKER: return m_iTitanMines;
-		case WORKER::DEUTERIUM_WORKER: return m_iDeuteriumMines;
-		case WORKER::DURANIUM_WORKER: return m_iDuraniumMines;
-		case WORKER::CRYSTAL_WORKER: return m_iCrystalMines;
-		case WORKER::IRIDIUM_WORKER: return m_iIridiumMines;
-	}
-	assert(false);
-	return 0;
-}
-
-bool CSystem::HasWorkerBuilding(WORKER::Typ type) const
-{
-	return GetXBuildings(type) > 0;
+	if(energy && m_Manager.CheckEnergyConsumers(*this, m_KO) && turn_change)
+		ManagerMessage(CLoc::GetString("MANAGER_BOMB_WARNING",false, name), owner, m_KO);
+	if(!m_Manager.DistributeWorkers(*this, m_KO))
+		ManagerMessage(CLoc::GetString("MANAGER_MALFUNCTION",false, name), owner, m_KO);
+	if(turn_change && m_Manager.CheckFamine(*this))
+		ManagerMessage(CLoc::GetString("MANAGER_FAMINE_WARNING",false, name), owner, m_KO);
 }
