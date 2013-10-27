@@ -1,12 +1,13 @@
-// System.cpp: Implementierung der Klasse CSystem.
-//
-//////////////////////////////////////////////////////////////////////
+/*
+ *@file
+ * properties of a map location with a sun system and with buildings
+ */
+
 
 #include "stdafx.h"
 #include "System.h"
-#include "BotE.h"
 #include "BotEDoc.h"
-#include "Races\RaceController.h"
+#include "Races/RaceController.h"
 #include "General/Loc.h"
 #include "Ships/ships.h"
 #include "ClientWorker.h"
@@ -24,13 +25,13 @@ static char THIS_FILE[]=__FILE__;
 CSystem::CSystem() :
 	CSector()
 {
-	ResetSystem();
+	ResetSystem(false);
 }
 
 CSystem::CSystem(int x, int y) :
 	CSector(x, y)
 {
-	ResetSystem();
+	ResetSystem(false);
 }
 
 CSystem::CSystem(const CSystem &other) :
@@ -77,7 +78,7 @@ CSystem::CSystem(const CSystem &other) :
 
 CSystem::~CSystem()
 {
-	ResetSystem();
+	ResetSystem(false);
 }
 
 CSystem& CSystem::operator=(const CSystem& other)
@@ -124,9 +125,10 @@ CSystem& CSystem::operator=(const CSystem& other)
 };
 
 // Funktion setzt alle Werte wieder zurück auf standard.
-void CSystem::ResetSystem()
+void CSystem::ResetSystem(bool call_up)
 {
-	CSector::Reset();
+	if(call_up)
+		CSector::Reset(call_up);
 
 	m_sOwnerOfSystem = "";			// Der Besitzer des Systems
 	m_dHabitants = 0.0f;			// Einwohner in dem System

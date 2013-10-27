@@ -1,18 +1,18 @@
-// Sector.cpp: Implementierung der Klasse CSector.
-//
-//////////////////////////////////////////////////////////////////////
+/*
+ *@file
+ * properties of a map location with a sun system (but not neccessarily any buildings)
+ * The central elements of this class are the planets and the functions doing something with them.
+ */
 
 #include "stdafx.h"
 #include "Sector.h"
 #include "IOData.h"
 #include "GenSectorName.h"
-#include "FontLoader.h"
 #include "BotEDoc.h"
-#include "Races\RaceController.h"
-#include "Anomaly.h"
 #include "General/Loc.h"
 #include "Ships/ships.h"
 #include "ClientWorker.h"
+#include "Races/Major.h"
 
 #include <cassert>
 
@@ -26,74 +26,37 @@ static char THIS_FILE[]=__FILE__;
 // construction/destruction
 //////////////////////////////////////////////////////////////////////
 CSector::CSector(void) :
-	m_KO(-1, -1),
-	m_Attributes(0),
+	CMapTile(),
+	m_Planets(),
+	m_sColonyOwner(),
 	m_bySunColor(0)
 {
-	m_pAnomaly = NULL;
-	Reset();
+	Reset(false);
 }
 
 CSector::CSector(int x, int y) :
-	m_KO(x, y),
-	m_Attributes(0),
-	m_bySunColor(0),
-	m_pAnomaly(NULL)
+	CMapTile(x, y),
+	m_Planets(),
+	m_sColonyOwner(),
+	m_bySunColor(0)
 {
-	Reset();
+	Reset(false);
 }
 
 CSector::CSector(const CSector& other) :
-	m_KO(other.m_KO),
+	CMapTile(other),
 	m_Planets(other.m_Planets),
-	m_sOwnerOfSector(other.m_sOwnerOfSector),
 	m_sColonyOwner(other.m_sColonyOwner),
-	m_strSectorName(other.m_strSectorName),
-	m_Attributes(other.m_Attributes),
-	m_Status(other.m_Status),
-	m_bShipPort(other.m_bShipPort),
-	m_Outpost(other.m_Outpost),
-	m_Starbase(other.m_Starbase),
-	m_bWhoIsOwnerOfShip(other.m_bWhoIsOwnerOfShip),
-	m_mNumbersOfShips(other.m_mNumbersOfShips),
-	m_IsStationBuild(other.m_IsStationBuild),
-	m_iScanPower(other.m_iScanPower),
-	m_iNeededScanPower(other.m_iNeededScanPower),
-	m_iNeededStationPoints(other.m_iNeededStationPoints),
-	m_iStartStationPoints(other.m_iStartStationPoints),
-	m_bySunColor(other.m_bySunColor),
-	m_byOwnerPoints(other.m_byOwnerPoints)
+	m_bySunColor(other.m_bySunColor)
 {
-	m_pAnomaly=NULL;
-	if(other.GetAnomaly())
-		m_pAnomaly = new CAnomaly(*other.m_pAnomaly);
 };
 
 CSector& CSector::operator=(const CSector& other){
 	if(this != &other )
 	{
-		m_KO = other.m_KO;
-		m_strSectorName = other.m_strSectorName;
-		m_Attributes = other.m_Attributes;
-		m_sOwnerOfSector = other.m_sOwnerOfSector;
-		m_sColonyOwner = other.m_sColonyOwner;
-		m_Status = other.m_Status;
-		m_bShipPort = other.m_bShipPort;
-		m_Outpost = other.m_Outpost;
-		m_Starbase = other.m_Starbase;
-		m_bWhoIsOwnerOfShip = other.m_bWhoIsOwnerOfShip;
-		m_mNumbersOfShips = other.m_mNumbersOfShips;
-		m_IsStationBuild = other.m_IsStationBuild;
-		m_iScanPower = other.m_iScanPower;
-		m_iNeededScanPower = other.m_iNeededScanPower;
-		m_iNeededStationPoints = other.m_iNeededStationPoints;
-		m_iStartStationPoints = other.m_iStartStationPoints;
-		m_bySunColor = other.m_bySunColor;
-		m_byOwnerPoints = other.m_byOwnerPoints;
 		m_Planets = other.m_Planets;
-		m_pAnomaly=NULL;
-		if(other.GetAnomaly())
-			m_pAnomaly = new CAnomaly(*other.m_pAnomaly);
+		m_sColonyOwner = other.m_sColonyOwner;
+		m_bySunColor = other.m_bySunColor;
 	}
 
 	return *this;
@@ -101,35 +64,19 @@ CSector& CSector::operator=(const CSector& other){
 
 CSector::~CSector(void)
 {
-	Reset();
+	Reset(false);
 }
 
 /// Resetfunktion für die Klasse CSector
-void CSector::Reset()
+void CSector::Reset(bool call_up)
 {
-	m_Attributes = 0;
+	if(call_up)
+		CMapTile::Reset();
 
-	// Maps löschen
-	m_Status.clear();
-	m_iScanPower.clear();
-	m_iNeededScanPower.clear();
-	m_bShipPort.clear();
-	m_bWhoIsOwnerOfShip.clear();
-	m_mNumbersOfShips.clear();
-	m_Outpost.Empty();
-	m_Starbase.Empty();
-	m_IsStationBuild.clear();
-	m_iStartStationPoints.clear();
-	m_iNeededStationPoints.clear();
-	m_byOwnerPoints.clear();
-
-	m_sOwnerOfSector = "";
 	m_sColonyOwner = "";
-	m_strSectorName = "";
 	m_Planets.clear();
 
-	delete m_pAnomaly;
-	m_pAnomaly = NULL;
+	ClearAllPoints(false);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -137,187 +84,28 @@ void CSector::Reset()
 //////////////////////////////////////////////////////////////////////
 void CSector::Serialize(CArchive &ar)
 {
+	CMapTile::Serialize(ar);
 	// Wird geschrieben?
 	if (ar.IsStoring())
 	// Alle Variablen in der richtigen Reihenfolge schreiben
 	{
-		ar << m_Attributes;
-		ar << m_KO;
-
-		// alle Maps speichern
-		ar << m_Status.size();
-		for (map<CString, DISCOVER_STATUS>::const_iterator it = m_Status.begin(); it != m_Status.end(); ++it)
-			ar << it->first << static_cast<BYTE>(it->second);
-		ar << m_bShipPort.size();
-		for (set<CString>::const_iterator it = m_bShipPort.begin(); it != m_bShipPort.end(); ++it)
-			ar << *it;
-		ar << m_Outpost;
-		ar << m_Starbase;
-		ar << m_IsStationBuild.size();
-		for (std::map<CString, SHIP_ORDER::Typ>::const_iterator it = m_IsStationBuild.begin();
-				it != m_IsStationBuild.end(); ++it)
-			ar << it->first << static_cast<unsigned>(it->second);
-		ar << m_bWhoIsOwnerOfShip.size();
-		for (set<CString>::const_iterator it = m_bWhoIsOwnerOfShip.begin(); it != m_bWhoIsOwnerOfShip.end(); ++it)
-			ar << *it;
-		ar << m_mNumbersOfShips.size();
-		for(std::map<CString, unsigned>::const_iterator it = m_mNumbersOfShips.begin(); it != m_mNumbersOfShips.end(); ++it)
-			ar << it->first << it->second;
-		ar << m_iNeededStationPoints.size();
-		for (map<CString, short>::const_iterator it = m_iNeededStationPoints.begin(); it != m_iNeededStationPoints.end(); ++it)
-			ar << it->first << it->second;
-		ar << m_iStartStationPoints.size();
-		for (map<CString, short>::const_iterator it = m_iStartStationPoints.begin(); it != m_iStartStationPoints.end(); ++it)
-			ar << it->first << it->second;
-		ar << m_iScanPower.size();
-		for (map<CString, short>::const_iterator it = m_iScanPower.begin(); it != m_iScanPower.end(); ++it)
-			ar << it->first << it->second;
-		ar << m_iNeededScanPower.size();
-		for (map<CString, short>::const_iterator it = m_iNeededScanPower.begin(); it != m_iNeededScanPower.end(); ++it)
-			ar << it->first << it->second;
-		ar << m_byOwnerPoints.size();
-		for (map<CString, BYTE>::const_iterator it = m_byOwnerPoints.begin(); it != m_byOwnerPoints.end(); ++it)
-			ar << it->first << it->second;
-
 		ar << m_sColonyOwner;
-		ar << m_sOwnerOfSector;
-
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen gespeichert werden
 		if (GetSunSystem())
 		{
-			ar << m_strSectorName;
 			ar << m_bySunColor;
 			ar << m_Planets.size();
-			for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
-				m_Planets.at(i).Serialize(ar);
+			for(iterator it = begin(); it != end(); ++it)
+				it->Serialize(ar);
 		}
-
-		ar << m_pAnomaly;
 	}
 	else
 	// Alle Variablen in der richtigen Reihenfolge lesen
 	{
-		ar >> m_Attributes;
-		ar >> m_KO;
-
-		// Maps laden
-		m_Status.clear();
-		size_t mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			BYTE value;
-			ar >> key;
-			ar >> value;
-			m_Status[key] = static_cast<DISCOVER_STATUS>(value);
-		}
-		m_bShipPort.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString value;
-			ar >> value;
-			m_bShipPort.insert(value);
-		}
-		m_Outpost.Empty();
-		ar >> m_Outpost;
-		m_Starbase.Empty();
-		ar >> m_Starbase;
-		m_IsStationBuild.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			ar >> key;
-			unsigned value;
-			ar >> value;
-			m_IsStationBuild.insert(std::pair<CString, SHIP_ORDER::Typ>(key, static_cast<SHIP_ORDER::Typ>(value)));
-		}
-		m_bWhoIsOwnerOfShip.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString value;
-			ar >> value;
-			m_bWhoIsOwnerOfShip.insert(value);
-		}
-		m_mNumbersOfShips.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for(unsigned i = 0; i < mapSize; ++i)
-		{
-			CString key;
-			ar >> key;
-			unsigned value;
-			ar >> value;
-			m_mNumbersOfShips.insert(std::pair<CString, unsigned>(key, value));
-		}
-		m_iNeededStationPoints.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			short value;
-			ar >> key;
-			ar >> value;
-			m_iNeededStationPoints[key] = value;
-		}
-		m_iStartStationPoints.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			short value;
-			ar >> key;
-			ar >> value;
-			m_iStartStationPoints[key] = value;
-		}
-		m_iScanPower.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			short value;
-			ar >> key;
-			ar >> value;
-			m_iScanPower[key] = value;
-		}
-		m_iNeededScanPower.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			short value;
-			ar >> key;
-			ar >> value;
-			m_iNeededScanPower[key] = value;
-		}
-		m_byOwnerPoints.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			BYTE value;
-			ar >> key;
-			ar >> value;
-			m_byOwnerPoints[key] = value;
-		}
-
 		ar >> m_sColonyOwner;
-		ar >> m_sOwnerOfSector;
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen geladen werden
 		if (GetSunSystem())
 		{
-			ar >> m_strSectorName;
 			ar >> m_bySunColor;
 			int number = 0;
 			ar >> number;
@@ -328,19 +116,8 @@ void CSector::Serialize(CArchive &ar)
 		}
 		else
 		{
-			m_strSectorName = "";
 			m_bySunColor = 0;
 			m_Planets.clear();
-		}
-
-		if (VERSION >= 0.72)
-		{
-			if (m_pAnomaly)
-			{
-				delete m_pAnomaly;
-				m_pAnomaly = NULL;
-			}
-			ar >> m_pAnomaly;
 		}
 	}
 }
@@ -371,48 +148,6 @@ CSector::iterator CSector::end()
 // getting
 //////////////////////////////////////////////////////////////////////
 
-/// Funktion gibt den Namen des Sektors zurück. Wenn in ihm kein Sonnensystem ist, dann wird "" zurückgegeben.
-/// Wenn man aber den Parameter <code>longName<code> beim Aufruf der Funktion auf <code>TRUE<code> setzt, wird
-/// versucht ein genauerer Sektorname zu generieren.
-CString CSector::GetName(BOOLEAN longName) const
-{
-	if (!longName)
-		return m_strSectorName;
-	else
-	{
-		if (GetSunSystem())
-			return m_strSectorName;
-		else
-		{
-			CString s;
-			s.Format("%s %c%i", CLoc::GetString("SECTOR"), (char)(m_KO.y+97), m_KO.x + 1);
-			return s;
-		}
-	}
-}
-
-/// Diese Funktion gibt die Scanpower zurück, die die Majorrace <code>Race</code> in diesem Sektor hat.
-short CSector::GetScanPower(const CString& sRace, bool bWith_ships) const
-{
-	const CCommandLineParameters* const clp = resources::pClp;
-	if(clp->SeeAllOfMap())
-		return 200;
-
-	unsigned scan_power_due_to_ship_number = 0;
-	if(bWith_ships) {
-		const CBotEDoc* pDoc = resources::pDoc;
-		const CRaceController* pCtrl = pDoc->GetRaceCtrl();
-		const CRace* pRace = pCtrl->GetRace(sRace);
-		for(std::map<CString, unsigned>::const_iterator it = m_mNumbersOfShips.begin(); it != m_mNumbersOfShips.end(); ++ it) {
-			if(pRace->GetRaceID() == it->first || pRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
-				scan_power_due_to_ship_number += it->second;
-		}
-	}
-	map<CString, short>::const_iterator it = m_iScanPower.find(sRace);
-	if (it != m_iScanPower.end())
-		return it->second + scan_power_due_to_ship_number;
-	return scan_power_due_to_ship_number;
-}
 
 /// Funktion gibt alle Einwohner aller Planeten in dem Sektor zurück.
 float CSector::GetCurrentHabitants() const
@@ -446,135 +181,6 @@ void CSector::GetAvailableResources(BOOLEAN bResources[RESOURCES::DERITIUM + 1],
 }
 
 //////////////////////////////////////////////////////////////////////
-// setting
-//////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////
-// stations
-//////////////////////////////////////////////////////////////////////
-
-static bool StationBuildContinuable(const CString& race, const CSector& sector) {
-	const CString& owner = sector.GetOwnerOfSector();
-	return owner.IsEmpty() || owner == race || sector.GetIsStationBuilding(race);
-}
-
-bool CSector::IsStationBuildable(SHIP_ORDER::Typ order, const CString& race) const {
-	if(order == SHIP_ORDER::BUILD_OUTPOST && !GetIsStationInSector())
-		return StationBuildContinuable(race, *this);
-	if(order == SHIP_ORDER::BUILD_STARBASE && GetOutpost(race))
-		return StationBuildContinuable(race, *this);
-	if(order == SHIP_ORDER::UPGRADE_OUTPOST && GetOutpost(race) 
-		|| order == SHIP_ORDER::UPGRADE_STARBASE && GetStarbase(race)) {
-		const CBotEDoc* pDoc = resources::pDoc;
-		CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(race));
-		SHIP_TYPE::Typ type = (order == SHIP_ORDER::UPGRADE_OUTPOST) 
-			? SHIP_TYPE::OUTPOST : SHIP_TYPE::STARBASE;
-		USHORT bestbuildableID = pMajor->BestBuildableVariant(type, pDoc->m_ShipInfoArray);
-		USHORT industry = pDoc->m_ShipInfoArray.GetAt(bestbuildableID-10000).GetBaseIndustry();
-		for(CShipMap::const_iterator k = pDoc->m_ShipMap.begin(); k != pDoc->m_ShipMap.end(); ++k)
-			if (k->second->GetShipType() == type && k->second->GetKO() == m_KO) {
-				if (pDoc->m_ShipInfoArray.GetAt(k->second->GetID()-10000).GetBaseIndustry() 
-					< industry) {
-					return StationBuildContinuable(race, *this);
-				}
-				break;
-			}
-	}
-	return false;
-}
-
-void CSector::BuildStation(SHIP_TYPE::Typ station, const CString& race) {
-	if(station == SHIP_TYPE::OUTPOST)
-		m_Outpost = race;
-	else {
-		assert(station == SHIP_TYPE::STARBASE);
-		assert(m_Outpost == race || m_Starbase == race);
-		m_Outpost.Empty();
-		m_Starbase = race;
-	}
-	// Nur wenn der Sektor uns selbst gehört oder niemanden gehört und keine Minorrace darin lebt
-	if(m_sOwnerOfSector == race || (!GetOwned() && ! GetMinorRace())) {
-		SetOwned(TRUE);
-		m_sOwnerOfSector = race;
-	}
-	SetScanned(race);
-	SetShipPort(TRUE, race);
-
-	// Wenn eine Station fertig wurde für alle Rassen die Punkte wieder canceln
-	m_IsStationBuild.clear();
-	m_iStartStationPoints.clear();
-	m_iNeededStationPoints.clear();
-}
-
-//////////////////////////////////////////////////////////////////////
-// scanning
-//////////////////////////////////////////////////////////////////////
-
-void CSector::IncrementNumberOfShips(const CString& race) {
-	const std::map<CString, unsigned>::iterator found = m_mNumbersOfShips.find(race);
-	if(found == m_mNumbersOfShips.end()) {
-		m_mNumbersOfShips.insert(std::pair<CString, unsigned>(race, 1));
-		return;
-	}
-	++(found->second);
-}
-
-/// Funktion legt die Scanpower <code>scanpower</code>, welche die Majorrace <code>Race</code>
-/// in diesem Sektor hat, fest.
-void CSector::SetScanPower(short scanpower, const CString& Race)
-{
-	if (scanpower)
-		m_iScanPower[Race] = scanpower;
-	else
-		m_iScanPower.erase(Race);
-}
-
-void CSector::PutScannedSquare(unsigned range, const int power,
-		const CRace& race, bool bBetterScanner, bool patrolship, bool anomaly) {
-	const CString& race_id = race.GetRaceID();
-	float boni = 1.0f;
-	// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor befindet,
-	// dann wird die Scanleistung um 20% erhöht.
-	if(patrolship) {
-		if(race_id == m_sOwnerOfSector || race.GetAgreement(m_sOwnerOfSector) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
-			boni = 1.2f;
-	}
-	if(bBetterScanner) {
-		range *= 1.5;
-		boni += 0.5;
-	}
-	const int intrange = static_cast<int>(range);
-	for (int i = -intrange; i <= intrange; ++i) {
-		const int x = m_KO.x + i;
-		if(0 <= x && x < STARMAP_SECTORS_HCOUNT) {
-			for (int j = -intrange; j <= intrange; ++j) {
-				const int y = m_KO.y + j;
-				if(0 <= y && y < STARMAP_SECTORS_VCOUNT) {
-					CBotEDoc* pDoc = resources::pDoc;
-					CSector& scanned_sector = pDoc->GetSector(x, y);
-					// Teiler für die Scanstärke berechnen
-					int div = max(abs(i), abs(j));
-					if(anomaly)
-						div *= 2;
-					div = max(div, 1);
-					const int old_scan_power = scanned_sector.GetScanPower(race_id, false);
-					int new_scan_power = 0;
-					if(anomaly) {
-						new_scan_power = old_scan_power + power / div;
-					} else {
-						new_scan_power = (power * boni) / div;
-						new_scan_power = max(old_scan_power, new_scan_power);
-						if(race.IsMajor())
-							scanned_sector.SetScanned(race_id);
-					}
-					scanned_sector.SetScanPower(new_scan_power, race_id);
-				}//if(0 <= y && y < STARMAP_SECTORS_VCOUNT)
-			}//for (int j = -range; j <= range; ++j)
-		}//if(0 <= x && x < STARMAP_SECTORS_HCOUNT)
-	}//for (int i = -range; i <= range; ++i)
-}
-
-//////////////////////////////////////////////////////////////////////
 // planets
 //////////////////////////////////////////////////////////////////////
 
@@ -592,7 +198,7 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 		SetSunSystem(TRUE);
 		// Zahl[0,99] generieren und vergleichen (Minorrace?)
 		bool bMinor = rand()%100 >= (100 - minorProb);
-		m_strSectorName = CGenSectorName::GetInstance()->GetNextRandomSectorName(m_KO, bMinor);
+		SetSectorsName(CGenSectorName::GetInstance()->GetNextRandomSectorName(m_KO, bMinor));
 		// bMinor wird in der Generierungsfunktion angepasst, falls es keine Minorracesystemnamen mehr gibt
 		SetMinorRace(bMinor);
 
@@ -702,7 +308,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 						for (int i = 0; i < number; i++)
 						{
 							CPlanet planet;
-							zone = planet.Create(m_strSectorName, zone, i, true);
+							zone = planet.Create(GetName(FALSE), zone, i, true);
 							m_Planets.push_back(planet);
 						}
 
@@ -775,7 +381,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 			for (int i = 0; i < number; i++)
 			{
 				CPlanet planet;
-				zone = planet.Create(m_strSectorName, zone, i, GetMinorRace());
+				zone = planet.Create(GetName(FALSE), zone, i, GetMinorRace());
 				m_Planets.push_back(planet);
 
 				// nicht zu viele große Planeten generieren, da diese dann nicht mehr
@@ -1035,250 +641,22 @@ void CSector::SystemEventDemographic(CString& message, CMajor& major)
 }
 
 //////////////////////////////////////////////////////////////////////
-// drawing
-//////////////////////////////////////////////////////////////////////
-/// Diese Funktion zeichnet den Namen des Sektors.
-void CSector::DrawSectorsName(CDC *pDC, CBotEDoc* pDoc, CMajor* pPlayer)
-{
-	// befindet sich kein Sonnensystem oder keine Anomalie im Sektor
-	if (!GetSunSystem() && !GetAnomaly())
-		return;
-
-	ASSERT(pDC);
-	ASSERT(pDoc);
-	ASSERT(pPlayer);
-
-	// Ist Sektor bekannt dann zeichne den Systemnamen
-	if (this->GetKnown(pPlayer->GetRaceID()) == TRUE)
-	{
-		COLORREF clrTextColor = CFontLoader::GetFontColor(pPlayer, 0);
-		pDC->SetTextColor(clrTextColor);
-		CMajor* pOwner = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pDoc->GetSystem(m_KO.x, m_KO.y).GetOwnerOfSystem()));
-		if (pOwner)
-		{
-			if (pPlayer->IsRaceContacted(pOwner->GetRaceID()) == true || pPlayer->GetRaceID() == pOwner->GetRaceID())
-				pDC->SetTextColor(pOwner->GetDesign()->m_clrGalaxySectorText);
-		}
-		// Systemnamen zeichnen
-		if (m_pAnomaly == NULL)
-			pDC->DrawText(m_strSectorName, CRect(m_KO.x*STARMAP_SECTOR_WIDTH, m_KO.y*STARMAP_SECTOR_HEIGHT, m_KO.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH,m_KO.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT), DT_CENTER | DT_BOTTOM | DT_SINGLELINE);
-		else
-		{
-			//CRect(m_KO.x*STARMAP_SECTOR_WIDTH-50,m_KO.y*STARMAP_SECTOR_HEIGHT,m_KO.x*STARMAP_SECTOR_WIDTH+90,m_KO.y*STARMAP_SECTOR_HEIGHT+40)
-			pDC->DrawText(m_pAnomaly->GetMapName(m_KO), CRect(m_KO.x*STARMAP_SECTOR_WIDTH, m_KO.y*STARMAP_SECTOR_HEIGHT,m_KO.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH,m_KO.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT), DT_CENTER | DT_BOTTOM | DT_SINGLELINE | DT_WORD_ELLIPSIS);
-		}
-	}
-}
-
-bool CSector::ShouldDrawShip(const CMajor& our_race, const CString& their_race_id) const {
-	if(!GetOwnerOfShip(their_race_id))
-		return false;
-	const CString& our_id = our_race.GetRaceID();
-	if(our_id == their_race_id)
-		return true;
-	if(GetNeededScanPower(their_race_id) < GetScanPower(our_id))
-		return true;
-	return our_race.GetAgreement(their_race_id) >= DIPLOMATIC_AGREEMENT::AFFILIATION;
-}
-
-bool CSector::ShouldDrawOutpost(const CMajor& our_race, const CString& their_race_id) const {
-	if(!GetIsStationBuilding(their_race_id)
-		&& !GetOutpost(their_race_id)
-		&& !GetStarbase(their_race_id))
-		return false;
-	const CString& our_id = our_race.GetRaceID();
-	if(our_id == their_race_id)
-		return true;
-	if(GetScanPower(our_id) > 0)
-		return true;
-	return our_race.GetAgreement(their_race_id) >= DIPLOMATIC_AGREEMENT::AFFILIATION;
-}
-
-/// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
-void CSector::DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlayer) const
-{
-	ASSERT(g);
-	ASSERT(pDoc);
-	ASSERT(pPlayer);
-
-	// alle Rassen holen
-	map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
-	ASSERT(pmRaces);
-
-	CString sFilePath;
-	short nCount = 0;
-
-	CPoint pt;
-	pt.x = m_KO.x * STARMAP_SECTOR_WIDTH;
-	pt.y = m_KO.y * STARMAP_SECTOR_HEIGHT;
-
-	// durch alle Rassen iterieren und Schiffsymbole zeichnen
-	CString sAppPath = CIOData::GetInstance()->GetAppPath();
-	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
-	{
-		if (ShouldDrawShip(*pPlayer, it->first))
-		{
-			// handelt es sich um ein Alienschiff?
-			if (pPlayer != it->second && it->second->IsAlienRace())
-				sFilePath = sAppPath + "Graphics\\Symbols\\Entity.bop";
-			// ist der Besitzer des Schiffes unbekannt, dann Fragezeichen zeichnen
-			else if (pPlayer != it->second && pPlayer->IsRaceContacted(it->first) == false)
-				sFilePath = sAppPath + "Graphics\\Symbols\\Unknown.bop";
-			// sonst das Rassensymbol zeichnen
-			else
-				sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".bop";
-
-			Bitmap* ship = Bitmap::FromFile(CComBSTR(sFilePath));
-			// konnte die Grafik nicht geladen werden, dann wird ein Standardsymbol geladen
-			if (!ship || ship->GetLastStatus() != Ok)
-			{
-				sFilePath = sAppPath + "Graphics\\Symbols\\Default.bop";
-				ship = Bitmap::FromFile(CComBSTR(sFilePath));
-			}
-			g->DrawImage(ship, pt.x + 45 - nCount * 12, pt.y, 35, 35);
-			delete ship;
-			nCount++;
-		}
-
-		// Jetzt werden die Stationen wenn möglich gezeichnet
-		if (ShouldDrawOutpost(*pPlayer, it->first))
-		{
-			// kann keine Diplomatie aufgenommen werden, dann das Alien Symbol zeichnen
-			if (pPlayer != it->second && it->second->IsAlienRace())
-				sFilePath = sAppPath + "Graphics\\Symbols\\Entity.bop";
-			// ist der besitzer des Schiffes unbekannt, dann Fragezeichen zeichnen
-			else if (pPlayer != it->second && pPlayer->IsRaceContacted(it->first) == false)
-				sFilePath = sAppPath + "Graphics\\Symbols\\Unknown.bop";
-			// sonst das Rassensymbol zeichnen
-			else
-				sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".bop";
-
-			Bitmap* ship = Bitmap::FromFile(CComBSTR(sFilePath));
-			// konnte die Grafik nicht geladen werden, dann wird ein Standardsymbol geladen
-			if (!ship || ship->GetLastStatus() != Ok)
-			{
-				sFilePath = sAppPath + "Graphics\\Symbols\\Default.bop";
-				ship = Bitmap::FromFile(CComBSTR(sFilePath));
-			}
-			g->DrawImage(ship, pt.x, pt.y + 45, 35, 35);
-			delete ship;
-		}
-	}
-}
-
-//////////////////////////////////////////////////////////////////////
-// owner
-//////////////////////////////////////////////////////////////////////
-
-#pragma warning (push)
-#pragma warning (disable : 4702)
-/// Diese Funktion berechnet anhand der Besitzerpunkte und anderen Enflüssen, wem dieser Sektor schlussendlich
-/// gehört.
-void CSector::CalculateOwner(const CString& sSystemOwner)
-{
-	// Wenn in diesem Sektor das System jemanden gehört, oder hier eine Schiffswerft durch Außenposten oder Sternbasis
-	// steht, dann ändert sich nichts am Besitzer
-	if (sSystemOwner != "")
-	{
-		SetOwned(TRUE);
-		m_sOwnerOfSector = sSystemOwner;
-		return;
-	}
-	// Sektor gehört einer Minorrace
-	else if (m_sOwnerOfSector != "" && sSystemOwner == "" && this->GetMinorRace() == TRUE)
-		return;
-
-	if(!m_Outpost.IsEmpty())
-	{
-		SetOwned(TRUE);
-		m_sOwnerOfSector = m_Outpost;
-		return;
-	}
-	if(!m_Starbase.IsEmpty())
-	{
-		SetOwned(TRUE);
-		m_sOwnerOfSector = m_Starbase;
-		return;
-	}
-
-	// Ist obiges nicht eingetreten, so gehört demjenigen der Sektor, wer die meisten Besitzerpunkte hat. Ist hier
-	// Gleichstand haben wir neutrales Gebiet. Es werden mindst. 2 Punkte benötigt, um als neuer Besitzer des Sektors
-	// zu gelten.
-	BYTE mostPoints = 1;
-	CString newOwner = "";
-	for (map<CString, BYTE>::const_iterator it = m_byOwnerPoints.begin(); it != m_byOwnerPoints.end(); ++it)
-	{
-		if (it->second > mostPoints)
-		{
-			mostPoints = it->second;
-			newOwner = it->first;
-		}
-		// bei Gleichstand wird der Besitzer wieder gelöscht
-		else if (it->second == mostPoints)
-			newOwner = "";
-	}
-	if (newOwner != "")
-	{
-		SetOwned(TRUE);
-		SetScanned(newOwner);
-	}
-	else
-		SetOwned(FALSE);
-	m_sOwnerOfSector = newOwner;
-}
-#pragma warning (pop)
-
-//////////////////////////////////////////////////////////////////////
 // other functions
 //////////////////////////////////////////////////////////////////////
-
-/// Funktion erzeugt eine zufällige Anomalie im Sektor.
-void CSector::CreateAnomaly(void)
-{
-	if (m_pAnomaly)
-	{
-		delete m_pAnomaly;
-		m_pAnomaly = NULL;
-	}
-
-	m_pAnomaly = new CAnomaly();
-}
 
 /// In jeder neuen Runde die IsTerraforming und IsStationBuilding Variablen auf FALSE setzen, wenn Schiffe eine Aktion
 /// machen, werden diese Variablen später ja wieder korrekt gesetzt. Außerdem werden auch die Besitzerpunkte wieder
 /// gelöscht.
-void CSector::ClearAllPoints()
+void CSector::ClearAllPoints(bool call_up)
 {
 	// Funktion bei jeder neuen Runde anfangs aufrufen!!! Wenn nämlich in diesem Sektor gerade keine Station einer
 	// Rasse gebaut wird, dann setzen wir auch die noch gebrauchten Punkte und die anfänglich gebrauchten Punkte
 	// wieder auf NULL
 
 	// Falls der Planet gerade geterraformt wird, wird er hier erstmal wieder auf FALSE gesetzt.
-	for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
-		m_Planets[i].SetIsTerraforming(FALSE);
+	for(iterator it = m_Planets.begin(); it != m_Planets.end(); ++it)
+		it->SetIsTerraforming(FALSE);
 
-	m_byOwnerPoints.clear();
-
-	// nun können alle StartStationPoint die auf 0 stehen in der Map gelöscht werden
-	for (map<CString, short>::iterator it = m_iStartStationPoints.begin(); it != m_iStartStationPoints.end(); )
-	{
-		if (m_IsStationBuild.find(it->first) == m_IsStationBuild.end())
-			it->second = 0;
-
-		if (it->second == 0)
-			it = m_iStartStationPoints.erase(it++);
-		else
-			++it;
-	}
-	m_IsStationBuild.clear();
-
-	m_bWhoIsOwnerOfShip.clear();
-	m_mNumbersOfShips.clear();
-	// Die benötigte Scanpower um Schiffe sehen zu können wieder auf NULL setzen
-	m_iNeededScanPower.clear();
-	m_iScanPower.clear();
-	// Sagen das erstmal kein Außenposten und keine Sternbasis in dem Sektor steht
-	m_Outpost.Empty();
-	m_Starbase.Empty();
-	m_bShipPort.clear();
+	if(call_up)
+		CMapTile::ClearAllPoints();
 }

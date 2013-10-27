@@ -662,6 +662,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Source\Gamedata\Galaxy\MapTile.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Source\Gamedata\Galaxy\Planet.cpp"
 						>
 					</File>
@@ -1404,6 +1408,10 @@
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Galaxy\GenSectorName.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Galaxy\MapTile.h"
 						>
 					</File>
 					<File

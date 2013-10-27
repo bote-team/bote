@@ -18,6 +18,7 @@
 #include "IOData.h"
 #include "General/Loc.h"
 #include "GraphicPool.h"
+#include "Galaxy/GenSectorName.h"
 
 #include "Races\RaceController.h"
 #include "Races\DiplomacyController.h"
@@ -3310,7 +3311,7 @@ void CBotEDoc::CalcOldRoundData()
 	for (std::vector<CSystem>::iterator it = m_Systems.begin(); it != m_Systems.end(); ++it)
 	{
 		// Mögliche Is? Variablen für Terraforming und Stationbau erstmal auf FALSE setzen
-		it->ClearAllPoints();
+		it->ClearAllPoints(true);
 
 		// Wenn im Sektor ein Sonnensystem existiert
 		if (!it->GetSunSystem())
@@ -5687,7 +5688,7 @@ void CBotEDoc::AllocateSystems()
 	if(m_Systems.size() == size)
 	{
 		for(std::vector<CSystem>::iterator it = m_Systems.begin(); it != m_Systems.end(); ++it)
-			it->ResetSystem();
+			it->ResetSystem(true);
 		return;
 	}
 	m_Systems.clear();

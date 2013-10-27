@@ -5,9 +5,10 @@
  *   Home     :  http://birth-of-the-empires.de
  *
  */
-// System.h: Schnittstelle für die Klasse CSystem.
-//
-//////////////////////////////////////////////////////////////////////
+/*
+ *@file
+ * properties of a map location with a sun system and with buildings
+ */
 
 #if !defined(AFX_SYSTEM_H__52476A8D_3AFC_4EFC_B456_155002572D31__INCLUDED_)
 #define AFX_SYSTEM_H__52476A8D_3AFC_4EFC_B456_155002572D31__INCLUDED_
@@ -52,7 +53,7 @@ public:
 	CSystem& operator=(const CSystem&);
 
 	// Resetfunktion für die Klasse CSystem.
-	void ResetSystem();
+	void ResetSystem(bool call_up);
 
 
 //////////////////////////////////////////////////////////////////////
