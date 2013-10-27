@@ -12,10 +12,11 @@
 #pragma once
 #include "Constants.h"
 
-class CWorker : public CObject
+#include <map>
+
+class CWorker
 {
 public:
-	DECLARE_SERIAL (CWorker)
 // Konstruktion & Destruktion
 	CWorker();
 	virtual ~CWorker();
@@ -27,29 +28,41 @@ public:
 	virtual void Serialize(CArchive &ar);
 // Zugriffsfunktionen
 	// zum Lesen der Membervariablen
-	USHORT GetWorker(WORKER::Typ nWorker) const;
+	int GetWorker(WORKER::Typ nWorker) const;
+
 	// zum Schreiben der Membervariablen
 	void SetWorker(WORKER::Typ nWorker, int Value);
 	void InkrementWorker(WORKER::Typ nWorker);
 	void DekrementWorker(WORKER::Typ nWorker);
 
 // sonstige Funktionen
-	void CalculateFreeWorkers();
+
+private:
+	struct EmployedFreeAll
+	{
+		EmployedFreeAll(int _employed, int _free, int _all) :
+			employed(_employed),
+			free(_free),
+			all(_all)
+		{
+		}
+		int employed;
+		int free;
+		int all;
+	};
+public:
+	CWorker::EmployedFreeAll CalculateFreeWorkers();
 	void CheckWorkers();	// Fkt. überprüft, ob wir nicht zuviele Arbeiter eingestellt haben
 	void FreeAll();
 	int Cap(WORKER::Typ type, int number);
 
 private:
-	BYTE m_iFoodWorker;
-	BYTE m_iIndustryWorker;
-	BYTE m_iEnergyWorker;
-	BYTE m_iSecurityWorker;
-	BYTE m_iResearchWorker;
-	BYTE m_iTitanWorker;
-	BYTE m_iDeuteriumWorker;
-	BYTE m_iDuraniumWorker;
-	BYTE m_iCrystalWorker;
-	BYTE m_iIridiumWorker;
-	USHORT m_iAllWorkers;
-	USHORT m_iFreeWorkers;
+	std::map<WORKER::Typ, int> m_Workers;
+
+	typedef std::map<WORKER::Typ, int> ::const_iterator const_iterator;
+	typedef std::map<WORKER::Typ, int> ::iterator iterator;
+
+	EmployedFreeAll Workers() const;
+
+
 };
