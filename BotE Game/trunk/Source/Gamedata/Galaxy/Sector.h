@@ -23,28 +23,30 @@
 using namespace std;
 
 // forward declaration
-class CBotEDoc;
 class CMajor;
 class CAnomaly;
 class CRace;
 class CShips;
 class CShip;
 
-/// Liefert verschiedene Attributswerte der Sektorklasse.
-enum SectorAttributes
-{
-	/// Ist ein Sonnensystem in diesem Sektor?
-	SECTOR_SUNSYSTEM	= 1,
-	/// Gehört der Sektor einer irgendeiner Rasse?
-	SECTOR_OWNED		= 2,
-	/// Gibt es eine kleine Rasse in dem Sector
-	SECTOR_MINORRACE	= 4,
-	/// Wurde der Sector militärisch eingenommen, also keine eigene Kolonie oder Heimatsystem
-	SECTOR_CONQUERED	= 8
-};
-
 class CSector
 {
+
+private:
+
+	/// Liefert verschiedene Attributswerte der Sektorklasse.
+	enum SectorAttributes
+	{
+		/// Ist ein Sonnensystem in diesem Sektor?
+		SECTOR_SUNSYSTEM	= 1,
+		/// Gehört der Sektor einer irgendeiner Rasse?
+		SECTOR_OWNED		= 2,
+		/// Gibt es eine kleine Rasse in dem Sector
+		SECTOR_MINORRACE	= 4,
+		/// Wurde der Sector militärisch eingenommen, also keine eigene Kolonie oder Heimatsystem
+		SECTOR_CONQUERED	= 8
+	};
+
 public:
 
 	enum DISCOVER_STATUS
@@ -55,6 +57,9 @@ public:
 		DISCOVER_STATUS_FULL_KNOWN	= 3
 	};
 
+//////////////////////////////////////////////////////////////////////
+// construction/destruction
+//////////////////////////////////////////////////////////////////////
 
 	/// Konstruktor
 	CSector(void);
@@ -68,8 +73,21 @@ public:
 	/// Destruktor
 	virtual ~CSector(void);
 
+protected:
+	/// Resetfunktion für die Klasse CSector
+	void Reset();
+public:
+
+//////////////////////////////////////////////////////////////////////
+// serialization
+//////////////////////////////////////////////////////////////////////
+
 	/// Serialisierungsfunktion
 	void Serialize(CArchive &ar);
+
+//////////////////////////////////////////////////////////////////////
+// iterators
+//////////////////////////////////////////////////////////////////////
 
 	//iterators
 	typedef std::vector<CPlanet>::const_iterator const_iterator;
@@ -80,6 +98,10 @@ private:
 	iterator begin();
 	iterator end();
 public:
+
+//////////////////////////////////////////////////////////////////////
+// getting
+//////////////////////////////////////////////////////////////////////
 
 // Zugriffsfunktionen zum Lesen der Membervariablen
 	/// Diese Funktion gibt die Koordinaten des Sektors zurück.
@@ -92,6 +114,7 @@ public:
 	 */
 	CString GetName(BOOLEAN longName = FALSE) const;
 
+//// SectorAttributes ////
 	/// Diese Funktion gibt zurück, ob sich in diesem Sektor ein Sonnensystem befindet.
 	BOOLEAN GetSunSystem(void) const {return (m_Attributes & SECTOR_SUNSYSTEM) == SECTOR_SUNSYSTEM;}
 
@@ -111,6 +134,7 @@ public:
 	/// um eine Kolonie oder um das Heimatsystem handelte.
 	CString GetColonyOwner(void) const {return m_sColonyOwner;}
 
+//// DISCOVER_STATUS ////
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob dieser Sektor von der Majorrace
 	/// <code>Race</code> gescannt wurde.
 	bool GetScanned(const CString& sRace) const
@@ -188,6 +212,7 @@ public:
 		return m_Starbase == sRace;
 	}
 
+//// ships in sector ////
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Rasse <code>Race</code> ein
 	/// bzw. mehrere Schiffe in diesem Sektor hat.
 	BOOLEAN GetOwnerOfShip(const CString& sRace) const
@@ -223,23 +248,6 @@ public:
 		return result->second;
 	}
 
-	//is station buildable in this sector by race according to whatever station exists ?
-	bool IsStationBuildable(SHIP_ORDER::Typ order, const CString& race) const;
-
-	/// Diese Funktion gibt die Scanpower zurück, die die Majorrace <code>Race</code> in diesem Sektor hat.
-	short GetScanPower(const CString& sRace, bool bWith_ships = true) const;
-
-	/// Diese Funktion gibt die Scanpower zurück, die man benötigt, um das Schiff/die Schiffe der
-	/// Majorrace <code>Race</code> in diesem Sektor zu entdecken.
-	short GetNeededScanPower(const CString& sRace) const
-	{
-		map<CString, short>::const_iterator it = m_iNeededScanPower.find(sRace);
-		if (it != m_iNeededScanPower.end())
-			return it->second;
-		else
-			return MAXSHORT;
-	}
-
 	/// Diese Funktion gibt die benötigten Punkte zum Stationenbau zurück, die die Majorrace
 	/// <code>Race</code> in diesem Sektor noch zur Fertigstellung einer Station benötigt.
 	short GetNeededStationPoints(const CString& sRace) const
@@ -262,6 +270,21 @@ public:
 			return false;
 	}
 
+//// scan power ////
+	/// Diese Funktion gibt die Scanpower zurück, die die Majorrace <code>Race</code> in diesem Sektor hat.
+	short GetScanPower(const CString& sRace, bool bWith_ships = true) const;
+
+	/// Diese Funktion gibt die Scanpower zurück, die man benötigt, um das Schiff/die Schiffe der
+	/// Majorrace <code>Race</code> in diesem Sektor zu entdecken.
+	short GetNeededScanPower(const CString& sRace) const
+	{
+		map<CString, short>::const_iterator it = m_iNeededScanPower.find(sRace);
+		if (it != m_iNeededScanPower.end())
+			return it->second;
+		else
+			return MAXSHORT;
+	}
+
 	/// Die Funktion gibt die Farbe der Sonne in diesem System zurück. Der Rückgabewert ist ein BYTE-Wert, also nicht
 	///die Farbe als Adjektiv.
 	BYTE GetSunColor() const {return m_bySunColor;}
@@ -273,7 +296,7 @@ public:
 	const CPlanet* GetPlanet(BYTE nPlanetIndex) const {return &m_Planets[nPlanetIndex];}
 
 	/// Diese Funktion gibt einen Zeiger auf eine eventuell vorhandene Anomalie zurück (<code>NULL</code> wenn kein vorhanden)
-	CAnomaly* GetAnomaly(void) const {return m_pAnomaly;}
+	const CAnomaly* GetAnomaly(void) const {return m_pAnomaly;}
 
 	/// Funktion gibt alle Einwohner aller Planeten in dem Sektor zurück.
 	float GetCurrentHabitants() const;
@@ -282,9 +305,14 @@ public:
 	/// die Ressourcen <code>res</code>.
 	void GetAvailableResources(BOOLEAN bResources[RESOURCES::DERITIUM + 1], BOOLEAN bOnlyColonized = true) const;
 
+//////////////////////////////////////////////////////////////////////
+// setting
+//////////////////////////////////////////////////////////////////////
+
 	/// Funktion legt den Namen des Sektors fest.
 	void SetSectorsName(const CString& nameOfSunSystem) {m_strSectorName = nameOfSunSystem;}
 
+//// SectorAttributes ////
 	/// Diese Funktion legt fest, ob sich ein Sonnensystem in diesem Sektor befindet.
 	void SetSunSystem(BOOLEAN is) {SetAttributes(is, SECTOR_SUNSYSTEM, m_Attributes);}
 
@@ -304,6 +332,7 @@ public:
 	/// eigene Kolonien und dem Heimatsektor
 	void SetColonyOwner(const CString& sOwner) {m_sColonyOwner = sOwner;}
 
+//// DISCOVER_STATUS ////
 	/// Diese Funktion legt fest, ob der Sektor von der Majorrace <code>Race</code> gescannt ist.
 	void SetScanned(const CString& Race) {if (this->GetScanned(Race) == FALSE) m_Status[Race] = CSector::DISCOVER_STATUS_SCANNED;}
 
@@ -313,6 +342,31 @@ public:
 	/// Diese Funktion legt fest, ob die Majorrace <code>Race</code> den Sektor kompletten Sektor
 	/// (inkl. der ganzen Planeten) kennt.
 	void SetFullKnown(const CString& Race) {m_Status[Race] = CSector::DISCOVER_STATUS_FULL_KNOWN;}
+
+	/// Funktion legt fest, ob die Majorrace <code>Race</code> ein oder auch mehrer Schiffe in diesem Sektor hat.
+	void SetOwnerOfShip(BOOLEAN is, const CString& sOwner)
+	{
+		if (is)
+			m_bWhoIsOwnerOfShip.insert(sOwner);
+		else
+			m_bWhoIsOwnerOfShip.erase(sOwner);
+	}
+
+//////////////////////////////////////////////////////////////////////
+// stations
+//////////////////////////////////////////////////////////////////////
+
+	//is station buildable in this sector by race according to whatever station exists ?
+	bool IsStationBuildable(SHIP_ORDER::Typ order, const CString& race) const;
+
+	/// Funktion legt fest, ob die Majorrace <code>Race</code> gerade eine Station in diesem Sektor baut.
+	void SetIsStationBuilding(SHIP_ORDER::Typ type, const CString& Race)
+	{
+		if (type != SHIP_ORDER::NONE)
+			m_IsStationBuild.insert(std::pair<CString, SHIP_ORDER::Typ>(Race, type));
+		else
+			m_IsStationBuild.erase(Race);
+	}
 
 	/// Diese Funktion legt fest, ob die Majorrace <code>Race</code> eine online Werft (bzw. auch durch eine
 	/// Station erhalten) in diesem Sektor besitzt.
@@ -346,53 +400,7 @@ public:
 			m_Starbase.Empty();
 	}
 
-	/// Funktion legt fest, ob die Majorrace <code>Race</code> ein oder auch mehrer Schiffe in diesem Sektor hat.
-	void SetOwnerOfShip(BOOLEAN is, const CString& sOwner)
-	{
-		if (is)
-			m_bWhoIsOwnerOfShip.insert(sOwner);
-		else
-			m_bWhoIsOwnerOfShip.erase(sOwner);
-	}
-
-	//Add 1 to the number of race's ships in this sector
-	void IncrementNumberOfShips(const CString& race);
-
-	/// Funktion legt fest, ob die Majorrace <code>Race</code> gerade eine Station in diesem Sektor baut.
-	void SetIsStationBuilding(SHIP_ORDER::Typ type, const CString& Race)
-	{
-		if (type != SHIP_ORDER::NONE)
-			m_IsStationBuild.insert(std::pair<CString, SHIP_ORDER::Typ>(Race, type));
-		else
-			m_IsStationBuild.erase(Race);
-	}
-
-	/// Funktion legt die Scanpower <code>scanpower</code>, welche die Majorrace <code>Race</code>
-	/// in diesem Sektor hat, fest.
-	void SetScanPower(short scanpower, const CString& Race);
-
-	/// Function puts a scanned square over this sector in the middle, if range == 1, 9 sectors are affected
-	/// for instance. Function calculates and sets the scan power values for each of these sectors.
-	/// @param sector: The middle sector where the scan power affecting object is. This can be a ship,
-	/// a scanning deteriorating anomaly, or a continuum scanner (or continuum scanner upgrade).
-	/// @param range: range of the object
-	/// @param power: scan power of the object
-	/// @param race: race who gets these scan powers (can be a minor race)
-	/// @param bBetterScanner: are we on a scanning improving anomaly (implies the scan power affecting object is a ship or base)
-	/// @param patrolship: is this a patrolship (implies the scan power affecting object is a ship or base)
-	/// @param anomaly: is the scan power affecting object a scanning deteriorating anomaly
-	void PutScannedSquare(unsigned range, const int power,
-		const CRace& race, bool bBetterScanner = false, bool patrolship = false, bool anomaly = false);
-
-	/// Funktion legt die Scanpower <code>scanpower</code> fest, welche benötigt wird, um ein Schiff der
-	/// Majorrace <code>Race</code> in diesem Sektor zu erkennen.
-	void SetNeededScanPower(short scanpower, const CString& Race)
-	{
-		if (scanpower != MAXSHORT)
-			m_iNeededScanPower[Race] = scanpower;
-		else
-			m_iNeededScanPower.erase(Race);
-	}
+	void BuildStation(SHIP_TYPE::Typ station, const CString& race);
 
 	/// Diese Funktion zieht <code>sub</code> Punkte von den noch benötigten Stationbaupunkten der Majorrace
 	/// <code>Race</code> ab.
@@ -423,11 +431,43 @@ public:
 		}
 	}
 
-	/// Diese Funktion addiert Besitzerpunkte <code>ownerPoints</code> zu den Punkten des Besitzers <code>owner</owner>
-	/// dazu.
-	void AddOwnerPoints(BYTE ownerPoints, const CString& sOwner) {m_byOwnerPoints[sOwner] += ownerPoints;}
+//////////////////////////////////////////////////////////////////////
+// scanning
+//////////////////////////////////////////////////////////////////////
 
-// sonstige Funktionen
+	//Add 1 to the number of race's ships in this sector
+	void IncrementNumberOfShips(const CString& race);
+
+	/// Funktion legt die Scanpower <code>scanpower</code>, welche die Majorrace <code>Race</code>
+	/// in diesem Sektor hat, fest.
+	void SetScanPower(short scanpower, const CString& Race);
+
+	/// Function puts a scanned square over this sector in the middle, if range == 1, 9 sectors are affected
+	/// for instance. Function calculates and sets the scan power values for each of these sectors.
+	/// @param sector: The middle sector where the scan power affecting object is. This can be a ship,
+	/// a scanning deteriorating anomaly, or a continuum scanner (or continuum scanner upgrade).
+	/// @param range: range of the object
+	/// @param power: scan power of the object
+	/// @param race: race who gets these scan powers (can be a minor race)
+	/// @param bBetterScanner: are we on a scanning improving anomaly (implies the scan power affecting object is a ship or base)
+	/// @param patrolship: is this a patrolship (implies the scan power affecting object is a ship or base)
+	/// @param anomaly: is the scan power affecting object a scanning deteriorating anomaly
+	void PutScannedSquare(unsigned range, const int power,
+		const CRace& race, bool bBetterScanner = false, bool patrolship = false, bool anomaly = false);
+
+	/// Funktion legt die Scanpower <code>scanpower</code> fest, welche benötigt wird, um ein Schiff der
+	/// Majorrace <code>Race</code> in diesem Sektor zu erkennen.
+	void SetNeededScanPower(short scanpower, const CString& Race)
+	{
+		if (scanpower != MAXSHORT)
+			m_iNeededScanPower[Race] = scanpower;
+		else
+			m_iNeededScanPower.erase(Race);
+	}
+
+//////////////////////////////////////////////////////////////////////
+// planets
+//////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Funktion generiert den Sektor. Dabei wird als Parameter die Wahrscheinlichkeit, ob in dem Sektor ein
@@ -441,11 +481,11 @@ public:
 	/// angegeben, so werden zufällige Planeten erstellt.
 	void CreatePlanets(const CString& sMajorID = "");
 
-	/// Funktion erzeugt eine zufällige Anomalie im Sektor.
-	void CreateAnomaly(void);
-
 	/// Diese Funktion führt das Planetenwachstum für diesen Sektor durch.
 	void LetPlanetsGrowth();
+	/// Diese Funktion lässt die Bevölkerung auf allen Planeten zusammen um den übergebenen Wert <code>Value</code>
+	/// schrumpfen.
+	void LetPlanetsShrink(float Value);
 
 	//Sets whether to display planets as being terraformed based on all currently terraforming ships in this sector
 	void RecalcPlanetsTerraformingStatus();
@@ -454,27 +494,22 @@ public:
 
 	void DistributeColonists(const float colonists);
 
-	void BuildStation(SHIP_TYPE::Typ station, const CString& race);
+	void Terraforming(CShip& ship);
 
-	/// Diese Funktion lässt die Bevölkerung auf allen Planeten zusammen um den übergebenen Wert <code>Value</code>
-	/// schrumpfen.
-	void LetPlanetsShrink(float Value);
+	bool PerhapsMinorExtends(BYTE TechnologicalProgress);
 
-	/// In jeder neuen Runde die IsTerraforming und IsStationBuilding Variablen auf FALSE setzen, wenn Schiffe eine Aktion
-	/// machen, werden diese Variablen später ja wieder korrekt gesetzt. Außerdem werden auch die Besitzerpunkte wieder
-	/// gelöscht.
-	void ClearAllPoints();
+	void CreateDeritiumForSpaceflightMinor();
 
-	/// Diese Funktion berechnet anhand der Besitzerpunkte und anderen Enflüssen, wem dieser Sektor schlussendlich
-	/// gehört. Übergeben wird dafür auch der mögliche Besitzer des Systems in diesem Sektor.
-	void CalculateOwner(const CString& sSystemOwner);
+	bool Terraform(const CShips& ship);
 
-protected:
-	/// Resetfunktion für die Klasse CSector
-	void Reset();
-public:
+	void SystemEventPlanetMovement(CString& message);
+	void SystemEventDemographic(CString& message, CMajor& major);
 
-// Zeichenfunktionen für diese Klasse
+//////////////////////////////////////////////////////////////////////
+// drawing
+//////////////////////////////////////////////////////////////////////
+
+	// Zeichenfunktionen für diese Klasse
 	/// Diese Funktion zeichnet den Namen des Sektors.
 	void DrawSectorsName(CDC *pDC, CBotEDoc* pDoc, CMajor* pPlayer);
 
@@ -487,13 +522,34 @@ public:
 	/// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
 	void DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlayer) const;
 
-	void SystemEventPlanetMovement(CString& message);
-	void SystemEventDemographic(CString& message, CMajor& major);
-	void Terraforming(CShip& ship);
-	bool PerhapsMinorExtends(BYTE TechnologicalProgress);
-	void CreateDeritiumForSpaceflightMinor();
-	bool Terraform(const CShips& ship);
+//////////////////////////////////////////////////////////////////////
+// owner
+//////////////////////////////////////////////////////////////////////
 
+	/// Diese Funktion addiert Besitzerpunkte <code>ownerPoints</code> zu den Punkten des Besitzers <code>owner</owner>
+	/// dazu.
+	void AddOwnerPoints(BYTE ownerPoints, const CString& sOwner) {m_byOwnerPoints[sOwner] += ownerPoints;}
+
+	/// Diese Funktion berechnet anhand der Besitzerpunkte und anderen Enflüssen, wem dieser Sektor schlussendlich
+	/// gehört. Übergeben wird dafür auch der mögliche Besitzer des Systems in diesem Sektor.
+	void CalculateOwner(const CString& sSystemOwner);
+
+
+//////////////////////////////////////////////////////////////////////
+// other functions
+//////////////////////////////////////////////////////////////////////
+
+	/// Funktion erzeugt eine zufällige Anomalie im Sektor.
+	void CreateAnomaly(void);
+
+	/// In jeder neuen Runde die IsTerraforming und IsStationBuilding Variablen auf FALSE setzen, wenn Schiffe eine Aktion
+	/// machen, werden diese Variablen später ja wieder korrekt gesetzt. Außerdem werden auch die Besitzerpunkte wieder
+	/// gelöscht.
+	void ClearAllPoints();
+
+//////////////////////////////////////////////////////////////////////
+// members
+//////////////////////////////////////////////////////////////////////
 
 protected:
 	/// Die Koordinate des Sektors auf der Map

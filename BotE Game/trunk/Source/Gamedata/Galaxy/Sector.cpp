@@ -23,7 +23,7 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 //////////////////////////////////////////////////////////////////////
-// Konstruktion/Destruktion
+// construction/destruction
 //////////////////////////////////////////////////////////////////////
 CSector::CSector(void) :
 	m_KO(-1, -1),
@@ -104,9 +104,37 @@ CSector::~CSector(void)
 	Reset();
 }
 
-///////////////////////////////////////////////////////////////////////
-// Speicher/Laden - Funktion
-///////////////////////////////////////////////////////////////////////
+/// Resetfunktion für die Klasse CSector
+void CSector::Reset()
+{
+	m_Attributes = 0;
+
+	// Maps löschen
+	m_Status.clear();
+	m_iScanPower.clear();
+	m_iNeededScanPower.clear();
+	m_bShipPort.clear();
+	m_bWhoIsOwnerOfShip.clear();
+	m_mNumbersOfShips.clear();
+	m_Outpost.Empty();
+	m_Starbase.Empty();
+	m_IsStationBuild.clear();
+	m_iStartStationPoints.clear();
+	m_iNeededStationPoints.clear();
+	m_byOwnerPoints.clear();
+
+	m_sOwnerOfSector = "";
+	m_sColonyOwner = "";
+	m_strSectorName = "";
+	m_Planets.clear();
+
+	delete m_pAnomaly;
+	m_pAnomaly = NULL;
+}
+
+//////////////////////////////////////////////////////////////////////
+// serialization
+//////////////////////////////////////////////////////////////////////
 void CSector::Serialize(CArchive &ar)
 {
 	// Wird geschrieben?
@@ -317,6 +345,10 @@ void CSector::Serialize(CArchive &ar)
 	}
 }
 
+//////////////////////////////////////////////////////////////////////
+// iterators
+//////////////////////////////////////////////////////////////////////
+
 CSector::const_iterator CSector::begin() const
 {
 	return m_Planets.begin();
@@ -335,9 +367,10 @@ CSector::iterator CSector::end()
 	return m_Planets.end();
 }
 
-//////////////////////////////////////////////////////////////////
-// Zugriffsfunktionen
-//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// getting
+//////////////////////////////////////////////////////////////////////
+
 /// Funktion gibt den Namen des Sektors zurück. Wenn in ihm kein Sonnensystem ist, dann wird "" zurückgegeben.
 /// Wenn man aber den Parameter <code>longName<code> beim Aufruf der Funktion auf <code>TRUE<code> setzt, wird
 /// versucht ein genauerer Sektorname zu generieren.
@@ -356,6 +389,29 @@ CString CSector::GetName(BOOLEAN longName) const
 			return s;
 		}
 	}
+}
+
+/// Diese Funktion gibt die Scanpower zurück, die die Majorrace <code>Race</code> in diesem Sektor hat.
+short CSector::GetScanPower(const CString& sRace, bool bWith_ships) const
+{
+	const CCommandLineParameters* const clp = resources::pClp;
+	if(clp->SeeAllOfMap())
+		return 200;
+
+	unsigned scan_power_due_to_ship_number = 0;
+	if(bWith_ships) {
+		const CBotEDoc* pDoc = resources::pDoc;
+		const CRaceController* pCtrl = pDoc->GetRaceCtrl();
+		const CRace* pRace = pCtrl->GetRace(sRace);
+		for(std::map<CString, unsigned>::const_iterator it = m_mNumbersOfShips.begin(); it != m_mNumbersOfShips.end(); ++ it) {
+			if(pRace->GetRaceID() == it->first || pRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
+				scan_power_due_to_ship_number += it->second;
+		}
+	}
+	map<CString, short>::const_iterator it = m_iScanPower.find(sRace);
+	if (it != m_iScanPower.end())
+		return it->second + scan_power_due_to_ship_number;
+	return scan_power_due_to_ship_number;
 }
 
 /// Funktion gibt alle Einwohner aller Planeten in dem Sektor zurück.
@@ -389,9 +445,138 @@ void CSector::GetAvailableResources(BOOLEAN bResources[RESOURCES::DERITIUM + 1],
 	}
 }
 
-//////////////////////////////////////////////////////////////////
-// sonstige Funktionen
-//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+// setting
+//////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////
+// stations
+//////////////////////////////////////////////////////////////////////
+
+static bool StationBuildContinuable(const CString& race, const CSector& sector) {
+	const CString& owner = sector.GetOwnerOfSector();
+	return owner.IsEmpty() || owner == race || sector.GetIsStationBuilding(race);
+}
+
+bool CSector::IsStationBuildable(SHIP_ORDER::Typ order, const CString& race) const {
+	if(order == SHIP_ORDER::BUILD_OUTPOST && !GetIsStationInSector())
+		return StationBuildContinuable(race, *this);
+	if(order == SHIP_ORDER::BUILD_STARBASE && GetOutpost(race))
+		return StationBuildContinuable(race, *this);
+	if(order == SHIP_ORDER::UPGRADE_OUTPOST && GetOutpost(race) 
+		|| order == SHIP_ORDER::UPGRADE_STARBASE && GetStarbase(race)) {
+		const CBotEDoc* pDoc = resources::pDoc;
+		CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(race));
+		SHIP_TYPE::Typ type = (order == SHIP_ORDER::UPGRADE_OUTPOST) 
+			? SHIP_TYPE::OUTPOST : SHIP_TYPE::STARBASE;
+		USHORT bestbuildableID = pMajor->BestBuildableVariant(type, pDoc->m_ShipInfoArray);
+		USHORT industry = pDoc->m_ShipInfoArray.GetAt(bestbuildableID-10000).GetBaseIndustry();
+		for(CShipMap::const_iterator k = pDoc->m_ShipMap.begin(); k != pDoc->m_ShipMap.end(); ++k)
+			if (k->second->GetShipType() == type && k->second->GetKO() == m_KO) {
+				if (pDoc->m_ShipInfoArray.GetAt(k->second->GetID()-10000).GetBaseIndustry() 
+					< industry) {
+					return StationBuildContinuable(race, *this);
+				}
+				break;
+			}
+	}
+	return false;
+}
+
+void CSector::BuildStation(SHIP_TYPE::Typ station, const CString& race) {
+	if(station == SHIP_TYPE::OUTPOST)
+		m_Outpost = race;
+	else {
+		assert(station == SHIP_TYPE::STARBASE);
+		assert(m_Outpost == race || m_Starbase == race);
+		m_Outpost.Empty();
+		m_Starbase = race;
+	}
+	// Nur wenn der Sektor uns selbst gehört oder niemanden gehört und keine Minorrace darin lebt
+	if(m_sOwnerOfSector == race || (!GetOwned() && ! GetMinorRace())) {
+		SetOwned(TRUE);
+		m_sOwnerOfSector = race;
+	}
+	SetScanned(race);
+	SetShipPort(TRUE, race);
+
+	// Wenn eine Station fertig wurde für alle Rassen die Punkte wieder canceln
+	m_IsStationBuild.clear();
+	m_iStartStationPoints.clear();
+	m_iNeededStationPoints.clear();
+}
+
+//////////////////////////////////////////////////////////////////////
+// scanning
+//////////////////////////////////////////////////////////////////////
+
+void CSector::IncrementNumberOfShips(const CString& race) {
+	const std::map<CString, unsigned>::iterator found = m_mNumbersOfShips.find(race);
+	if(found == m_mNumbersOfShips.end()) {
+		m_mNumbersOfShips.insert(std::pair<CString, unsigned>(race, 1));
+		return;
+	}
+	++(found->second);
+}
+
+/// Funktion legt die Scanpower <code>scanpower</code>, welche die Majorrace <code>Race</code>
+/// in diesem Sektor hat, fest.
+void CSector::SetScanPower(short scanpower, const CString& Race)
+{
+	if (scanpower)
+		m_iScanPower[Race] = scanpower;
+	else
+		m_iScanPower.erase(Race);
+}
+
+void CSector::PutScannedSquare(unsigned range, const int power,
+		const CRace& race, bool bBetterScanner, bool patrolship, bool anomaly) {
+	const CString& race_id = race.GetRaceID();
+	float boni = 1.0f;
+	// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor befindet,
+	// dann wird die Scanleistung um 20% erhöht.
+	if(patrolship) {
+		if(race_id == m_sOwnerOfSector || race.GetAgreement(m_sOwnerOfSector) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
+			boni = 1.2f;
+	}
+	if(bBetterScanner) {
+		range *= 1.5;
+		boni += 0.5;
+	}
+	const int intrange = static_cast<int>(range);
+	for (int i = -intrange; i <= intrange; ++i) {
+		const int x = m_KO.x + i;
+		if(0 <= x && x < STARMAP_SECTORS_HCOUNT) {
+			for (int j = -intrange; j <= intrange; ++j) {
+				const int y = m_KO.y + j;
+				if(0 <= y && y < STARMAP_SECTORS_VCOUNT) {
+					CBotEDoc* pDoc = resources::pDoc;
+					CSector& scanned_sector = pDoc->GetSector(x, y);
+					// Teiler für die Scanstärke berechnen
+					int div = max(abs(i), abs(j));
+					if(anomaly)
+						div *= 2;
+					div = max(div, 1);
+					const int old_scan_power = scanned_sector.GetScanPower(race_id, false);
+					int new_scan_power = 0;
+					if(anomaly) {
+						new_scan_power = old_scan_power + power / div;
+					} else {
+						new_scan_power = (power * boni) / div;
+						new_scan_power = max(old_scan_power, new_scan_power);
+						if(race.IsMajor())
+							scanned_sector.SetScanned(race_id);
+					}
+					scanned_sector.SetScanPower(new_scan_power, race_id);
+				}//if(0 <= y && y < STARMAP_SECTORS_VCOUNT)
+			}//for (int j = -range; j <= range; ++j)
+		}//if(0 <= x && x < STARMAP_SECTORS_HCOUNT)
+	}//for (int i = -range; i <= range; ++i)
+}
+
+//////////////////////////////////////////////////////////////////////
+// planets
+//////////////////////////////////////////////////////////////////////
 
 /// Funktion generiert den Sektor. Dabei wird als Parameter die Wahrscheinlichkeit, ob in dem Sektor ein
 /// Sonnensystem ist, im Paramter <code>sunProb</code> in Prozent übergeben. Im Parameter <code>minorProb</code>
@@ -610,18 +795,6 @@ void CSector::CreatePlanets(const CString& sMajorID)
 	}
 }
 
-/// Funktion erzeugt eine zufällige Anomalie im Sektor.
-void CSector::CreateAnomaly(void)
-{
-	if (m_pAnomaly)
-	{
-		delete m_pAnomaly;
-		m_pAnomaly = NULL;
-	}
-
-	m_pAnomaly = new CAnomaly();
-}
-
 /// Diese Funktion führt das Planetenwachstum für diesen Sektor durch.
 void CSector::LetPlanetsGrowth()
 {
@@ -658,134 +831,212 @@ void CSector::LetPlanetsShrink(float Value)
 	delete[] Habitants;
 }
 
-/// In jeder neuen Runde die IsTerraforming und IsStationBuilding Variablen auf FALSE setzen, wenn Schiffe eine Aktion
-/// machen, werden diese Variablen später ja wieder korrekt gesetzt. Außerdem werden auch die Besitzerpunkte wieder
-/// gelöscht.
-void CSector::ClearAllPoints()
-{
-	// Funktion bei jeder neuen Runde anfangs aufrufen!!! Wenn nämlich in diesem Sektor gerade keine Station einer
-	// Rasse gebaut wird, dann setzen wir auch die noch gebrauchten Punkte und die anfänglich gebrauchten Punkte
-	// wieder auf NULL
-
-	// Falls der Planet gerade geterraformt wird, wird er hier erstmal wieder auf FALSE gesetzt.
-	for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
-		m_Planets[i].SetIsTerraforming(FALSE);
-
-	m_byOwnerPoints.clear();
-
-	// nun können alle StartStationPoint die auf 0 stehen in der Map gelöscht werden
-	for (map<CString, short>::iterator it = m_iStartStationPoints.begin(); it != m_iStartStationPoints.end(); )
-	{
-		if (m_IsStationBuild.find(it->first) == m_IsStationBuild.end())
-			it->second = 0;
-
-		if (it->second == 0)
-			it = m_iStartStationPoints.erase(it++);
-		else
-			++it;
+void CSector::RecalcPlanetsTerraformingStatus() {
+	const CShipMap& sm = resources::pDoc->m_ShipMap;
+	std::set<unsigned> terraformable;
+	//unset terraforming status for all planets
+	for(std::vector<CPlanet>::iterator i = m_Planets.begin(); i != m_Planets.end(); ++i) {
+		i->SetIsTerraforming(FALSE);
+		if(i->GetHabitable() && !i->GetTerraformed())
+			terraformable.insert(i - m_Planets.begin());
 	}
-	m_IsStationBuild.clear();
+	//reset it for those which are actually terraformed at present
+	for(CShipMap::const_iterator i = sm.begin(); i != sm.end(); ++i) {
+		if(terraformable.empty())
+			break;
+		if(i->second->GetKO() != m_KO || i->second->GetCurrentOrder() != SHIP_ORDER::TERRAFORM)
+			continue;
+		const unsigned planet = i->second->GetTerraform();
+		CPlanet& p = m_Planets.at(planet);
+		assert(p.GetHabitable());
+		//It is allowed to terraform the same planet with 2+ independent ships
+		if(p.GetIsTerraforming() || p.GetTerraformed())
+			continue;
+		p.SetIsTerraforming(TRUE);
+#pragma warning(push)
+#pragma warning(disable: 4189)
+		unsigned erased = terraformable.erase(planet);
+		assert(erased == 1);
+	}
+}
+#pragma warning(pop)
 
-	m_bWhoIsOwnerOfShip.clear();
-	m_mNumbersOfShips.clear();
-	// Die benötigte Scanpower um Schiffe sehen zu können wieder auf NULL setzen
-	m_iNeededScanPower.clear();
-	m_iScanPower.clear();
-	// Sagen das erstmal kein Außenposten und keine Sternbasis in dem Sektor steht
-	m_Outpost.Empty();
-	m_Starbase.Empty();
-	m_bShipPort.clear();
+int CSector::CountOfTerraformedPlanets() const
+{
+	int count = 0;
+	for(std::vector<CPlanet>::const_iterator it = m_Planets.begin(); it != m_Planets.end(); ++it)
+		if(it->IsColonizable())
+			++count;
+	return count;
 }
 
-#pragma warning (push)
-#pragma warning (disable : 4702)
-/// Diese Funktion berechnet anhand der Besitzerpunkte und anderen Enflüssen, wem dieser Sektor schlussendlich
-/// gehört.
-void CSector::CalculateOwner(const CString& sSystemOwner)
+void CSector::DistributeColonists(const float colonists)
 {
-	// Wenn in diesem Sektor das System jemanden gehört, oder hier eine Schiffswerft durch Außenposten oder Sternbasis
-	// steht, dann ändert sich nichts am Besitzer
-	if (sSystemOwner != "")
+	//Die Bevölkerung, welche bei der Kolonisierung
+	// auf das System kommt, wird auf die einzelnen Planeten gleichmäßig aufgeteilt.
+	float oddHab = 0.0f;	// Überschüssige Kolonisten, wenn ein Planet zu klein ist
+	// Geterraformte Planeten durchgehen und die Bevölkerung auf diese verschieben
+	for(std::vector<CPlanet>::iterator it = m_Planets.begin(); it != m_Planets.end(); ++it)
 	{
-		SetOwned(TRUE);
-		m_sOwnerOfSector = sSystemOwner;
-		return;
-	}
-	// Sektor gehört einer Minorrace
-	else if (m_sOwnerOfSector != "" && sSystemOwner == "" && this->GetMinorRace() == TRUE)
-		return;
-
-	if(!m_Outpost.IsEmpty())
-	{
-		SetOwned(TRUE);
-		m_sOwnerOfSector = m_Outpost;
-		return;
-	}
-	if(!m_Starbase.IsEmpty())
-	{
-		SetOwned(TRUE);
-		m_sOwnerOfSector = m_Starbase;
-		return;
-	}
-
-	// Ist obiges nicht eingetreten, so gehört demjenigen der Sektor, wer die meisten Besitzerpunkte hat. Ist hier
-	// Gleichstand haben wir neutrales Gebiet. Es werden mindst. 2 Punkte benötigt, um als neuer Besitzer des Sektors
-	// zu gelten.
-	BYTE mostPoints = 1;
-	CString newOwner = "";
-	for (map<CString, BYTE>::const_iterator it = m_byOwnerPoints.begin(); it != m_byOwnerPoints.end(); ++it)
-	{
-		if (it->second > mostPoints)
+		if(!it->IsColonizable())
+			continue;
+		const float max_hab = it->GetMaxHabitant();
+		if (colonists > max_hab)
 		{
-			mostPoints = it->second;
-			newOwner = it->first;
+			oddHab += colonists - max_hab;
+			it->SetCurrentHabitant(max_hab);
 		}
-		// bei Gleichstand wird der Besitzer wieder gelöscht
-		else if (it->second == mostPoints)
-			newOwner = "";
+		else
+			it->SetCurrentHabitant(colonists);
+		it->SetColonisized(TRUE);
 	}
-	if (newOwner != "")
+
+	if (oddHab <= 0.0f)
+		return;
+	// die übrigen Kolonisten auf die Planeten verteilen
+	for(std::vector<CPlanet>::iterator it = m_Planets.begin(); it != m_Planets.end(); ++it)
 	{
-		SetOwned(TRUE);
-		SetScanned(newOwner);
+		const float current_hab = it->GetCurrentHabitant();
+		const float max_hab = it->GetMaxHabitant();
+		if (!it->GetTerraformed() || current_hab <= 0.0f || current_hab >= max_hab)
+			continue;
+		const float try_new_hab = oddHab + current_hab;
+		oddHab -= max_hab - current_hab;
+		if (try_new_hab > max_hab)
+			it->SetCurrentHabitant(max_hab);
+		else {
+			it->SetCurrentHabitant(try_new_hab);
+			assert(oddHab <= 0);
+			break;
+		}
 	}
-	else
-		SetOwned(FALSE);
-	m_sOwnerOfSector = newOwner;
 }
-#pragma warning (pop)
 
-/// Resetfunktion für die Klasse CSector
-void CSector::Reset()
+void CSector::Terraforming(CShip& ship)
 {
-	m_Attributes = 0;
-
-	// Maps löschen
-	m_Status.clear();
-	m_iScanPower.clear();
-	m_iNeededScanPower.clear();
-	m_bShipPort.clear();
-	m_bWhoIsOwnerOfShip.clear();
-	m_mNumbersOfShips.clear();
-	m_Outpost.Empty();
-	m_Starbase.Empty();
-	m_IsStationBuild.clear();
-	m_iStartStationPoints.clear();
-	m_iNeededStationPoints.clear();
-	m_byOwnerPoints.clear();
-
-	m_sOwnerOfSector = "";
-	m_sColonyOwner = "";
-	m_strSectorName = "";
-	m_Planets.clear();
-
-	delete m_pAnomaly;
-	m_pAnomaly = NULL;
+	const short nPlanet = ship.GetTerraform();
+	assert(-1 <= nPlanet && nPlanet < static_cast<int>(m_Planets.size()));
+	if (nPlanet != -1)
+		m_Planets.at(nPlanet).SetIsTerraforming(TRUE);
+	else
+		ship.SetTerraform(-1);
 }
 
-////////////////////////////////////////////////////////////////
-// Zeichenfunktionen
-////////////////////////////////////////////////////////////////
+bool CSector::PerhapsMinorExtends(BYTE TechnologicalProgress)
+{
+	bool bColonized = false;
+	for(CSector::iterator it = begin(); it != end(); ++it)
+	{
+		// ist der Planet noch nicht geterraformt
+		if (it->GetColonized() == FALSE && it->GetHabitable() == TRUE && it->GetTerraformed() == FALSE)
+		{
+			// mit einer gewissen Wahrscheinlichkeit wird der Planet geterraformt und kolonisiert
+			if (rand()%200 >= (200 - (TechnologicalProgress+1)))
+			{
+				bColonized = true;
+				it->SetNeededTerraformPoints(it->GetNeededTerraformPoints());
+				it->SetTerraformed(TRUE);
+				it->SetColonisized(TRUE);
+				it->SetIsTerraforming(FALSE);
+				if (it->GetMaxHabitant() < 1.0f)
+					it->SetCurrentHabitant(it->GetMaxHabitant());
+				else
+					it->SetCurrentHabitant(1.0f);
+			}
+		}
+		// ist der Planet schon geterraformt
+		else if (it->GetColonized() == FALSE && it->GetTerraformed() == TRUE)
+		{
+			// dann wird mit einer größeren Wahrscheinlichkeit kolonisiert
+			if (rand()%200 >= (200 - 3*(TechnologicalProgress+1)))
+			{
+				bColonized = true;
+				it->SetColonisized(TRUE);
+				if (it->GetMaxHabitant() < 1.0f)
+					it->SetCurrentHabitant(it->GetMaxHabitant());
+				else
+					it->SetCurrentHabitant(1.0f);
+			}
+		}
+	}
+	return bColonized;
+}
+
+void CSector::CreateDeritiumForSpaceflightMinor()
+{
+	BOOLEAN bRes[RESOURCES::DERITIUM + 1] = {FALSE};
+	GetAvailableResources(bRes, true);
+	// gibt es kein Deritium=
+	if (!bRes[RESOURCES::DERITIUM])
+	{
+		for(CSector::iterator it = begin(); it != end(); ++it)
+		{
+			if (it->GetCurrentHabitant() > 0 && it->GetColonized())
+			{
+				it->SetBoni(RESOURCES::DERITIUM, TRUE);
+				break;
+			}
+		}
+	}
+}
+
+bool CSector::Terraform(const CShips& ship)
+{
+	return m_Planets.at(ship.GetTerraform()).SetNeededTerraformPoints(ship.GetColonizePoints()) ? true : false;
+}
+
+void CSector::SystemEventPlanetMovement(CString& message)
+{
+	const int nSize = m_Planets.size();
+	assert(nSize >= 1);
+	int nPlanet=rand()%nSize;
+	while(!(m_Planets.at(nPlanet).GetHabitable()))
+		nPlanet=rand()%nSize;
+	CPlanet& planet = m_Planets.at(nPlanet);
+	const float old_habitants = planet.GetMaxHabitant();
+	const float habitants_change = old_habitants * ((rand() % 11) / 10.0f) * ((rand() % 2 == 1) ? 1 : -1);
+	const float new_habitants = min(max(old_habitants + habitants_change, 1),100);
+	if(old_habitants != new_habitants)
+	{
+		planet.SetMaxHabitant(new_habitants);
+		CString habitants_change_string;
+		habitants_change_string.Format("%.3f", habitants_change);
+		message=CLoc::GetString("SYSTEMEVENTPLANETMOVEMENT",false,planet.GetPlanetName(), habitants_change_string);
+	}
+}
+
+void CSector::SystemEventDemographic(CString& message, CMajor& major)
+{
+	// Es sollte hier immer mindestens 1 habitabler bewohnter Planet im System sein...
+	for(int i = 0; i < 100; ++i) {
+		CPlanet& planet = m_Planets.at(rand()%m_Planets.size());
+		if(planet.GetHabitable() && planet.GetCurrentHabitant() > 1) {
+			const float old_habitants = planet.GetCurrentHabitant();
+			const float habitants_change = old_habitants * ((rand() % 11) / 10.0f) * -1;
+			const float new_habitants = max(old_habitants + habitants_change, 1);
+			if(old_habitants != new_habitants)
+			{
+				planet.SetCurrentHabitant(new_habitants);
+				CString habitants_change_string;
+				habitants_change_string.Format("%.3f", habitants_change * -1);
+				message=CLoc::GetString("SYSTEMEVENTPLANETDEMOGRAPHICLONG",false,planet.GetPlanetName(), habitants_change_string);
+
+				if (major.IsHumanPlayer())
+				{
+					resources::pClientWorker->SetToEmpireViewFor(major);
+
+					CEventRandom* EmpireEvent=new CEventRandom(major.GetRaceID(),"demographic",CLoc::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),message);
+					major.GetEmpire()->GetEvents()->Add(EmpireEvent);
+				}
+			}
+			break;
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////
+// drawing
+//////////////////////////////////////////////////////////////////////
 /// Diese Funktion zeichnet den Namen des Sektors.
 void CSector::DrawSectorsName(CDC *pDC, CBotEDoc* pDoc, CMajor* pPlayer)
 {
@@ -915,345 +1166,119 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlaye
 	}
 }
 
-void CSector::IncrementNumberOfShips(const CString& race) {
-	const std::map<CString, unsigned>::iterator found = m_mNumbersOfShips.find(race);
-	if(found == m_mNumbersOfShips.end()) {
-		m_mNumbersOfShips.insert(std::pair<CString, unsigned>(race, 1));
-		return;
-	}
-	++(found->second);
-}
+//////////////////////////////////////////////////////////////////////
+// owner
+//////////////////////////////////////////////////////////////////////
 
-/// Diese Funktion gibt die Scanpower zurück, die die Majorrace <code>Race</code> in diesem Sektor hat.
-short CSector::GetScanPower(const CString& sRace, bool bWith_ships) const
+#pragma warning (push)
+#pragma warning (disable : 4702)
+/// Diese Funktion berechnet anhand der Besitzerpunkte und anderen Enflüssen, wem dieser Sektor schlussendlich
+/// gehört.
+void CSector::CalculateOwner(const CString& sSystemOwner)
 {
-	const CCommandLineParameters* const clp = resources::pClp;
-	if(clp->SeeAllOfMap())
-		return 200;
-
-	unsigned scan_power_due_to_ship_number = 0;
-	if(bWith_ships) {
-		const CBotEDoc* pDoc = resources::pDoc;
-		const CRaceController* pCtrl = pDoc->GetRaceCtrl();
-		const CRace* pRace = pCtrl->GetRace(sRace);
-		for(std::map<CString, unsigned>::const_iterator it = m_mNumbersOfShips.begin(); it != m_mNumbersOfShips.end(); ++ it) {
-			if(pRace->GetRaceID() == it->first || pRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
-				scan_power_due_to_ship_number += it->second;
-		}
-	}
-	map<CString, short>::const_iterator it = m_iScanPower.find(sRace);
-	if (it != m_iScanPower.end())
-		return it->second + scan_power_due_to_ship_number;
-	return scan_power_due_to_ship_number;
-}
-
-/// Funktion legt die Scanpower <code>scanpower</code>, welche die Majorrace <code>Race</code>
-/// in diesem Sektor hat, fest.
-void CSector::SetScanPower(short scanpower, const CString& Race)
-{
-	if (scanpower)
-		m_iScanPower[Race] = scanpower;
-	else
-		m_iScanPower.erase(Race);
-}
-
-void CSector::PutScannedSquare(unsigned range, const int power,
-		const CRace& race, bool bBetterScanner, bool patrolship, bool anomaly) {
-	const CString& race_id = race.GetRaceID();
-	float boni = 1.0f;
-	// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor befindet,
-	// dann wird die Scanleistung um 20% erhöht.
-	if(patrolship) {
-		if(race_id == m_sOwnerOfSector || race.GetAgreement(m_sOwnerOfSector) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
-			boni = 1.2f;
-	}
-	if(bBetterScanner) {
-		range *= 1.5;
-		boni += 0.5;
-	}
-	const int intrange = static_cast<int>(range);
-	for (int i = -intrange; i <= intrange; ++i) {
-		const int x = m_KO.x + i;
-		if(0 <= x && x < STARMAP_SECTORS_HCOUNT) {
-			for (int j = -intrange; j <= intrange; ++j) {
-				const int y = m_KO.y + j;
-				if(0 <= y && y < STARMAP_SECTORS_VCOUNT) {
-					CBotEDoc* pDoc = resources::pDoc;
-					CSector& scanned_sector = pDoc->GetSector(x, y);
-					// Teiler für die Scanstärke berechnen
-					int div = max(abs(i), abs(j));
-					if(anomaly)
-						div *= 2;
-					div = max(div, 1);
-					const int old_scan_power = scanned_sector.GetScanPower(race_id, false);
-					int new_scan_power = 0;
-					if(anomaly) {
-						new_scan_power = old_scan_power + power / div;
-					} else {
-						new_scan_power = (power * boni) / div;
-						new_scan_power = max(old_scan_power, new_scan_power);
-						if(race.IsMajor())
-							scanned_sector.SetScanned(race_id);
-					}
-					scanned_sector.SetScanPower(new_scan_power, race_id);
-				}//if(0 <= y && y < STARMAP_SECTORS_VCOUNT)
-			}//for (int j = -range; j <= range; ++j)
-		}//if(0 <= x && x < STARMAP_SECTORS_HCOUNT)
-	}//for (int i = -range; i <= range; ++i)
-}
-
-static bool StationBuildContinuable(const CString& race, const CSector& sector) {
-	const CString& owner = sector.GetOwnerOfSector();
-	return owner.IsEmpty() || owner == race || sector.GetIsStationBuilding(race);
-}
-
-bool CSector::IsStationBuildable(SHIP_ORDER::Typ order, const CString& race) const {
-	if(order == SHIP_ORDER::BUILD_OUTPOST && !GetIsStationInSector())
-		return StationBuildContinuable(race, *this);
-	if(order == SHIP_ORDER::BUILD_STARBASE && GetOutpost(race))
-		return StationBuildContinuable(race, *this);
-	if(order == SHIP_ORDER::UPGRADE_OUTPOST && GetOutpost(race) 
-		|| order == SHIP_ORDER::UPGRADE_STARBASE && GetStarbase(race)) {
-		const CBotEDoc* pDoc = resources::pDoc;
-		CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(race));
-		SHIP_TYPE::Typ type = (order == SHIP_ORDER::UPGRADE_OUTPOST) 
-			? SHIP_TYPE::OUTPOST : SHIP_TYPE::STARBASE;
-		USHORT bestbuildableID = pMajor->BestBuildableVariant(type, pDoc->m_ShipInfoArray);
-		USHORT industry = pDoc->m_ShipInfoArray.GetAt(bestbuildableID-10000).GetBaseIndustry();
-		for(CShipMap::const_iterator k = pDoc->m_ShipMap.begin(); k != pDoc->m_ShipMap.end(); ++k)
-			if (k->second->GetShipType() == type && k->second->GetKO() == m_KO) {
-				if (pDoc->m_ShipInfoArray.GetAt(k->second->GetID()-10000).GetBaseIndustry() 
-					< industry) {
-					return StationBuildContinuable(race, *this);
-				}
-				break;
-			}
-	}
-	return false;
-}
-
-void CSector::RecalcPlanetsTerraformingStatus() {
-	const CShipMap& sm = resources::pDoc->m_ShipMap;
-	std::set<unsigned> terraformable;
-	//unset terraforming status for all planets
-	for(std::vector<CPlanet>::iterator i = m_Planets.begin(); i != m_Planets.end(); ++i) {
-		i->SetIsTerraforming(FALSE);
-		if(i->GetHabitable() && !i->GetTerraformed())
-			terraformable.insert(i - m_Planets.begin());
-	}
-	//reset it for those which are actually terraformed at present
-	for(CShipMap::const_iterator i = sm.begin(); i != sm.end(); ++i) {
-		if(terraformable.empty())
-			break;
-		if(i->second->GetKO() != m_KO || i->second->GetCurrentOrder() != SHIP_ORDER::TERRAFORM)
-			continue;
-		const unsigned planet = i->second->GetTerraform();
-		CPlanet& p = m_Planets.at(planet);
-		assert(p.GetHabitable());
-		//It is allowed to terraform the same planet with 2+ independent ships
-		if(p.GetIsTerraforming() || p.GetTerraformed())
-			continue;
-		p.SetIsTerraforming(TRUE);
-#pragma warning(push)
-#pragma warning(disable: 4189)
-		unsigned erased = terraformable.erase(planet);
-		assert(erased == 1);
-	}
-}
-#pragma warning(pop)
-
-void CSector::BuildStation(SHIP_TYPE::Typ station, const CString& race) {
-	if(station == SHIP_TYPE::OUTPOST)
-		m_Outpost = race;
-	else {
-		assert(station == SHIP_TYPE::STARBASE);
-		assert(m_Outpost == race || m_Starbase == race);
-		m_Outpost.Empty();
-		m_Starbase = race;
-	}
-	// Nur wenn der Sektor uns selbst gehört oder niemanden gehört und keine Minorrace darin lebt
-	if(m_sOwnerOfSector == race || (!GetOwned() && ! GetMinorRace())) {
+	// Wenn in diesem Sektor das System jemanden gehört, oder hier eine Schiffswerft durch Außenposten oder Sternbasis
+	// steht, dann ändert sich nichts am Besitzer
+	if (sSystemOwner != "")
+	{
 		SetOwned(TRUE);
-		m_sOwnerOfSector = race;
-	}
-	SetScanned(race);
-	SetShipPort(TRUE, race);
-
-	// Wenn eine Station fertig wurde für alle Rassen die Punkte wieder canceln
-	m_IsStationBuild.clear();
-	m_iStartStationPoints.clear();
-	m_iNeededStationPoints.clear();
-}
-
-int CSector::CountOfTerraformedPlanets() const
-{
-	int count = 0;
-	for(std::vector<CPlanet>::const_iterator it = m_Planets.begin(); it != m_Planets.end(); ++it)
-		if(it->IsColonizable())
-			++count;
-	return count;
-}
-
-void CSector::DistributeColonists(const float colonists)
-{
-	//Die Bevölkerung, welche bei der Kolonisierung
-	// auf das System kommt, wird auf die einzelnen Planeten gleichmäßig aufgeteilt.
-	float oddHab = 0.0f;	// Überschüssige Kolonisten, wenn ein Planet zu klein ist
-	// Geterraformte Planeten durchgehen und die Bevölkerung auf diese verschieben
-	for(std::vector<CPlanet>::iterator it = m_Planets.begin(); it != m_Planets.end(); ++it)
-	{
-		if(!it->IsColonizable())
-			continue;
-		const float max_hab = it->GetMaxHabitant();
-		if (colonists > max_hab)
-		{
-			oddHab += colonists - max_hab;
-			it->SetCurrentHabitant(max_hab);
-		}
-		else
-			it->SetCurrentHabitant(colonists);
-		it->SetColonisized(TRUE);
-	}
-
-	if (oddHab <= 0.0f)
+		m_sOwnerOfSector = sSystemOwner;
 		return;
-	// die übrigen Kolonisten auf die Planeten verteilen
-	for(std::vector<CPlanet>::iterator it = m_Planets.begin(); it != m_Planets.end(); ++it)
+	}
+	// Sektor gehört einer Minorrace
+	else if (m_sOwnerOfSector != "" && sSystemOwner == "" && this->GetMinorRace() == TRUE)
+		return;
+
+	if(!m_Outpost.IsEmpty())
 	{
-		const float current_hab = it->GetCurrentHabitant();
-		const float max_hab = it->GetMaxHabitant();
-		if (!it->GetTerraformed() || current_hab <= 0.0f || current_hab >= max_hab)
-			continue;
-		const float try_new_hab = oddHab + current_hab;
-		oddHab -= max_hab - current_hab;
-		if (try_new_hab > max_hab)
-			it->SetCurrentHabitant(max_hab);
-		else {
-			it->SetCurrentHabitant(try_new_hab);
-			assert(oddHab <= 0);
-			break;
-		}
+		SetOwned(TRUE);
+		m_sOwnerOfSector = m_Outpost;
+		return;
 	}
-}
-
-void CSector::SystemEventPlanetMovement(CString& message)
-{
-	const int nSize = m_Planets.size();
-	assert(nSize >= 1);
-	int nPlanet=rand()%nSize;
-	while(!(m_Planets.at(nPlanet).GetHabitable()))
-		nPlanet=rand()%nSize;
-	CPlanet& planet = m_Planets.at(nPlanet);
-	const float old_habitants = planet.GetMaxHabitant();
-	const float habitants_change = old_habitants * ((rand() % 11) / 10.0f) * ((rand() % 2 == 1) ? 1 : -1);
-	const float new_habitants = min(max(old_habitants + habitants_change, 1),100);
-	if(old_habitants != new_habitants)
+	if(!m_Starbase.IsEmpty())
 	{
-		planet.SetMaxHabitant(new_habitants);
-		CString habitants_change_string;
-		habitants_change_string.Format("%.3f", habitants_change);
-		message=CLoc::GetString("SYSTEMEVENTPLANETMOVEMENT",false,planet.GetPlanetName(), habitants_change_string);
+		SetOwned(TRUE);
+		m_sOwnerOfSector = m_Starbase;
+		return;
 	}
-}
 
-void CSector::SystemEventDemographic(CString& message, CMajor& major)
-{
-	// Es sollte hier immer mindestens 1 habitabler bewohnter Planet im System sein...
-	for(int i = 0; i < 100; ++i) {
-		CPlanet& planet = m_Planets.at(rand()%m_Planets.size());
-		if(planet.GetHabitable() && planet.GetCurrentHabitant() > 1) {
-			const float old_habitants = planet.GetCurrentHabitant();
-			const float habitants_change = old_habitants * ((rand() % 11) / 10.0f) * -1;
-			const float new_habitants = max(old_habitants + habitants_change, 1);
-			if(old_habitants != new_habitants)
-			{
-				planet.SetCurrentHabitant(new_habitants);
-				CString habitants_change_string;
-				habitants_change_string.Format("%.3f", habitants_change * -1);
-				message=CLoc::GetString("SYSTEMEVENTPLANETDEMOGRAPHICLONG",false,planet.GetPlanetName(), habitants_change_string);
-
-				if (major.IsHumanPlayer())
-				{
-					resources::pClientWorker->SetToEmpireViewFor(major);
-
-					CEventRandom* EmpireEvent=new CEventRandom(major.GetRaceID(),"demographic",CLoc::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),message);
-					major.GetEmpire()->GetEvents()->Add(EmpireEvent);
-				}
-			}
-			break;
+	// Ist obiges nicht eingetreten, so gehört demjenigen der Sektor, wer die meisten Besitzerpunkte hat. Ist hier
+	// Gleichstand haben wir neutrales Gebiet. Es werden mindst. 2 Punkte benötigt, um als neuer Besitzer des Sektors
+	// zu gelten.
+	BYTE mostPoints = 1;
+	CString newOwner = "";
+	for (map<CString, BYTE>::const_iterator it = m_byOwnerPoints.begin(); it != m_byOwnerPoints.end(); ++it)
+	{
+		if (it->second > mostPoints)
+		{
+			mostPoints = it->second;
+			newOwner = it->first;
 		}
+		// bei Gleichstand wird der Besitzer wieder gelöscht
+		else if (it->second == mostPoints)
+			newOwner = "";
 	}
-}
-
-void CSector::Terraforming(CShip& ship)
-{
-	const short nPlanet = ship.GetTerraform();
-	assert(-1 <= nPlanet && nPlanet < static_cast<int>(m_Planets.size()));
-	if (nPlanet != -1)
-		m_Planets.at(nPlanet).SetIsTerraforming(TRUE);
+	if (newOwner != "")
+	{
+		SetOwned(TRUE);
+		SetScanned(newOwner);
+	}
 	else
-		ship.SetTerraform(-1);
+		SetOwned(FALSE);
+	m_sOwnerOfSector = newOwner;
 }
+#pragma warning (pop)
 
-bool CSector::PerhapsMinorExtends(BYTE TechnologicalProgress)
+//////////////////////////////////////////////////////////////////////
+// other functions
+//////////////////////////////////////////////////////////////////////
+
+/// Funktion erzeugt eine zufällige Anomalie im Sektor.
+void CSector::CreateAnomaly(void)
 {
-	bool bColonized = false;
-	for(CSector::iterator it = begin(); it != end(); ++it)
+	if (m_pAnomaly)
 	{
-		// ist der Planet noch nicht geterraformt
-		if (it->GetColonized() == FALSE && it->GetHabitable() == TRUE && it->GetTerraformed() == FALSE)
-		{
-			// mit einer gewissen Wahrscheinlichkeit wird der Planet geterraformt und kolonisiert
-			if (rand()%200 >= (200 - (TechnologicalProgress+1)))
-			{
-				bColonized = true;
-				it->SetNeededTerraformPoints(it->GetNeededTerraformPoints());
-				it->SetTerraformed(TRUE);
-				it->SetColonisized(TRUE);
-				it->SetIsTerraforming(FALSE);
-				if (it->GetMaxHabitant() < 1.0f)
-					it->SetCurrentHabitant(it->GetMaxHabitant());
-				else
-					it->SetCurrentHabitant(1.0f);
-			}
-		}
-		// ist der Planet schon geterraformt
-		else if (it->GetColonized() == FALSE && it->GetTerraformed() == TRUE)
-		{
-			// dann wird mit einer größeren Wahrscheinlichkeit kolonisiert
-			if (rand()%200 >= (200 - 3*(TechnologicalProgress+1)))
-			{
-				bColonized = true;
-				it->SetColonisized(TRUE);
-				if (it->GetMaxHabitant() < 1.0f)
-					it->SetCurrentHabitant(it->GetMaxHabitant());
-				else
-					it->SetCurrentHabitant(1.0f);
-			}
-		}
+		delete m_pAnomaly;
+		m_pAnomaly = NULL;
 	}
-	return bColonized;
+
+	m_pAnomaly = new CAnomaly();
 }
 
-void CSector::CreateDeritiumForSpaceflightMinor()
+/// In jeder neuen Runde die IsTerraforming und IsStationBuilding Variablen auf FALSE setzen, wenn Schiffe eine Aktion
+/// machen, werden diese Variablen später ja wieder korrekt gesetzt. Außerdem werden auch die Besitzerpunkte wieder
+/// gelöscht.
+void CSector::ClearAllPoints()
 {
-	BOOLEAN bRes[RESOURCES::DERITIUM + 1] = {FALSE};
-	GetAvailableResources(bRes, true);
-	// gibt es kein Deritium=
-	if (!bRes[RESOURCES::DERITIUM])
+	// Funktion bei jeder neuen Runde anfangs aufrufen!!! Wenn nämlich in diesem Sektor gerade keine Station einer
+	// Rasse gebaut wird, dann setzen wir auch die noch gebrauchten Punkte und die anfänglich gebrauchten Punkte
+	// wieder auf NULL
+
+	// Falls der Planet gerade geterraformt wird, wird er hier erstmal wieder auf FALSE gesetzt.
+	for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
+		m_Planets[i].SetIsTerraforming(FALSE);
+
+	m_byOwnerPoints.clear();
+
+	// nun können alle StartStationPoint die auf 0 stehen in der Map gelöscht werden
+	for (map<CString, short>::iterator it = m_iStartStationPoints.begin(); it != m_iStartStationPoints.end(); )
 	{
-		for(CSector::iterator it = begin(); it != end(); ++it)
-		{
-			if (it->GetCurrentHabitant() > 0 && it->GetColonized())
-			{
-				it->SetBoni(RESOURCES::DERITIUM, TRUE);
-				break;
-			}
-		}
-	}
-}
+		if (m_IsStationBuild.find(it->first) == m_IsStationBuild.end())
+			it->second = 0;
 
-bool CSector::Terraform(const CShips& ship)
-{
-	return m_Planets.at(ship.GetTerraform()).SetNeededTerraformPoints(ship.GetColonizePoints()) ? true : false;
+		if (it->second == 0)
+			it = m_iStartStationPoints.erase(it++);
+		else
+			++it;
+	}
+	m_IsStationBuild.clear();
+
+	m_bWhoIsOwnerOfShip.clear();
+	m_mNumbersOfShips.clear();
+	// Die benötigte Scanpower um Schiffe sehen zu können wieder auf NULL setzen
+	m_iNeededScanPower.clear();
+	m_iScanPower.clear();
+	// Sagen das erstmal kein Außenposten und keine Sternbasis in dem Sektor steht
+	m_Outpost.Empty();
+	m_Starbase.Empty();
+	m_bShipPort.clear();
 }
