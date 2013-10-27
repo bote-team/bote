@@ -216,14 +216,13 @@ void CMoralObserver::CalculateEvents(std::vector<CSystem>& systems, const CStrin
 		0,	0,	-1,	2,	2,	1		// #60	Successful sabotage
 	};
 */
-	for (int i = 0; i < m_iEvents.GetSize(); )
+	while(!m_iEvents.IsEmpty())
 	{
-		short moral = m_iMoralMatrix[m_iEvents.GetAt(i)][byMappedRaceNumber - 1];
-		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == sRaceID)
-					systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetMoral(moral);
-		m_iEvents.RemoveAt(i);
+		const short moral = m_iMoralMatrix[m_iEvents.GetAt(0)][byMappedRaceNumber - 1];
+		for(std::vector<CSystem>::iterator it = systems.begin(); it != systems.end(); ++it)
+			if(it->GetOwnerOfSystem() == sRaceID)
+				it->SetMoral(moral);
+		m_iEvents.RemoveAt(0);
 	}
 }
 
