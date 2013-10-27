@@ -2918,17 +2918,17 @@ BOOLEAN CSystem::CanAddTradeRoute(CResearchInfo* researchInfo)  const
 	USHORT maxTradeRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes();
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> eine Ressourcenroute mehr
-	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
-		addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(3);
+	if(const int bonus = researchInfo->IsResearchedThenGetBonus(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT, 3))
+		addResRoute += bonus;
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Bei dieser Spezialforschung gibt es womöglich auch eine Ressourcenroute mehr
 	// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
-	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+	if(const int bonus = researchInfo->IsResearchedThenGetBonus(RESEARCH_COMPLEX::TRADE, 3))
 	{
 		if (maxTradeRoutes == NULL)
 		{
-			addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
-			maxTradeRoutes += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
+			addResRoute += bonus;
+			maxTradeRoutes += bonus;
 		}
 	}
 	if (m_ResourceRoutes.GetSize() > addResRoute)
