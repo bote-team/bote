@@ -337,23 +337,15 @@ void CBotEDoc::Serialize(CArchive& ar)
 
 void CBotEDoc::SerializeSectorsAndSystems(CArchive& ar)
 {
-	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+	for(std::vector<CSystem>::iterator it = m_Systems.begin(); it != m_Systems.end(); ++it)
 	{
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-		{
-			CSector& sector = GetSector(x,y);
-			CSystem& system = GetSystem(x,y);
-			//if (ar.IsLoading())
-			//	system.ResetSystem();
-			sector.Serialize(ar);
-			if (sector.GetSunSystem())
-			{
-				if (sector.GetOwnerOfSector() != ""
-					|| sector.GetColonyOwner() != ""
-					|| sector.GetMinorRace())
-					system.Serialize(ar);
-			}
-		}
+		CSector& sector = static_cast<CSector&>(*it);
+		sector.Serialize(ar);
+		if(!sector.GetSunSystem() ||
+			sector.GetOwnerOfSector().IsEmpty() && sector.GetColonyOwner().IsEmpty() && !sector.GetMinorRace())
+				continue;
+
+		it->Serialize(ar);
 	}
 }
 
