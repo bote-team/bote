@@ -139,13 +139,13 @@ CWorker::EmployedFreeAll CWorker::Workers() const
 		workers_sum += it->second;
 	}
 	const int free_workers = all_workers - workers_sum;
-	assert(free_workers >= 0);
 	return EmployedFreeAll(workers_sum, free_workers, all_workers);
 }
 
 CWorker::EmployedFreeAll CWorker::CalculateFreeWorkers()
 {
 	const EmployedFreeAll& efa = Workers();
+	assert(efa.free >= 0);
 	m_Workers[WORKER::FREE_WORKER] = efa.free;
 	return efa;
 }
