@@ -564,20 +564,17 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 
 		m_ShipMap.SerializeEndOfRoundData(ar, pPlayer->GetRaceID());
 
-		vector<CPoint> vSystems;
-		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+		std::vector<int> systems;
+		for(std::vector<CSystem>::const_iterator it = m_Systems.begin(); it != m_Systems.end(); ++it)
 		{
-			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			{
-				if (GetSector(x, y).GetSunSystem() && GetSystem(x, y).GetOwnerOfSystem() == pPlayer->GetRaceID())
-					vSystems.push_back(CPoint(x, y));
-			}
+			if(it->GetSunSystem() && it->GetOwnerOfSystem() == pPlayer->GetRaceID())
+				systems.push_back(it - m_Systems.begin());
 		}
-		ar << vSystems.size();
-		for (size_t i = 0; i < vSystems.size(); i++)
+		ar << systems.size();
+		for(std::vector<int>::const_iterator it = systems.begin(); it != systems.end(); ++it)
 		{
-			ar << vSystems[i];
-			GetSystem(vSystems[i].x, vSystems[i].y).Serialize(ar);
+			ar << *it;
+			m_Systems.at(*it).Serialize(ar);
 		}
 
 		pPlayer->Serialize(ar);
@@ -616,13 +613,13 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 
 		m_ShipMap.SerializeEndOfRoundData(ar, sMajorID);
 
-		int number = 0;
+		unsigned number = 0;
 		ar >> number;
-		for (int i = 0; i < number; i++)
+		for (unsigned i = 0; i < number; i++)
 		{
-			CPoint p;
-			ar >> p;
-			GetSystem(p.x, p.y).Serialize(ar);
+			int index;;
+			ar >> index;
+			m_Systems.at(index).Serialize(ar);
 		}
 
 		pMajor->Serialize(ar);
