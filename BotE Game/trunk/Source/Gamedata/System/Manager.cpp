@@ -323,7 +323,6 @@ class CWorkersDistributionCalculator
 private:
 	CSystem* m_pSystem;
 	const CSystemProd* const m_pProd;
-	const CPoint m_Co;
 
 	//currently remaining workers
 	//At the start of the algorithm all workers are unset, thus this is the same as system population at that point.
@@ -465,10 +464,9 @@ private:
 
 public:
 
-	CWorkersDistributionCalculator(CSystem& system, const CPoint& p) :
+	CWorkersDistributionCalculator(CSystem& system) :
 		m_pSystem(&system),
 		m_pProd(system.GetProduction()),
-		m_Co(p),
 		m_WorkersLeftToSet(system.GetWorker(WORKER::ALL_WORKER))
 	{
 	}
@@ -600,9 +598,9 @@ public:
 
 };
 
-bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
+bool CSystemManager::DistributeWorkers(CSystem& system) const
 {
-	CWorkersDistributionCalculator calc(system, p);
+	CWorkersDistributionCalculator calc(system);
 
 	calc.Prepare();
 	//energy
@@ -627,9 +625,8 @@ bool CSystemManager::DistributeWorkers(CSystem& system, const CPoint& p) const
 class CEnergyConsumersChecker
 {
 public:
-	CEnergyConsumersChecker(CSystem& system, const CPoint& p) :
-		m_pSystem(&system),
-		m_Co(p)
+	CEnergyConsumersChecker(CSystem& system) :
+		m_pSystem(&system)
 		{}
 
 	bool ShouldTakeShipyardOnline() const
@@ -685,7 +682,6 @@ public:
 
 private:
 	CSystem* m_pSystem;
-	const CPoint m_Co;
 
 	bool CheckShips(const std::set<CString>& enemies) const
 	{
@@ -703,11 +699,11 @@ private:
 
 };
 
-bool CSystemManager::CheckEnergyConsumers(CSystem& system, const CPoint& p)
+bool CSystemManager::CheckEnergyConsumers(CSystem& system)
 {
 	if(!m_bOnOffline)
 		return false;
-	CEnergyConsumersChecker checker(system, p);
+	CEnergyConsumersChecker checker(system);
 	CArray<CBuilding>* buildings = system.GetAllBuildings();
 	bool bomb_warning = false;
 	bool defense_checked = false;

@@ -76,10 +76,10 @@ public:
 
 	//Distributes workers according to priorities and other manager settings
 	//@return false in case of an error
-	bool DistributeWorkers(CSystem& system, const CPoint& p) const;
+	bool DistributeWorkers(CSystem& system) const;
 
 	//Takes energy buildings in the system on/offline
-	bool CheckEnergyConsumers(CSystem& system, const CPoint& p);
+	bool CheckEnergyConsumers(CSystem& system);
 
 	//@return true in case of expected famine
 	static bool CheckFamine(const CSystem& system);

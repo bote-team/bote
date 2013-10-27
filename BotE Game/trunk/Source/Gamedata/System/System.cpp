@@ -3258,9 +3258,9 @@ void CSystem::ExecuteManager(CMajor& owner, bool turn_change, bool energy)
 
 	const CString& name = GetName();
 
-	if(energy && m_Manager.CheckEnergyConsumers(*this, m_KO) && turn_change)
+	if(energy && m_Manager.CheckEnergyConsumers(*this) && turn_change)
 		ManagerMessage(CLoc::GetString("MANAGER_BOMB_WARNING",false, name), owner, m_KO);
-	if(!m_Manager.DistributeWorkers(*this, m_KO))
+	if(!m_Manager.DistributeWorkers(*this))
 		ManagerMessage(CLoc::GetString("MANAGER_MALFUNCTION",false, name), owner, m_KO);
 	if(turn_change && m_Manager.CheckFamine(*this))
 		ManagerMessage(CLoc::GetString("MANAGER_FAMINE_WARNING",false, name), owner, m_KO);
