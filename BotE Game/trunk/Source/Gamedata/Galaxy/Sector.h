@@ -469,7 +469,7 @@ public:
 	/// gehört. Übergeben wird dafür auch der mögliche Besitzer des Systems in diesem Sektor.
 	void CalculateOwner(const CString& sSystemOwner);
 
-private:
+protected:
 	/// Resetfunktion für die Klasse CSector
 	void Reset();
 public:

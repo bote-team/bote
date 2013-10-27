@@ -5695,6 +5695,12 @@ void CBotEDoc::AllocateSystems()
 	STARMAP_TOTALHEIGHT = STARMAP_SECTORS_VCOUNT * STARMAP_SECTOR_HEIGHT;
 
 	const unsigned size = STARMAP_SECTORS_HCOUNT*STARMAP_SECTORS_VCOUNT;
+	if(m_Systems.size() == size)
+	{
+		for(std::vector<CSystem>::iterator it = m_Systems.begin(); it != m_Systems.end(); ++it)
+			it->ResetSystem();
+		return;
+	}
 	m_Systems.clear();
 	m_Systems.reserve(size);
 	for(int y = 0; y < STARMAP_SECTORS_VCOUNT; ++y)

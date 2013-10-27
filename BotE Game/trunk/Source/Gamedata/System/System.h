@@ -51,11 +51,9 @@ public:
 
 	CSystem& operator=(const CSystem&);
 
-private:
 	// Resetfunktion für die Klasse CSystem.
 	void ResetSystem();
 
-public:
 
 //////////////////////////////////////////////////////////////////////
 // serialization

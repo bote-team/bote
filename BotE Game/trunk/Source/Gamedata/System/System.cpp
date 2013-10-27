@@ -126,6 +126,8 @@ CSystem& CSystem::operator=(const CSystem& other)
 // Funktion setzt alle Werte wieder zurück auf standard.
 void CSystem::ResetSystem()
 {
+	CSector::Reset();
+
 	m_sOwnerOfSystem = "";			// Der Besitzer des Systems
 	m_dHabitants = 0.0f;			// Einwohner in dem System
 	m_iMoral = 100;					// Moral im System
