@@ -2948,13 +2948,12 @@ BOOLEAN CSystem::AddTradeRoute(CPoint dest, std::vector<CSystem>& systems, CRese
 	// dieses System hat, zu diesem Ziel führt. Man kann immer nur eine Handelsroute zu einem bestimmten
 	// System haben.
 	if (canAddTradeRoute)
-		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == this->GetOwnerOfSystem())
-					if (&systems.at(x+(y)*STARMAP_SECTORS_HCOUNT) != this)
-						for (int i = 0; i < systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize(); i++)
-							if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetAt(i).GetDestKO() == dest)
-								return FALSE;
+		for(std::vector<CSystem>::const_iterator it = systems.begin(); it != systems.end(); ++it)
+			if(it->GetOwnerOfSystem() == m_sOwnerOfSystem)
+				if(&*it != this)
+					for (int i = 0; i < it->GetTradeRoutes()->GetSize(); i++)
+						if(it->GetTradeRoutes()->GetAt(i).GetDestKO() == dest)
+							return FALSE;
 
 	// nachschauen, das nicht schon eine Handelsroute mit dem Ziel vorhanden ist, wenn dies der Fall ist, dann wird
 	// diese Handelsroute gelöscht
