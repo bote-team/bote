@@ -365,6 +365,13 @@ private:
 		return unset;
 	}
 
+	void OnBestIndustryWorkerCountFound(int& unset)
+	{
+		SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
+		--unset;
+		assert(unset >= 0);
+	}
+
 	//removes workers from factories until they are the minimum number to finish the current project
 	//in still the same number of turns (as at the start of the function)
 	int DecrementDueToWastedIndustry(bool max_industry)
@@ -383,13 +390,16 @@ private:
 			SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_DECREMENT);
 			++unset;
 			m_pSystem->CalculateVariables();
+			const int current_rounds = m_pSystem->NeededRoundsToBuild(0, true, false);
 			if(m_pSystem->GetWorker(WORKER::INDUSTRY_WORKER) == 0)
-				return unset;
-			if(min_rounds < m_pSystem->NeededRoundsToBuild(0, true))
 			{
-				SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
-				--unset;
-				assert(unset >= 0);
+				if(min_rounds < current_rounds)
+					OnBestIndustryWorkerCountFound(unset);
+				return unset;
+			}
+			if(min_rounds < current_rounds)
+			{
+				OnBestIndustryWorkerCountFound(unset);
 				return unset;
 			}
 		}
