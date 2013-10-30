@@ -2851,7 +2851,6 @@ int CSystem::NeededRoundsToBuild(int index_or_id, bool already_in_list, bool use
 	}
 	else if (index_or_id < 20000)	// Bei Schiffen Wertfeffiziens mitbeachten
 	{
-		assert(m_Production.GetShipYardEfficiency() > 0);
 		if(!already_in_list)
 		{
 			TurnsCalc::CalculateNeededResources(*this, index_or_id, NULL,
