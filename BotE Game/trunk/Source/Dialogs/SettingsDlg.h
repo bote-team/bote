@@ -8,6 +8,7 @@
 #pragma once
 #include "afxcmn.h"
 #include "afxwin.h"
+#include "resource.h"
 
 
 /// CSettingsDlg-Dialogfeld
@@ -31,6 +32,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
+
+	static const int max_alien_frequency = 60;
+
 private:
 	bool m_bDisable;
 
@@ -62,9 +66,9 @@ private:
 	CSliderCtrl m_ctrlStarDensity;
 	CSliderCtrl m_ctrlMinorDensity;
 	CSliderCtrl m_ctrlAnomalyDensity;
+	CSliderCtrl m_ctrlAlienFrequency;
 	CComboBox m_comboGalaxysize;
 	CComboBox m_comboGalaxyshape;
-	BOOL m_bAlienEntities;
 	BOOL m_bRandomEvents;
 
 	// Victory Conditions

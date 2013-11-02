@@ -2,6 +2,7 @@
 #include "IniLoader.h"
 #include "Constants.h"
 #include "IOData.h"
+#include "SettingsDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -52,7 +53,10 @@ CIniLoader::CIniLoader(void)
 		WriteValue("Special", "GENERATIONMODE", "0");
 		WriteValue("Special", "MAPSIZEV", "20");
 		WriteValue("Special", "MAPSIZEH", "30");
-		WriteValue("Special", "ALIENENTITIES", "ON");
+		const int aliens = CSettingsDlg::max_alien_frequency / 6;
+		CString s;
+		s.Format("%i", aliens);
+		WriteValue("Special", "ALIENENTITIES", s);
 		WriteValue("Special", "RANDOMEVENTS", "ON");
 		WriteValue("Special", "RESEARCHSPEED", "1.25");
 

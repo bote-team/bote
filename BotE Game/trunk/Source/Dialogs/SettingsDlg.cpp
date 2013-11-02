@@ -25,7 +25,6 @@ CSettingsDlg::CSettingsDlg(bool bDisableNonWorking/* = false*/, CWnd* pParent /*
 	, m_bShowScrollBars(FALSE)
 	, m_bInvertMouse(FALSE)
 	, m_bHideMenu(FALSE)
-	, m_bAlienEntities(TRUE)
 	, m_bRandomEvents(TRUE)
 	, m_bVCElimination(FALSE)
 	, m_bVCDiplomacy(FALSE)
@@ -58,6 +57,7 @@ void CSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SLIDER_STARDENSITY, m_ctrlStarDensity);
 	DDX_Control(pDX, IDC_SLIDER_MINORDENSITY, m_ctrlMinorDensity);
 	DDX_Control(pDX, IDC_SLIDER_ANOMALYDENSITY, m_ctrlAnomalyDensity);
+	DDX_Control(pDX, IDC_SLIDER_ALIEN_FREQUENCY, m_ctrlAlienFrequency);
 	DDX_Control(pDX, IDC_EDIT_RANDOMSEED, m_edtRandomSeed);
 	DDX_Control(pDX, IDC_COMBOGALAXYSHAPE, m_comboGalaxyshape);
 	DDX_Control(pDX, IDC_COMBOGALAXYSIZE, m_comboGalaxysize);
@@ -69,7 +69,6 @@ void CSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_VC_COMBAT, m_bVCCombat);
 	DDX_Check(pDX, IDC_CHECK_VC_SABOTAGE, m_bVCSabotage);
 	DDX_Check(pDX, IDC_CHECK_SHOWRANDOMEVENTPICTURES, m_bShowRandomEventPictures);
-	DDX_Check(pDX, IDC_CHECK_ALIENENTITIES, m_bAlienEntities);
 	DDX_Check(pDX, IDC_CHECK_RANDOMEVENTS, m_bRandomEvents);
 }
 
@@ -98,6 +97,8 @@ BOOL CSettingsDlg::OnInitDialog()
 	m_ctrlMinorDensity.SetTicFreq(1);
 	m_ctrlAnomalyDensity.SetRange(0,100);
 	m_ctrlAnomalyDensity.SetTicFreq(1);
+	m_ctrlAlienFrequency.SetRange(0, max_alien_frequency);
+	m_ctrlAlienFrequency.SetTicFreq(1);
 
 	CIniLoader* pIni = CIniLoader::GetInstance();
 	ASSERT(pIni);
@@ -260,10 +261,10 @@ BOOL CSettingsDlg::OnInitDialog()
 		ASSERT(false);
 	m_ctrlAnomalyDensity.SetPos(nAnomalyDensity);
 
-	bool bAlienEntities = true;
-	if (!pIni->ReadValue("Special", "ALIENENTITIES", bAlienEntities))
+	float nAlienFrequency = 0;
+	if (!pIni->ReadValue("Special", "ALIENENTITIES", nAlienFrequency))
 		ASSERT(false);
-	m_bAlienEntities = bAlienEntities;
+	m_ctrlAlienFrequency.SetPos(nAlienFrequency);
 
 	bool bRandomEvents = true;
 	if (!pIni->ReadValue("Special", "RANDOMEVENTS", bRandomEvents))
@@ -340,9 +341,6 @@ BOOL CSettingsDlg::OnInitDialog()
 		pWnd = GetDlgItem(IDC_EDIT_RANDOMSEED);
 		if (pWnd)
 			pWnd->EnableWindow(FALSE);
-		pWnd = GetDlgItem(IDC_CHECK_ALIENENTITIES);
-		if (pWnd)
-			pWnd->EnableWindow(FALSE);
 		pWnd = GetDlgItem(IDC_CHECK_RANDOMEVENTS);
 		if (pWnd)
 			pWnd->EnableWindow(FALSE);
@@ -408,7 +406,7 @@ void CSettingsDlg::OnOK()
 	pIni->WriteValue("Special", "MINORDENSITY", s);
 	s.Format("%d", m_ctrlAnomalyDensity.GetPos());
 	pIni->WriteValue("Special", "ANOMALYDENSITY", s);
-	m_bAlienEntities == TRUE ? s = "ON" : s = "OFF";
+	s.Format("%d", m_ctrlAlienFrequency.GetPos());
 	pIni->WriteValue("Special", "ALIENENTITIES", s);
 	m_bRandomEvents == TRUE ? s = "ON" : s = "OFF";
 	pIni->WriteValue("Special", "RANDOMEVENTS", s);

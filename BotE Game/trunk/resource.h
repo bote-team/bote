@@ -109,6 +109,7 @@
 #define IDC_CHECK_VC_SABOTAGE           1061
 #define IDC_CHECK_SHOWMINIMAP           1062
 #define IDC_GENMODEEDIT                 1063
+#define IDC_SLIDER_ALIEN_FREQUENCY      1063
 #define IDC_GENMODE                     1064
 #define IDC_COMBOGALAXYSIZE             1065
 #define IDC_COMBOGALAXYSHAPE            1066

@@ -41,6 +41,7 @@
 #include "NewRoundDataCalculator.h"
 #include "OldRoundDataCalculator.h"
 #include "ClientWorker.h"
+#include "SettingsDlg.h"
 
 
 #ifdef _DEBUG
@@ -1473,8 +1474,10 @@ void CBotEDoc::ApplyShipsAtStartup()
 	file.Close();
 
 	CIniLoader* pIni = CIniLoader::GetInstance();
-	ASSERT(pIni);
-	if (pIni && pIni->ReadValueDefault("Special", "ALIENENTITIES", true))
+	assert(pIni);
+	float frequency = 0;
+	assert(pIni->ReadValue("Special", "ALIENENTITIES", frequency));
+	if (frequency > 0.0f)
 	{
 		// Nehmen die Ehlenen am Spiel teil, so den Ehlenen-Beschützer (Station) in deren System bauen
 		if (CMinor* pEhlen = dynamic_cast<CMinor*>(GetRaceCtrl()->GetRace("EHLEN")))
@@ -5012,7 +5015,9 @@ void CBotEDoc::CalcEndDataForNextRound()
 void CBotEDoc::CalcRandomAlienEntities()
 {
 	const CIniLoader* pIni = CIniLoader::GetInstance();
-	if (!pIni->ReadValueDefault("Special", "ALIENENTITIES", true))
+	float frequency = 0;
+	assert(pIni->ReadValue("Special", "ALIENENTITIES", frequency));
+	if (frequency == 0.0f)
 		return;
 
 	// Aliens zufällig ins Spiel bringen
@@ -5056,9 +5061,13 @@ void CBotEDoc::CalcRandomAlienEntities()
 			int nValue = STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT;
 			// Pro Techlevel verringert sich die virtuelle Anzahl der Sektoren um 25% -> geringere Wahrscheinlichkeit
 			nValue /= ((nMod * 4 + 100.0) / 100.0);
-			float fSteuerParameter = 5.00f;	// Hiermit kann man leicht die Wahrscheinlichkeit steuern, aktuell 5mal niedriger!
-			if (rand()%((int)(10000 * fSteuerParameter)) > nValue)
-				continue;
+			// Hiermit kann man leicht die Wahrscheinlichkeit steuern,
+			// aktuell 5mal niedriger!
+			float fSteuerParameter = (CSettingsDlg::max_alien_frequency - frequency)
+				/ frequency;
+			if(fSteuerParameter != 0.0f)
+				if (rand()%((int)(10000 * fSteuerParameter)) > nValue)
+					continue;
 
 			// zufälligen Sektor am Rand der Map ermitteln
 			while (true)
