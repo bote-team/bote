@@ -68,11 +68,11 @@ void CEventMenuView::OnDraw(CDC* dc)
 		eventScreen->Create();
 		eventScreen->Draw(&g, pDoc->GetGraphicPool());
 		// Handelt es sich um ein Event zu einem Zufallsereignis?
-		if (CEventRandom* pRandomEventScreen = dynamic_cast<CEventRandom*>(eventScreen))
+		if (dynamic_cast<CEventRandom*>(eventScreen) || dynamic_cast<CEventAlienEntity*>(eventScreen))
 		{
 			// Dieses sofort schließen, wenn es nicht angezeigt werden soll
 			if (CIniLoader* pIni = CIniLoader::GetInstance())
-				if (!pIni->ReadValueDefault("Video", "SHOWRANDOMEVENTPICTURES", true))
+				if (!pIni->ReadValueDefault("Video", "SHOWEVENTPICTURES", true))
 					CloseScreen(eventScreen);
 		}
 	}

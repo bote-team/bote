@@ -53,7 +53,7 @@ private:
 	BOOL m_bShowTraderoutes;
 	BOOL m_bAnimatedIcon;
 	BOOL m_bShowMiniMap;
-	BOOL m_bShowRandomEventPictures;
+	BOOL m_bShowEventPictures;
 	CSliderCtrl m_ctrlTooltipDelay;
 
 	// Control

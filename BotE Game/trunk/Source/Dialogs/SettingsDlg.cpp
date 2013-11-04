@@ -21,7 +21,7 @@ CSettingsDlg::CSettingsDlg(bool bDisableNonWorking/* = false*/, CWnd* pParent /*
 	, m_bShowTraderoutes(FALSE)
 	, m_bAnimatedIcon(FALSE)
 	, m_bShowMiniMap(TRUE)
-	, m_bShowRandomEventPictures(TRUE)
+	, m_bShowEventPictures(TRUE)
 	, m_bShowScrollBars(FALSE)
 	, m_bInvertMouse(FALSE)
 	, m_bHideMenu(FALSE)
@@ -68,7 +68,7 @@ void CSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_VC_RESEARCH, m_bVCResearch);
 	DDX_Check(pDX, IDC_CHECK_VC_COMBAT, m_bVCCombat);
 	DDX_Check(pDX, IDC_CHECK_VC_SABOTAGE, m_bVCSabotage);
-	DDX_Check(pDX, IDC_CHECK_SHOWRANDOMEVENTPICTURES, m_bShowRandomEventPictures);
+	DDX_Check(pDX, IDC_CHECK_SHOWEVENTPICTURES, m_bShowEventPictures);
 	DDX_Check(pDX, IDC_CHECK_RANDOMEVENTS, m_bRandomEvents);
 }
 
@@ -210,10 +210,10 @@ BOOL CSettingsDlg::OnInitDialog()
 		ASSERT(false);
 	m_bShowMiniMap = bShowMiniMap;
 
-	bool bShowRandomEventPictures = true;
-	if (!pIni->ReadValue("Video", "SHOWRANDOMEVENTPICTURES", bShowRandomEventPictures))
+	bool bShowEventPictures = true;
+	if (!pIni->ReadValue("Video", "SHOWEVENTPICTURES", bShowEventPictures))
 		ASSERT(false);
-	m_bShowRandomEventPictures = bShowRandomEventPictures;
+	m_bShowEventPictures = bShowEventPictures;
 
 	int nTooltipDelay = 750;
 	if (!pIni->ReadValue("Video", "TOOLTIPDELAY", nTooltipDelay))
@@ -384,8 +384,8 @@ void CSettingsDlg::OnOK()
 	pIni->WriteValue("Video", "ANIMATEDICON", s);
 	m_bShowMiniMap == TRUE ? s = "ON" : s = "OFF";
 	pIni->WriteValue("Video", "SHOWMINIMAP", s);
-	m_bShowRandomEventPictures == TRUE ? s = "ON" : s = "OFF";
-	pIni->WriteValue("Video", "SHOWRANDOMEVENTPICTURES", s);
+	m_bShowEventPictures == TRUE ? s = "ON" : s = "OFF";
+	pIni->WriteValue("Video", "SHOWEVENTPICTURES", s);
 	s.Format("%d", m_ctrlTooltipDelay.GetPos());
 	pIni->WriteValue("Video", "TOOLTIPDELAY", s);
 
