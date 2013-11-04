@@ -500,6 +500,8 @@ public:
 	bool IncreaseWorkersUntilSufficient(WORKER::Typ type, bool allow_insufficient)
 	{
 		assert(type == WORKER::ENERGY_WORKER || type == WORKER::FOOD_WORKER);
+		if(m_pSystem->GetDisabledProductions()[type])
+			return true;
 		while(true)
 		{
 			const int value = (type == WORKER::ENERGY_WORKER) ? m_pProd->GetEnergyProd() : m_pProd->GetFoodProd();
