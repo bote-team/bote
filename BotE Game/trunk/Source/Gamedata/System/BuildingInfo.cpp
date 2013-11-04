@@ -896,20 +896,9 @@ bool CBuildingInfo::IsBuildingBuildableNow(const BYTE reserachLevels[6]) const
 	return true;
 }
 
-bool CBuildingInfo::IsDefenseBuilding() const
+static bool GreaterThanZero(int value)
 {
-	return
-		m_iShieldPower > 0 ||
-		m_iShieldPowerBoni > 0 ||
-		m_iGroundDefend > 0 ||
-		m_iGroundDefendBoni > 0 ||
-		m_iShipDefend > 0 ||
-		m_iShipDefendBoni > 0;
-}
-
-bool CBuildingInfo::IsDeritiumRefinery() const
-{
-	return m_iDeritium > 0;
+	return value > 0;
 }
 
 static bool GreaterThanEqualToZero(int value)
@@ -917,9 +906,22 @@ static bool GreaterThanEqualToZero(int value)
 	return value >= 0;
 }
 
-bool CBuildingInfo::IsAcceptableMinusMoral() const
+bool CBuildingInfo::IsDefenseBuilding() const
 {
-	return m_iMoral < 0 &&
+	return
+		GreaterThanZero(m_iShieldPower) ||
+		GreaterThanZero(m_iShieldPowerBoni) ||
+		GreaterThanZero(m_iGroundDefend) ||
+		GreaterThanZero(m_iGroundDefendBoni) ||
+		GreaterThanZero(m_iShipDefend) ||
+		GreaterThanZero(m_iShipDefendBoni);
+}
+
+bool CBuildingInfo::OnlyImprovesProduction(bool minus_moral) const
+{
+	const bool ok = minus_moral ? true : GreaterThanEqualToZero(m_iMoral);
+	return
+		ok &&
 		GreaterThanEqualToZero(m_iAllRessourceBoni) &&
 		GreaterThanEqualToZero(m_iMoralEmpire) &&
 		GreaterThanEqualToZero(m_iFoodBoni) &&
@@ -946,7 +948,114 @@ bool CBuildingInfo::IsAcceptableMinusMoral() const
 		GreaterThanEqualToZero(m_iCompTechBoni) &&
 		GreaterThanEqualToZero(m_iPropulsionTechBoni) &&
 		GreaterThanEqualToZero(m_iConstructionTechBoni) &&
-		GreaterThanEqualToZero(m_iWeaponTechBoni);
+		GreaterThanEqualToZero(m_iWeaponTechBoni) &&
+		GreaterThanEqualToZero(m_iScanPowerBoni) &&
+		GreaterThanEqualToZero(m_iScanRangeBoni) &&
+		GreaterThanEqualToZero(m_iIncomeOnTradeRoutes) &&
+		GreaterThanEqualToZero(m_iShipRecycling) &&
+		GreaterThanEqualToZero(m_iBuildingBuildSpeed) &&
+		GreaterThanEqualToZero(m_iUpdateBuildSpeed) &&
+		GreaterThanEqualToZero(m_iShipBuildSpeed) &&
+		GreaterThanEqualToZero(m_iTroopBuildSpeed);
+}
+
+WORKER::Typ CBuildingInfo::ProducesWorkerfull() const
+{
+	if(GreaterThanZero(m_iFood))
+		return WORKER::FOOD_WORKER;
+	if(GreaterThanZero(m_iIP))
+		return WORKER::INDUSTRY_WORKER;
+	if(GreaterThanZero(m_iEnergy))
+		return WORKER::ENERGY_WORKER;
+	if(GreaterThanZero(m_iSP))
+		return WORKER::SECURITY_WORKER;
+	if(GreaterThanZero(m_iFP))
+		return WORKER::RESEARCH_WORKER;
+	if(GreaterThanZero(m_iTitan))
+		return WORKER::TITAN_WORKER;
+	if(GreaterThanZero(m_iDeuterium))
+		return WORKER::DEUTERIUM_WORKER;
+	if(GreaterThanZero(m_iDuranium))
+		return WORKER::DURANIUM_WORKER;
+	if(GreaterThanZero(m_iCrystal))
+		return WORKER::CRYSTAL_WORKER;
+	if(GreaterThanZero(m_iIridium))
+		return WORKER::IRIDIUM_WORKER;
+	return WORKER::NONE;
+}
+
+bool CBuildingInfo::IsDeritiumRefinery() const
+{
+	return GreaterThanZero(m_iDeritium);
+}
+
+bool CBuildingInfo::ProducesWorkerless() const
+{
+
+	const bool does =
+		GreaterThanZero(m_iCredits) ||
+		GreaterThanZero(m_iScanPower) ||
+		GreaterThanZero(m_iScanPowerBoni) ||
+		GreaterThanZero(m_iScanRangeBoni) ||
+		GreaterThanZero(m_iAddedTradeRoutes) ||
+		GreaterThanZero(m_iIncomeOnTradeRoutes) ||
+		GreaterThanZero(m_iShipRecycling) ||
+		GreaterThanZero(m_iBuildingBuildSpeed) ||
+		GreaterThanZero(m_iUpdateBuildSpeed) ||
+		GreaterThanZero(m_iShipBuildSpeed) ||
+		GreaterThanZero(m_iTroopBuildSpeed);
+
+	if(does)
+		return true;
+	//resource distributor
+	const int length = sizeof(m_bResourceDistributor) / sizeof(m_bResourceDistributor[0]);
+	for(int i = 0; i < length; ++i)
+		if(m_bResourceDistributor[i])
+			return true;
+	return false;
+}
+
+bool CBuildingInfo::ImprovesProduction() const
+{
+	return
+		GreaterThanZero(m_iAllRessourceBoni) ||
+		GreaterThanZero(m_iFoodBoni) ||
+		GreaterThanZero(m_iIndustryBoni) ||
+		GreaterThanZero(m_iEnergyBoni) ||
+		GreaterThanZero(m_iSecurityBoni) ||
+		GreaterThanZero(m_iResearchBoni) ||
+		GreaterThanZero(m_iTitanBoni) ||
+		GreaterThanZero(m_iDeuteriumBoni) ||
+		GreaterThanZero(m_iDuraniumBoni) ||
+		GreaterThanZero(m_iCrystalBoni) ||
+		GreaterThanZero(m_iIridiumBoni) ||
+		GreaterThanZero(m_iDeritiumBoni) ||
+		GreaterThanZero(m_iCreditsBoni) ||
+		GreaterThanZero(m_iInnerSecurityBoni) ||
+		GreaterThanZero(m_iEconomySpyBoni) ||
+		GreaterThanZero(m_iEconomySabotageBoni) ||
+		GreaterThanZero(m_iResearchSpyBoni) ||
+		GreaterThanZero(m_iResearchSabotageBoni) ||
+		GreaterThanZero(m_iMilitarySpyBoni) ||
+		GreaterThanZero(m_iMilitarySabotageBoni) ||
+		GreaterThanZero(m_iBioTechBoni) ||
+		GreaterThanZero(m_iEnergyTechBoni) ||
+		GreaterThanZero(m_iCompTechBoni) ||
+		GreaterThanZero(m_iPropulsionTechBoni) ||
+		GreaterThanZero(m_iConstructionTechBoni) ||
+		GreaterThanZero(m_iWeaponTechBoni);
+}
+
+bool CBuildingInfo::IsUsefulForProduction() const
+{
+	return ImprovesProduction() || ProducesWorkerless();
+}
+
+bool CBuildingInfo::IsUsefulMoral() const
+{
+	if(m_iMoralEmpire < 0)
+		return false;
+	return m_iMoralEmpire > 0 || m_iMoral > 0;
 }
 
 int CBuildingInfo::GetXProd(WORKER::Typ x) const
@@ -963,6 +1072,22 @@ int CBuildingInfo::GetXProd(WORKER::Typ x) const
 		case WORKER::DURANIUM_WORKER: return m_iDuranium;
 		case WORKER::CRYSTAL_WORKER: return m_iCrystal;
 		case WORKER::IRIDIUM_WORKER: return m_iIridium;
+	}
+	assert(false);
+	return 0;
+}
+
+int CBuildingInfo::GetXProd(RESOURCES::TYPE x) const
+{
+	switch(x)
+	{
+		case RESOURCES::FOOD: return m_iFood;
+		case RESOURCES::TITAN: return m_iTitan;
+		case RESOURCES::DEUTERIUM: return m_iDeuterium;
+		case RESOURCES::DURANIUM: return m_iDuranium;
+		case RESOURCES::CRYSTAL: return m_iCrystal;
+		case RESOURCES::IRIDIUM: return m_iIridium;
+		case RESOURCES::DERITIUM: return m_iDeritium;
 	}
 	assert(false);
 	return 0;

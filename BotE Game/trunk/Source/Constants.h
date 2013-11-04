@@ -453,6 +453,9 @@ namespace RESOURCES
 	};
 }
 
+void InitConstants();
+RESOURCES::TYPE WorkerToResource(WORKER::Typ type);
+
 static const int MAX_FOOD_STORE			=	25000;
 static const int MAX_RES_STORE			=	125000;
 static const int MAX_DERITIUM_STORE		=	100;

@@ -663,13 +663,14 @@ public:
 		return moral_prod + info.GetMoralProd() >= min_moral_prod;
 	}
 
-	bool CheckDeritiumRefinery(const CBuildingInfo& info, const CBuilding& building) const
+	bool CheckStoreFull(RESOURCES::TYPE type, const CBuildingInfo& info, const CBuilding& building) const
 	{
-		const unsigned max_store = m_pSystem->GetDeritiumStoreMax();
+		const unsigned max_store = m_pSystem->GetXStoreMax(type);
+		const unsigned store = m_pSystem->GetResourceStore(type);
+		const unsigned prod = info.GetXProd(type);
 		if(building.GetIsBuildingOnline())
-			return m_pSystem->GetDeritiumStore() + m_pSystem->GetProduction()->GetDeritiumProd() <= max_store;
-		return m_pSystem->GetDeritiumStore() + m_pSystem->GetProduction()->GetDeritiumProd()
-			+ info.GetDeritiumProd() <= max_store;
+			return store + prod <= max_store;
+		return store + m_pSystem->GetProduction()->GetResourceProd(type) + prod <= max_store;
 	}
 
 	bool BomberInSector() const
@@ -747,11 +748,31 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system)
 				should_be_online = false;
 		}
 		if(info.IsDeritiumRefinery())
-			should_be_online = checker.CheckDeritiumRefinery(info, building);
-		if(info.IsAcceptableMinusMoral())
-			should_be_online = checker.CheckMoral(info, building, m_iMinMoral, m_iMinMoralProd);
+			should_be_online = checker.CheckStoreFull(RESOURCES::DERITIUM, info, building);
 
-		should_be_online = should_be_online || info.GetMoralProd() > 0 || info.GetMoralProdEmpire() > 0;
+		if(info.GetResistance() > 0)
+			should_be_online = !system.GetTakenSector();
+
+		if(info.GetShipTraining() > 0)
+			should_be_online = system.GetOwnerOfShip(system.GetOwnerOfSystem());
+
+		if(info.GetTroopTraining() > 0)
+			should_be_online = !system.GetTroops()->IsEmpty();
+
+		bool minus_moral = false;
+		if(info.GetMoralProd() < 0)
+			minus_moral = should_be_online = checker.CheckMoral(info, building, m_iMinMoral, m_iMinMoralProd);
+
+		const WORKER::Typ type = info.ProducesWorkerfull();
+		if(type != WORKER::NONE)
+		{
+			should_be_online = system.HasStore(type) ?
+				checker.CheckStoreFull(WorkerToResource(type), info, building) : true;
+		}
+
+		should_be_online = should_be_online || info.IsUsefulForProduction();
+		should_be_online = should_be_online && info.OnlyImprovesProduction(minus_moral);
+		should_be_online = should_be_online || info.IsUsefulMoral();
 
 		const bool is_online = building.GetIsBuildingOnline();
 		if(should_be_online && !is_online)
@@ -773,13 +794,6 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system)
 	}
 	assert(additional_available_energy >= 0);
 	return m_bBombWarning && bomb_warning;
-}
-
-bool CSystemManager::IsHandledEnergyConsumer(const CBuildingInfo& info)
-{
-	assert(info.GetNeededEnergy() >0);
-	return info.GetShipYard() || info.GetMoralProd() > 0 || info.IsDefenseBuilding() || info.IsDeritiumRefinery()
-		|| info.IsAcceptableMinusMoral();
 }
 
 bool CSystemManager::CheckFamine(const CSystem& system)

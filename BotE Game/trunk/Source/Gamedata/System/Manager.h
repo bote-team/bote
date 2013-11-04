@@ -84,9 +84,6 @@ public:
 	//@return true in case of expected famine
 	static bool CheckFamine(const CSystem& system);
 
-	//@return true in case this building is taken on/offline by system manager by default
-	static bool IsHandledEnergyConsumer(const CBuildingInfo& info);
-
 //////////////////////////////////////////////////////////////////////
 // Members
 //////////////////////////////////////////////////////////////////////

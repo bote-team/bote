@@ -106,6 +106,8 @@ END_MESSAGE_MAP()
 CBotEApp::CBotEApp() :
 	gdiplusToken()
 {
+	InitConstants();
+
 #ifdef VLD
 	VLDEnable();
 #endif

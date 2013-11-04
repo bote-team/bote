@@ -410,10 +410,19 @@ public:
 	bool IsBuildingBuildableNow(const BYTE reserachLevels[6]) const;
 
 	bool IsDefenseBuilding() const;
+	bool OnlyImprovesProduction(bool minus_moral) const;
+	WORKER::Typ ProducesWorkerfull() const;
 	bool IsDeritiumRefinery() const;
-	bool IsAcceptableMinusMoral() const;
+
+private:
+	bool ProducesWorkerless() const;
+	bool ImprovesProduction() const;
+public:
+	bool IsUsefulForProduction() const;
+	bool IsUsefulMoral() const;
 
 	int GetXProd(WORKER::Typ x) const;
+	int GetXProd(RESOURCES::TYPE x) const;
 
 private:
 	// Die laufende Nummer (ID) des Gebäudes

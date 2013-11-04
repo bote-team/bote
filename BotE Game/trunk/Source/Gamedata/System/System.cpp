@@ -440,20 +440,6 @@ int CSystem::GetXStoreMax(RESOURCES::TYPE x) const
 	return 0;
 }
 
-static RESOURCES::TYPE WorkerToResource(WORKER::Typ type)
-{
-	std::map<WORKER::Typ, RESOURCES::TYPE> transformer;
-	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::TITAN_WORKER, RESOURCES::TITAN));
-	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::DEUTERIUM_WORKER, RESOURCES::DEUTERIUM));
-	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::DURANIUM_WORKER, RESOURCES::DURANIUM));
-	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::CRYSTAL_WORKER, RESOURCES::CRYSTAL));
-	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::IRIDIUM_WORKER, RESOURCES::IRIDIUM));
-	transformer.insert(std::pair<WORKER::Typ, RESOURCES::TYPE>(WORKER::FOOD_WORKER, RESOURCES::FOOD));
-	const std::map<WORKER::Typ, RESOURCES::TYPE>::const_iterator it = transformer.find(type);
-	assert(it != transformer.end());
-	return it->second;
-}
-
 int CSystem::GetXStoreMax(WORKER::Typ x) const
 {
 	return GetXStoreMax(WorkerToResource(x));
@@ -472,6 +458,7 @@ UINT CSystem::GetResourceStore(USHORT res) const
 	case RESOURCES::DERITIUM: {return this->GetDeritiumStore();}
 	case RESOURCES::FOOD: { return this->GetFoodStore();}
 	}
+	assert(false);
 	return 0;
 }
 

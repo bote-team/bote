@@ -416,6 +416,8 @@ int CSystemProd::GetResourceProd(BYTE res) const
 {
 	switch (res)
 	{
+	case RESOURCES::FOOD:
+		return m_iFoodProd;
 	case RESOURCES::TITAN:
 		return m_iTitanProd;
 	case RESOURCES::DEUTERIUM:
@@ -428,9 +430,9 @@ int CSystemProd::GetResourceProd(BYTE res) const
 		return m_iIridiumProd;
 	case RESOURCES::DERITIUM:
 		return m_iDeritiumProd;
-	default:
-		return 0;
 	}
+	assert(false);
+	return 0;
 }
 
 
