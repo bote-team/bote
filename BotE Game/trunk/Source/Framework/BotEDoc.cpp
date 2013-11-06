@@ -2828,6 +2828,7 @@ void CBotEDoc::CalcSystemAttack()
 				GetSystem(p.x, p.y).RemoveSpecialRaceBuildings(&this->BuildingInfo);
 				// Variablen berechnen und Gebäude besetzen
 				GetSystem(p.x, p.y).CalculateNumberOfWorkbuildings(&this->BuildingInfo);
+				GetSystem(p.x, p.y).FreeAllWorkers();
 				GetSystem(p.x, p.y).SetWorkersIntoBuildings();
 
 				// war der Verteidiger eine Majorrace und wurde sie durch die Eroberung komplett ausgelöscht,
