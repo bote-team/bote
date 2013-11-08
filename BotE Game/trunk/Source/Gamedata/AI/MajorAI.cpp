@@ -305,7 +305,7 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 		nNeededRelation = 40 + nRelationValue;
 
 		if (pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
-			nNeededRelation += 40;
+			nNeededRelation += 270;
 		if (pRace->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 			nNeededRelation += 20;
 		if (pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
@@ -617,7 +617,7 @@ bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 			if (pOurRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))	// Krieg ist nicht immer gut für Forschung
 				nMinRel -= 5;
 			if (pOurRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))		// Wir hassen Krieg
-				nMinRel -= 10;
+				nMinRel -= 55;
 
 			if (byTheirRelationToUs < nMinRel && nAgreement != DIPLOMATIC_AGREEMENT::WAR)
 				nOffer = DIPLOMATIC_AGREEMENT::WAR;

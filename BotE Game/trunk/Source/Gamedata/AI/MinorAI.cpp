@@ -291,7 +291,7 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))	// Krieg ist nicht immer gut für Forschung
 				nMinRel -= 10;
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::PACIFIST))	// Wir hassen Krieg
-				nMinRel -= 15;
+				nMinRel -= 60;
 
 			if (nRandom < nMinRel && byOurRelationToThem < nMinRel && nAgreement != DIPLOMATIC_AGREEMENT::WAR)
 				nOffer = DIPLOMATIC_AGREEMENT::WAR;
