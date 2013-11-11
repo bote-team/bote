@@ -459,13 +459,10 @@ void CSector::RecalcPlanetsTerraformingStatus() {
 		if(p.GetIsTerraforming() || p.GetTerraformed())
 			continue;
 		p.SetIsTerraforming(TRUE);
-#pragma warning(push)
-#pragma warning(disable: 4189)
 		unsigned erased = terraformable.erase(planet);
 		AssertBotE(erased == 1);
 	}
 }
-#pragma warning(pop)
 
 int CSector::CountOfTerraformedPlanets() const
 {

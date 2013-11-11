@@ -139,10 +139,7 @@ void CSanity::SanityCheckSectorAndSystem(const CSystem& system, const CBotEDoc& 
 	const CRace* pRace = RaceCtrl.GetRace(sOwnerOfSector);
 	AssertBotE(pRace);
 	AssertBotE(minor ? pRace->IsMinor() : pRace->IsMajor());
-#pragma warning(push)
-#pragma warning(disable:4189)
 }
-#pragma warning(pop)
 
 //void CSanity::ShipInfo(const CArray<CShip, CShip>& shiparray, int index, const CString& indexname) {
 //	if(!MT::CMyTrace::IsLoggingEnabledFor("shipindices"))
