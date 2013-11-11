@@ -9,7 +9,7 @@
 #include "Ships/Ships.h"
 #include "ClientWorker.h"
 
-#include <cassert>
+
 
 IMPLEMENT_SERIAL (CMajor, CRace, 1)
 
@@ -337,7 +337,7 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 /// @param nPos Referenz auf Position im Array, ab wann die Informationen gelten
 void CMajor::Create(const CStringArray& saInfo, int& nPos)
 {
-	ASSERT(nPos >= 0);
+	AssertBotE(nPos >= 0);
 
 	Reset();
 
@@ -363,7 +363,7 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 	while (nStart < sRaceProperties.GetLength())
 	{
 		RACE_PROPERTY::Typ nProperty = (RACE_PROPERTY::Typ)atoi(sRaceProperties.Tokenize(",", nStart));
-		ASSERT(nProperty >= RACE_PROPERTY::NOTHING_SPECIAL && nProperty <= RACE_PROPERTY::HOSTILE);
+		AssertBotE(nProperty >= RACE_PROPERTY::NOTHING_SPECIAL && nProperty <= RACE_PROPERTY::HOSTILE);
 		SetRaceProperty(nProperty, true);				// Rasseneigenschaften
 	}
 

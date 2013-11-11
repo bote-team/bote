@@ -206,7 +206,7 @@ int CBotEApp::ExitInstance()
 void CBotEApp::InitViews(WPARAM, LPARAM)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	pDoc->LoadViewGraphics();
 }
@@ -214,7 +214,7 @@ void CBotEApp::InitViews(WPARAM, LPARAM)
 void CBotEApp::UpdateViews(WPARAM, LPARAM)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	pDoc->DoViewWorkOnNewRound();
 }

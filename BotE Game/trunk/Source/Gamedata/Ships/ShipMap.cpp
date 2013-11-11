@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include <cassert>
+
 
 #include "ShipMap.h"
 #include "Ships.h"
@@ -84,7 +84,7 @@ CShipMap::iterator CShipMap::find(unsigned key) {
 }
 
 static bool advance_by(int& advance, int size) {
-	assert(0 <= advance && advance <= size);
+	AssertBotE(0 <= advance && advance <= size);
 	if(advance >= size/2) {
 		advance = advance - size;
 		return true;
@@ -128,7 +128,7 @@ CShipMap::iterator CShipMap::Add(CShips* ship) {
 	CShipMap::iterator temp = result;
 	result->second->SetKey(key);
 	++temp;
-	assert(temp == end());
+	AssertBotE(temp == end());
 	return result;
 }
 
@@ -149,7 +149,7 @@ void CShipMap::Append(const CShipMap& other) {
 void CShipMap::Reset(bool destroy) {
 	if(destroy)
 		for(CShipMap::iterator i = begin(); i != end(); ++i) {
-			assert(i->second);
+			AssertBotE(i->second);
 			delete i->second;
 			i->second = NULL;
 		}
@@ -164,7 +164,7 @@ void CShipMap::EraseAt(CShipMap::iterator& index, bool destroy) {
 	//	s.Format("CShipMap: removing ship %s", index->second->GetShipName());
 	//	MYTRACE("ships")(MT::LEVEL_INFO, s);
 	//}
-	assert(!empty() && index != end());
+	AssertBotE(!empty() && index != end());
 	//need to copy the iterator, because it can come from a reference to m_CurrentShip (or m_FleetShip),
 	//meaning updating m_CurrentShip/m_FleetShip would change it as well
 	const CShipMap::iterator to_erase = index;
@@ -175,7 +175,7 @@ void CShipMap::EraseAt(CShipMap::iterator& index, bool destroy) {
 	if(to_erase == index)
 		++index;
 	if(destroy) {
-		assert(to_erase->second);
+		AssertBotE(to_erase->second);
 		delete to_erase->second;
 		to_erase->second = NULL;
 	}
@@ -190,12 +190,12 @@ void CShipMap::EraseAt(CShipMap::iterator& index, bool destroy) {
 
 const CShips& CShipMap::at(unsigned key) const {
 	const CShipMap::const_iterator i = find(key);
-	assert(i != end());
+	AssertBotE(i != end());
 	return *i->second;
 }
 CShips& CShipMap::at(unsigned key) {
 	CShipMap::iterator i = find(key);
-	assert(i != end());
+	AssertBotE(i != end());
 	return *i->second;
 }
 
@@ -226,7 +226,7 @@ int CShipMap::index_of(const CShipMap::const_iterator& position) const {
 }
 
 const CShips& CShipMap::GetAt(int index) const {
-	assert(index < GetSize());
+	AssertBotE(index < GetSize());
 	return *iterator_at(index)->second;
 }
 
@@ -257,7 +257,7 @@ void CShipMap::Serialize(CArchive& ar) {
 		}
 	}
 	else
-		assert(false);
+		AssertBotE(false);
 }
 
 void CShipMap::SerializeEndOfRoundData(CArchive& ar, const CString& sMajorID) {
@@ -285,11 +285,11 @@ void CShipMap::SerializeEndOfRoundData(CArchive& ar, const CString& sMajorID) {
 			CShips* ship = new CShips();
 			ship->Serialize(ar);
 			const CShipMap::iterator j = Add(ship);
-			assert(j->second->GetOwnerOfShip() == sMajorID);
+			AssertBotE(j->second->GetOwnerOfShip() == sMajorID);
 		}
 	}
 	else
-		assert(false);
+		AssertBotE(false);
 }
 
 void CShipMap::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentCombatSector) {
@@ -322,11 +322,11 @@ void CShipMap::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentComba
 			CShips* ship = new CShips();
 			ship->Serialize(ar);
 			const CShipMap::iterator j = Add(ship);
-			assert(j->second->GetKO() == ptCurrentCombatSector);
+			AssertBotE(j->second->GetKO() == ptCurrentCombatSector);
 		}
 	}
 	else
-		assert(false);
+		AssertBotE(false);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -336,17 +336,17 @@ void CShipMap::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentComba
 
 void CShipMap::SetCurrentShip(unsigned key) {
 	const CShipMap::iterator i = find(key);
-	assert(i != end());
+	AssertBotE(i != end());
 	m_CurrentShip = i;
 }
 
 void CShipMap::SetCurrentShip(const CShipMap::iterator& position) {
-	assert(!empty() && position != end());
+	AssertBotE(!empty() && position != end());
 	m_CurrentShip = position;
 }
 
 const CShipMap::iterator& CShipMap::CurrentShip() const {
-	assert(!empty() && m_CurrentShip != end());
+	AssertBotE(!empty() && m_CurrentShip != end());
 	return m_CurrentShip;
 }
 
@@ -354,17 +354,17 @@ const CShipMap::iterator& CShipMap::CurrentShip() const {
 
 void CShipMap::SetFleetShip(unsigned key) {
 	const CShipMap::iterator i = find(key);
-	assert(i != end());
+	AssertBotE(i != end());
 	m_FleetShip = i;
 }
 
 void CShipMap::SetFleetShip(const CShipMap::iterator& position) {
-	assert(!empty() && position != end());
+	AssertBotE(!empty() && position != end());
 	m_FleetShip = position;
 }
 
 const CShipMap::iterator& CShipMap::FleetShip() const {
-	assert(!empty() && m_FleetShip != end());
+	AssertBotE(!empty() && m_FleetShip != end());
 	return m_FleetShip;
 }
 
@@ -388,7 +388,7 @@ CShips* CShipMap::GetLeader(const CShips* pShip) const
 		}
 	}
 
-	assert(false);
+	AssertBotE(false);
 	return NULL;
 }
 

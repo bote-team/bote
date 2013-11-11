@@ -110,10 +110,10 @@ CDiplomacyMenuView::~CDiplomacyMenuView()
 void CDiplomacyMenuView::OnNewRound()
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	pPlayer = m_pPlayersRace;
-	ASSERT(pPlayer);
+	AssertBotE(pPlayer);
 
 	m_OutgoingInfo.Reset();
 	m_pIncomingInfo = NULL;
@@ -166,13 +166,13 @@ void CDiplomacyMenuView::OnNewRound()
 void CDiplomacyMenuView::OnDraw(CDC* dc)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -237,10 +237,10 @@ void CDiplomacyMenuView::OnInitialUpdate()
 void CDiplomacyMenuView::LoadRaceGraphics()
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pPlayer = m_pPlayersRace;
-	ASSERT(pPlayer);
+	AssertBotE(pPlayer);
 
 	// Alle Buttons in der View erstellen
 	CreateButtons();
@@ -272,10 +272,10 @@ BOOL CDiplomacyMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pPlayer = m_pPlayersRace;
-	ASSERT(pPlayer);
+	AssertBotE(pPlayer);
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
@@ -665,10 +665,10 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pPlayer = m_pPlayersRace;
-	ASSERT(pPlayer);
+	AssertBotE(pPlayer);
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
@@ -861,7 +861,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 			m_OutgoingInfo = *(*it);
 
 			CRace* pRace = pDoc->GetRaceCtrl()->GetRace((*it)->m_sFromRace);
-			ASSERT(pRace);
+			AssertBotE(pRace);
 
 			RectF rect(20,100+count*25,130,25);
 			// handelt es sich um das angeklickte Angebot
@@ -1043,10 +1043,10 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhichRace)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pPlayer = m_pPlayersRace;
-	ASSERT(pPlayer);
+	AssertBotE(pPlayer);
 
 	CRace* pRace = pDoc->GetRaceCtrl()->GetRace(sWhichRace);
 	if (!pRace)
@@ -1235,10 +1235,10 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWhichRace)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pPlayer = m_pPlayersRace;
-	ASSERT(pPlayer);
+	AssertBotE(pPlayer);
 
 	CRace* pRace = pDoc->GetRaceCtrl()->GetRace(sWhichRace);
 	if (!pRace)
@@ -1523,7 +1523,7 @@ void CDiplomacyMenuView::DrawDiplomacyButtons(Graphics* g, CMajor* pMajor, CArra
 CString CDiplomacyMenuView::PrintDiplomacyStatus(const CString& sOurRace, const CString& sRace, Gdiplus::Color& color)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pOurRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sOurRace));
 	if (!pOurRace)
@@ -1610,10 +1610,10 @@ CString CDiplomacyMenuView::PrintDiplomacyStatus(const CString& sOurRace, const 
 void CDiplomacyMenuView::TakeOrGetbackResLat(bool bTake)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pPlayer = m_pPlayersRace;
-	ASSERT(pPlayer);
+	AssertBotE(pPlayer);
 
 	// bei einer Forderung an eine andere Majorrace werden keine Ressourcen aus den Lagern genommen, auch
 	// werden bei einem Abbruch des diplomatischen Angebots keine Ressourcen wieder gut geschrieben.
@@ -1677,13 +1677,13 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pPlayer = m_pPlayersRace;
-	ASSERT(pPlayer);
+	AssertBotE(pPlayer);
 
 	CalcLogicalPoint(point);
 
@@ -2007,7 +2007,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						// Haben wir auf den Balken gedrückt, um die Menge der zu verschenkenden bzw. zu fordernden Ressourcen zu ändern
 						if (timber[t].PtInRect(point))
 						{
-							ASSERT(m_byWhichResourceIsChosen >= RESOURCES::TITAN && m_byWhichResourceIsChosen <= RESOURCES::DERITIUM);
+							AssertBotE(m_byWhichResourceIsChosen >= RESOURCES::TITAN && m_byWhichResourceIsChosen <= RESOURCES::DERITIUM);
 
 							UINT nStorage = pDoc->GetSystem(m_OutgoingInfo.m_ptKO.x, m_OutgoingInfo.m_ptKO.y).GetResourceStore(m_byWhichResourceIsChosen);
 							// bei normalen Ressourcen wird in 1000er Schritten gegeben, bei Deritium in 5er
@@ -2232,7 +2232,7 @@ void CDiplomacyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -2262,7 +2262,7 @@ BOOL CDiplomacyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	// TODO: Add your message handler code here and/or call default
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return CMainBaseView::OnMouseWheel(nFlags, zDelta, pt);
@@ -2338,7 +2338,7 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -2460,10 +2460,10 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CDiplomacyMenuView::CreateButtons()
 {
-	ASSERT((CBotEDoc*)GetDocument());
+	AssertBotE((CBotEDoc*)GetDocument());
 
 	CMajor* pPlayer = m_pPlayersRace;
-	ASSERT(pPlayer);
+	AssertBotE(pPlayer);
 
 	CString sPrefix = pPlayer->GetPrefix();
 
@@ -2514,13 +2514,13 @@ void CDiplomacyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	if (m_bySubMenu == 1 && m_sClickedOnRace != "")
 	{
 		CBotEDoc* pDoc = resources::pDoc;
-		ASSERT(pDoc);
+		AssertBotE(pDoc);
 
 		if (!pDoc->m_bDataReceived)
 			return;
 
 		CMajor* pPlayer = m_pPlayersRace;
-		ASSERT(pPlayer);
+		AssertBotE(pPlayer);
 
 		CalcLogicalPoint(point);
 
@@ -2593,7 +2593,7 @@ void CDiplomacyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 CString CDiplomacyMenuView::CreateTooltip(void)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return "";

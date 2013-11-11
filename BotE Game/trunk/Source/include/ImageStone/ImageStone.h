@@ -60,7 +60,7 @@ inline void FCObjImage::Stretch_Smooth (int nNewWidth, int nNewHeight, FCObjProg
     // parameter check
     if (!IsValidImage() || (nNewWidth <= 0) || (nNewHeight <= 0) || (ColorBits() < 24))
     {
-        assert(false) ; return ;
+        AssertBotE(false) ; return ;
     }
     if ((nNewWidth == Width()) && (nNewHeight == Height()))
         return ;
@@ -75,7 +75,7 @@ inline void FCObjImage::Stretch_Smooth (int nNewWidth, int nNewHeight, FCObjProg
     const FCObjImage     imgOld(*this) ;
     if (!Create (nNewWidth, nNewHeight, imgOld.ColorBits()))
     {
-        assert(false) ; return ;
+        AssertBotE(false) ; return ;
     }
 
     // initialize index table, to accelerate

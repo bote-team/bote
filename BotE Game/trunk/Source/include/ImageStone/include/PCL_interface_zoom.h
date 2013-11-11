@@ -27,7 +27,7 @@ public:
     /**
      *  Set zoom scale.
      */
-    void SetZoomScale (int nScale) {m_nScale = nScale; assert(nScale != 0);}
+    void SetZoomScale (int nScale) {m_nScale = nScale; AssertBotE(nScale != 0);}
     /**
      *  Get zoom scale.
      */

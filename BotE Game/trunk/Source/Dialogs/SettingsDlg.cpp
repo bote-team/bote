@@ -5,6 +5,7 @@
 #include "BotE.h"
 #include "SettingsDlg.h"
 #include "IniLoader.h"
+#include "AssertBotE.h"
 
 
 // CSettingsDlg-Dialogfeld
@@ -101,16 +102,16 @@ BOOL CSettingsDlg::OnInitDialog()
 	m_ctrlAlienFrequency.SetTicFreq(1);
 
 	CIniLoader* pIni = CIniLoader::GetInstance();
-	ASSERT(pIni);
+	AssertBotE(pIni);
 
 	// General
 	bool bAutosave = true;
 	if (!pIni->ReadValue("General", "AUTOSAVE", bAutosave))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bAutoave = bAutosave;
 
 	if (!pIni->ReadValue("General", "DIFFICULTY", m_sDifficulty))
-		ASSERT(false);
+		AssertBotE(false);
 	m_sDifficulty.MakeUpper();
 	if (m_sDifficulty == "BABY")
 		m_ctrlDifficultySlider.SetPos(0);
@@ -176,70 +177,70 @@ BOOL CSettingsDlg::OnInitDialog()
 	// Audio
 	bool bHardwareSound = true;
 	if (!pIni->ReadValue("Audio", "HARDWARESOUND", bHardwareSound))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bHardwaresound = bHardwareSound;
 
 	bool bSound = true;
 	if (!pIni->ReadValue("Audio", "SOUND", bSound))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bSound = bSound;
 
 	bool bMusic = true;
 	if (!pIni->ReadValue("Audio", "MUSIC", bMusic))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bMusic = bMusic;
 
 	float fMusicVolume = 0.3f;
 	if (!pIni->ReadValue("Audio", "MUSICVOLUME", fMusicVolume))
-		ASSERT(false);
+		AssertBotE(false);
 	m_ctrlMusicvolume.SetPos(fMusicVolume * 100);
 
 	// Video
 	bool bShowTraderoutes = true;
 	if (!pIni->ReadValue("Video", "SHOWTRADEROUTES", bShowTraderoutes))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bShowTraderoutes = bShowTraderoutes;
 
 	bool bAnimatedIcon = true;
 	if (!pIni->ReadValue("Video", "ANIMATEDICON", bAnimatedIcon))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bAnimatedIcon = bAnimatedIcon;
 
 	bool bShowMiniMap = true;
 	if (!pIni->ReadValue("Video", "SHOWMINIMAP", bShowMiniMap))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bShowMiniMap = bShowMiniMap;
 
 	bool bShowEventPictures = true;
 	if (!pIni->ReadValue("Video", "SHOWEVENTPICTURES", bShowEventPictures))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bShowEventPictures = bShowEventPictures;
 
 	int nTooltipDelay = 750;
 	if (!pIni->ReadValue("Video", "TOOLTIPDELAY", nTooltipDelay))
-		ASSERT(false);
+		AssertBotE(false);
 	m_ctrlTooltipDelay.SetPos(nTooltipDelay);
 
 	// Control
 	bool bShowScrollbars = false;
 	if (!pIni->ReadValue("Control", "SHOWSCROLLBARS", bShowScrollbars))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bShowScrollBars = bShowScrollbars;
 
 	bool bInvertMouse = false;
 	if (!pIni->ReadValue("Control", "INVERTMOUSE", bInvertMouse))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bInvertMouse = bInvertMouse;
 
 	bool bHideMenu = false;
 	if (!pIni->ReadValue("Control", "HIDEMENUBAR", bHideMenu))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bHideMenu = bHideMenu;
 
 	// Special (Ingame)
 	int nRandomSeed = -1;
 	if (!pIni->ReadValue("Special", "RANDOMSEED", nRandomSeed))
-		ASSERT(false);
+		AssertBotE(false);
 	if (nRandomSeed < -1)
 		nRandomSeed = -1;
 	CString sRandomSeed;
@@ -248,58 +249,58 @@ BOOL CSettingsDlg::OnInitDialog()
 
 	int nStarDensity = 35;
 	if (!pIni->ReadValue("Special", "STARDENSITY", nStarDensity))
-		ASSERT(false);
+		AssertBotE(false);
 	m_ctrlStarDensity.SetPos(nStarDensity);
 
 	int nMinorDensity = 30;
 	if (!pIni->ReadValue("Special", "MINORDENSITY", nMinorDensity))
-		ASSERT(false);
+		AssertBotE(false);
 	m_ctrlMinorDensity.SetPos(nMinorDensity);
 
 	int nAnomalyDensity = 9;
 	if (!pIni->ReadValue("Special", "ANOMALYDENSITY", nAnomalyDensity))
-		ASSERT(false);
+		AssertBotE(false);
 	m_ctrlAnomalyDensity.SetPos(nAnomalyDensity);
 
 	float nAlienFrequency = 0;
 	if (!pIni->ReadValue("Special", "ALIENENTITIES", nAlienFrequency))
-		ASSERT(false);
+		AssertBotE(false);
 	m_ctrlAlienFrequency.SetPos(nAlienFrequency);
 
 	bool bRandomEvents = true;
 	if (!pIni->ReadValue("Special", "RANDOMEVENTS", bRandomEvents))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bRandomEvents = bRandomEvents;
 
 	// Victory Conditions
 	bool bVCElimination = true;
 	if (!pIni->ReadValue("Victory_Conditions", "Elimination", bVCElimination))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bVCElimination = bVCElimination;
 
 	bool bVCDiplomacy = false;
 	if (!pIni->ReadValue("Victory_Conditions", "Diplomacy", bVCDiplomacy))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bVCDiplomacy = bVCDiplomacy;
 
 	bool bVCConquest = false;
 	if (!pIni->ReadValue("Victory_Conditions", "Conquest", bVCConquest))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bVCConquest = bVCConquest;
 
 	bool bVCResearch = false;
 	if (!pIni->ReadValue("Victory_Conditions", "Research", bVCResearch))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bVCResearch = bVCResearch;
 
 	bool bVCCombat = false;
 	if (!pIni->ReadValue("Victory_Conditions", "Combat", bVCCombat))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bVCCombat = bVCCombat;
 
 	bool bVCSabotage = false;
 	if (!pIni->ReadValue("Victory_Conditions", "Sabotage", bVCSabotage))
-		ASSERT(false);
+		AssertBotE(false);
 	m_bVCSabotage = bVCSabotage;
 
 	// alle nicht während des Spiels änderbaren Einstellungen deaktivieren
@@ -359,7 +360,7 @@ void CSettingsDlg::OnOK()
 	UpdateData(true);
 
 	CIniLoader* pIni = CIniLoader::GetInstance();
-	ASSERT(pIni);
+	AssertBotE(pIni);
 
 	CString s;
 	// General

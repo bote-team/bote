@@ -37,7 +37,7 @@ public:
 
 	CMyMemDC(CDC* pDC, const CRect* pRect = NULL) : CDC()
 	{
-		ASSERT(pDC != NULL);
+		AssertBotE(pDC != NULL);
 
 		// Some initialization
 		m_pDC = pDC;

@@ -7,7 +7,7 @@
 #include "System/Manager.h"
 #include "System/system.h"
 
-#include <cassert>
+
 
 
 // CManagerSettingsDlg-Dialogfeld
@@ -191,7 +191,7 @@ void CManagerSettingsDlg::OnOK()
 void CManagerSettingsDlg::SetState(int item, BOOL active)
 {
 	CWnd* pWnd = GetDlgItem(item);
-	assert(pWnd);
+	AssertBotE(pWnd);
 	pWnd->EnableWindow(active);
 }
 
@@ -226,7 +226,7 @@ void CManagerSettingsDlg::OnBnClickedCheckActive()
 void CManagerSettingsDlg::SetDlgItem(int item, const CString& text)
 {
 	CWnd* pCtrl = GetDlgItem(item);
-	assert(pCtrl);
+	AssertBotE(pCtrl);
 	pCtrl->SetWindowText(text);
 }
 

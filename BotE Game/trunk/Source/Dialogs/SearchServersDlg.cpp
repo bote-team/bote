@@ -5,6 +5,7 @@
 #include "BotE.h"
 #include "SearchServersDlg.h"
 #include "Loc.h"
+#include "AssertBotE.h"
 
 // CSearchServersDlg dialog
 
@@ -102,7 +103,7 @@ void CSearchServersDlg::OnOK()
 	if (idx > -1)
 	{
 		POSITION pos = m_lEntries.FindIndex(idx);
-		ASSERT(pos);
+		AssertBotE(pos);
 		DLG_LISTENTRY entry = m_lEntries.GetAt(pos);
 		m_strDescription = entry.strDescription;
 		m_dwIP = entry.dwIP;

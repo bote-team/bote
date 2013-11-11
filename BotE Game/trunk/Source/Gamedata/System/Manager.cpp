@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "float.h"
 
-#include <cassert>
+
 
 #include "Manager.h"
 #include "System.h"
@@ -88,7 +88,7 @@ void CSystemManager::Serialize(CArchive& ar)
 		for(std::map<WORKER::Typ, int>::const_iterator it = m_PriorityMap.begin();
 				it != m_PriorityMap.end(); ++it)
 		{
-			assert(it->second > 0);
+			AssertBotE(it->second > 0);
 			ar << it->second;
 			ar << static_cast<int>(it->first);
 		}
@@ -113,7 +113,7 @@ void CSystemManager::Serialize(CArchive& ar)
 			ar >> value;
 			int key;
 			ar >> key;
-			assert(value > 0);
+			AssertBotE(value > 0);
 			AddPriority(static_cast<WORKER::Typ>(key), value);
 		}
 	}
@@ -182,7 +182,7 @@ void CSystemManager::ClearPriorities()
 
 void CSystemManager::AddPriority(WORKER::Typ type, int value)
 {
-	assert(min_priority <= value && value <= max_priority);
+	AssertBotE(min_priority <= value && value <= max_priority);
 	if(value > min_priority)
 		m_PriorityMap.insert(std::pair<WORKER::Typ, int>(type, value));
 }
@@ -272,12 +272,12 @@ private:
 	{
 		for(std::vector<DistributionElem>::const_iterator it = m_Result.begin(); it != m_Result.end(); ++it)
 			workers -= it->m_dCount;
-		assert(workers > 0.0f);
+		AssertBotE(workers > 0.0f);
 
 		double divisor = 0;
 		std::map<WORKER::Typ, int>::const_iterator it = m_Priorities.find(type);
 		const double weight_of_this = it->second;
-		assert(it != m_Priorities.end());
+		AssertBotE(it != m_Priorities.end());
 		for(;;)
 		{
 			++it;
@@ -300,7 +300,7 @@ private:
 			m_iResultingWorkers += static_cast<int>(floor(workers));
 			m_Result.push_back(DistributionElem(it->first, workers));
 		}
-		assert(Equals(resulting_workers, m_iAllWorkers));
+		AssertBotE(Equals(resulting_workers, m_iAllWorkers));
 	}
 
 	void DistributeRemaining()
@@ -313,7 +313,7 @@ private:
 			++m_iResultingWorkers;
 			it->m_iCount++;
 		}
-		assert(false);
+		AssertBotE(false);
 	}
 };
 
@@ -331,7 +331,7 @@ private:
 	//fills all remaining empty buildings of the given cathegory, only considering available workers and buildings
 	bool FillRemainingSlots(WORKER::Typ type)
 	{
-		assert(m_WorkersLeftToSet >= 0);
+		AssertBotE(m_WorkersLeftToSet >= 0);
 		if(m_WorkersLeftToSet == 0)
 			return false;
 		m_WorkersLeftToSet += m_pSystem->GetWorker(type);
@@ -369,7 +369,7 @@ private:
 	{
 		SetWorker(WORKER::INDUSTRY_WORKER, CSystem::SET_WORKER_MODE_INCREMENT);
 		--unset;
-		assert(unset >= 0);
+		AssertBotE(unset >= 0);
 	}
 
 	//removes workers from factories until they are the minimum number to finish the current project
@@ -382,7 +382,7 @@ private:
 		if(assembly_list.IsEmpty() || assembly_list.GetWasBuildingBought())
 			return unset;
 		const int min_rounds = m_pSystem->NeededRoundsToBuild(0, true);
-		assert(min_rounds >= 1);
+		AssertBotE(min_rounds >= 1);
 		if(max_industry && min_rounds > 1 || m_pSystem->GetWorker(WORKER::INDUSTRY_WORKER) == 0)
 			return unset;
 		while(true)
@@ -411,23 +411,23 @@ private:
 	{
 		if(mode == CSystem::SET_WORKER_MODE_INCREMENT)
 		{
-			assert(value == -1);
+			AssertBotE(value == -1);
 			m_pSystem->SetWorker(type, mode);
 			--m_WorkersLeftToSet;
 		}
 		else if(mode == CSystem::SET_WORKER_MODE_DECREMENT)
 		{
-			assert(value == -1);
+			AssertBotE(value == -1);
 			m_pSystem->SetWorker(type, mode);
 			++m_WorkersLeftToSet;
 		}
 		else if(mode == CSystem::SET_WORKER_MODE_SET)
 		{
-			assert(value >= 0);
+			AssertBotE(value >= 0);
 			m_pSystem->SetWorker(type, mode, value);
 			m_WorkersLeftToSet -= value;
 		}
-		assert(m_WorkersLeftToSet >= 0);
+		AssertBotE(m_WorkersLeftToSet >= 0);
 	}
 
 	//if "safe moral" feature is active, we need to reserve a worker before distributing the others
@@ -458,7 +458,7 @@ private:
 	{
 		for(std::map<WORKER::Typ, int>::const_iterator it = prios.begin(); it != prios.end();)
 		{
-			assert(it->second <= CSystemManager::max_priority);
+			AssertBotE(it->second <= CSystemManager::max_priority);
 			if(it->second != CSystemManager::max_priority)
 			{
 				++it;
@@ -489,9 +489,9 @@ public:
 
 	void Finish() const
 	{
-		assert(m_WorkersLeftToSet >= 0);
+		AssertBotE(m_WorkersLeftToSet >= 0);
 		#ifdef CONSISTENCY_CHECKS
-			assert(m_pSystem->SanityCheckWorkers());
+			AssertBotE(m_pSystem->SanityCheckWorkers());
 		#endif
 		m_pSystem->CalculateVariables();
 	}
@@ -499,7 +499,7 @@ public:
 	//Indreases workers in cathegories energy and food until we produce enough to suffice for the consumption we have
 	bool IncreaseWorkersUntilSufficient(WORKER::Typ type, bool allow_insufficient)
 	{
-		assert(type == WORKER::ENERGY_WORKER || type == WORKER::FOOD_WORKER);
+		AssertBotE(type == WORKER::ENERGY_WORKER || type == WORKER::FOOD_WORKER);
 		if(m_pSystem->GetDisabledProductions()[type])
 			return true;
 		while(true)
@@ -511,7 +511,7 @@ public:
 				return allow_insufficient;
 			const int number_of_buildings = m_pSystem->GetNumberOfWorkbuildings(type, 0);
 			const int workers_set = m_pSystem->GetWorker(type);
-			assert(workers_set <= number_of_buildings);
+			AssertBotE(workers_set <= number_of_buildings);
 			if(workers_set == number_of_buildings)
 				return allow_insufficient;
 			SetWorker(type, CSystem::SET_WORKER_MODE_INCREMENT);
@@ -552,7 +552,7 @@ public:
 				failed_to_set += it->m_iCount - buildings;
 				SetWorker(it->m_Type, CSystem::SET_WORKER_MODE_SET, buildings);
 			}
-			assert(m_WorkersLeftToSet >= 0 && failed_to_set >= 0);
+			AssertBotE(m_WorkersLeftToSet >= 0 && failed_to_set >= 0);
 			failed_to_set += DecrementDueToFullStore(it->m_Type);
 			if(it->m_Type == WORKER::INDUSTRY_WORKER) {
 				failed_to_set += DecrementDueToWastedIndustry(max_industry);
@@ -600,7 +600,7 @@ public:
 	void SafeMoral()
 	{
 		const CAssemblyList& assembly_list = *m_pSystem->GetAssemblyList();
-		assert(m_WorkersLeftToSet >= 0);
+		AssertBotE(m_WorkersLeftToSet >= 0);
 		if(assembly_list.IsEmpty() || m_WorkersLeftToSet == 0)
 			return;
 		const int max_buildings = m_pSystem->GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER, 0);
@@ -656,7 +656,7 @@ public:
 		int min_moral = CSystemManager::max_min_moral,
 		int min_moral_prod = CSystemManager::max_min_moral_prod) const
 	{
-		assert(info.GetMoralProd() < 0);
+		AssertBotE(info.GetMoralProd() < 0);
 		if(m_pSystem->GetMoral() < min_moral)
 			return false;
 		const int moral_prod = m_pSystem->GetProduction()->GetMoralProd();
@@ -732,12 +732,12 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system)
 		bool should_be_online = building.GetIsBuildingOnline();
 		if(info.GetShipYard())
 		{
-			assert(!info.IsDefenseBuilding());
+			AssertBotE(!info.IsDefenseBuilding());
 			should_be_online = checker.ShouldTakeShipyardOnline();
 		}
 		if(info.IsDefenseBuilding())
 		{
-			assert(!info.GetShipYard());
+			AssertBotE(!info.GetShipYard());
 			if(bomb_warning)
 				should_be_online = true;
 			else if(!defense_checked)
@@ -794,7 +794,7 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system)
 			system.CalculateVariables();
 		}
 	}
-	assert(additional_available_energy >= 0);
+	AssertBotE(additional_available_energy >= 0);
 	return m_bBombWarning && bomb_warning;
 }
 

@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////
 CSystemAI::CSystemAI(CBotEDoc* pDoc) : m_pMajor()
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 	m_pDoc = pDoc;
 
 	memset(m_iPriorities, 0, sizeof(m_iPriorities));
@@ -41,7 +41,7 @@ void CSystemAI::ExecuteSystemAI(CPoint ko)
 
 	// Besitzer des Systems holen
 	m_pMajor = dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sRace));
-	ASSERT(m_pMajor);
+	AssertBotE(m_pMajor);
 	if (!m_pMajor)
 		return;
 
@@ -505,7 +505,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 		return 0;
 
 	CRace* pRace = m_pDoc->GetRaceCtrl()->GetRace(sRace);
-	ASSERT(pRace);
+	AssertBotE(pRace);
 	if (!pRace->IsMajor())
 		return 0;
 
@@ -620,7 +620,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 /// Wenn es in die Bauliste gesetzt werden konnte gibt die Funktion ein <code>TRUE</code> zurück.
 BOOLEAN CSystemAI::MakeEntryInAssemblyList(short id)
 {
-	ASSERT(id);
+	AssertBotE(id);
 
 	// Schwierigkeitsgrad geht hier mit ein.
 	float difficulty = m_pDoc->GetDifficultyLevel();
@@ -923,7 +923,7 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 		return min;
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sRace));
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	if (m_pDoc->GetSystem(ko.x, ko.y).GetProduction()->GetShipYard() == TRUE
 		&& m_pDoc->GetSystem(ko.x, ko.y).GetBuildableShips()->GetSize() > 0)
@@ -984,7 +984,7 @@ void CSystemAI::CalcProd()
 	CSystemProd* pProduction = pSystem->GetProduction();
 	if (!pProduction)
 	{
-		ASSERT(pProduction);
+		AssertBotE(pProduction);
 		return;
 	}
 
@@ -1401,7 +1401,7 @@ int CSystemAI::GetResourcePrio(WORKER::Typ nWorker, double dMaxHab) const
 	m_pDoc->GetSector(m_KO.x, m_KO.y).GetAvailableResources(bResExist, true);
 
 	int nRes = nWorker - 5;
-	ASSERT(nRes >= RESOURCES::TITAN && nRes <= RESOURCES::DERITIUM);
+	AssertBotE(nRes >= RESOURCES::TITAN && nRes <= RESOURCES::DERITIUM);
 	if (!bResExist[nRes])
 	{
 		// nicht im System vorhanden

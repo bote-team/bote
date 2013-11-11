@@ -314,9 +314,9 @@ inline bool FCObjImage::Create (const BITMAPINFOHEADER* pBmif)
 {
     // unsupported store format
     if (!pBmif || (pBmif->biHeight <= 0) || (pBmif->biWidth <= 0))
-        {assert(false); return false;}
+        {AssertBotE(false); return false;}
     if (!((pBmif->biCompression == BI_RGB) || (pBmif->biCompression == BI_BITFIELDS)))
-        {assert(false); return false;}
+        {AssertBotE(false); return false;}
     switch (pBmif->biBitCount) // validate bpp
     {
         case 1 :
@@ -325,7 +325,7 @@ inline bool FCObjImage::Create (const BITMAPINFOHEADER* pBmif)
         case 16 :
         case 24 :
         case 32 : break ;
-        default : assert(false); return false;
+        default : AssertBotE(false); return false;
     }
 
     if (IsValidImage())
@@ -442,7 +442,7 @@ inline void FCObjImage::BoundRect (RECT& rc) const
 inline DWORD FCObjImage::GetPixelData (int x, int y) const
 {
     if (!IsInside(x, y))
-        {assert(false); return 0;}
+        {AssertBotE(false); return 0;}
 
     const BYTE   * pPixel = GetBits (x,y) ;
     switch (ColorBits())
@@ -458,7 +458,7 @@ inline DWORD FCObjImage::GetPixelData (int x, int y) const
                 return dwrgb ;
             }
         case 32 : return *(DWORD*)pPixel ;
-        default : assert(false) ;
+        default : AssertBotE(false) ;
     }
     return 0 ;
 }
@@ -466,7 +466,7 @@ inline DWORD FCObjImage::GetPixelData (int x, int y) const
 inline void FCObjImage::SetPixelData (int x, int y, DWORD dwPixel)
 {
     if (!IsInside(x, y))
-        {assert(false); return;}
+        {AssertBotE(false); return;}
 
     BYTE   * pPixel = GetBits (x,y) ;
     switch (ColorBits())
@@ -482,14 +482,14 @@ inline void FCObjImage::SetPixelData (int x, int y, DWORD dwPixel)
         case 24 :
         case 32 : FCColor::CopyPixel (pPixel, &dwPixel, ColorBits() / 8) ;
             break ;
-        default : assert(false) ;
+        default : AssertBotE(false) ;
     }
 }
 //-----------------------------------------------------------------------------
 inline bool FCObjImage::GetColorTable (int iFirstIndex, int iNumber, RGBQUAD* pColors) const
 {
     if (!IsValidImage() || (ColorBits() > 8) || (iFirstIndex < 0) || !pColors || !m_pPalette)
-        {assert(false); return false;}
+        {AssertBotE(false); return false;}
 
     const int   nColorNum = 1 << ColorBits() ;
     for (int i=0 ; i < iNumber ; i++)
@@ -504,7 +504,7 @@ inline bool FCObjImage::GetColorTable (int iFirstIndex, int iNumber, RGBQUAD* pC
 inline bool FCObjImage::SetColorTable (int iFirstIndex, int iNumber, const RGBQUAD* pColors)
 {
     if (!IsValidImage() || (ColorBits() > 8) || (iFirstIndex < 0) || !pColors || !m_pPalette)
-        {assert(false); return false;}
+        {AssertBotE(false); return false;}
 
     const int   nColorNum = 1 << ColorBits() ;
     for (int i=0 ; i < iNumber ; i++)
@@ -519,7 +519,7 @@ inline bool FCObjImage::SetColorTable (int iFirstIndex, int iNumber, const RGBQU
 inline void FCObjImage::CopyPalette (const FCObjImage& imgSrc)
 {
     if (!IsValidImage() || (ColorBits() > 8) || (ColorBits() != imgSrc.ColorBits()))
-        {assert(false); return;}
+        {AssertBotE(false); return;}
 
     RGBQUAD   pPal[256] ;
     int       nNum = 1 << imgSrc.ColorBits() ;
@@ -530,7 +530,7 @@ inline void FCObjImage::CopyPalette (const FCObjImage& imgSrc)
 inline void FCObjImage::__SetGrayPalette()
 {
     if (!IsValidImage() || (ColorBits() > 8))
-        {assert(false); return;}
+        {AssertBotE(false); return;}
 
     // calculate palette
     RGBQUAD     pPal[256] ;
@@ -565,7 +565,7 @@ inline void FCObjImage::__ConvertToTrueColor (int iColor)
     if (!IsValidImage() || (ColorBits() == iColor))
         return ;
     if ((iColor != 24) && (iColor != 32))
-        {assert(false); return;}
+        {AssertBotE(false); return;}
 
     // backup image
     const FCObjImage     OldPic (*this) ;
@@ -620,7 +620,7 @@ inline void FCObjImage::GetAlphaChannel (FCObjImage* imgAlpha) const
     if (!imgAlpha || !IsValidImage() || (ColorBits() != 32) || (imgAlpha == this)
         || !imgAlpha->Create (Width(), Height(), 8))
     {
-        assert(false) ; return ;
+        AssertBotE(false) ; return ;
     }
 
     // get alpha channel
@@ -634,7 +634,7 @@ inline void FCObjImage::AppendAlphaChannel (const FCObjImage& alpha)
     if (!IsValidImage() || !alpha.IsValidImage() || (ColorBits() != 32) || (alpha.ColorBits() != 8) ||
         (Width() != alpha.Width()) || (Height() != alpha.Height()))
     {
-        assert(false) ; return ;
+        AssertBotE(false) ; return ;
     }
 
     // append alpha channel
@@ -647,7 +647,7 @@ inline void FCObjImage::SetAlphaChannelValue (int nValue)
 {
     if (!IsValidImage() || (ColorBits() != 32))
     {
-        assert(false) ; return ;
+        AssertBotE(false) ; return ;
     }
 
     for (int y=0 ; y < Height() ; y++)
@@ -679,7 +679,7 @@ inline bool FCObjImage::GetSubBlock (FCObjImage* SubImg, RECT rcBlock) const
 {
     if (!IsValidImage() || !SubImg || (SubImg == this) || (ColorBits() < 8))
     {
-        assert(false); return false;
+        AssertBotE(false); return false;
     }
 
     const RECT   rcImage = {0, 0, Width(), Height()} ;
@@ -687,7 +687,7 @@ inline bool FCObjImage::GetSubBlock (FCObjImage* SubImg, RECT rcBlock) const
     assert (IsRectInRect (rcImage, rcBlock)) ;
     if (::IntersectRect (&rcD, &rcImage, &rcBlock) == 0)
     {
-        assert(false); return false; // rect of destination is empty
+        AssertBotE(false); return false; // rect of destination is empty
     }
 
     if (!SubImg->Create (RECTWIDTH(rcD), RECTHEIGHT(rcD), ColorBits()))
@@ -711,7 +711,7 @@ inline bool FCObjImage::CoverBlock (const FCObjImage& img, int x, int y)
 {
     if (!IsValidImage() || !img.IsValidImage() || (ColorBits() != img.ColorBits()) || (ColorBits() < 8))
     {
-        assert(false); return false;
+        AssertBotE(false); return false;
     }
 
     // calculate covered RECT
@@ -757,7 +757,7 @@ inline void FCObjImage::CombineImage (const FCObjImage& Img32, int x, int y, int
     }
     if ((Img32.ColorBits() != 32) || (ColorBits() != 32) || IsRectEmpty(&rcD))
     {
-        assert(false); return;
+        AssertBotE(false); return;
     }
 
     nAlphaPercent = FClamp (nAlphaPercent, 0, 100) ;
@@ -786,7 +786,7 @@ inline void FCObjImage::AlphaBlend (const FCObjImage& Img32, RECT rcDest, RECT r
         if (!IsValidImage() || (ColorBits() < 24) || !Img32.IsValidImage() || (Img32.ColorBits() != 32) ||
             !IsRectInRect (rcMask, rcSrc) || IsRectEmpty(&rcT))
         {
-            assert(false); return;
+            AssertBotE(false); return;
         }
     }
 
@@ -860,7 +860,7 @@ inline void FCObjImage::LogicalBlend (const FCObjImage& MaskImg, LOGICAL_OP LogO
 {
     if (!IsValidImage() || !MaskImg.IsValidImage() || (ColorBits() != MaskImg.ColorBits()) || (this == &MaskImg) || (ColorBits() != 8))
     {
-        assert(false) ; return ;
+        AssertBotE(false) ; return ;
     }
 
     // inner rect
@@ -891,7 +891,7 @@ inline void FCObjImage::LogicalBlend (const FCObjImage& MaskImg, LOGICAL_OP LogO
                     if (*pSrc == 0xFF)
                         *pDest = 0 ;
                     break ;
-                default : assert(false);
+                default : AssertBotE(false);
             }
         }
 }
@@ -968,7 +968,7 @@ inline bool FCObjImage::LoadDIBStream (const void* pDIB, int nBufferSize)
 {
     const BITMAPINFOHEADER   * pBmif = (const BITMAPINFOHEADER*)pDIB ;
     if (!Create(pBmif))
-        {assert(false); return false;}
+        {AssertBotE(false); return false;}
 
     const BYTE   * p = (const BYTE*)pDIB + pBmif->biSize ;
     if (ColorBits() <= 8)
@@ -1027,7 +1027,7 @@ inline void FCObjImage::ExpandFrame (bool bCopyEdge, int iLeft, int iTop, int iR
 {
     if ((ColorBits() < 8) || (iLeft < 0) || (iTop < 0) || (iRight < 0) || (iBottom < 0))
     {
-        assert(false) ; return ;
+        AssertBotE(false) ; return ;
     }
     if ((iLeft == 0) && (iTop == 0) && (iRight == 0) && (iBottom == 0))
         return ;
@@ -1036,7 +1036,7 @@ inline void FCObjImage::ExpandFrame (bool bCopyEdge, int iLeft, int iTop, int iR
     const FCObjImage     imgOld(*this) ;
     if (!Create (imgOld.Width()+iLeft+iRight, imgOld.Height()+iTop+iBottom, imgOld.ColorBits()))
     {
-        assert(false) ; return ;
+        AssertBotE(false) ; return ;
     }
 
     // adjust image's position
@@ -1103,7 +1103,7 @@ inline void FCObjImage::Stretch (int nNewWidth, int nNewHeight)
     // parameter check
     if (!IsValidImage() || (nNewWidth <= 0) || (nNewHeight <= 0) || (ColorBits() < 8))
     {
-//        assert(false) ;
+//        AssertBotE(false) ;
         return ;
     }
     if ((nNewWidth == Width()) && (nNewHeight == Height()))
@@ -1113,7 +1113,7 @@ inline void FCObjImage::Stretch (int nNewWidth, int nNewHeight)
     const FCObjImage     imgOld(*this) ;
     if (!Create (nNewWidth, nNewHeight, imgOld.ColorBits()))
     {
-        assert(false) ; return ;
+        AssertBotE(false) ; return ;
     }
 
     // duplicate palette
@@ -1148,7 +1148,7 @@ inline void FCObjImage::Stretch (int nNewWidth, int nNewHeight)
 inline void FCObjImage::SinglePixelProcessProc (FCInterface_PixelProcess& rProcessor, FCObjProgress* pProgress)
 {
     if (!rProcessor.ValidateColorBits (this))
-        {assert(false); return;}
+        {AssertBotE(false); return;}
 
     // before
     rProcessor.OnEnterProcess (this) ;

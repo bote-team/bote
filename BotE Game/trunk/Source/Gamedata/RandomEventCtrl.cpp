@@ -13,7 +13,7 @@
 #include "IniLoader.h"
 #include "ClientWorker.h"
 
-#include <cassert>
+
 
 CRandomEventCtrl::CRandomEventCtrl(void) :
 	m_uiGlobalProb(2),
@@ -94,7 +94,7 @@ void CRandomEventCtrl::CalcEvents(CMajor* pRace)
 bool CRandomEventCtrl::SystemEvent(const CPoint &ko, CMajor* pRace)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 	//ko= Systemkoordinate
 	CString sMsgText;//Nachrichtentext
 	int nEventNumber=rand()% (SYSTEMEVENTDEMOGRAPHIC + 1);
@@ -135,7 +135,7 @@ void CRandomEventCtrl::GlobalEventResearch(CMajor *pRace)
 	if (pRace->IsHumanPlayer())
 	{
 		CBotEDoc* pDoc = resources::pDoc;
-		ASSERT(pDoc);
+		AssertBotE(pDoc);
 
 		resources::pClientWorker->SetToEmpireViewFor(*pRace);
 
@@ -162,7 +162,7 @@ void CRandomEventCtrl::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMa
 		return; //Es findet kein Ereignis statt
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	//ko=Koordinate wo es passiert, pRace = die Rasse der es passiert
 	int eventnumber=rand()%2;
@@ -220,7 +220,7 @@ void CRandomEventCtrl::CalcShipEvents() const
 		return;
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// Hüllenvirus
 	for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)

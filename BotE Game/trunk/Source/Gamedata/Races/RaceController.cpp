@@ -49,7 +49,7 @@ void CRaceController::Serialize(CArchive &ar)
 			CRace* value = NULL;
 			ar >> key;
 			ar >> value;
-			ASSERT(value);
+			AssertBotE(value);
 			m_mRaces[key] = value;
 		}
 

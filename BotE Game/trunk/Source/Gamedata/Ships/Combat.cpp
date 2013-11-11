@@ -46,7 +46,7 @@ CCombat::~CCombat(void)
 void CCombat::SetInvolvedShips(const CArray<CShips*>* pShips, std::map<CString, CRace*>* pmRaces, const CAnomaly* pAnomaly)
 {
 	Reset();
-	ASSERT(pmRaces);
+	AssertBotE(pmRaces);
 
 	// involvierte Rassen bestimmen
 	m_mRaces = pmRaces;
@@ -474,7 +474,7 @@ bool CCombat::SetTarget(int i)
 {
 	CShips* pShip = m_CS.GetAt(i)->m_pShip;
 	CString sOwner = pShip->GetOwnerOfShip();
-	ASSERT(m_CS.GetAt(i)->m_pTarget == NULL);
+	AssertBotE(m_CS.GetAt(i)->m_pTarget == NULL);
 
 	// Wenn das enemy-Feld leer ist, dann gibt es keine gegnerischen Schiffe mehr in diesem Kampf und wir können
 	// diesen womöglich beenden
@@ -584,8 +584,8 @@ bool CCombat::CheckShipStayInCombat(int i)
 // Funktion zum Berechnen der groben prozentualen Siegchance einer Rasse. Die Siegchance liegt zwischen 0 und 1.
 double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& vInvolvedShips, const std::map<CString, CRace*>* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies, const CAnomaly* pAnomaly)
 {
-	ASSERT(pOurRace);
-	ASSERT(pmRaces);
+	AssertBotE(pOurRace);
+	AssertBotE(pmRaces);
 
 	double dWinningChance	= 0.5;
 	double dOurStrenght		= 0.0;
@@ -627,7 +627,7 @@ double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& v
 				continue;
 
 			const CRace* pOtherRace  = pmRaces->find(pShip->GetOwnerOfShip())->second;
-			ASSERT(pOtherRace);
+			AssertBotE(pOtherRace);
 
 			if (CheckDiplomacyStatus(pOurRace, pOtherRace))
 			{
@@ -659,7 +659,7 @@ double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& v
 // ansonsten gibt sie <code>FALSE</code> zurück.
 bool CCombat::CheckDiplomacyStatus(const CRace* raceA, const CRace* raceB)
 {
-	ASSERT(raceA != raceB);
+	AssertBotE(raceA != raceB);
 	// Wenn wir mit der Rasse, welcher das andere Schiff gehört nicht mindst. einen Freundschaftsvertrag
 	// oder einen Verteidigungspakt oder Kriegspakt oder Nichtangriffspakt haben
 	if (raceA->GetAgreement(raceB->GetRaceID()) == DIPLOMATIC_AGREEMENT::NONE

@@ -215,7 +215,7 @@ void CCombatAI::ApplyShipTactics(const CArray<CShips*>& vInvolvedShips, map<CStr
 				// nichts umstellen, der Spieler hat die Befehle manuell eingestellt
 			}
 			else
-				ASSERT(FALSE);
+				AssertBotE(FALSE);
 		}
 	}
 }

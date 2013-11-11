@@ -41,7 +41,7 @@ public:
         FILE   * pf = NULL;
 		fopen_s (&pf, szFilename, "wb") ;
         if (!pf)
-            {assert(false); return false;}
+            {AssertBotE(false); return false;}
 
         fwrite (pBuffer, 1, nLength, pf) ;
         fclose (pf) ;
@@ -56,11 +56,11 @@ public:
 		 FILE   * pf = NULL;
 		fopen_s (&pf, szFilename, "rb") ;
         if (!pf)
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         // get file length
         fseek (pf, 0, SEEK_END) ;
-        nLength = (int)ftell(pf) ; assert(nLength > 0);
+        nLength = (int)ftell(pf) ; AssertBotE(nLength > 0);
         if (nLength > 0)
         {
             // read file into memory
@@ -99,7 +99,7 @@ public:
     static std::string GetFileExt (const char* pFile)
     {
         if (!pFile)
-            {assert(false); return "";}
+            {AssertBotE(false); return "";}
 
         std::string   strFile(pFile), strOut ;
         size_t        nPos = strFile.find_last_of (".") ;
@@ -112,7 +112,7 @@ public:
     static void BubbleSort (int pArray[], int iNumElement)
     {
         if (!pArray)
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         for (int i = iNumElement-1 ; i > 0 ; i--)
         {

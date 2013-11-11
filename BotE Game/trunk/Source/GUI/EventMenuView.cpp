@@ -37,13 +37,13 @@ void CEventMenuView::OnDraw(CDC* dc)
 {
 	SetFocus();
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -144,13 +144,13 @@ void CEventMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -172,13 +172,13 @@ void CEventMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -195,13 +195,13 @@ void CEventMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -219,13 +219,13 @@ void CEventMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -248,13 +248,13 @@ void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 CString CEventMenuView::CreateTooltip(void)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return "";
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return "";
 

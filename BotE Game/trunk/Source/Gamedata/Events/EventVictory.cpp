@@ -56,13 +56,13 @@ void CEventVictory::Create(void)
 		return;
 
 	CIniLoader* pIni = CIniLoader::GetInstance();
-	ASSERT(pIni);
+	AssertBotE(pIni);
 
 	float fMusicVolume;
 	pIni->ReadValue("Audio", "MUSICVOLUME", fMusicVolume);
 
 	CSoundManager* pSoundManager = CSoundManager::GetInstance();
-	ASSERT(pSoundManager);
+	AssertBotE(pSoundManager);
 
 	CString sTheme = "";
 	if (m_sWinnerRace == m_sRace)
@@ -77,7 +77,7 @@ void CEventVictory::Create(void)
 void CEventVictory::Close(void)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 	pDoc->GameOver();
 }
 
@@ -91,10 +91,10 @@ void CEventVictory::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	SolidBrush fontBrush(Color::White);
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sRace));
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentCenter);

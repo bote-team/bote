@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "BotE.h"
 #include "PlayGamePage.h"
+#include "AssertBotE.h"
 
 
 // CPlayGamePage dialog
@@ -53,7 +54,7 @@ BOOL CPlayGamePage::OnInitDialog()
 	CPropertyPage::OnInitDialog();
 
 	m_pParent = dynamic_cast<CMainDlg*>(GetParent());
-	ASSERT(m_pParent);
+	AssertBotE(m_pParent);
 
 	((CButton *)GetDlgItem(IDC_TOALL))->SetCheck(TRUE);
 
@@ -92,7 +93,7 @@ void CPlayGamePage::UpdateControls()
 		}
 
 	default:
-		ASSERT(FALSE);
+		AssertBotE(FALSE);
 	}
 
 	EnableReceiverCheckBoxes(!((CButton *)GetDlgItem(IDC_TOALL))->GetCheck());

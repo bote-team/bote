@@ -14,7 +14,7 @@
 #include "ClientWorker.h"
 #include "Races/Major.h"
 
-#include <cassert>
+
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -454,7 +454,7 @@ void CSector::RecalcPlanetsTerraformingStatus() {
 			continue;
 		const unsigned planet = i->second->GetTerraform();
 		CPlanet& p = m_Planets.at(planet);
-		assert(p.GetHabitable());
+		AssertBotE(p.GetHabitable());
 		//It is allowed to terraform the same planet with 2+ independent ships
 		if(p.GetIsTerraforming() || p.GetTerraformed())
 			continue;
@@ -462,7 +462,7 @@ void CSector::RecalcPlanetsTerraformingStatus() {
 #pragma warning(push)
 #pragma warning(disable: 4189)
 		unsigned erased = terraformable.erase(planet);
-		assert(erased == 1);
+		AssertBotE(erased == 1);
 	}
 }
 #pragma warning(pop)
@@ -512,7 +512,7 @@ void CSector::DistributeColonists(const float colonists)
 			it->SetCurrentHabitant(max_hab);
 		else {
 			it->SetCurrentHabitant(try_new_hab);
-			assert(oddHab <= 0);
+			AssertBotE(oddHab <= 0);
 			break;
 		}
 	}
@@ -521,7 +521,7 @@ void CSector::DistributeColonists(const float colonists)
 void CSector::Terraforming(CShip& ship)
 {
 	const short nPlanet = ship.GetTerraform();
-	assert(-1 <= nPlanet && nPlanet < static_cast<int>(m_Planets.size()));
+	AssertBotE(-1 <= nPlanet && nPlanet < static_cast<int>(m_Planets.size()));
 	if (nPlanet != -1)
 		m_Planets.at(nPlanet).SetIsTerraforming(TRUE);
 	else
@@ -594,7 +594,7 @@ bool CSector::Terraform(const CShips& ship)
 void CSector::SystemEventPlanetMovement(CString& message)
 {
 	const int nSize = m_Planets.size();
-	assert(nSize >= 1);
+	AssertBotE(nSize >= 1);
 	int nPlanet=rand()%nSize;
 	while(!(m_Planets.at(nPlanet).GetHabitable()))
 		nPlanet=rand()%nSize;

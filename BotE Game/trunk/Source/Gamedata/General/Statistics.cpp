@@ -66,7 +66,7 @@ void CStatistics::Serialize(CArchive &ar)
 /// @param pDoc Zeiger auf das Dokument
 void CStatistics::CalcStats(CBotEDoc* pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	this->Reset();
 
@@ -87,7 +87,7 @@ void CStatistics::CalcStats(CBotEDoc* pDoc)
 void CStatistics::GetDemographicsBSP(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	std::map<CString, float> mMap;
 	// es werden alle Creditseinnahmen aller Systeme betrachtet
@@ -110,7 +110,7 @@ void CStatistics::GetDemographicsBSP(const CString& sRaceID, int& nPlace, float&
 void CStatistics::GetDemographicsProductivity(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	std::map<CString, float> mMap;
 	// Es wird die komplette Industrieproduktion und Ressourcenproduktion aller Rassen betrachtet
@@ -139,7 +139,7 @@ void CStatistics::GetDemographicsProductivity(const CString& sRaceID, int& nPlac
 void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	std::map<CString, float> mMap;
 	// Map mit allen vorhandenen Majors und einem NULL Wert füllen, so dass auch Majors ohne Militär in der
@@ -174,7 +174,7 @@ MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Military: divide by 10");
 void CStatistics::GetDemographicsResearch(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	std::map<CString, float> mMap;
 	// Es wird die komplette Industrieproduktion aller Rassen betrachtet
@@ -197,7 +197,7 @@ void CStatistics::GetDemographicsResearch(const CString& sRaceID, int& nPlace, f
 void CStatistics::GetDemographicsMoral(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	std::map<CString, float> mMap;
 	std::map<CString, int> mCount;
@@ -256,7 +256,7 @@ int CStatistics::GetGamePoints(const CString& sRaceID, int nCurrentRound, float 
 void CStatistics::GetTopSystems(int nLimit, std::list<CPoint>& lSystems) const
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	lSystems.clear();
 

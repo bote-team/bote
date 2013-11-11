@@ -15,7 +15,7 @@
 #include "Ships/Ships.h"
 #include "General/Loc.h"
 #include "GraphicPool.h"
-#include <cassert>
+
 
 // CPlanetBottomView
 
@@ -41,13 +41,13 @@ END_MESSAGE_MAP()
 void CPlanetBottomView::OnDraw(CDC* dc)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 	// TODO: add draw code here
@@ -355,7 +355,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -391,7 +391,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					CShipBottomView::SetShowStation(false);
 					CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-					assert(pDoc->CurrentShip()->second->GetKO() == pDoc->GetKO());
+					AssertBotE(pDoc->CurrentShip()->second->GetKO() == pDoc->GetKO());
 					pDoc->CurrentShip()->second->SetTerraform(i);
 
 					Invalidate();
@@ -411,7 +411,7 @@ void CPlanetBottomView::OnMouseMove(UINT nFlags, CPoint point)
 		return;
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CalcLogicalPoint(point);
 
@@ -454,7 +454,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 		if (CRect(735,190,885,220).PtInRect(pt))
 		{
 			CMajor* pMajor = m_pPlayersRace;
-			ASSERT(pMajor);
+			AssertBotE(pMajor);
 			if (!pMajor)
 				return "";
 
@@ -553,7 +553,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 				for (int i = 0; i < pDoc->GetSector(KO.x, KO.y).GetNumberOfPlanets(); i++)
 				{
 					const CPlanet* pPlanet = pDoc->GetSector(KO.x, KO.y).GetPlanet(i);
-					ASSERT(pPlanet);
+					AssertBotE(pPlanet);
 					if (pPlanet->GetBoni()[j])
 						if (j != RESOURCES::DERITIUM)
 							nBonus += (pPlanet->GetSize() + 1) * 25;
@@ -591,7 +591,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 		for (UINT i = 0; i < m_vPlanetRects.size(); i++)
 		{
 			const CPlanet* pPlanet = pDoc->GetSector(KO.x, KO.y).GetPlanet(i);
-			ASSERT(pPlanet);
+			AssertBotE(pPlanet);
 
 			// wurde auf den Planeten gezeigt
 			if (m_vPlanetRects[i].PtInRect(pt))

@@ -123,7 +123,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 			sOffer = read[8];
 
 			CBotEDoc* pDoc = resources::pDoc;
-			ASSERT(pDoc);
+			AssertBotE(pDoc);
 
 			CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(info.m_sWarpactEnemy));
 			if (pMajor)
@@ -453,7 +453,7 @@ bool CGenDiploMessage::GenerateMinorOffer(CDiplomacyInfo& info)
 {
 	// Dokument holen
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CRace* pRace = pDoc->GetRaceCtrl()->GetRace(info.m_sFromRace);
 	if (!pRace)
@@ -575,7 +575,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 {
 	// Dokument holen
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CRace* pRace = pDoc->GetRaceCtrl()->GetRace(info.m_sToRace);
 	if (!pRace)

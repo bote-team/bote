@@ -52,10 +52,10 @@ void CEventRandom::Draw(Graphics* g, CGraphicPool* graphicPool) const//to do
 	SolidBrush fontBrush(Color::White);
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sRace));
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentCenter);

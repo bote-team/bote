@@ -8,7 +8,7 @@
 #include "Loc.h"
 #include "Galaxy/Sector.h"
 
-#include <cassert>
+
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -116,7 +116,7 @@ CShips::iterator CShips::iterator_at(int index) {
 //////////////////////////////////////////////////////////////////////
 
 const CShips::const_iterator& CShips::CurrentShip() const {
-	assert(!m_bLeaderIsCurrent && HasFleet());
+	AssertBotE(!m_bLeaderIsCurrent && HasFleet());
 	return m_Fleet.CurrentShip();
 }
 
@@ -134,7 +134,7 @@ CString CShips::GetRangeAsString() const {
 		case SHIP_RANGE::MIDDLE: return CLoc::GetString("MIDDLE");
 		case SHIP_RANGE::LONG: return CLoc::GetString("LONG");
 	}
-	assert(false);
+	AssertBotE(false);
 	return "";
 }
 
@@ -204,10 +204,10 @@ void CShips::AddShipToFleet(CShips* fleet) {
 			m_Leader.GetShipName());
 		MYTRACE("ships")(MT::LEVEL_INFO, s);
 	}
-	assert(fleet->GetOwnerOfShip() == GetOwnerOfShip());
+	AssertBotE(fleet->GetOwnerOfShip() == GetOwnerOfShip());
 	const CShipMap::iterator i = m_Fleet.Add(fleet);
 	const SHIP_ORDER::Typ order = GetCurrentOrder();
-	assert(order != SHIP_ORDER::ASSIGN_FLAGSHIP);
+	AssertBotE(order != SHIP_ORDER::ASSIGN_FLAGSHIP);
 	if(!i->second->CanHaveOrder(order, false))
 		UnsetCurrentOrder();
 	i->second->AdoptOrdersFrom(*this);
@@ -331,7 +331,7 @@ unsigned CShips::GetSpeed(bool consider_fleet) const
 	for(CShips::const_iterator i = begin(); i != end(); ++i)
 		speed = min(i->second->GetSpeed(true), speed);
 	//@todo this assert can probably be removed after enough testing (atm @r78019)
-	assert(speed != 127);
+	AssertBotE(speed != 127);
 	return speed;
 }
 
@@ -466,7 +466,7 @@ bool CShips::CanCloak(bool consider_fleet) const {
 //////////////////////////////////////////////////////////////////////
 
 CShips* CShips::GiveFleetToFleetsFirstShip() {
-	assert(HasFleet());
+	AssertBotE(HasFleet());
 	// erstes Schiff aus der Flotte holen
 	CShips::iterator i = begin();
 	CShips* new_fleet_ship = i->second;
@@ -507,7 +507,7 @@ void CShips::TraditionalRepair(BOOL bAtShipPort, bool bFasterShieldRecharge) {
 }
 
 void CShips::RepairCommand(BOOL bAtShipPort, bool bFasterShieldRecharge, CShipMap& ships) {
-	assert(GetCurrentOrder() == SHIP_ORDER::REPAIR);
+	AssertBotE(GetCurrentOrder() == SHIP_ORDER::REPAIR);
 	if(!bAtShipPort) {
 		UnsetCurrentOrder();
 		return;

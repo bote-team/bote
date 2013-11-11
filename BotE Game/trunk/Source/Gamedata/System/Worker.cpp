@@ -6,7 +6,7 @@
 #include "stdafx.h"
 #include "Worker.h"
 
-#include <cassert>
+
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -84,7 +84,7 @@ void CWorker::Serialize(CArchive &ar)
 			ar >> key;
 			int value;
 			ar >> value;
-			assert(WORKER::FOOD_WORKER <= key && key <= WORKER::FREE_WORKER);
+			AssertBotE(WORKER::FOOD_WORKER <= key && key <= WORKER::FREE_WORKER);
 			m_Workers.insert(std::pair<WORKER::Typ, int>(static_cast<WORKER::Typ>(key), value));
 		}
 	}
@@ -96,30 +96,30 @@ void CWorker::Serialize(CArchive &ar)
 int CWorker::GetWorker(WORKER::Typ nWorker) const
 {
 	const_iterator result = m_Workers.find(nWorker);
-	assert(result != m_Workers.end());
+	AssertBotE(result != m_Workers.end());
 	return result->second;
 }
 
 void CWorker::SetWorker(WORKER::Typ nWorker, int Value)
 {
-	assert(0 <= Value);
+	AssertBotE(0 <= Value);
 	iterator worker = m_Workers.find(nWorker);
-	assert(worker != m_Workers.end());
+	AssertBotE(worker != m_Workers.end());
 	worker->second = Value;
 }
 
 void CWorker::InkrementWorker(WORKER::Typ nWorker)
 {
 	iterator worker = m_Workers.find(nWorker);
-	assert(worker != m_Workers.end());
+	AssertBotE(worker != m_Workers.end());
 	worker->second++;
 }
 
 void CWorker::DekrementWorker(WORKER::Typ nWorker)
 {
 	iterator worker = m_Workers.find(nWorker);
-	assert(worker != m_Workers.end());
-	assert(worker->second > 0);
+	AssertBotE(worker != m_Workers.end());
+	AssertBotE(worker->second > 0);
 	worker->second--;
 }
 
@@ -145,7 +145,7 @@ CWorker::EmployedFreeAll CWorker::Workers() const
 CWorker::EmployedFreeAll CWorker::CalculateFreeWorkers()
 {
 	const EmployedFreeAll& efa = Workers();
-	assert(efa.free >= 0);
+	AssertBotE(efa.free >= 0);
 	m_Workers[WORKER::FREE_WORKER] = efa.free;
 	return efa;
 }
@@ -191,7 +191,7 @@ void CWorker::FreeAll()
 		it->second = 0;
 
 	EmployedFreeAll& efa = CalculateFreeWorkers();
-	assert(efa.all == efa.free);
+	AssertBotE(efa.all == efa.free);
 }
 
 int CWorker::Cap(WORKER::Typ type, int number)

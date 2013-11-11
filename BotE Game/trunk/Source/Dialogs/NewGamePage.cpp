@@ -67,20 +67,20 @@ BOOL CNewGamePage::OnInitDialog()
 
 	// Zeiger auf Steuerelemente
 	m_pClientBtn = (CButton *)GetDlgItem(IDC_CLIENT);
-	ASSERT(m_pClientBtn);
+	AssertBotE(m_pClientBtn);
 	m_pServerBtn = (CButton *)GetDlgItem(IDC_SERVER);
-	ASSERT(m_pServerBtn);
+	AssertBotE(m_pServerBtn);
 	m_pLoadBtn = (CButton *)GetDlgItem(IDC_LOAD);
-	ASSERT(m_pLoadBtn);
+	AssertBotE(m_pLoadBtn);
 	m_pChooseBtn = (CButton *)GetDlgItem(IDC_CHOOSEFILE);
-	ASSERT(m_pChooseBtn);
+	AssertBotE(m_pChooseBtn);
 	m_pPublish = (CButton *)GetDlgItem(IDC_PUBLISH);
-	ASSERT(m_pPublish);
+	AssertBotE(m_pPublish);
 	m_pSearch = (CButton *)GetDlgItem(IDC_SEARCHSERVERS);
-	ASSERT(m_pSearch);
+	AssertBotE(m_pSearch);
 
 	m_pParent = dynamic_cast<CMainDlg*>(GetParent());
-	ASSERT(m_pParent);
+	AssertBotE(m_pParent);
 
 	// Anfangswerte setzen
 	m_pPublish->SetCheck(TRUE);
@@ -271,11 +271,11 @@ LRESULT CNewGamePage::OnWizardNext()
 		{
 		DWORD dwAddr;
 		m_hostIP.GetAddress(dwAddr);
-		ASSERT(dwAddr != 0 && (dwAddr & 0xFF) != 0xFF);
+		AssertBotE(dwAddr != 0 && (dwAddr & 0xFF) != 0xFF);
 
 		BOOL trans;
 		UINT nPort = GetDlgItemInt(IDC_HOSTPORT, &trans, FALSE);
-		ASSERT(trans && nPort && nPort <= 65535);
+		AssertBotE(trans && nPort && nPort <= 65535);
 
 		m_pParent->SendMessage(WM_USERMSG, UMSG_SETSERVER, 0);
 
@@ -310,7 +310,7 @@ LRESULT CNewGamePage::OnWizardNext()
 		{
 		BOOL trans;
 		UINT nPort = GetDlgItemInt(IDC_SERVERPORT, &trans, FALSE);
-		ASSERT(trans && nPort && nPort <= 65535);
+		AssertBotE(trans && nPort && nPort <= 65535);
 
 		// Server starten
 		if (!server.Start(nPort))

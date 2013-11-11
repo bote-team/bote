@@ -34,13 +34,13 @@ END_MESSAGE_MAP()
 void CIntelBottomView::OnDraw(CDC* dc)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 	// TODO: add draw code here

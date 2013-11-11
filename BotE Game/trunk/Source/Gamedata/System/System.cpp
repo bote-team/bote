@@ -11,6 +11,7 @@
 #include "General/Loc.h"
 #include "Ships/ships.h"
 #include "ClientWorker.h"
+#include "AssertBotE.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -436,7 +437,7 @@ int CSystem::GetXStoreMax(RESOURCES::TYPE x) const
 		case RESOURCES::DERITIUM: return GetDeritiumStoreMax();
 		case RESOURCES::FOOD: return GetFoodStoreMax();
 	}
-	assert(false);
+	AssertBotE(false);
 	return 0;
 }
 
@@ -458,13 +459,13 @@ UINT CSystem::GetResourceStore(USHORT res) const
 	case RESOURCES::DERITIUM: {return this->GetDeritiumStore();}
 	case RESOURCES::FOOD: { return this->GetFoodStore();}
 	}
-	assert(false);
+	AssertBotE(false);
 	return 0;
 }
 
 int CSystem::GetResourceStore(WORKER::Typ type) const
 {
-	assert(HasStore(type));
+	AssertBotE(HasStore(type));
 	return GetResourceStore(WorkerToResource(type));
 }
 
@@ -494,7 +495,7 @@ int CSystem::GetXBuildings(WORKER::Typ x) const
 		case WORKER::CRYSTAL_WORKER: return m_iCrystalMines;
 		case WORKER::IRIDIUM_WORKER: return m_iIridiumMines;
 	}
-	assert(false);
+	AssertBotE(false);
 	return 0;
 }
 
@@ -612,7 +613,7 @@ void CSystem::SetBuildableUpdates(int RunningNumber, BOOLEAN TrueOrFalse)
 // Setzt ein Gebäude mit der richtigen RunningNumber online bzw. offline
 void CSystem::SetIsBuildingOnline(int index, BOOLEAN newStatus)
 {
-	ASSERT(index < m_Buildings.GetSize());
+	AssertBotE(index < m_Buildings.GetSize());
 	m_Buildings.ElementAt(index).SetIsBuildingOnline(newStatus);
 }
 
@@ -621,9 +622,9 @@ void CSystem::SetIsBuildingOnline(int index, BOOLEAN newStatus)
 void CSystem::SetWorker(WORKER::Typ nWhatWorker, SetWorkerMode Modus, int Value)
 {
 	if(Modus != SET_WORKER_MODE_SET)
-		assert(Value == -1);
+		AssertBotE(Value == -1);
 	else
-		assert(Value >= 0);
+		AssertBotE(Value >= 0);
 
 	// Modus == 0 --> Inkrement
 	// Modus == 1 --> Dekrement
@@ -802,7 +803,7 @@ namespace //helpers for CalculateVariables()
 void CSystem::CalculateVariables()
 {
 	const CMajor* pOwner = dynamic_cast<CMajor*>(resources::pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
-	assert(pOwner);
+	AssertBotE(pOwner);
 	const CResearchInfo* const ResearchInfo = pOwner->GetEmpire()->GetResearch()->GetResearchInfo();
 	const BuildingInfoArray* const buildingInfos = resources::BuildingInfo;
 
@@ -821,7 +822,7 @@ void CSystem::CalculateVariables()
 	// Die Gebäude online setzen, wenn das Objekt der Klasse CWorker das sagt
 	// zuerst die Anzahl der Arbeiter auslesen und schauen ob die Arbeiter vielleicht größer sind als die
 	// Anzahl der jeweiligen Gebäude (z.B. durch Abriß aus letzter Runde) -> dann Arbeiter auf Gebäudeanzahl verringern
-	assert(WORKER::FOOD_WORKER == 0 && WORKER::IRIDIUM_WORKER == 9);
+	AssertBotE(WORKER::FOOD_WORKER == 0 && WORKER::IRIDIUM_WORKER == 9);
 	std::vector<int> workers;
 	workers.reserve(10);
 	for(int i = WORKER::FOOD_WORKER; i <= WORKER::IRIDIUM_WORKER; ++i)
@@ -1728,7 +1729,7 @@ void CSystem::CalculateBuildableBuildings(CGlobalBuildings* globals)
 	CMajor* pMajor = dynamic_cast<CMajor*>(resources::pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
 
 	CEmpire* empire = pMajor->GetEmpire();
-	ASSERT(empire);
+	AssertBotE(empire);
 
 	m_BuildableWithoutAssemblylistCheck.RemoveAll();
 	m_BuildableWithoutAssemblylistCheck.FreeExtra();
@@ -2051,10 +2052,10 @@ void CSystem::Colonize(const CShips& ship, CMajor& major)
 void CSystem::BuildBuildingsAfterColonization(const BuildingInfoArray *buildingInfo, USHORT colonizationPoints)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(GetOwnerOfSector()));
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	// alle Gebäude die wir nach Systemeroberung nicht haben dürfen werden aus der Liste der aktuellen Gebäude entfernt
 	RemoveSpecialRaceBuildings(buildingInfo);
@@ -2579,7 +2580,7 @@ int CSystem::SetNewBuildingOnline(const BuildingInfoArray *buildingInfos)
 		else if (pBuildingInfo->GetIridiumProd() > 0)
 			m_Workers.InkrementWorker(WORKER::IRIDIUM_WORKER);
 		else
-			ASSERT(FALSE);
+			AssertBotE(FALSE);
 	}
 
 	// Energie von der Produktion abziehen
@@ -2801,7 +2802,7 @@ int CSystem::NeededRoundsToBuild(int index_or_id, bool already_in_list, bool use
 	const float prod = use_potential ? m_Production.m_iPotentialIndustryProd : m_Production.GetIndustryProd();
 	if(prod <= 0)
 	{
-		assert(false);
+		AssertBotE(false);
 		return INT_MAX;
 	}
 
@@ -2809,7 +2810,7 @@ int CSystem::NeededRoundsToBuild(int index_or_id, bool already_in_list, bool use
 	if(already_in_list)
 	{
 		//must be an assembly list index
-		assert(0 <= index_or_id && index_or_id < ALE);
+		AssertBotE(0 <= index_or_id && index_or_id < ALE);
 		needed = m_AssemblyList.GetNeededIndustryInAssemblyList(index_or_id);
 		//till the following call it's perhaps an index, afterwards always an ID
 		index_or_id = m_AssemblyList.GetAssemblyListEntry(index_or_id);
@@ -2848,7 +2849,7 @@ int CSystem::NeededRoundsToBuild(int index_or_id, bool already_in_list, bool use
 		return TurnsCalc::Turns(needed, prod, m_Production.GetShipBuildSpeed(), eff);
 	}
 	// Bei Truppen die Kaserneneffiziens beachten
-	assert(m_Production.GetBarrackEfficiency() > 0);
+	AssertBotE(m_Production.GetBarrackEfficiency() > 0);
 	if(!already_in_list)
 	{
 		TurnsCalc::CalculateNeededResources(*this, index_or_id, NULL, NULL,

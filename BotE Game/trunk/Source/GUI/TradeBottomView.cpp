@@ -41,20 +41,20 @@ END_MESSAGE_MAP()
 void CTradeBottomView::OnDraw(CDC* dc)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	// TODO: add draw code here
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
 	// Handelhistoryobjekt holen
 	CTradeHistory* pHistory = pMajor->GetTrade()->GetTradeHistory();
-	ASSERT(pHistory);
+	AssertBotE(pHistory);
 
 	// Doublebuffering wird initialisiert
 	CMyMemDC pDC(dc);
@@ -250,10 +250,10 @@ void CTradeBottomView::OnInitialUpdate()
 /// Funktion lädt die rassenspezifischen Grafiken.
 void CTradeBottomView::LoadRaceGraphics()
 {
-	ASSERT((CBotEDoc*)GetDocument());
+	AssertBotE((CBotEDoc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	CString sPrefix = pMajor->GetPrefix();
 	CString s = CIOData::GetInstance()->GetAppPath() + "Graphics\\Other\\" + sPrefix + "button_small.bop";
@@ -271,7 +271,7 @@ void CTradeBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;

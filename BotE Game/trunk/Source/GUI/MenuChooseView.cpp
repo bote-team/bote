@@ -64,7 +64,7 @@ void CMenuChooseView::OnNewRound()
 	ASSERT_VALID(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -117,13 +117,13 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 {
 	// ZU ERLEDIGEN: Code zum Zeichnen hier einfügen
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -318,11 +318,11 @@ void CMenuChooseView::OnInitialUpdate()
 void  CMenuChooseView::LoadRaceGraphics()
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CString sID = pDoc->GetPlayersRaceID();
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	// alle Buttons in der View anlegen (erstmal 7) und Grafiken laden
 	CString sPrefix = pMajor->GetPrefix();
@@ -377,13 +377,13 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -487,7 +487,7 @@ void CMenuChooseView::OnMouseMove(UINT nFlags, CPoint point)
 	::_TrackMouseEvent(&strMEvent);
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;

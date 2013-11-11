@@ -30,8 +30,8 @@ void CIntelInfo::CalcIntelInfo(CBotEDoc* pDoc, CMajor* pOurRace)
 	if (m_bCalculated)
 		return;
 
-	ASSERT(pDoc);
-	ASSERT(pOurRace);
+	AssertBotE(pDoc);
+	AssertBotE(pOurRace);
 
 	Reset();
 

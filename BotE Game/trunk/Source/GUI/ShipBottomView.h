@@ -8,7 +8,7 @@
 #pragma once
 #include "BottomBaseView.h"
 
-#include <cassert>
+
 
 // CShipBottomView view
 
@@ -109,7 +109,7 @@ private:
 		//		case SHIP_ORDER::ATTACK: return "BTN_ATTACK";
 		//		case SHIP_ORDER::DESTROY_SHIP: return "BTN_DESTROY_SHIP";
 		//		case SHIP_ORDER::CREATE_FLEET: return "BTN_CREATE_FLEET";
-		//		case SHIP_ORDER::FOLLOW_SHIP: assert(false); break;
+		//		case SHIP_ORDER::FOLLOW_SHIP: AssertBotE(false); break;
 		//		case SHIP_ORDER::TRAIN_SHIP: return "BTN_TRAIN_SHIP";
 		//		case SHIP_ORDER::WAIT_SHIP_ORDER: return "BTN_WAIT_SHIP_ORDER";
 		//		case SHIP_ORDER::SENTRY_SHIP_ORDER: return "BTN_SENTRY_SHIP_ORDER";
@@ -124,9 +124,9 @@ private:
 		//		case SHIP_ORDER::BLOCKADE_SYSTEM: return "BTN_BLOCKADE_SYSTEM";
 		//		case SHIP_ORDER::ATTACK_SYSTEM: return "BTN_ATTACK_SYSTEM";
 		//		case SHIP_ORDER::TRANSPORT: return "BTN_TRANSPORT";
-		//		case SHIP_ORDER::RAID_SYSTEM: assert(false); break;
+		//		case SHIP_ORDER::RAID_SYSTEM: AssertBotE(false); break;
 		//		default:
-		//			assert(false);
+		//			AssertBotE(false);
 		//	}
 		//	return "";
 		//}
@@ -148,7 +148,7 @@ private:
 				case MAIN_BUTTON_MULTI_TURN_ORDER: return "BTN_MULTI_TURN_ORDER";
 				case MAIN_BUTTON_CANCEL: return "BTN_CANCEL";
 				default:
-					assert(false);
+					AssertBotE(false);
 			}
 			return "";
 		}

@@ -162,9 +162,9 @@ public:
 		return GetSystem(m_ptKO.x, m_ptKO.y);
 	}
 
-	CBuildingInfo& GetBuildingInfo(int id) {ASSERT(id > 0); return BuildingInfo[id-1];}
-	const CString& GetBuildingName(int id) const {ASSERT(id > 0); return BuildingInfo[id-1].GetBuildingName();}
-	const CString& GetBuildingDescription(int id) const {ASSERT(id > 0); return BuildingInfo[id-1].GetBuildingDescription();}
+	CBuildingInfo& GetBuildingInfo(int id) {AssertBotE(id > 0); return BuildingInfo[id-1];}
+	const CString& GetBuildingName(int id) const {AssertBotE(id > 0); return BuildingInfo[id-1].GetBuildingName();}
+	const CString& GetBuildingDescription(int id) const {AssertBotE(id > 0); return BuildingInfo[id-1].GetBuildingDescription();}
 
 	/// Funktion lädt für die ausgewählte Spielerrasse alle Grafiken für die Views.
 	void LoadViewGraphics(void);

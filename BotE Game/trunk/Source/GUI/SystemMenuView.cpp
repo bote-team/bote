@@ -94,7 +94,7 @@ void CSystemMenuView::OnNewRound()
 void CSystemMenuView::OnDraw(CDC* dc)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -196,10 +196,10 @@ void CSystemMenuView::OnInitialUpdate()
 void CSystemMenuView::LoadRaceGraphics()
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	// Alle Buttons in der View erstellen
 	CreateButtons();
@@ -226,13 +226,13 @@ void CSystemMenuView::OnXButtonDown(UINT nFlags, UINT nButton, CPoint point)
 	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -284,10 +284,10 @@ BOOL CSystemMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 void CSystemMenuView::DrawBuildMenue(Graphics* g)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -841,10 +841,10 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -1205,10 +1205,10 @@ void CSystemMenuView::DrawBuildingsOverviewMenue(Graphics* g)
 	// Ansonsten funktioniert der Algorithmus hier nicht mehr.
 	// Sortiert wird das Feld in der CalculateNumberOfWorkBuildings() Funktion der CSystem Klasse.
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -1367,10 +1367,10 @@ void CSystemMenuView::DrawBuildingsOverviewMenue(Graphics* g)
 void CSystemMenuView::DrawEnergyMenue(Gdiplus::Graphics *g)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -1535,10 +1535,10 @@ void CSystemMenuView::DrawEnergyMenue(Gdiplus::Graphics *g)
 void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -1770,10 +1770,10 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CSystemMenuView::DrawButtonsUnderSystemView(Graphics* g)
 {
-	ASSERT((CBotEDoc*)GetDocument());
+	AssertBotE((CBotEDoc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
@@ -1795,10 +1795,10 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 {
 	// Hier die Einträge in der Bauliste
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
@@ -1901,10 +1901,10 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 void CSystemMenuView::DrawSystemProduction(Graphics* g)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -2173,10 +2173,10 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 		return;
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	RectF r(BuildingDescription.left, BuildingDescription.top + 5, BuildingDescription.right - BuildingDescription.left, 25);
 	CString s;
@@ -2987,13 +2987,13 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -3160,7 +3160,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 										// Startsystem der Ressourcenroute
 										int back = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j)
 											* pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetPercent() / 100;
-										ASSERT(back >= 0);
+										AssertBotE(back >= 0);
 										pDoc->GetSystem(ko.x, ko.y).SetResourceStore(j, back);
 										getBackRes -= back;
 									}
@@ -3569,7 +3569,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	CSystemMenuView::OnLButtonDown(nFlags, point);
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -3577,7 +3577,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	CalcLogicalPoint(point);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -3688,7 +3688,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 											// Startsystem der Ressourcenroute
 											int back = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j)
 												* pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetPercent() / 100;
-											ASSERT(back >= 0);
+											AssertBotE(back >= 0);
 											pDoc->GetSystem(ko.x, ko.y).SetResourceStore(j, back);
 											getBackRes -= back;
 										}
@@ -3756,7 +3756,7 @@ void CSystemMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -3790,7 +3790,7 @@ void CSystemMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -3809,13 +3809,13 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -3925,10 +3925,10 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CSystemMenuView::CreateButtons()
 {
-	ASSERT((CBotEDoc*)GetDocument());
+	AssertBotE((CBotEDoc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	CString sPrefix = pMajor->GetPrefix();
 	// alle Buttons in der View anlegen und Grafiken laden
@@ -3975,7 +3975,7 @@ CString CSystemMenuView::CreateTooltip(void)
 		return "";
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return "";

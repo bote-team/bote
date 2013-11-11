@@ -126,7 +126,7 @@ void CMinor::SetAcceptancePoints(const CString& sRaceID, short nAdd)
 /// @return <code>true</code> wenn ein neuer Planet kolonisiert wurde, ansonsten <code>false</code>
 bool CMinor::PerhapsExtend(CBotEDoc* pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// Wenn der dazugehörige Sektor nicht der kleinen Rasse gehört, also eine andere Rasse diese vereinnahmt hat,
 	// dann wächst das System auch nicht mehr automatisch
@@ -146,7 +146,7 @@ bool CMinor::PerhapsExtend(CBotEDoc* pDoc)
 /// @param pDoc Zeiger auf das Dokument
 void CMinor::PerhapsBuildShip(CBotEDoc* pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// wenn keine Spaceflightrasse, dann Abbruch
 	if (!m_bSpaceflight)
@@ -209,7 +209,7 @@ void CMinor::PerhapsBuildShip(CBotEDoc* pDoc)
 /// @param pDoc Zeiger auf das Dokument
 void CMinor::CalcAcceptancePoints(CBotEDoc* pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// alle Majors holen
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
@@ -252,7 +252,7 @@ void CMinor::CalcAcceptancePoints(CBotEDoc* pDoc)
 /// @param pDoc Zeiger auf das Dokument
 void CMinor::ConsumeResources(CBotEDoc* pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// bewohnbar sind:    C,F,G,H,K,L,M,N,O,P,Q,R
 	BOOLEAN exist[RESOURCES::DERITIUM + 1] = {0};
@@ -307,7 +307,7 @@ void CMinor::ConsumeResources(CBotEDoc* pDoc)
 /// @return <code>true</code> wenn das Angebot theoretisch angenommen werden könnte, ansonsten <code>false</code>
 bool CMinor::CanAcceptOffer(CBotEDoc* pDoc, const CString& sMajorID, short nType) const
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// Nur wenn der aktuelle Vertrag nicht höherwertiger ist als der angebotene, dann wird er akzeptiert
 	if (this->GetAgreement(sMajorID) >= nType)
@@ -344,7 +344,7 @@ bool CMinor::CanAcceptOffer(CBotEDoc* pDoc, const CString& sMajorID, short nType
 /// @param pDoc Zeiger auf das Dokument
 void CMinor::CheckDiplomaticConsistence(CBotEDoc* pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// alle Majors holen
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
@@ -480,7 +480,7 @@ void CMinor::CheckDiplomaticConsistence(CBotEDoc* pDoc)
 /// @param pDoc Zeiger auf das Dokument
 void CMinor::PerhapsCancelAgreement(CBotEDoc* pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// alle Majors holen
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
@@ -604,7 +604,7 @@ CString CMinor::GetTooltip(void) const
 /// @param nPos Referenz auf Position im Array, ab wann die Informationen gelten
 void CMinor::Create(const CStringArray& saInfo, int& nPos)
 {
-	ASSERT(nPos >= 0);
+	AssertBotE(nPos >= 0);
 
 	Reset();
 
@@ -641,7 +641,7 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 	while (nStart < sRaceProperties.GetLength())
 	{
 		RACE_PROPERTY::Typ nProperty = (RACE_PROPERTY::Typ)atoi(sRaceProperties.Tokenize(",", nStart));
-		ASSERT(nProperty >= RACE_PROPERTY::NOTHING_SPECIAL && nProperty <= RACE_PROPERTY::HOSTILE);
+		AssertBotE(nProperty >= RACE_PROPERTY::NOTHING_SPECIAL && nProperty <= RACE_PROPERTY::HOSTILE);
 		SetRaceProperty(nProperty, true);				// Rasseneigenschaften
 	}
 
@@ -662,7 +662,7 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 /// @param nPos Referenz auf Position im Array, ab wann die Informationen gelten
 void CMinor::CreateAlienEntities(const CStringArray& saInfo, int& nPos)
 {
-	ASSERT(nPos >= 0);
+	AssertBotE(nPos >= 0);
 
 	Reset();
 
@@ -683,7 +683,7 @@ void CMinor::CreateAlienEntities(const CStringArray& saInfo, int& nPos)
 	while (nStart < sRaceProperties.GetLength())
 	{
 		RACE_PROPERTY::Typ nProperty = (RACE_PROPERTY::Typ)atoi(sRaceProperties.Tokenize(",", nStart));
-		ASSERT(nProperty >= RACE_PROPERTY::NOTHING_SPECIAL && nProperty <= RACE_PROPERTY::HOSTILE);
+		AssertBotE(nProperty >= RACE_PROPERTY::NOTHING_SPECIAL && nProperty <= RACE_PROPERTY::HOSTILE);
 		SetRaceProperty(nProperty, true);				// Rasseneigenschaften
 	}
 	m_nSpecialAbility	= atoi(saInfo[nPos++]);

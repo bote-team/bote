@@ -281,7 +281,7 @@ class FCImageHandle_Gdiplus : public FCImageHandleBase,
     {
         if (gp_Bmp.GetLastStatus() != Gdiplus::Ok)
         {
-            /*assert(false);*/ return false;
+            /*AssertBotE(false);*/ return false;
         }
 
         // get frame dimensions
@@ -305,7 +305,7 @@ class FCImageHandle_Gdiplus : public FCImageHandleBase,
                 }
                 else
                 {
-                    delete pImg ; assert(false);
+                    delete pImg ; AssertBotE(false);
                 }
             }
         }

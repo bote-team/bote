@@ -9,7 +9,6 @@
  */
 #ifndef __PCL_INTERFACE_COMPOSITE__2005_01_23__H__
 #define __PCL_INTERFACE_COMPOSITE__2005_01_23__H__
-#include <assert.h>
 #include <deque>
 
 template<class T> class PCL_Interface_Composite ;
@@ -53,7 +52,7 @@ public:
         if ((nIndex >= 0) && (nIndex <= PCL_GetObjectCount()))
             m_objList.insert (m_objList.begin()+nIndex, pObj) ; // push NULL is permitted
         else
-            {assert(false);}
+            {AssertBotE(false);}
     }
 
     /**
@@ -64,7 +63,7 @@ public:
         if ((nIndex >= 0) && (nIndex < PCL_GetObjectCount()))
             return m_objList[nIndex] ;
         else
-            {assert(false); return 0;}
+            {AssertBotE(false); return 0;}
     }
 
     /**
@@ -117,7 +116,7 @@ public:
         }
         else
         {
-            assert(false) ;
+            AssertBotE(false) ;
         }
     }
 

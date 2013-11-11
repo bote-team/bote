@@ -8,7 +8,7 @@
 #include "HTMLStringBuilder.h"
 #include "General/Loc.h"
 
-#include <cassert>
+
 
 IMPLEMENT_SERIAL (CRace, CObject, 1)
 
@@ -193,7 +193,7 @@ bool CRace::IsRaceProperty(RACE_PROPERTY::Typ nProp) const
 		case RACE_PROPERTY::WARLIKE:	return (m_nProperty & RACE_WARLIKE)		== RACE_WARLIKE;
 	}
 
-	ASSERT(FALSE);
+	AssertBotE(FALSE);
 	return RACE_PROPERTY::NOTHING_SPECIAL;
 }
 
@@ -272,7 +272,7 @@ void CRace::SetAgreement(const CString& sOtherRace, DIPLOMATIC_AGREEMENT::Typ nN
 void CRace::MakeOffersAI(void)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// Alle zuletzt gemachten Angebote die älter als 2 Runden sind löschen
 	set<CString> sRemovingOffers;
@@ -293,7 +293,7 @@ void CRace::MakeOffersAI(void)
 
 	// Angebote machen
 	std::map<CString, CRace*>* races = pDoc->GetRaceCtrl()->GetRaces();
-	ASSERT(races);
+	AssertBotE(races);
 
 	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
 		if (m_sID != it->first)
@@ -485,7 +485,7 @@ bool CRace::CanBeContactedBy(const CString& sRaceID) const {
 
 void CRace::Contact(const CRace& Race, const CPoint& /*p*/) {
 	const CString& sContactedRaceID = Race.GetRaceID();
-	assert(!IsRaceContacted(sContactedRaceID));
+	AssertBotE(!IsRaceContacted(sContactedRaceID));
 	SetIsRaceContacted(sContactedRaceID, true);
 }
 

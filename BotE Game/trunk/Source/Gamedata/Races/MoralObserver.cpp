@@ -73,7 +73,7 @@ void CMoralObserver::SerializeStatics(CArchive &ar)
 void CMoralObserver::CalculateEvents(std::vector<CSystem>& systems, const CString& sRaceID, BYTE byMappedRaceNumber)
 {
 	// derzeit nur 6 Moralwertdatensätze vorhanden
-	ASSERT(byMappedRaceNumber >= 1 && byMappedRaceNumber <= 6);
+	AssertBotE(byMappedRaceNumber >= 1 && byMappedRaceNumber <= 6);
 
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -652,7 +652,7 @@ void CMoralObserver::InitMoralMatrix()
 short CMoralObserver::GetMoralValue(BYTE byMappedRaceNumber, unsigned short Event)
 {
 	// derzeit nur 6 Moralwertdatensätze vorhanden
-	ASSERT(byMappedRaceNumber >= 1 && byMappedRaceNumber <= 6);
+	AssertBotE(byMappedRaceNumber >= 1 && byMappedRaceNumber <= 6);
 
 	return m_iMoralMatrix[Event][byMappedRaceNumber - 1];
 }

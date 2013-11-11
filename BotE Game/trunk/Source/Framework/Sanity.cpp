@@ -8,7 +8,7 @@
 #include "Races/RaceController.h"
 #include "Ships/Ships.h"
 
-#include <cassert>
+
 
 //@file
 // sanity checks of game data which are executed at runtime
@@ -24,7 +24,7 @@ CSanity* CSanity::GetInstance() {
 
 //These debugging functions check that all ships which don't move have target CPoint(-1, -1) set
 //instead of their current coordinates. Later on, the places that handle the case of
-//(target coords)==(current coords) can be removed (filled with assert(false)).
+//(target coords)==(current coords) can be removed (filled with AssertBotE(false)).
 
 void CSanity::Notify(const CString& s, bool bPopup) {
 	CString sMessage;
@@ -101,7 +101,7 @@ void CSanity::SanityCheckFleet(const CShips& ship)
 {
 	SanityCheckShip(ship);
 	for(CShips::const_iterator i = ship.begin(); i != ship.end(); ++i) {
-		assert(!i->second->HasFleet());
+		AssertBotE(!i->second->HasFleet());
 		SanityCheckShip(*i->second);
 	}
 	if(!ship.SanityCheckOrdersConsistency())
@@ -120,25 +120,25 @@ void CSanity::CheckShipUniqueness(const CShips& ship, std::set<CString>& already
 void CSanity::SanityCheckSectorAndSystem(const CSystem& system, const CBotEDoc& doc)
 {
 	CString s;
-	assert(!system.HasOutpost() || ! system.HasStarbase());
+	AssertBotE(!system.HasOutpost() || ! system.HasStarbase());
 	const CString& sOwnerOfSystem = system.GetOwnerOfSystem();
 	const CString& sOwnerOfSector = system.GetOwnerOfSector();
 	bool minor = false;
 	if(sOwnerOfSector != sOwnerOfSystem)
 	{
-		assert(sOwnerOfSystem.IsEmpty());
-		assert(!sOwnerOfSector.IsEmpty());
+		AssertBotE(sOwnerOfSystem.IsEmpty());
+		AssertBotE(!sOwnerOfSector.IsEmpty());
 		if(system.GetMinorRace())
 			minor = true;
 		else
-			assert(system.GetCurrentHabitants() == 0);
+			AssertBotE(system.GetCurrentHabitants() == 0);
 	}
 	if(sOwnerOfSector.IsEmpty())
 		return;
 	const CRaceController& RaceCtrl = *doc.GetRaceCtrl();
 	const CRace* pRace = RaceCtrl.GetRace(sOwnerOfSector);
-	assert(pRace);
-	assert(minor ? pRace->IsMinor() : pRace->IsMajor());
+	AssertBotE(pRace);
+	AssertBotE(minor ? pRace->IsMinor() : pRace->IsMajor());
 #pragma warning(push)
 #pragma warning(disable:4189)
 }

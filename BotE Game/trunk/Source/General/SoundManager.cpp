@@ -3,6 +3,7 @@
 #include "Loc.h"
 #include "IOData.h"
 #include <algorithm>
+#include "AssertBotE.h"
 
 CSoundManager::CSoundManager(UINT nMaxLoadedSounds)
 	: m_nLastResult(FMOD_OK), m_pSystem(NULL), m_pMusicChannel(NULL), m_pMusic(NULL),
@@ -103,7 +104,7 @@ std::string CSoundManager::GetPathName(SNDMGR_VALUE nSound, network::RACE nRace)
 SNDMGR_VALUE CSoundManager::GetRaceMusic(network::RACE race)
 {
 	using namespace network;
-	ASSERT(race >= RACE_FIRST && race < RACE_LAST);
+	AssertBotE(race >= RACE_FIRST && race < RACE_LAST);
 
 	// zum Volk gehörige Konstante zurückgeben
 	switch (race)
@@ -455,7 +456,7 @@ BOOL CSoundManager::StopMessages(BOOL bHardInterrupt, DWORD dwTimeout)
 
 UINT CSoundManager::ThreadProc(LPVOID pParam)
 {
-	ASSERT(pParam);
+	AssertBotE(pParam);
 	CSoundManager *pObj = reinterpret_cast<CSoundManager*>(pParam);
 
 	while (pObj->m_bMessagesPlaying)

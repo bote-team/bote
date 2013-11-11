@@ -5,7 +5,7 @@
 #include "General/Loc.h"
 #include "ClientWorker.h"
 
-#include <cassert>
+
 
 CNewRoundDataCalculator::CNewRoundDataCalculator(void)
 {
@@ -120,7 +120,7 @@ void CNewRoundDataCalculator::CalcPreLoop() {
 			}
 			if(system_owner_exists || sy->GetMinorRace()) {
 				const CString& sector_owner = sy->GetOwnerOfSector();
-				assert(!sector_owner.IsEmpty());
+				AssertBotE(!sector_owner.IsEmpty());
 				//Building scan power and range in a system isn't influenced by other systems, is it...?
 				//This needs to be here in the first loop, since when calculating the scan power that
 				//other majors get due to affiliation, the scan powers in all sectors are not yet calculated correctly.
@@ -224,7 +224,7 @@ namespace {
 		const CString& left_id = left.GetRaceID();
 		if(bMinor) {
 			const CMinor* pMinor = dynamic_cast<const CMinor*>(&right);
-			assert(pMinor);
+			AssertBotE(pMinor);
 			GiveDiploGoodies(sector, agreement, left_id, right_id,
 				sector.GetKO() == pMinor->GetRaceKO() && pMinor->GetSpaceflightNation());
 		}

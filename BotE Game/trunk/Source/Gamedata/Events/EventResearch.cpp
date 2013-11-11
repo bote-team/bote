@@ -55,10 +55,10 @@ void CEventResearch::Create(void)
 	CEventScreen::Create();
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sRace));
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	// Bild der Forschungstech laden
 	_graphic = NULL;
@@ -166,10 +166,10 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	SolidBrush fontBrush(Color::White);
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sRace));
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	CString s;
 	CString sTechName;

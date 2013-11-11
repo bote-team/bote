@@ -81,7 +81,7 @@ void CNewGameView::Dump(CDumpContext& dc) const
 void CNewGameView::OnDraw(CDC* dc)
 {
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
-	ASSERT((CBotEDoc*)GetDocument());
+	AssertBotE((CBotEDoc*)GetDocument());
 
 	CMyMemDC pDC(dc);
 	CRect clientRect;
@@ -170,7 +170,7 @@ void CNewGameView::OnInitialUpdate()
 
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	m_pBkgndImg = pDoc->GetGraphicPool()->GetGDIGraphic("Events\\Startmenu.boj");
 	m_TotalSize = CSize(1280, 1024);
@@ -293,7 +293,7 @@ void CNewGameView::SetButtonStyle(CRoundButton2* pBtn)
 {
 	if (!pBtn)
 	{
-		ASSERT(pBtn);
+		AssertBotE(pBtn);
 		return;
 	}
 
@@ -331,7 +331,7 @@ void CNewGameView::StartServer(bool bPublish)
 
 	BOOL trans;
 	UINT nPort = GetDlgItemInt(IDC_SERVERPORT, &trans, FALSE);
-	ASSERT(trans && nPort && nPort <= 65535);
+	AssertBotE(trans && nPort && nPort <= 65535);
 
 	// Server starten
 	if (!server.Start(nPort))
@@ -379,7 +379,7 @@ void CNewGameView::LoadGame(const CString& sPath)
 	{
 		// Datei laden
 		CBotEDoc* pDoc = resources::pDoc;
-		ASSERT(pDoc);
+		AssertBotE(pDoc);
 
 		if (!pDoc->OnOpenDocument(m_sFileName))
 		{
@@ -536,11 +536,11 @@ void CNewGameView::OnBnClickedNext()
 
 		DWORD dwAddr;
 		m_hostIP.GetAddress(dwAddr);
-		ASSERT(dwAddr != 0 && (dwAddr & 0xFF) != 0xFF);
+		AssertBotE(dwAddr != 0 && (dwAddr & 0xFF) != 0xFF);
 
 		BOOL trans;
 		UINT nPort = GetDlgItemInt(IDC_HOSTPORT, &trans, FALSE);
-		ASSERT(trans && nPort && nPort <= 65535);
+		AssertBotE(trans && nPort && nPort <= 65535);
 
 		// Client zum angegebenen Server verbinden
 		if (!client.Connect(dwAddr, nPort, userName))
@@ -560,7 +560,7 @@ void CNewGameView::OnBnClickedNext()
 void CNewGameView::OnBnClickedBack()
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 	if (!pDoc)
 		return;
 
@@ -574,7 +574,7 @@ void CNewGameView::ShowChooseRaceView(bool bIsServer) const
 	resources::pMainFrame->SelectStartMenuView(VIEWS::CHOOSERACE_VIEW);
 
 	CChooseRaceView* m_pChooseRaceView = dynamic_cast<CChooseRaceView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CChooseRaceView)));
-	ASSERT(m_pChooseRaceView);
+	AssertBotE(m_pChooseRaceView);
 	if (m_pChooseRaceView)
 	{
 		m_pChooseRaceView->SetServer(bIsServer);

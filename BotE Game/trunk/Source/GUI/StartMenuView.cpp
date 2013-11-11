@@ -100,7 +100,7 @@ void CStartMenuView::Dump(CDumpContext& dc) const
 void CStartMenuView::OnDraw(CDC* dc)
 {
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
-	ASSERT((CBotEDoc*)GetDocument());
+	AssertBotE((CBotEDoc*)GetDocument());
 
 	CMyMemDC pDC(dc);
 	CRect client;
@@ -170,16 +170,16 @@ void CStartMenuView::OnInitialUpdate()
 
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	m_pBkgndImg = pDoc->GetGraphicPool()->GetGDIGraphic("Events\\Startmenu.boj");
-	ASSERT(m_pBkgndImg);
+	AssertBotE(m_pBkgndImg);
 
 	m_pChooseRaceView = dynamic_cast<CChooseRaceView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CChooseRaceView)));
-	ASSERT(m_pChooseRaceView);
+	AssertBotE(m_pChooseRaceView);
 
 	m_pNewGameView = dynamic_cast<CNewGameView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CNewGameView)));
-	ASSERT(m_pNewGameView);
+	AssertBotE(m_pNewGameView);
 
 	// Immer im Vollbild anzeigen
 	resources::pMainFrame->FullScreenMainView(true);
@@ -287,7 +287,7 @@ void CStartMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 void CStartMenuView::OnBnClickedNewGame()
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 	pDoc->m_bGameLoaded = false;
 
 	m_pNewGameView->SetMode(MODE_SERVER);
@@ -407,7 +407,7 @@ void CStartMenuView::OnBeginGame(network::CBeginGame *pMsg)
 	// bei Clients, auf denen nicht der Server läuft, von selbst auf die nächste Page wechseln
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 	if (!pDoc)
 		return;
 
@@ -434,7 +434,7 @@ void CStartMenuView::OnCalculateGame()
 
 void CStartMenuView::OnChatMsg(network::CChatMsg *pMsg)
 {
-	ASSERT(pMsg);
+	AssertBotE(pMsg);
 	if (!pMsg)
 		return;
 
@@ -445,7 +445,7 @@ void CStartMenuView::SetButtonStyle(CRoundButton2* pBtn)
 {
 	if (!pBtn)
 	{
-		ASSERT(pBtn);
+		AssertBotE(pBtn);
 		return;
 	}
 
@@ -528,13 +528,13 @@ void CStartMenuView::OnTimer(UINT_PTR nIDEvent)
 	{
 		this->SetTimer(1,25,NULL);
 		CIniLoader* pIni = CIniLoader::GetInstance();
-		ASSERT(pIni);
+		AssertBotE(pIni);
 		bool bUseMusic;
 		pIni->ReadValue("Audio", "MUSIC", bUseMusic);
 		if (bUseMusic)
 		{
 			CSoundManager* pSoundManager = CSoundManager::GetInstance();
-			ASSERT(pSoundManager);
+			AssertBotE(pSoundManager);
 			float fMusicVolume;
 			pIni->ReadValue("Audio", "MUSICVOLUME", fMusicVolume);
 			pSoundManager->StartMusic(network::RACE_1, fMusicVolume);

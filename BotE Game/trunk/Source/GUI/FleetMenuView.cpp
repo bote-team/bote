@@ -15,7 +15,7 @@
 #include "Ships/Ships.h"
 #include "General/Loc.h"
 #include "GraphicPool.h"
-#include <cassert>
+
 
 // CFleetMenuView
 #ifdef _DEBUG
@@ -60,7 +60,7 @@ void CFleetMenuView::OnDraw(CDC* dc)
 {
 	// TODO: add draw code here
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -124,10 +124,10 @@ void CFleetMenuView::OnInitialUpdate()
 void CFleetMenuView::LoadRaceGraphics()
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	CreateButtons();
 
@@ -158,10 +158,10 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	m_vShipRects.clear();
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -348,7 +348,7 @@ static unsigned CheckClickedButtonRect(const CPoint& point) {
 void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	assert(pDoc);
+	AssertBotE(pDoc);
 	if (!pDoc->m_bDataReceived)
 		return;
 	CalcLogicalPoint(point);
@@ -499,7 +499,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 void CFleetMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	assert(pDoc);
+	AssertBotE(pDoc);
 	if (!pDoc->m_bDataReceived)
 		return;
 	CalcLogicalPoint(point);
@@ -536,10 +536,10 @@ void CFleetMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -566,13 +566,13 @@ void CFleetMenuView::CreateButtons()
 CString CFleetMenuView::CreateTooltip(void)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return "";
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return "";
 

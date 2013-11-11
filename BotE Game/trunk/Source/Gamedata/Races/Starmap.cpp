@@ -9,7 +9,7 @@
 #include "Galaxy\Anomaly.h"
 #include <math.h>
 
-#include <cassert>
+
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -41,7 +41,7 @@ inline int sgn(int x)
 CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICalculation), m_nAIRange(nAIRange)
 {
 
-	ASSERT(nAIRange >= SM_RANGE_FAR && nAIRange <= SM_RANGE_NEAR);
+	AssertBotE(nAIRange >= SM_RANGE_FAR && nAIRange <= SM_RANGE_NEAR);
 
 	// KI Berechnung mal auf immer TRUE gestellt. So wird bei einer Spielerrasse auch berechnet, aber nicht angewandt
 	m_bAICalculation = TRUE;
@@ -81,7 +81,7 @@ CStarmap::~CStarmap()
 
 void CStarmap::SetRangeMap(unsigned char rangeMap[], char w, char h, char x0, char y0)
 {
-	ASSERT(w > 0 && h > 0 && 0 <= x0 && x0 < w && 0 <= y0 && y0 < h);
+	AssertBotE(w > 0 && h > 0 && 0 <= x0 && x0 < w && 0 <= y0 && y0 < h);
 
 	if (m_RangeMap.range) delete[] m_RangeMap.range;
 
@@ -97,7 +97,7 @@ unsigned char CStarmap::GetRangeMapValue(char x, char y)
 {
 	x += m_RangeMap.x0;
 	y += m_RangeMap.y0;
-	ASSERT(0 <= x && x < m_RangeMap.w && 0 <= y && y < m_RangeMap.h);
+	AssertBotE(0 <= x && x < m_RangeMap.w && 0 <= y && y < m_RangeMap.h);
 	return m_RangeMap.range[y * m_RangeMap.w + x];
 }
 
@@ -111,7 +111,7 @@ Sector CStarmap::GetClickedSector(const CPoint &pt)
 	{
 		result.x = (char)(pt.x / STARMAP_SECTOR_WIDTH);
 		result.y = (char)(pt.y / STARMAP_SECTOR_HEIGHT);
-		assert(result.on_map());
+		AssertBotE(result.on_map());
 	}
 
 	return result;
@@ -121,7 +121,7 @@ void CStarmap::Select(const Sector &sector)
 {
 	if (sector.x > -1 && sector.y > -1)
 	{
-		assert(sector.on_map());
+		AssertBotE(sector.on_map());
 		m_Selection = sector;
 	}
 }
@@ -133,7 +133,7 @@ void CStarmap::Deselect()
 
 CPoint CStarmap::GetSectorCoords(const Sector& sector)
 {
-	assert(sector.on_map());
+	AssertBotE(sector.on_map());
 	return CPoint(sector.x * STARMAP_SECTOR_WIDTH, sector.y * STARMAP_SECTOR_HEIGHT);
 }
 
@@ -155,7 +155,7 @@ void CStarmap::SetFullRangeMap(int nRange/* = SM_RANGE_NEAR*/, const std::vector
 
 void CStarmap::AddBase(const Sector &sector, BYTE propTech)
 {
-	assert(sector.on_map());
+	AssertBotE(sector.on_map());
 
 	// merken, dass Sektor einen Außenposten besitzt; falls der Außenposten schon vorhanden ist, die folgende
 	// Berechnung trotzdem durchführen, da eine andere <code>rangeMap</code> vorgegeben sein könnte.
@@ -260,8 +260,8 @@ void CStarmap::InitSomeMembers()
 Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char range,
 	unsigned char speed, CArray<Sector> &path)
 {
-	assert(pos.on_map());
-	assert(target.on_map());
+	AssertBotE(pos.on_map());
+	AssertBotE(target.on_map());
 
 	// bisherige Einträge von path löschen
 	path.RemoveAll();
@@ -384,17 +384,17 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 	// dabei von hinten beginnend in Array eintragen
 	Sector next = target;
 	int idx = pathMap[target.x][target.y].hops;
-	ASSERT(idx >= 1);
+	AssertBotE(idx >= 1);
 
 	path.SetSize(idx); // Größe des Arrays setzen (= Länge des Weges)
 
 	while (next.x > -1 && next.y > -1 && --idx >= 0) // Start-Sektor nicht mit eintragen
 	{
-		assert(next.on_map());
+		AssertBotE(next.on_map());
 		path[idx] = next;
 		next = pathMap[next.x][next.y].parent;
 	}
-	ASSERT(idx == -1);
+	AssertBotE(idx == -1);
 
 	// entsprechend speed den nächsten Knoten des Weges zurückgeben; bzw. den Zielknoten,
 	// wenn der Weg kürzer ist
@@ -604,8 +604,8 @@ void CStarmap::CalcRangeMap(BYTE propTech)
 
 void CStarmap::AddTarget(const Sector &target)
 {
-	assert(target.on_map());
-	ASSERT(m_bAICalculation);
+	AssertBotE(target.on_map());
+	AssertBotE(m_bAICalculation);
 	if (!m_bAICalculation || !target.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT)) return;
 
 	// prüfen, ob Ziel bereits in Liste vorhanden ist
@@ -633,8 +633,8 @@ BOOL CStarmap::IsTarget(const Sector &sector)
 
 void CStarmap::AddKnownSystem(const Sector &sector)
 {
-	assert(sector.on_map());
-	ASSERT(m_bAICalculation);
+	AssertBotE(sector.on_map());
+	AssertBotE(m_bAICalculation);
 	if (!m_bAICalculation || !sector.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT)) return;
 
 	// prüfen, ob Ziel bereits in Liste vorhanden ist
@@ -886,8 +886,8 @@ void CStarmap::SetBadAIBaseSectors(const std::vector<CSystem>& systems, const CS
 
 BaseSector CStarmap::CalcAIBaseSector(double variance)
 {
-	ASSERT(m_bAICalculation);
-	ASSERT(0. <= variance && variance <= 1.);
+	AssertBotE(m_bAICalculation);
+	AssertBotE(0. <= variance && variance <= 1.);
 
 	if (!m_bAICalculation) return BaseSector();
 	variance = min(max(variance, 0.), 1.);

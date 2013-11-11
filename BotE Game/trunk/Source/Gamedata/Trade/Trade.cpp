@@ -191,7 +191,7 @@ void CTrade::SellRessource(USHORT res, ULONG number, CPoint system, bool bNotAtM
 // wir durch den Verkauf bekommen haben an das jeweilige Imperium
 void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<CSystem>& systems, USHORT* taxes)
 {
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	std::vector<std::vector<std::vector<int>>> sum(
 		STARMAP_SECTORS_HCOUNT, std::vector<std::vector<int>>
@@ -264,7 +264,7 @@ void CTrade::CalculatePrices(map<CString, CMajor*>* pmMajors, CMajor* pCurMajor)
 			if (it->first != pCurMajor->GetRaceID() && pCurMajor->IsRaceContacted(it->first))
 			{
 				CMajor* pMajor = it->second;
-				ASSERT(pMajor);
+				AssertBotE(pMajor);
 
 				newPrices[j] += pMajor->GetTrade()->GetRessourcePrice()[j];
 				count++;

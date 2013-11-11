@@ -9,7 +9,6 @@
  */
 #ifndef __PCL_ARRAY__2004_07_19__H__
 #define __PCL_ARRAY__2004_07_19__H__
-#include <assert.h>
 
 //=============================================================================
 /**
@@ -39,7 +38,7 @@ public:
      */
     PCL_array (void* pArray)
     {
-        m_pArray = (T*)pArray; assert(pArray);
+        m_pArray = (T*)pArray; AssertBotE(pArray);
         m_nNumberT = -1 ;
     }
     /// Alloc nNumberT T array (with DEBUG-time bound check).
@@ -53,7 +52,7 @@ public:
         else
         {
             m_pArray = 0 ;
-            m_nNumberT = -1 ; assert(false);
+            m_nNumberT = -1 ; AssertBotE(false);
         }
     }
     virtual ~PCL_array()
@@ -81,7 +80,7 @@ public:
         if (m_nNumberT == -1)
         {
             // attached, we don't know array's size
-            assert(false) ;
+            AssertBotE(false) ;
             return 0 ;
         }
         return (sizeof(T) * m_nNumberT) ;

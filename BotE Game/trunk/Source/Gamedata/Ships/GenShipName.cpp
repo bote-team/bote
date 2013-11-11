@@ -10,7 +10,7 @@
 #include "IOData.h"
 
 #include <sstream>
-#include <cassert>
+
 
 IMPLEMENT_SERIAL (CGenShipName, CObject, 1)
 //////////////////////////////////////////////////////////////////////
@@ -128,7 +128,7 @@ void CGenShipName::Serialize(CArchive &ar)
 /// Funktion zum einmaligen Einlesen der ganzen Schiffsnamen.
 void CGenShipName::Init(CBotEDoc* pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	m_mShipNames.clear();
 	m_mStillAvailableNames.clear();
@@ -136,7 +136,7 @@ void CGenShipName::Init(CBotEDoc* pDoc)
 
 	// nun alle Rassen durchgehen
 	map<CString, CRace*>* mRaces = pDoc->GetRaceCtrl()->GetRaces();
-	ASSERT(mRaces);
+	AssertBotE(mRaces);
 
 	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
 	{
@@ -194,7 +194,7 @@ CString CGenShipName::GenerateShipName(const CString& sRaceID, const CString &sR
 			result = _snprintf(letter, 10, " %c", 64 + counter);//65 == A, 90 == Z
 		else
 			result = _snprintf(letter, 10, " %u", counter);
-		assert(result > 0);
+		AssertBotE(result > 0);
 	}
 
 	std::stringstream name;
@@ -209,11 +209,11 @@ CString CGenShipName::GenerateShipName(const CString& sRaceID, const CString &sR
 		mStillAvailableNames.erase(mStillAvailableNames.begin() + random);
 	}
 
-	assert(name);
+	AssertBotE(name);
 	name << letter;
-	assert(name);
+	AssertBotE(name);
 	if (bIsStation)
 		name << " Station";
-	assert(name);
+	AssertBotE(name);
 	return StdStringToCString(name.str());
 }

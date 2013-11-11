@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include "MultiSplitterView.h"
+#include "AssertBotE.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -108,7 +109,7 @@ bool CMultiSplitterView::SwitchView(UINT id, int paneRow, int paneCol)
 
    if (mainWnd == NULL) // serious prob
    {
-	   ASSERT(false);
+	   AssertBotE(false);
 	   return false;
    }
 

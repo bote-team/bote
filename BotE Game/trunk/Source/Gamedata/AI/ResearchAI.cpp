@@ -13,11 +13,11 @@ CResearchAI::~CResearchAI(void)
 
 void CResearchAI::Calc(CBotEDoc* pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// Forschungsdurchschnitt aller Rassen berechnen
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-	ASSERT(pmMajors);
+	AssertBotE(pmMajors);
 
 	// Map mit zum Major zugehörigen Techlevel
 	map<CMajor*, double> mTechLevels;

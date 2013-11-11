@@ -6,7 +6,7 @@
 #include "Planet.h"
 #include "GraphicPool.h"
 
-#include <cassert>
+
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -361,7 +361,7 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 
 	g.SetPixelOffsetMode(PixelOffsetModeHalf);
 
-	ASSERT(graphicPool);
+	AssertBotE(graphicPool);
 
 	Bitmap* planet = graphicPool->GetGDIGraphic(GetPlanetGraphicFile());
 

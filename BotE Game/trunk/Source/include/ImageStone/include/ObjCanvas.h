@@ -75,7 +75,7 @@ public:
     void GetCanvasResolution (int& nResX, int& nResY) const {nResX=m_nResX ; nResY=m_nResY ;}
 
 	/// Set canvas's size.
-    void SetCanvasDimension (SIZE sz) {m_sizeCanvas=sz; assert(sz.cx>=1 && sz.cy>=1);}
+    void SetCanvasDimension (SIZE sz) {m_sizeCanvas=sz; AssertBotE(sz.cx>=1 && sz.cy>=1);}
     /// Get canvas's size.
     SIZE GetCanvasDimension () const {return m_sizeCanvas;}
     /// Get canvas's scaled size.
@@ -120,7 +120,7 @@ public:
     /// Set current layer of canvas.
     void SetCurrentLayer (int nIndex)
     {
-        FCObjLayer   * pLayer = GetLayer(nIndex) ; assert(pLayer) ;
+        FCObjLayer   * pLayer = GetLayer(nIndex) ; AssertBotE(pLayer) ;
         if (pLayer)
             m_pCurrentLayer = pLayer ;
     }
@@ -133,19 +133,19 @@ public:
     void AddLayer (FCObjLayer* pLayer, int nIndex = -1)
     {
         if (!pLayer || (pLayer->ColorBits() != 32)) // now layer must 32-bpp
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         // ensure the insert position is valid
         if ((nIndex < -1) || (nIndex > GetLayerNumber()))
         {
-            assert(false) ;
+            AssertBotE(false) ;
             nIndex = -1 ;
         }
 
         // ensure the new layer isn't in current layer list
         std::deque<FCObjLayer*>::iterator   pt = __pcl_FindDeque (m_LayerList, pLayer) ;
         if (pt != m_LayerList.end()) // already in layer list
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         // add into layer list
         if (nIndex == -1)
@@ -166,12 +166,12 @@ public:
     void RemoveLayer (FCObjLayer* pLayer)
     {
         if (!pLayer || (GetLayerNumber() <= 1))
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         // find layer in current layer list
         std::deque<FCObjLayer*>::iterator   pt = __pcl_FindDeque (m_LayerList, pLayer) ;
         if (pt == m_LayerList.end()) // not in layer list
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         // remember position then remove from list
         int     nIndex = (int)(pt - m_LayerList.begin()) ;
@@ -188,7 +188,7 @@ public:
         if (__pcl_FindDeque (m_RemovedLayerList, pLayer) == m_RemovedLayerList.end())
             m_RemovedLayerList.push_back (pLayer) ;
         else
-            {assert(false);}
+            {AssertBotE(false);}
     }
     /// Get the layer's index in canvas.
     int FindLayer (const FCObjLayer* pLayer) const
@@ -204,7 +204,7 @@ public:
     void DeleteLayerFromRemoveList (FCObjLayer* pLayer)
     {
         if (!pLayer)
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         std::deque<FCObjLayer*>::iterator   pt = __pcl_FindDeque (m_RemovedLayerList, pLayer) ;
         if (pt != m_RemovedLayerList.end()) // in removed layer list
@@ -219,7 +219,7 @@ public:
     void ExecuteEffect (FCCmdArtPrider* cmd, FCObjProgress* pProgress=0)
     {
         if (!cmd)
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         // It's very important to call ClearRedoList before cmd->Execute !!!
         ClearRedoList() ;
@@ -257,7 +257,7 @@ public:
             SIZE   sz = GetCanvasDimension() ;
             RECT   rcCanvas = {0, 0, sz.cx, sz.cy} ;
             if (!IsRectInRect (rcCanvas, rcRegion))
-                {assert(false); return;}
+                {AssertBotE(false); return;}
         }
 
         // create image & draw back
@@ -348,7 +348,7 @@ public:
     void GetCanvasImage (FCObjImage& imgCanvas) const
     {
         if (!imgCanvas.Create(m_sizeCanvas.cx, m_sizeCanvas.cy, 32))
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         FCPixelFillColor   aCmd (FCColor::crWhite(), 0) ;
         imgCanvas.SinglePixelProcessProc (aCmd) ; // alpha init 0
@@ -412,7 +412,7 @@ public:
         // load file into memory
         FCOXOHelper::LoadFileToBuffer (szFileName, _pCurr, nFileSize) ;
         if (!_pCurr)
-            {assert(false); return false;}
+            {AssertBotE(false); return false;}
 
         BYTE              * pCurr = (BYTE*)_pCurr ;
         PCL_array<BYTE>   _aAutoDelete (pCurr) ;
@@ -482,7 +482,7 @@ public:
     bool Save_oXo (const char* szFileName) const
     {
         if (GetLayerNumber() <= 0)
-            {assert(false); return false;}
+            {AssertBotE(false); return false;}
 
         // estimate size to malloc memory
         int     nMaxSize = 1024 * 32, i ;

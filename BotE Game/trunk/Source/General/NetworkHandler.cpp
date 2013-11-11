@@ -4,7 +4,7 @@
 
 CNetworkHandler::CNetworkHandler(CBotEDoc *pDoc) : m_pDoc(pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 }
 
 CNetworkHandler::~CNetworkHandler()
@@ -28,7 +28,7 @@ void CNetworkHandler::OnCalculateGame()
 		if (server.DeserializeEndOfRoundToDoc((RACE)i, m_pDoc))
 			bSomethingDone = TRUE;
 
-	ASSERT(bSomethingDone);
+	AssertBotE(bSomethingDone);
 
 	// wenn Daten vorhanden waren, nächste Runde berechnen, Daten an Clients senden
 	if (!bSomethingDone) return;
@@ -38,7 +38,7 @@ void CNetworkHandler::OnCalculateGame()
 
 void CNetworkHandler::OnNextRound(network::CNextRound *pMsg)
 {
-	ASSERT(pMsg);
+	AssertBotE(pMsg);
 
 	// Client: Rundendaten vom Server sind eingetroffen, in Dokument übernehmen,
 	// Oberfläche zum Spielen wieder aktivieren
@@ -78,7 +78,7 @@ void CNetworkHandler::OnNextRound(network::CNextRound *pMsg)
 	if (nMsg == WM_UPDATEVIEWS)
 	{
 		CSoundManager* pSoundManager = CSoundManager::GetInstance();
-		ASSERT(pSoundManager);
+		AssertBotE(pSoundManager);
 
 		if (m_pDoc->GetCurrentRound() > 1)
 			pSoundManager->PlaySound(SNDMGR_SOUND_ENDOFROUND, SNDMGR_PRIO_HIGH);

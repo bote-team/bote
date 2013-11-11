@@ -74,7 +74,7 @@ public:
 
 	/// Funktion löscht einen bestimmten Geheimdienstreport.
 	/// @param n Stelle des Reports im Feld der ganzen Geheimdienstreports
-	void RemoveReport(int n) {ASSERT(m_IntelObjects.GetAt(n)); delete m_IntelObjects.GetAt(n);	m_IntelObjects.RemoveAt(n);}
+	void RemoveReport(int n) {AssertBotE(m_IntelObjects.GetAt(n)); delete m_IntelObjects.GetAt(n);	m_IntelObjects.RemoveAt(n);}
 
 	/// Funktion löscht alle Geheimdienstreports, auch den für einen Anschlag
 	void RemoveAllReports();

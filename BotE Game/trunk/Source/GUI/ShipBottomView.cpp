@@ -19,7 +19,7 @@
 #include "Galaxy/Anomaly.h"
 #include "GraphicPool.h"
 #include "ClientWorker.h"
-#include <cassert>
+
 
 #ifdef _DEBUG
 // #define new DEBUG_NEW
@@ -345,7 +345,7 @@ void CShipBottomView::SetupMainButtons() {
 		top += shift;
 		bottom += shift;
 	}
-	assert(m_vMainShipOrders.size() == MAIN_BUTTON_CANCEL);
+	AssertBotE(m_vMainShipOrders.size() == MAIN_BUTTON_CANCEL);
 }
 
 void CShipBottomView::DrawMaincommandMenu() {
@@ -695,13 +695,13 @@ void CShipBottomView::DrawMenu() {
 void CShipBottomView::OnDraw(CDC* dc)
 {
 	m_dc.pDoc = resources::pDoc;
-	ASSERT(m_dc.pDoc);
+	AssertBotE(m_dc.pDoc);
 
 	if (!m_dc.pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -788,7 +788,7 @@ void CShipBottomView::OnInitialUpdate()
 
 	// TODO: Add your specialized code here and/or call the base class
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	m_LastKO = pDoc->GetKO();
 	m_iPage = 1;
@@ -800,10 +800,10 @@ void CShipBottomView::OnInitialUpdate()
 /// Funktion lädt die rassenspezifischen Grafiken.
 void CShipBottomView::LoadRaceGraphics()
 {
-	ASSERT((CBotEDoc*)GetDocument());
+	AssertBotE((CBotEDoc*)GetDocument());
 
 	CMajor* pPlayer = m_pPlayersRace;
-	ASSERT(pPlayer);
+	AssertBotE(pPlayer);
 
 	CString sPrefix = pPlayer->GetPrefix();
 	CString s = CIOData::GetInstance()->GetAppPath() + "Graphics\\Other\\" + sPrefix + "button_shiporder.bop";
@@ -820,13 +820,13 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	assert(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	const CMajor* const pMajor = m_pPlayersRace;
-	assert(pMajor);
+	AssertBotE(pMajor);
 
 	CalcLogicalPoint(point);
 
@@ -868,7 +868,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (fleetship == current_ship)
 				return;
 
-			assert(fleetship->second->GetKO() == current_ship->second->GetKO());
+			AssertBotE(fleetship->second->GetKO() == current_ship->second->GetKO());
 			// sicherheitshalber wird hier nochmal überprüft, dass keine Station hinzugefügt werden kann und
 			// das sich das Schiff auch im gleichen Sektor befindet
 			if (!current_ship->second->IsStation())
@@ -900,7 +900,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				}
 
 				const bool was_terraform = to_erase->second->GetCurrentOrder() == SHIP_ORDER::TERRAFORM;
-				assert(next_current_ship != to_erase);
+				AssertBotE(next_current_ship != to_erase);
 				pDoc->m_ShipMap.EraseAt(to_erase, false);
 				pDoc->SetCurrentShip(next_current_ship);
 				const CPoint& co = next_current_ship->second->GetKO();
@@ -1000,7 +1000,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				else if (nOrder == SHIP_ORDER::ASSIGN_FLAGSHIP)
 				{
 					const CShipMap::const_iterator& current_ship = pDoc->CurrentShip();
-					assert(!current_ship->second->HasFleet());
+					AssertBotE(!current_ship->second->HasFleet());
 					// Das ganze Schiffsarray und auch die Flotten durchgehen, wenn wir ein altes Flagschiff						//finden, diesem den Titel wegnehmen
 					for(CShipMap::iterator n = pDoc->m_ShipMap.begin(); n != pDoc->m_ShipMap.end(); ++n)
 					{
@@ -1064,7 +1064,7 @@ void CShipBottomView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -1074,7 +1074,7 @@ void CShipBottomView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -1113,7 +1113,7 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 		return;
 
 	CBotEDoc* pDoc = resources::pDoc;
-	assert(pDoc);
+	AssertBotE(pDoc);
 	CalcLogicalPoint(point);
 
 	// wurde die Maus über ein Schiff gehalten
@@ -1145,7 +1145,7 @@ void CShipBottomView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -1190,7 +1190,7 @@ void CShipBottomView::OnTimer(UINT_PTR nIDEvent)
 void CShipBottomView::ActivateShip(CShipMap::iterator i, bool bSetShipMove /* = true */)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -1216,7 +1216,7 @@ void CShipBottomView::ActivateShip(CShipMap::iterator i, bool bSetShipMove /* = 
 CString CShipBottomView::CreateTooltip(void)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return "";
@@ -1228,7 +1228,7 @@ CString CShipBottomView::CreateTooltip(void)
 	CalcLogicalPoint(pt);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return "";
 
@@ -1271,13 +1271,13 @@ CString CShipBottomView::CreateTooltip(void)
 //{
 //	// TODO: Add your message handler code here and/or call default
 //	const CBotEDoc* const pDoc = resources::pDoc;
-//	ASSERT(pDoc);
+//	AssertBotE(pDoc);
 //
 //	if (!pDoc->m_bDataReceived)
 //		return -1;
 //
 //	const CMajor* const pMajor = m_pPlayersRace;
-//	ASSERT(pMajor);
+//	AssertBotE(pMajor);
 //	if (!pMajor)
 //		return -1;
 //

@@ -2,6 +2,7 @@
 #include "MyButton.h"
 #include "mytrace.h"
 #include "GraphicPool.h"
+#include "AssertBotE.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -32,7 +33,7 @@ bool CMyButton::ClickedOnButton(const CPoint& pt) const
 
 void CMyButton::DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, Gdiplus::Font &font, Gdiplus::SolidBrush &brush) const
 {
-	ASSERT(graphicPool);
+	AssertBotE(graphicPool);
 
 	CString sFile;
 	switch (m_nStatus)

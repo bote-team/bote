@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "FireArc.h"
+#include "AssertBotE.h"
 
 IMPLEMENT_SERIAL (CFireArc, CObject, 1)
 
@@ -12,8 +13,8 @@ CFireArc::CFireArc(void) : m_nMountPos(0), m_nAngle(90)
 
 CFireArc::CFireArc(USHORT mountPos, USHORT angle) : m_nMountPos(mountPos), m_nAngle(angle)
 {
-	ASSERT(m_nMountPos <= 360);
-	ASSERT(m_nAngle <= 360);
+	AssertBotE(m_nMountPos <= 360);
+	AssertBotE(m_nAngle <= 360);
 }
 
 CFireArc::~CFireArc(void)
@@ -72,6 +73,6 @@ void CFireArc::SetValues(USHORT nMountPos, USHORT nAngle)
 	m_nMountPos	= nMountPos;
 	m_nAngle	= nAngle;
 
-	ASSERT(m_nMountPos <= 360);
-	ASSERT(m_nAngle <= 360);
+	AssertBotE(m_nMountPos <= 360);
+	AssertBotE(m_nAngle <= 360);
 }

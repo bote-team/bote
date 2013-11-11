@@ -5,8 +5,8 @@
 #include <shellapi.h>
 #pragma comment(lib, "comctl32.lib")
 
-#include <cassert>
 
+#include "AssertBotE.h"
 
 
 
@@ -1617,7 +1617,7 @@ void CPPHtmlDrawer::DrawHtmlTableCell(CPPString & sCell, LPCRECT lpRect, STRUCT_
 			break;
 		} //switch
 	} else {
-		assert(false);
+		AssertBotE(false);
 	}//if
 
 	//ENG: Draws a cell

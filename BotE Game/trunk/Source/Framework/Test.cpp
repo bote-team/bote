@@ -5,7 +5,7 @@
 #include "Ships/Ships.h"
 #include "Races/RaceController.h"
 
-#include <cassert>
+
 
 CTest::CTest(const CBotEDoc& doc) :
 	m_Doc(doc)

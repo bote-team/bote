@@ -250,7 +250,7 @@ int CVictoryObserver::GetBestVictoryValue(VICTORYTYPE nType) const
 int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// aktuelle Runde
 	int nCurrentRound = pDoc->GetCurrentRound();
@@ -303,7 +303,7 @@ int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 void CVictoryObserver::Observe(void)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	//////////////////////////////////////////////////////////////////////
 	// VICTORYTYPE_ELIMINATION

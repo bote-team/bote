@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////
 CAIPrios::CAIPrios(CBotEDoc* pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 	m_pDoc = pDoc;
 	Clear();
 }
@@ -33,7 +33,7 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 {
 	MYTRACE("ai")(MT::LEVEL_INFO, "CAIPrios::CalcShipPrios() begin... \n");
 
-	ASSERT(sectorAI);
+	AssertBotE(sectorAI);
 	Clear();
 	int max = 0;
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
@@ -41,7 +41,7 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
-		ASSERT(pMajor);
+		AssertBotE(pMajor);
 
 		BYTE researchLevels[6] =
 		{
@@ -88,7 +88,7 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
-		ASSERT(pMajor);
+		AssertBotE(pMajor);
 
 		if (sectorAI->GetStationBuildSector(it->first).points > MINBASEPOINTS)
 		{

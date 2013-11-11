@@ -21,6 +21,7 @@
 #include "stdafx.h"
 #include "PPTooltip.h"
 #include "Resource.h"
+#include "AssertBotE.h"
 
 // allow multi-monitor-aware code on Win95 systems
 // comment out the first line if you already define it in another file
@@ -521,7 +522,7 @@ BOOL CPPToolTip::RelayEvent(MSG* pMsg)
 	if (NULL == GetSafeHwnd())
 		return FALSE;
 
-	ASSERT(m_hParentWnd);
+	AssertBotE(m_hParentWnd);
 
 	POINT pt;
 	CRect rect;
@@ -960,7 +961,7 @@ void CPPToolTip::PrepareDisplayTooltip(LPPOINT lpPoint)
 
 	//calculate the width and height of the box dynamically
 	CDC * pDC = GetDC();
-	ASSERT(pDC->GetSafeHdc());
+	AssertBotE(pDC->GetSafeHdc());
 
 	CSize sz (0, 0);
 	m_drawer.PrepareOutput(pDC->GetSafeHdc(), m_tiNextTool.sTooltip, &sz);
@@ -1548,7 +1549,7 @@ HRGN CPPToolTip::GetTooltipRgn(DWORD dwDirection, int x, int y, int nWidth, int 
 
 BOOL CPPToolTip::IsCursorOverTooltip() const
 {
-    ASSERT(m_hParentWnd);
+    AssertBotE(m_hParentWnd);
 
     // Is tooltip visible?
     if (!IsVisible() || !IsWindow(m_hWnd))
@@ -1997,7 +1998,7 @@ void CPPToolTip::AddTool(CWnd * pWnd, PPTOOLTIP_INFO & ti)
 void CPPToolTip::RemoveTool(CWnd * pWnd, LPCRECT lpRectBounds /* = NULL */)
 {
 	//TRACE (_T("CPPToolTip::RemoveTool(hWnd=0x%08X)\n"), pWnd->GetSafeHwnd());
-	ASSERT(pWnd);
+	AssertBotE(pWnd);
 
 	//ENG: Gets HWND of a window
 	//RUS: Получаем HWND окна
@@ -2079,7 +2080,7 @@ void CPPToolTip::RemoveAllTools()
 void CPPToolTip::AddToolBar(CToolBar * pBar)
 {
 	//TRACE (_T("CPPToolTip::AddToolBar(hWnd=0x%08X)\n"), pBar->GetSafeHwnd());
-	ASSERT(pBar);
+	AssertBotE(pBar);
 
 	//ENG: Gets HWND toolbar's window
 	//RUS: Получаем HWND окна панели инструментов
@@ -2112,7 +2113,7 @@ void CPPToolTip::AddToolBar(CToolBar * pBar)
 
 BOOL CPPToolTip::GetToolInfo(PPTOOLTIP_INFO & ti, CWnd * pWnd, LPCRECT lpRectBounds /* = NULL */)
 {
-	ASSERT(pWnd);
+	AssertBotE(pWnd);
 
 	//ENG: Gets HWND of a window
 	//RUS: Получаем HWND окна
@@ -2150,7 +2151,7 @@ BOOL CPPToolTip::GetToolInfo(PPTOOLTIP_INFO & ti, CWnd * pWnd, LPCRECT lpRectBou
 
 BOOL CPPToolTip::GetToolInfo(PPTOOLTIP_INFO & ti, CWnd * pWnd, DWORD dwIDTool /* = 0 */)
 {
-	ASSERT(pWnd);
+	AssertBotE(pWnd);
 
 	//ENG: Gets HWND of a window
 	//RUS: Получаем HWND окна

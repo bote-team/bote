@@ -54,7 +54,7 @@ void CShipDesignMenuView::OnNewRound()
 void CShipDesignMenuView::OnDraw(CDC* dc)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -123,10 +123,10 @@ void CShipDesignMenuView::OnInitialUpdate()
 void CShipDesignMenuView::LoadRaceGraphics()
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	CreateButtons();
 
@@ -153,10 +153,10 @@ BOOL CShipDesignMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 	if (!pMajor)
 		return;
 
@@ -447,13 +447,13 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -797,13 +797,13 @@ void CShipDesignMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -849,10 +849,10 @@ CString CShipDesignMenuView::CheckIfShipIsBuilding(const CShipInfo* pShipInfo) c
 		return "";
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return "";
 
@@ -870,9 +870,9 @@ CString CShipDesignMenuView::CheckIfShipIsBuilding(const CShipInfo* pShipInfo) c
 
 void CShipDesignMenuView::CreateButtons()
 {
-	ASSERT((CBotEDoc*)GetDocument());
+	AssertBotE((CBotEDoc*)GetDocument());
 
-	ASSERT(m_pPlayersRace);
+	AssertBotE(m_pPlayersRace);
 
 	// alle Buttons in der View anlegen und Grafiken laden
 }
@@ -885,7 +885,7 @@ CString CShipDesignMenuView::CreateTooltip(void)
 		return "";
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return "";

@@ -15,7 +15,7 @@
 #include "Ships/Ships.h"
 #include "clientWorker.h"
 
-#include <cassert>
+
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -374,7 +374,7 @@ CString CShip::GetCurrentOrderAsString() const
 	case SHIP_ORDER::REPAIR: order = CLoc::GetString("REPAIR_SHIP_ORDER"); break;
 	case SHIP_ORDER::IMPROVE_SHIELDS: order = CLoc::GetString("IMPROVE_SHIELDS_SHIP_ORDER"); break;
 	case SHIP_ORDER::NONE: order = CLoc::GetString("NO_SHIP_ORDER"); break;
-	default: assert(false); break;
+	default: AssertBotE(false); break;
 	}
 	return order;
 }
@@ -392,7 +392,7 @@ CString CShip::GetCombatTacticAsString() const
 			tactic = CLoc::GetString("ATTACK_ORDER");
 		break;
 		default:
-			assert(false);
+			AssertBotE(false);
 		break;
 	}
 	return tactic;
@@ -411,7 +411,7 @@ CString CShip::GetCurrentTargetAsString() const
 
 bool CShip::GetCloak() const {
 	if(m_bCloakOn)
-		assert(CanCloak());
+		AssertBotE(CanCloak());
 	return m_bCloakOn;
 }
 
@@ -422,7 +422,7 @@ bool CShip::GetCloak() const {
 void CShip::AdoptOrdersFrom(const CShip& ship)
 {
 	SHIP_ORDER::Typ order = ship.GetCurrentOrder();
-	assert(order != SHIP_ORDER::ASSIGN_FLAGSHIP && CanHaveOrder(order, false));
+	AssertBotE(order != SHIP_ORDER::ASSIGN_FLAGSHIP && CanHaveOrder(order, false));
 	//den Terraformingplaneten neu setzen
 	SetTerraform(ship.m_nTerraformingPlanet);
 	m_iCurrentOrder = order;
@@ -472,7 +472,7 @@ bool CShip::UnassignFlagship() {
 
 void CShip::SetCloak(bool bCloakOn) {
 	if(!CanCloak()) {
-		assert(!m_bCloakOn);
+		AssertBotE(!m_bCloakOn);
 		return;
 	}
 	m_bCloakOn = bCloakOn;
@@ -553,7 +553,7 @@ void CShip::SetCurrentOrderAccordingToType() {
 }
 
 void CShip::SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder) {
-	assert(nCurrentOrder != SHIP_ORDER::TERRAFORM
+	AssertBotE(nCurrentOrder != SHIP_ORDER::TERRAFORM
 		&& nCurrentOrder != SHIP_ORDER::ATTACK
 		&& nCurrentOrder != SHIP_ORDER::AVOID
 		&& nCurrentOrder != SHIP_ORDER::ASSIGN_FLAGSHIP);
@@ -900,7 +900,7 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
 		case SHIP_ORDER::RAID_SYSTEM:
 			return HasSpecial(SHIP_SPECIAL::RAIDER);
 		default: //possibly added commands
-			assert(false);
+			AssertBotE(false);
 	}
 	return false;
 }
@@ -1250,7 +1250,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 
 void CShip::DrawOrderTerraform(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt) const {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (pDoc->m_bDataReceived) {
 		CSector sec = pDoc->GetSector(GetKO().x, GetKO().y);
@@ -1573,9 +1573,9 @@ bool CShip::SanityCheckOrdersConsistency(const CShip& with) const {
 		|| with.m_iCurrentOrder == SHIP_ORDER::AVOID
 		|| with.m_iCurrentOrder == SHIP_ORDER::ASSIGN_FLAGSHIP)
 		return false;
-	assert(CanHaveOrder(with.m_iCurrentOrder, false));
+	AssertBotE(CanHaveOrder(with.m_iCurrentOrder, false));
 	if(m_iCurrentOrder == SHIP_ORDER::TERRAFORM) {
-		assert(0 <= m_nTerraformingPlanet &&
+		AssertBotE(0 <= m_nTerraformingPlanet &&
 			m_nTerraformingPlanet < static_cast<int>(resources::pDoc->GetSector(m_KO.x, m_KO.y).GetNumberOfPlanets()));
 	}
 	return m_iCurrentOrder == with.m_iCurrentOrder

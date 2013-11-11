@@ -48,7 +48,7 @@ END_MESSAGE_MAP()
 void CResearchMenuView::OnDraw(CDC* dc)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -138,10 +138,10 @@ void CResearchMenuView::OnInitialUpdate()
 void CResearchMenuView::LoadRaceGraphics()
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	// Alle Buttons in der View erstellen
 	CreateButtons();
@@ -171,10 +171,10 @@ BOOL CResearchMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 void CResearchMenuView::DrawResearchMenue(Graphics* g)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -433,10 +433,10 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -763,13 +763,13 @@ void CResearchMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -875,7 +875,7 @@ void CResearchMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -925,7 +925,7 @@ void CResearchMenuView::OnMouseMove(UINT nFlags, CPoint point)
 		if (pView->GetCurrentTech() != 6)
 		{
 			CMajor* pMajor = m_pPlayersRace;
-			ASSERT(pMajor);
+			AssertBotE(pMajor);
 			if (pMajor->GetEmpire()->GetResearch()->GetUniqueReady() == FALSE)
 			{
 				pView->SetCurrentTech(6);
@@ -941,13 +941,13 @@ void CResearchMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -970,10 +970,10 @@ void CResearchMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CResearchMenuView::CreateButtons()
 {
-	ASSERT((CBotEDoc*)GetDocument());
+	AssertBotE((CBotEDoc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	// alle Buttons in der View anlegen und Grafiken laden
 	CString sPrefix = pMajor->GetPrefix();
@@ -996,13 +996,13 @@ CString CResearchMenuView::CreateTooltip(void)
 		return "";
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return "";
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return "";
 

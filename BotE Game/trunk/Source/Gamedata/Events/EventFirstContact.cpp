@@ -58,13 +58,13 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		return;
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 	CRace* pContactedRace = pDoc->GetRaceCtrl()->GetRace(m_sRaceID);
 	if (!pContactedRace)
 		return;
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sRace));
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	CString s;
 
@@ -273,7 +273,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 CString CEventFirstContact::GetTooltip(const CPoint &pt) const
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 	CRace* pContactedRace = pDoc->GetRaceCtrl()->GetRace(m_sRaceID);
 	if (!pContactedRace)
 		return "";

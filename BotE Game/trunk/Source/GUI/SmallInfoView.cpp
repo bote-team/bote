@@ -13,7 +13,7 @@
 #include "Ships/Ships.h"
 #include "General/Loc.h"
 #include "GraphicPool.h"
-#include <cassert>
+#include "AssertBotE.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -53,7 +53,7 @@ END_MESSAGE_MAP()
 void CSmallInfoView::OnDraw(CDC* pDC)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -62,7 +62,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
 	if (!pMajor)
 	{
-		ASSERT(pMajor);
+		AssertBotE(pMajor);
 		this->KillTimer(1);
 		m_nTimer = 0;
 		return;
@@ -364,7 +364,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		// Wenn wir Infomationen zur Flotte anzeigen
 		else
 		{
-			assert(pShip == pDoc->CurrentShip());
+			AssertBotE(pShip == pDoc->CurrentShip());
 			Range = pShip->second->GetRangeAsString();
 			r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
 
@@ -395,14 +395,14 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		if (TargetKO.x != -1 && pShip->second->GetOwnerOfShip() == pMajor->GetRaceID())
 		{
 			if(m_DisplayMode == DISPLAY_MODE_SHIP_BOTTEM_VIEW)
-				assert(pShip == pDoc->CurrentShip());
+				AssertBotE(pShip == pDoc->CurrentShip());
 			else//(m_ShipDisplayMode == SHIP_DISPLAY_MODE_FLEET_VIEW)
 			{
 				const CShips::const_iterator& fleetship = pDoc->FleetShip();
 				if(fleetship->second->LeaderIsCurrent())
-					assert(pShip == pDoc->FleetShip());
+					AssertBotE(pShip == pDoc->FleetShip());
 				else
-					assert(pShip == fleetship->second->CurrentShip());
+					AssertBotE(pShip == fleetship->second->CurrentShip());
 			}
 			short range = 3-pShip->second->GetRange(true);
 			short speed = pShip->second->GetSpeed(true);
@@ -447,7 +447,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			if (pShip->second->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 			{
 				const short terraform = pShip->second->GetTerraform();
-				assert(-1 < terraform && terraform < static_cast<int>(pDoc->GetSector(pShip->second->GetKO().x, pShip->second->GetKO().y).GetNumberOfPlanets()));
+				AssertBotE(-1 < terraform && terraform < static_cast<int>(pDoc->GetSector(pShip->second->GetKO().x, pShip->second->GetKO().y).GetNumberOfPlanets()));
 				s.Format("%s: %s\n%s",CLoc::GetString("ORDER"), pShip->second->GetCurrentOrderAsString(), pDoc->GetSector(pShip->second->GetKO().x, pShip->second->GetKO().y).GetPlanet(pShip->second->GetTerraform())->GetPlanetName());
 			}
 			else
@@ -503,7 +503,7 @@ const CShipMap::const_iterator& CSmallInfoView::GetShip(const CBotEDoc& doc)
 			return fleetship;
 		return fleetship->second->CurrentShip();
 	}
-	assert(m_DisplayMode == DISPLAY_MODE_SHIP_BOTTEM_VIEW);
+	AssertBotE(m_DisplayMode == DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 	return doc.CurrentShip();
 }
 

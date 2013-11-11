@@ -21,7 +21,7 @@ CIntelAI::~CIntelAI(void)
 /// Funktion berechnet den Umgang mit dem Geheimdienst für die KI. Sie trifft Zuteilungen für die einzelnen Rassen.
 void CIntelAI::CalcIntelligence(CBotEDoc* pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// Struktur für eine Liste mit Rassen-ID und Geheimdienstpunkten
 	struct INTELLIST {

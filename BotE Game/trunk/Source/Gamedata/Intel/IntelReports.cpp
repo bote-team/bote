@@ -72,7 +72,7 @@ void CIntelReports::Serialize(CArchive &ar)
 /// Funktion legt ein neues Anschlagsobjekt an.
 void CIntelReports::CreateAttemptObject(CIntelObject* spyReport)
 {
-	ASSERT(spyReport);
+	AssertBotE(spyReport);
 	if (m_pAttemptObject)
 	{
 		delete m_pAttemptObject;

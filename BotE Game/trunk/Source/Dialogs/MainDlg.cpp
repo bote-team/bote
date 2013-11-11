@@ -20,17 +20,17 @@ END_MESSAGE_MAP()
 CMainDlg::CMainDlg(CBotEDoc *pDoc)
 {
 	m_pDoc = pDoc;
-	ASSERT(m_pDoc);
+	AssertBotE(m_pDoc);
 	m_pNewGame = new CNewGamePage();
-	ASSERT(m_pNewGame);
+	AssertBotE(m_pNewGame);
 	AddPage(m_pNewGame);
 
 	m_pChooseRace = new CChooseRacePage();
-	ASSERT(m_pChooseRace);
+	AssertBotE(m_pChooseRace);
 	AddPage(m_pChooseRace);
 
 //	m_pPlayGame = new CPlayGamePage();
-//	ASSERT(m_pPlayGame);
+//	AssertBotE(m_pPlayGame);
 //	AddPage(m_pPlayGame);
 
 	SetWizardMode();
@@ -67,7 +67,7 @@ BOOL CMainDlg::OnInitDialog()
 	if (helpBtn)
 	{
 		CWnd *cancelBtn = GetDlgItem(IDCANCEL);
-		ASSERT(cancelBtn);
+		AssertBotE(cancelBtn);
 
 		CRect rect1, rect2;
 		cancelBtn->GetWindowRect(&rect1);
@@ -177,7 +177,7 @@ void CMainDlg::OnCalculateGame()
 
 void CMainDlg::OnChatMsg(network::CChatMsg *pMsg)
 {
-	ASSERT(pMsg);
+	AssertBotE(pMsg);
 	switch (GetActiveIndex())
 	{
 	case 1:

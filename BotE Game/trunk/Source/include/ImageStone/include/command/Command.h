@@ -157,7 +157,7 @@ protected:
     virtual void Undo (FCObjCanvas& canvas)
     {
         if (!m_Undo.IsValidImage() || (canvas.FindLayer(m_pLayer) == -1))
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         if (!m_pRectOnLayer.get())
         {
@@ -176,7 +176,7 @@ protected:
     virtual void Redo (FCObjCanvas& canvas)
     {
         if (!m_Redo.IsValidImage() || (canvas.FindLayer(m_pLayer) == -1))
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         if (!m_pRectOnLayer.get())
         {
@@ -691,7 +691,7 @@ class FCCmdSelectionInvert : public FCCmdSelectionSetBase
         const SIZE     sizeCanvas = canvas.GetCanvasDimension() ;
         if (!canvas.HasSelected() || (sizeCanvas.cx <= 0) || (sizeCanvas.cy <= 0))
         {
-            assert(false); return;
+            AssertBotE(false); return;
         }
 
         // create selection & combine with old selection
@@ -723,7 +723,7 @@ class FCCmdSelectionCanvasAll : public FCCmdSelectionSetBase
         const SIZE     sizeCanvas = canvas.GetCanvasDimension() ;
         if ((sizeCanvas.cx <= 0) || (sizeCanvas.cy <= 0))
         {
-            assert(false); return;
+            AssertBotE(false); return;
         }
 
         // create selection
@@ -760,7 +760,7 @@ private:
         newSelect = canvas.GetSelection() ;
         if (!newSelect.HasSelected())
         {
-            assert(false); return;
+            AssertBotE(false); return;
         }
 
         // smooth
@@ -796,7 +796,7 @@ protected:
     {
         if (!newSelect.HasSelected() || (m_nPixel <= 0))
         {
-            assert(false) ; return ;
+            AssertBotE(false) ; return ;
         }
 
         newSelect.ExpandFrame (false, m_nPixel, m_nPixel, m_nPixel, m_nPixel) ;
@@ -932,7 +932,7 @@ private:
     void AddSelection (FCObjSelect& selCurr, const FCObjSelect& sel)
     {
         if (!selCurr.HasSelected() || !sel.HasSelected())
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         // selection's canvas position
         RECT     rcSel = {0, 0, sel.Width(), sel.Height()},
@@ -947,7 +947,7 @@ private:
             RECT        rcDest ;
             ::UnionRect (&rcDest, &rcSel, &rcCurr) ;
             if (IsRectEmpty(&rcDest))
-                {assert(false); return;}
+                {AssertBotE(false); return;}
 
             FCObjImage     imgOld (selCurr) ;
             selCurr.Create (RECTWIDTH(rcDest), RECTHEIGHT(rcDest), 8) ;
@@ -963,7 +963,7 @@ private:
     void SubSelection (FCObjSelect& selCurr, const FCObjSelect& sel)
     {
         if ((&selCurr == &sel) || !selCurr.HasSelected() || !sel.HasSelected())
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         // selection's canvas position
         RECT     rcSel = {0, 0, sel.Width(), sel.Height()} ,
@@ -1119,7 +1119,7 @@ private:
     {
         FCObjLayer   * pLayer = canvas.GetCurrentLayer() ;
         if (!pLayer)
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         POINT     ptLayer = m_ptCanvas ;
         pLayer->Canvas_to_Layer (ptLayer) ;
@@ -1231,7 +1231,7 @@ private:
     virtual void Execute (FCObjCanvas& canvas, FCObjProgress* pProgress)
     {
         if (!m_pLayer)
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         m_UndoLayer = *m_pLayer ;
         m_pUndoMemo = std::auto_ptr<FCMemoLayer>(m_pLayer->CreateMemoObj()) ;
@@ -1240,7 +1240,7 @@ private:
     virtual void Undo (FCObjCanvas& canvas)
     {
         if (!m_pLayer)
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         m_RedoLayer = *m_pLayer ;
         m_pRedoMemo = std::auto_ptr<FCMemoLayer>(m_pLayer->CreateMemoObj()) ;
@@ -1250,7 +1250,7 @@ private:
     virtual void Redo (FCObjCanvas& canvas)
     {
         if (!m_pLayer)
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         m_UndoLayer = *m_pLayer ;
         m_pUndoMemo = std::auto_ptr<FCMemoLayer>(m_pLayer->CreateMemoObj()) ;
@@ -1286,7 +1286,7 @@ private:
         {
             case INTERPOLATION_NONE : rLayer.Stretch (m_nNewWidth, m_nNewHeight) ; break ;
             case INTERPOLATION_BILINEAR : rLayer.Stretch_Smooth (m_nNewWidth, m_nNewHeight, pProgress) ; break ;
-            default : assert(false) ;
+            default : AssertBotE(false) ;
         }
         rLayer.SetGraphObjPos (ptLayer) ;
     }
@@ -1441,7 +1441,7 @@ private:
     virtual void ProcessLayer (FCObjCanvas& canvas, FCObjLayer& rLayer, FCObjProgress* pProgress)
     {
         if (!m_pImgMask.get() || (m_pImgMask->ColorBits() != 24))
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         const POINT   ptOldImg = rLayer.GetGraphObjPos() ;
 
@@ -1449,7 +1449,7 @@ private:
         FCObjImage     imgBlock ;
         rLayer.GetSubBlock (&imgBlock, m_rcLayer) ;
         if (!rLayer.IsValidImage())
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         m_pImgMask->Stretch_Smooth (imgBlock.Width(), imgBlock.Height()) ;
 
@@ -1492,7 +1492,7 @@ private:
     virtual void Redo (FCObjCanvas& canvas)
     {
         if (!m_pGraph)
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         const POINT     pt = m_pGraph->GetGraphObjPos() ;
         m_pGraph->SetGraphObjPos (m_ptOld) ;
@@ -1516,7 +1516,7 @@ public:
      */
     FCCmdLayerAdd (FCObjLayer* pAddLayer, int nPos)
     {
-        m_pAddLayer = pAddLayer ; assert(pAddLayer);
+        m_pAddLayer = pAddLayer ; AssertBotE(pAddLayer);
         m_nPos = nPos ;
         m_pCanvas = 0 ;
         // why we need this flag : think about this scene
@@ -1563,7 +1563,7 @@ public:
     /// Remove pRemoveLayer from canvas.
     FCCmdLayerRemove (FCObjLayer* pRemoveLayer)
     {
-        m_pRemoveLayer = pRemoveLayer; assert(pRemoveLayer);
+        m_pRemoveLayer = pRemoveLayer; AssertBotE(pRemoveLayer);
         m_pCanvas = 0 ;
         m_bRemoved = true ;
     }
@@ -1627,7 +1627,7 @@ private:
             m_pMemo = pCurr ;
         }
         else
-            {assert(false);}
+            {AssertBotE(false);}
     }
 private:
     FCMemoLayer  * m_pMemo ;
@@ -1671,7 +1671,7 @@ public:
     FCCmdLayerMerge (std::deque<int> IndexList)
     {
         if (IndexList.empty())
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         int     nNum = (int)IndexList.size(), i ;
         PCL_array<int>   arr(nNum) ;
@@ -1688,14 +1688,14 @@ private:
     virtual void Execute (FCObjCanvas& canvas, FCObjProgress* pProgress)
     {
         if (m_IndexList.empty())
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         // calculate merged layer size
         RECT      rcNewLayer = {0,0,0,0} ;
         int       i ;
         for (i=0 ; i < (int)m_IndexList.size() ; i++)
         {
-            FCObjLayer   * pLayer = canvas.GetLayer(m_IndexList[i]) ; assert(pLayer);
+            FCObjLayer   * pLayer = canvas.GetLayer(m_IndexList[i]) ; AssertBotE(pLayer);
             if (!pLayer)
                 continue ;
 
@@ -1714,13 +1714,13 @@ private:
         if (!pNewLayer->Create (RECTWIDTH(rcNewLayer), RECTHEIGHT(rcNewLayer), 32))
         {
             delete pNewLayer ;
-            assert(false); return;
+            AssertBotE(false); return;
         }
 
         // merge layers (from bottom to top)
         for (i=0 ; i < (int)m_IndexList.size() ; i++)
         {
-            FCObjLayer   * pLayer = canvas.GetLayer(m_IndexList[i]) ; assert(pLayer);
+            FCObjLayer   * pLayer = canvas.GetLayer(m_IndexList[i]) ; AssertBotE(pLayer);
             if (!pLayer)
                 continue ;
 
@@ -1740,7 +1740,7 @@ private:
         // delete layers
         for (i = (int)m_IndexList.size()-1 ; i >=0 ; i--)
         {
-            FCObjLayer   * pLayer = canvas.GetLayer(m_IndexList[i]) ; assert(pLayer);
+            FCObjLayer   * pLayer = canvas.GetLayer(m_IndexList[i]) ; AssertBotE(pLayer);
             if (pLayer)
                 PushImgCommand (new FCCmdLayerRemove (pLayer)) ;
         }
@@ -1761,7 +1761,7 @@ public:
     FCCmdLayerListRemove (const FCObjCanvas& canvas, std::deque<int> IndexList)
     {
         if (IndexList.empty())
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         int     nNum = (int)IndexList.size(), i ;
         PCL_array<int>   arr (nNum) ;
@@ -1828,7 +1828,7 @@ public:
         if ((m_NewCanvasSize.cx < 1) || (m_NewCanvasSize.cy < 1))
         {
             m_NewCanvasSize = OldSize ;
-            assert(false) ; return ;
+            AssertBotE(false) ; return ;
         }
 
         // update position of all layers
@@ -1964,7 +1964,7 @@ public:
         if ((nNewW <= 0) || (nNewH <= 0) || (OldSize.cx <= 0) || (OldSize.cy <= 0))
         {
             m_NewCanvasSize = OldSize ;
-            assert(false) ; return ;
+            AssertBotE(false) ; return ;
         }
 
         for (int i=0 ; i < rCanvas.GetLayerNumber() ; i++)

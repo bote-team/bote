@@ -14,7 +14,7 @@
 
 #include <map>
 #include <set>
-#include <cassert>
+
 
 #include "resources.h"
 #include "CommandLineParameters.h"
@@ -228,7 +228,7 @@ public:
 	SHIP_ORDER::Typ StationWork(const CString& sRace) const
 	{
 		const std::map<CString, SHIP_ORDER::Typ>::const_iterator result = m_IsStationBuild.find(sRace);
-		assert(result != m_IsStationBuild.end());
+		AssertBotE(result != m_IsStationBuild.end());
 		return result->second;
 	}
 

@@ -26,7 +26,7 @@ public:
     virtual IMAGE_TYPE QueryImageFileType (const char* szFileName)
     {
         if (!szFileName)
-            {assert(false); return IMG_UNKNOW;}
+            {AssertBotE(false); return IMG_UNKNOW;}
 
         std::string       strExt (FCOXOHelper::GetFileExt(szFileName)) ;
         PCL_array<char>   szConvert (new char[strExt.length() + 8]) ;

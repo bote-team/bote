@@ -127,13 +127,13 @@ void CCombatMenuView::OnDraw(CDC* dc)
 {
 	SetFocus();
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -243,10 +243,10 @@ void CCombatMenuView::OnInitialUpdate()
 void CCombatMenuView::LoadRaceGraphics()
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	CString sPrefix = pMajor->GetPrefix();
 
 	bg_combatdecmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatDec.boj");
@@ -274,10 +274,10 @@ BOOL CCombatMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -431,10 +431,10 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 void CCombatMenuView::DrawCombatInfoMenue(Graphics* g)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -482,10 +482,10 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	m_vShipRects.clear();
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -691,7 +691,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -700,7 +700,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -810,7 +810,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (m_vShipRects[i].first.PtInRect(point))
 			{
 				CShips* pShip = m_vShipRects[i].second;
-				ASSERT(pShip);
+				AssertBotE(pShip);
 				// es können nur eigene Schiffe eingestellt werden
 				if (pShip->GetOwnerOfShip() != pMajor->GetRaceID())
 					return;
@@ -829,7 +829,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				case 2: if (pShip->GetManeuverability() != 0)
 							pShip->SetCombatTactic(COMBAT_TACTIC::CT_RETREAT, false);
 						break;
-				default: ASSERT(FALSE);
+				default: AssertBotE(FALSE);
 				}
 
 				CRect r = m_vShipRects[i].first;
@@ -847,7 +847,7 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -856,7 +856,7 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -883,7 +883,7 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				case 2: if (pShip->GetManeuverability() != 0)
 							pShip->SetCombatTactic(COMBAT_TACTIC::CT_RETREAT);
 						break;
-				default: ASSERT(FALSE);
+				default: AssertBotE(FALSE);
 				}
 			}
 
@@ -898,7 +898,7 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		if (m_vShipRects[i].first.PtInRect(point))
 		{
 			CShips* pShip = m_vShipRects[i].second;
-			ASSERT(pShip);
+			AssertBotE(pShip);
 			// es können nur eigene Schiffe eingestellt werden
 			if (pShip->GetOwnerOfShip() != pMajor->GetRaceID())
 				return;
@@ -925,7 +925,7 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				case 2: if (pShip2->GetManeuverability() != 0)
 							pShip2->SetCombatTactic(COMBAT_TACTIC::CT_RETREAT);
 						break;
-				default: ASSERT(FALSE);
+				default: AssertBotE(FALSE);
 				}
 			}
 
@@ -944,7 +944,7 @@ void CCombatMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -953,7 +953,7 @@ void CCombatMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -993,7 +993,7 @@ void CCombatMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -1047,7 +1047,7 @@ void CCombatMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 CString CCombatMenuView::CreateTooltip(void)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return "";
@@ -1118,10 +1118,10 @@ CString CCombatMenuView::CreateTooltip(void)
 
 void CCombatMenuView::CreateButtons()
 {
-	ASSERT((CBotEDoc*)GetDocument());
+	AssertBotE((CBotEDoc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	CString sPrefix = pMajor->GetPrefix();
 	// alle Buttons in der View anlegen und Grafiken laden

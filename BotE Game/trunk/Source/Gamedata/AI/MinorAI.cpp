@@ -5,7 +5,7 @@
 #include "Races\GenDiploMessage.h"
 #include "General/Loc.h"
 #include <algorithm>
-#include <cassert>
+
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -43,7 +43,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 	if (pFromRace->IsMajor())
 	{
 		CMinor* pMinor = dynamic_cast<CMinor*>(m_pRace);
-		ASSERT(pMinor);
+		AssertBotE(pMinor);
 
 		// wurde die Rasse erobert, so kann die Minorrace nicht auf das Angebot reagieren
 		if (pMinor->GetSubjugated())
@@ -194,7 +194,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 	else
 	{
 		MYTRACE("general")(MT::LEVEL_ERROR, "CMinorAI::ReactOnOffer(): %s could not react on offers from non Majors.", m_pRace->GetRaceID());
-		assert(false);
+		AssertBotE(false);
 	}
 
 	return ANSWER_STATUS::DECLINED;
@@ -333,7 +333,7 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 	else
 	{
 		MYTRACE("general")(MT::LEVEL_ERROR, "Minor: %s makes offer %d to Major %s\n", info.m_sFromRace, info.m_nType, info.m_sToRace);
-		assert(false);
+		AssertBotE(false);
 	}
 
 	return false;
@@ -551,7 +551,7 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 		return false;
 
 	CSystem* pSystem = &(m_pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y));
-	ASSERT(pSystem);
+	AssertBotE(pSystem);
 	short nResistance = pSystem->GetProduction()->GetResistance();
 	// Bei einer Bestechnung mit z.B. 5000 Creditübergabe ergibt dies einen Wert von 5000.
 	// Der Wert des Kommunikationsnetzwerkes wird diesen Wert verringern.

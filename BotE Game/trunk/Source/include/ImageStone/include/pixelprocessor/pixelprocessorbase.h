@@ -886,7 +886,7 @@ private:
             case CHANNEL_RED   : nIndex = 2 ; break ;
             case CHANNEL_GREEN : nIndex = 1 ; break ;
             case CHANNEL_BLUE  : nIndex = 0 ; break ;
-            default : assert(false) ; break ;
+            default : AssertBotE(false) ; break ;
         }
 
         const int     nCount = histo.GetCount (nChannel) ;
@@ -1225,7 +1225,7 @@ public:
     /// @param nVideoType : VIDEO_STAGGERED, VIDEO_TRIPED, VIDEO_3X3, VIDEO_DOTS
     FCPixelVideo (VIDEO_TYPE nVideoType) : m_VideoType(nVideoType)
     {
-        assert(nVideoType>=VIDEO_STAGGERED && nVideoType<=VIDEO_DOTS);
+        AssertBotE(nVideoType>=VIDEO_STAGGERED && nVideoType<=VIDEO_DOTS);
     }
 private:
     virtual void ProcessPixel (FCObjImage* pImg, int x, int y, BYTE* pPixel)
@@ -1542,7 +1542,7 @@ public:
     void SetKernel (const int* nElements, int iBlockLen, int iDivisor, int nOffset=0)
     {
         if (!nElements || (iBlockLen < 1))
-            {assert(false); return;}
+            {AssertBotE(false); return;}
 
         if (m_pElement)
             delete[] m_pElement ;
@@ -2775,7 +2775,7 @@ class FCPixelWholeImageBase : public FCSinglePixelProcessBase
 {
     virtual PROCESS_TYPE QueryProcessType() {return PROCESS_TYPE_WHOLE;}
 private:
-    virtual void ProcessPixel (FCObjImage* pImg, int x, int y, BYTE* pPixel) {assert(false);}
+    virtual void ProcessPixel (FCObjImage* pImg, int x, int y, BYTE* pPixel) {AssertBotE(false);}
 };
 
 //=============================================================================
@@ -2793,8 +2793,8 @@ public:
     /// Constructor.
     FCPixelExportAscII (const char* szFileName)
     {
-        //m_pFile = fopen_s (szFileName, "wb") ; assert(m_pFile);
-		fopen_s(&m_pFile, szFileName, "wb") ; assert(m_pFile);
+        //m_pFile = fopen_s (szFileName, "wb") ; AssertBotE(m_pFile);
+		fopen_s(&m_pFile, szFileName, "wb") ; AssertBotE(m_pFile);
 
         char   ch[95] =
         {

@@ -14,7 +14,7 @@
 #include "BotEDoc.h"
 #include "Races/Major.h"
 
-#include <cassert>
+
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -386,8 +386,8 @@ void CMapTile::BuildStation(SHIP_TYPE::Typ station, const CString& race) {
 	if(station == SHIP_TYPE::OUTPOST)
 		m_Outpost = race;
 	else {
-		assert(station == SHIP_TYPE::STARBASE);
-		assert(m_Outpost == race || m_Starbase == race);
+		AssertBotE(station == SHIP_TYPE::STARBASE);
+		AssertBotE(m_Outpost == race || m_Starbase == race);
 		m_Outpost.Empty();
 		m_Starbase = race;
 	}
@@ -483,9 +483,9 @@ void CMapTile::DrawSectorsName(CDC *pDC, CBotEDoc* pDoc, CMajor* pPlayer)
 	if (!GetSunSystem() && !GetAnomaly())
 		return;
 
-	ASSERT(pDC);
-	ASSERT(pDoc);
-	ASSERT(pPlayer);
+	AssertBotE(pDC);
+	AssertBotE(pDoc);
+	AssertBotE(pPlayer);
 
 	// Ist Sektor bekannt dann zeichne den Systemnamen
 	if (this->GetKnown(pPlayer->GetRaceID()) == TRUE)
@@ -536,13 +536,13 @@ bool CMapTile::ShouldDrawOutpost(const CMajor& our_race, const CString& their_ra
 /// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
 void CMapTile::DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlayer) const
 {
-	ASSERT(g);
-	ASSERT(pDoc);
-	ASSERT(pPlayer);
+	AssertBotE(g);
+	AssertBotE(pDoc);
+	AssertBotE(pPlayer);
 
 	// alle Rassen holen
 	map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
-	ASSERT(pmRaces);
+	AssertBotE(pmRaces);
 
 	CString sFilePath;
 	short nCount = 0;

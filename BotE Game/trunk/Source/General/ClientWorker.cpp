@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include <cassert>
+
 
 #include "ClientWorker.h"
 #include "resources.h"
@@ -44,7 +44,7 @@ void CClientWorker::Serialize(CArchive& ar, bool sounds)
 		for (std::vector<VIEWS::MAIN_VIEWS>::const_iterator it = m_SelectedView.begin();
 			it != m_SelectedView.end(); ++it)
 		{
-			assert(VIEWS::NULL_VIEW <= *it && *it <= VIEWS::COMBAT_VIEW);
+			AssertBotE(VIEWS::NULL_VIEW <= *it && *it <= VIEWS::COMBAT_VIEW);
 			ar << static_cast<unsigned short>(*it);
 		}
 	}
@@ -54,7 +54,7 @@ void CClientWorker::Serialize(CArchive& ar, bool sounds)
 		{
 			unsigned short value;
 			ar >> value;
-			assert(VIEWS::NULL_VIEW <= value && value <= VIEWS::COMBAT_VIEW);
+			AssertBotE(VIEWS::NULL_VIEW <= value && value <= VIEWS::COMBAT_VIEW);
 			*it = static_cast<VIEWS::MAIN_VIEWS>(value);
 		}
 	}
@@ -81,7 +81,7 @@ static network::RACE GetMappedClientID(const CString& sRaceID)
 	if (sRaceID == "MAJOR6")
 		return network::RACE_6;
 
-	assert(false);
+	AssertBotE(false);
 	return network::RACE_NONE;
 }
 
@@ -106,7 +106,7 @@ CString CClientWorker::GetMappedRaceID(network::RACE clientID)
 	if (clientID == network::RACE_6)
 		return "MAJOR6";
 
-	assert(false);
+	AssertBotE(false);
 	return "";
 }
 
@@ -117,7 +117,7 @@ unsigned short CClientWorker::GetSelectedViewFor(const CString& sRaceID)
 
 void CClientWorker::SetSelectedViewForTo(network::RACE race, unsigned short to)
 {
-	assert(VIEWS::NULL_VIEW <= to && to <= VIEWS::COMBAT_VIEW);
+	AssertBotE(VIEWS::NULL_VIEW <= to && to <= VIEWS::COMBAT_VIEW);
 	m_SelectedView[race] = static_cast<VIEWS::MAIN_VIEWS>(to);
 }
 
@@ -169,7 +169,7 @@ void CClientWorker::ResetViews()
 
 void CClientWorker::CommitSoundMessages(CSoundManager* pSoundManager, const CMajor& player) const
 {
-	assert(pSoundManager);
+	AssertBotE(pSoundManager);
 	const network::RACE client = GetMappedClientID(player.GetRaceID());
 
 	pSoundManager->ClearMessages();
@@ -232,7 +232,7 @@ void CClientWorker::SetMajorToHumanOrAi(CMajor& major)
 {
 	const network::RACE client = GetMappedClientID(major.GetRaceID());
 	// wird das Imperium von einem Menschen oder vom Computer gespielt
-	assert(client != network::RACE_NONE);
+	AssertBotE(client != network::RACE_NONE);
 	major.SetHumanPlayer(server.IsPlayedByClient(client) ? true : false);
 }
 

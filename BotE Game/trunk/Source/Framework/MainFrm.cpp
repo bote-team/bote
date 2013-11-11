@@ -125,7 +125,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_CPPToolTip.SetBehaviour(PPTOOLTIP_MULTIPLE_SHOW);
 
 	CIniLoader* pIni = CIniLoader::GetInstance();
-	ASSERT(pIni);
+	AssertBotE(pIni);
 	int nDelayTime = 750;
 	pIni->ReadValue("Video", "TOOLTIPDELAY", nDelayTime);
 	// Times (in ms)
@@ -311,10 +311,10 @@ void CMainFrame::SelectMainView(VIEWS::MAIN_VIEWS whichView, const CString& sRac
 	if (sRace.IsEmpty())
 		return;
 
-	assert(VIEWS::NULL_VIEW <= whichView && whichView <= VIEWS::COMBAT_VIEW);
+	AssertBotE(VIEWS::NULL_VIEW <= whichView && whichView <= VIEWS::COMBAT_VIEW);
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (pDoc->GetPlayersRaceID() == sRace)
 	{
@@ -348,13 +348,13 @@ void CMainFrame::SelectMainView(VIEWS::MAIN_VIEWS whichView, const CString& sRac
 
 void CMainFrame::SelectStartMenuView(VIEWS::START_MENU_VIEWS whichView)
 {
-	assert(VIEWS::START_VIEW <= whichView && whichView <= VIEWS::NEWGAME_VIEW);
+	AssertBotE(VIEWS::START_VIEW <= whichView && whichView <= VIEWS::NEWGAME_VIEW);
 	m_wndSplitter.SwitchView(whichView, 0, 1);
 }
 
 void CMainFrame::SelectBottomView(VIEWS::BOTTOM_VIEWS viewID)
 {
-	assert(VIEWS::PLANET_BOTTOM_VIEW <= viewID && viewID <= VIEWS::SHIPDESIGN_BOTTOM_VIEW);
+	AssertBotE(VIEWS::PLANET_BOTTOM_VIEW <= viewID && viewID <= VIEWS::SHIPDESIGN_BOTTOM_VIEW);
 	m_wndSplitter.SwitchView(viewID, 1, 1);
 }
 
@@ -362,7 +362,7 @@ short CMainFrame::GetActiveView(int paneRow, int paneCol) const
 {
 	const std::map<CWnd *, UINT>* views = &m_wndSplitter.views;
 	CView* curView = dynamic_cast<CView*>(dynamic_cast<CMainFrame*>(AfxGetMainWnd())->m_wndSplitter.GetPane(paneRow, paneCol)); // get current view
-	ASSERT(curView);
+	AssertBotE(curView);
 
 	for (std::map<CWnd *, UINT>::const_iterator it = views->begin(); it != views->end(); ++it)
 		if (it->first == curView)
@@ -480,7 +480,7 @@ LRESULT CMainFrame::UpdateViews(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	MYTRACE("general")(MT::LEVEL_INFO, "Getting Message to UpdateViews...");
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// Views ihre Arbeiten zu jeder neuen Runde machen lassen
 	pDoc->DoViewWorkOnNewRound();
@@ -494,7 +494,7 @@ LRESULT CMainFrame::ShowCombatView(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	MYTRACE("general")(MT::LEVEL_INFO, "Getting Message to Show CombatView...");
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// Combat View anzeigen
 	FullScreenMainView(true);
@@ -520,7 +520,7 @@ LRESULT CMainFrame::InitViews(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	MYTRACE("general")(MT::LEVEL_INFO, "Getting Message to InitViews...");
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// alle rassenabhängigen Grafiken in jeder View laden
 	pDoc->LoadViewGraphics();
@@ -558,7 +558,7 @@ void CMainFrame::NotifyCPPTooltip( NMHDR* pNMHDR, LRESULT* result )
 	NM_PPTOOLTIP_DISPLAY * pNotify = (NM_PPTOOLTIP_DISPLAY*)pNMHDR;
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 	if (pDoc->m_bDataReceived)
 	{
 		CWnd* pWnd = CWnd::FromHandle(pNotify->hwndTool);

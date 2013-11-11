@@ -2,7 +2,7 @@
 #include "Constants.h"
 
 #include <map>
-#include <cassert>
+
 
 const int STARMAP_SECTOR_WIDTH	= 80;	///< Breite eines Sektors in Pixel bei 100% Zoom
 const int STARMAP_SECTOR_HEIGHT	= 80;	///< Höhe eines Sektors in Pixel bei 100% Zoom
@@ -33,7 +33,7 @@ void InitConstants()
 RESOURCES::TYPE WorkerToResource(WORKER::Typ type)
 {
 	const std::map<WORKER::Typ, RESOURCES::TYPE>::const_iterator it = transformer.find(type);
-	assert(it != transformer.end());
+	AssertBotE(it != transformer.end());
 	return it->second;
 }
 

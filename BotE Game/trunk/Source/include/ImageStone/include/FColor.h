@@ -76,7 +76,7 @@ public:
             *(WORD*)pDest = *(WORD*)pSrc ;
         else
         {
-            assert(false) ;
+            AssertBotE(false) ;
             memcpy (pDest, pSrc, nBytes) ;
         }
     }

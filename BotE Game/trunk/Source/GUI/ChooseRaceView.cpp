@@ -16,7 +16,7 @@
 
 #include "Graphic\memdc.h"
 #include "GraphicPool.h"
-#include <cassert>
+
 
 #define BTN_STARTGEAME	WM_USERMSG + 1
 #define	BTN_CANCEL		WM_USERMSG + 2
@@ -78,7 +78,7 @@ void CChooseRaceView::OnDraw(CDC* dc)
 
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMyMemDC pDC(dc);
 	CRect clientRect;
@@ -128,7 +128,7 @@ void CChooseRaceView::OnDraw(CDC* dc)
 	for (vector<pair<CRoundButton2*, CString> >::const_iterator it = m_vMajorBtns.begin(); it != m_vMajorBtns.end(); ++it)
 	{
 		CRoundButton2 *pButton = it->first;
-		ASSERT(pButton);
+		AssertBotE(pButton);
 		if (!pButton)
 			continue;
 
@@ -188,7 +188,7 @@ void CChooseRaceView::OnInitialUpdate()
 
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	m_pBkgndImg = pDoc->GetGraphicPool()->GetGDIGraphic("Events\\Startmenu.boj");
 	m_TotalSize = CSize(1280, 1024);
@@ -273,7 +273,7 @@ void CChooseRaceView::OnSize(UINT nType, int cx, int cy)
 	for (vector<pair<CRoundButton2*, CString> >::const_iterator it = m_vMajorBtns.begin(); it != m_vMajorBtns.end(); ++it)
 	{
 		CRoundButton2 *pButton = it->first;
-		ASSERT(pButton);
+		AssertBotE(pButton);
 		if (!pButton)
 			continue;
 
@@ -317,7 +317,7 @@ void CChooseRaceView::SetButtonStyle(CRoundButton2* pBtn, double dFontHeight)
 {
 	if (!pBtn)
 	{
-		ASSERT(pBtn);
+		AssertBotE(pBtn);
 		return;
 	}
 
@@ -349,7 +349,7 @@ void CChooseRaceView::SetButtonStyle(CRoundButton2* pBtn, double dFontHeight)
 void CChooseRaceView::EnableRaceButtons()
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	m_nPlayerCount = 0;
 
@@ -357,7 +357,7 @@ void CChooseRaceView::EnableRaceButtons()
 	for (vector<pair<CRoundButton2*, CString> >::iterator it = m_vMajorBtns.begin(); it != m_vMajorBtns.end(); ++it)
 	{
 		CRoundButton2 *pButton = it->first;
-		ASSERT(pButton);
+		AssertBotE(pButton);
 		if (!pButton)
 			continue;
 
@@ -413,7 +413,7 @@ void CChooseRaceView::EnableRaceButtons()
 	for (vector<pair<CRoundButton2*, CString> >::iterator it = m_vMajorBtns.begin(); it != m_vMajorBtns.end(); ++it)
 	{
 		CRoundButton2 *pButton = it->first;
-		ASSERT(pButton);
+		AssertBotE(pButton);
 		if (!pButton)
 			continue;
 
@@ -467,7 +467,7 @@ void CChooseRaceView::OnBnStartGameClicked()
 		return;
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 	if (!pDoc)
 		return;
 
@@ -496,7 +496,7 @@ void CChooseRaceView::OnBnStartGameClicked()
 void CChooseRaceView::OnBnCancelClicked()
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 	if (!pDoc)
 		return;
 

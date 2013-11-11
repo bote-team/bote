@@ -7,7 +7,7 @@
 #include "Ships/Ships.h"
 #include "General/Loc.h"
 
-#include <cassert>
+
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -28,16 +28,16 @@ CDiplomacyController::~CDiplomacyController(void)
 void CDiplomacyController::Send(void)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	std::map<CString, CRace*>* races = pDoc->GetRaceCtrl()->GetRaces();
-	ASSERT(races);
+	AssertBotE(races);
 
 	// KI Angebote erstellen lassen
 	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
 	{
 		CRace* pRace = it->second;
-		ASSERT(pRace);
+		AssertBotE(pRace);
 
 		pRace->MakeOffersAI();
 	}
@@ -46,7 +46,7 @@ void CDiplomacyController::Send(void)
 	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
 	{
 		CRace* pRace = it->second;
-		ASSERT(pRace);
+		AssertBotE(pRace);
 
 		// alle eingegangenen Antworten aus der letzten Runde löschen
 		for (UINT i = 0; i < pRace->GetIncomingDiplomacyNews()->size(); i++)
@@ -85,16 +85,16 @@ void CDiplomacyController::Send(void)
 void CDiplomacyController::Receive(void)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	std::map<CString, CRace*>* races = pDoc->GetRaceCtrl()->GetRaces();
-	ASSERT(races);
+	AssertBotE(races);
 
 	// durch alle Rassen iterieren und Nachrichten empfangen sowie darauf reagieren
 	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
 	{
 		CRace* pRace = it->second;
-		ASSERT(pRace);
+		AssertBotE(pRace);
 
 		// nun durch alle eingegangen Nachrichten iterieren und darauf reagieren
 		for (UINT i = 0; i < pRace->GetIncomingDiplomacyNews()->size(); i++)
@@ -446,7 +446,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 			if (pFromRace->IsMajor())
 			{
 				CMajor* pFromMajor = dynamic_cast<CMajor*>(pFromRace);
-				assert(pFromMajor);
+				AssertBotE(pFromMajor);
 				pFromRace->GetIncomingDiplomacyNews()->push_back(answer);
 
 				// Nachricht über Vertragsannahme oder Ablehnung
@@ -818,7 +818,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						// Wenn die Minorrace unser Angebot in der gleichen Runde angenommen hat, dann
 						// wird der Vertrag hier nicht gesetzt
 						CMinor* pMinor = dynamic_cast<CMinor*>(pFromRace);
-						ASSERT(pMinor);
+						AssertBotE(pMinor);
 						if (!pMinor->CanAcceptOffer(pDoc, pToMajor->GetRaceID(), pInfo->m_nType))
 							return;
 
@@ -1200,7 +1200,7 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 	if (pFromRace->IsMajor())
 	{
 		CMajor* pFromMajor = dynamic_cast<CMajor*>(pFromRace);
-		assert(pFromMajor);
+		AssertBotE(pFromMajor);
 		if (pEnemy->IsMajor())
 			s = CLoc::GetString("WE_DECLARE_WAR", FALSE, dynamic_cast<CMajor*>(pEnemy)->GetEmpireNameWithAssignedArticle());
 		else if (pEnemy->IsMinor())
@@ -1274,7 +1274,7 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 			{
 				// Nachricht und Kriegserklärung wegen unserem Bündnispartner
 				CBotEDoc* pDoc = resources::pDoc;
-				ASSERT(pDoc);
+				AssertBotE(pDoc);
 				CRace* pPartner = pDoc->GetRaceCtrl()->GetRace(pInfo->m_sWarPartner);
 				if (!pPartner)
 					return;
@@ -1308,7 +1308,7 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 	if (pEnemy->IsMajor())
 	{
 		CMajor* pEnemyMajor = dynamic_cast<CMajor*>(pEnemy);
-		assert(pEnemyMajor);
+		AssertBotE(pEnemyMajor);
 		// zusätzliche Eventnachricht wegen der Moral an das Imperium
 		CString sParam = CLoc::GetString("FEMALE_ARTICLE") + " " + pFromRace->GetRaceName();
 		if (pFromRace->IsMajor())

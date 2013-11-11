@@ -1049,6 +1049,10 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath=".\Source\AssertBotE.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Source\Constants.h"
 				>
 			</File>

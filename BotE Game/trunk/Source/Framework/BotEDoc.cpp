@@ -42,6 +42,7 @@
 #include "OldRoundDataCalculator.h"
 #include "ClientWorker.h"
 #include "SettingsDlg.h"
+#include "AssertBotE.h"
 
 
 #ifdef _DEBUG
@@ -159,7 +160,7 @@ BOOL CBotEDoc::OnNewDocument()
 	m_bNewGame					= true;
 
 	CIniLoader* pIni = CIniLoader::GetInstance();
-	ASSERT(pIni);
+	AssertBotE(pIni);
 
 	bool bHardwareSound;
 	pIni->ReadValue("Audio", "HARDWARESOUND", bHardwareSound);
@@ -202,7 +203,7 @@ CMajor* CBotEDoc::GetPlayersRace(void) const
 	// die Rassen-ID.
 	const CString& s = GetPlayersRaceID();
 	CMajor* pPlayersRace = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(s));
-	assert(pPlayersRace);
+	AssertBotE(pPlayersRace);
 
 	return pPlayersRace;
 }
@@ -516,7 +517,7 @@ void CBotEDoc::SerializeNextRoundData(CArchive &ar)
 
 		CMajor* pPlayer = GetPlayersRace();
 		// bekommt der Client hier keine Spielerrasse zurück, so ist er ausgeschieden
-		ASSERT(pPlayer);
+		AssertBotE(pPlayer);
 		if (pPlayer == NULL)
 		{
 			AfxMessageBox("Fatal Error ... exit game now");
@@ -580,7 +581,7 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 		// vom Client gespielte Majorrace-ID ermitteln
 		const CString& sMajorID = m_pClientWorker->GetMappedRaceID(race);
 		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sMajorID));
-		assert(pMajor);
+		AssertBotE(pMajor);
 
 		if (m_bCombatCalc)
 		{
@@ -602,7 +603,7 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 			if (m_ShipInfoArray.GetAt(i).GetRace() == pMajor->GetRaceShipNumber())
 			{
 				m_ShipInfoArray.GetAt(i).Serialize(ar);
-				ASSERT(m_ShipInfoArray.GetAt(i).GetRace() == pMajor->GetRaceShipNumber());
+				AssertBotE(m_ShipInfoArray.GetAt(i).GetRace() == pMajor->GetRaceShipNumber());
 			}
 
 		m_ShipMap.SerializeEndOfRoundData(ar, sMajorID);
@@ -628,7 +629,7 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 void CBotEDoc::ResetIniSettings(void)
 {
 	CIniLoader* pIni = CIniLoader::GetInstance();
-	ASSERT(pIni);
+	AssertBotE(pIni);
 
 	CString difficulty = "EASY";
 	pIni->ReadValue("General", "DIFFICULTY", difficulty);
@@ -649,7 +650,7 @@ void CBotEDoc::ResetIniSettings(void)
 	MYTRACE("general")(MT::LEVEL_INFO, "relevant only at new game: m_fDifficultyLevel: %f", m_fDifficultyLevel);
 
 	CSoundManager* pSoundManager = CSoundManager::GetInstance();
-	ASSERT(pSoundManager);
+	AssertBotE(pSoundManager);
 
 	bool bHardwareSound;
 	pIni->ReadValue("Audio", "HARDWARESOUND", bHardwareSound);
@@ -720,7 +721,7 @@ void CBotEDoc::SetShipInFleet(const CShipMap::iterator& position)
 void CBotEDoc::LoadViewGraphics(void)
 {
 	CMajor* pPlayersRace = GetPlayersRace();
-	ASSERT(pPlayersRace);
+	AssertBotE(pPlayersRace);
 	MYTRACE("general")(MT::LEVEL_INFO, "pPlayersRace: %s", pPlayersRace->GetRaceName());
 
 	CGalaxyMenuView::SetPlayersRace(pPlayersRace);
@@ -771,7 +772,7 @@ void CBotEDoc::DoViewWorkOnNewRound()
 {
 	// Playersrace in Views festlegen
 	CMajor* pPlayersRace = GetPlayersRace();
-	ASSERT(pPlayersRace);
+	AssertBotE(pPlayersRace);
 
 	CGalaxyMenuView::SetPlayersRace(pPlayersRace);
 	CMainBaseView::SetPlayersRace(pPlayersRace);
@@ -1014,7 +1015,7 @@ void CBotEDoc::GenerateGalaxy()
 		CMinor* pMinor = it->second;
 		if (!pMinor)
 		{
-			ASSERT(pMinor);
+			AssertBotE(pMinor);
 			continue;
 		}
 
@@ -1474,9 +1475,9 @@ void CBotEDoc::ApplyShipsAtStartup()
 	file.Close();
 
 	CIniLoader* pIni = CIniLoader::GetInstance();
-	assert(pIni);
+	AssertBotE(pIni);
 	float frequency = 0;
-	assert(pIni->ReadValue("Special", "ALIENENTITIES", frequency));
+	AssertBotE(pIni->ReadValue("Special", "ALIENENTITIES", frequency));
 	if (frequency > 0.0f)
 	{
 		// Nehmen die Ehlenen am Spiel teil, so den Ehlenen-Beschützer (Station) in deren System bauen
@@ -1655,7 +1656,7 @@ void CBotEDoc::ApplyBuildingsAtStartup()
 				if (system->GetOwnerOfSystem() == it->first)
 				{
 					CMajor* pMajor = it->second;
-					ASSERT(pMajor);
+					AssertBotE(pMajor);
 					// Anzahl aller Farmen, Bauhöfe usw. im System berechnen
 					// baubare Gebäude, Schiffe und Truppen berechnen
 					system->CalculateNumberOfWorkbuildings(&this->BuildingInfo);
@@ -2131,7 +2132,7 @@ CShipMap::iterator CBotEDoc::BuildShip(int nID, const CPoint& KO, const CString&
 		return m_ShipMap.end();
 	}
 
-	ASSERT(nID >= 10000);
+	AssertBotE(nID >= 10000);
 	nID -= 10000;
 
 	const CShipMap::iterator it = m_ShipMap.Add(new CShips(m_ShipInfoArray.GetAt(nID)));
@@ -2146,7 +2147,7 @@ CShipMap::iterator CBotEDoc::BuildShip(int nID, const CPoint& KO, const CString&
 		return it;
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	MYTRACE("general")(MT::LEVEL_DEBUG, "New Ship for Major %d\n", pMajor);
 
 	// Spezialforschungsboni dem Schiff hinzufügen
@@ -2290,7 +2291,7 @@ void CBotEDoc::BuildTroop(BYTE ID, CPoint ko)
 		return;
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sRace));
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	int n = GetSystem(ko.x, ko.y).GetTroops()->GetUpperBound();
 
@@ -2411,7 +2412,7 @@ void CBotEDoc::CalcPreDataForNextRound()
 {
 	m_iRound++;
 
-	ASSERT(GetPlayersRace());
+	AssertBotE(GetPlayersRace());
 
 	// Berechnungen der neuen Runde
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
@@ -2544,7 +2545,7 @@ void CBotEDoc::CalcSystemAttack()
 			{
 				CString attacker = GetSystem(p.x, p.y).GetOwnerOfSystem();
 				CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(attacker));
-				ASSERT(pMajor);
+				AssertBotE(pMajor);
 				//* Der Besitzer des Systems wurde in der Calculate() Funktion schon auf den neuen Besitzer
 				//* umgestellt. Der Besitzer des Sektors ist aber noch der alte, wird hier dann auf einen
 				//* eventuell neuen Besitzer umgestellt.
@@ -2555,7 +2556,7 @@ void CBotEDoc::CalcSystemAttack()
 				if (GetSector(p.x, p.y).GetMinorRace() == TRUE && GetSector(p.x, p.y).GetTakenSector() == FALSE && defender != NULL && defender->IsMinor())
 				{
 					CMinor* pMinor = dynamic_cast<CMinor*>(defender);
-					ASSERT(pMinor);
+					AssertBotE(pMinor);
 					pMinor->SetSubjugated(true);
 					// Wenn das System noch keiner Majorrace gehört, dann Gebäude bauen
 					GetSystem(p.x, p.y).BuildBuildingsForMinorRace(&BuildingInfo, m_Statistics.GetAverageTechLevel(), pMinor);
@@ -2618,7 +2619,7 @@ void CBotEDoc::CalcSystemAttack()
 					defender->SetRelation(attacker, -rand()%50);
 					// Die Beziehung zu der Minorrace verbessert sich auf Seiten des Retters
 					CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(p.x, p.y).GetName());
-					ASSERT(pMinor);
+					AssertBotE(pMinor);
 					pMinor->SetRelation(attacker, rand()%50);
 					pMinor->SetSubjugated(false);
 					// Eventnachricht an den, der das System verloren hat (erobertes Minorracesystem wieder verloren)
@@ -2732,7 +2733,7 @@ void CBotEDoc::CalcSystemAttack()
 						if (GetSector(p.x, p.y).GetMinorRace())
 						{
 							CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(p.x, p.y).GetName());
-							ASSERT(pMinor);
+							AssertBotE(pMinor);
 							pMinor->SetSubjugated(true);
 							// Beziehung zu dieser Minorrace verschlechtert sich auf 0 Punkte
 							pMinor->SetRelation(attacker, -100);
@@ -2797,7 +2798,7 @@ void CBotEDoc::CalcSystemAttack()
 						if (defender != NULL && defender->GetRaceID() != attacker && defender->IsMajor())
 						{
 							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-							assert(pDefenderMajor);
+							AssertBotE(pDefenderMajor);
 							CString eventText = pDefenderMajor->GetMoralObserver()->AddEvent(16, pDefenderMajor->GetRaceMoralNumber(), param);
 
 							// Eventnachricht hinzufügen
@@ -2907,7 +2908,7 @@ void CBotEDoc::CalcSystemAttack()
 						}
 						else
 						{
-							ASSERT(FALSE);
+							AssertBotE(FALSE);
 							GetSector(p.x, p.y).SetMinorRace(false);
 						}
 					}
@@ -3099,7 +3100,7 @@ void CBotEDoc::CalcSystemAttack()
 		for(CShipMap::iterator i = m_ShipMap.begin(); i != m_ShipMap.end();)
 		{
 			CRace* race = m_pRaceCtrl->GetRace(i->second->GetOwnerOfShip());
-			assert(race);
+			AssertBotE(race);
 			if(i->second->RemoveDestroyed(*race, m_iRound, CLoc::GetString("SYSTEMATTACK"),
 					CLoc::GetString("DESTROYED"))) {
 				++i;
@@ -3329,7 +3330,7 @@ void CBotEDoc::CalcOldRoundData()
 		}
 
 		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(it->GetOwnerOfSystem()));
-		assert(pMajor);
+		AssertBotE(pMajor);
 		if (!pMajor)
 			continue;
 
@@ -3359,7 +3360,7 @@ void CBotEDoc::CalcOldRoundData()
 		// Wenn es keine Rebellion gab, dann Bau und KI im System berechnen
 		if (!bIsRebellion)
 		{
-			assert(it->GetOwnerOfSystem() != "");
+			AssertBotE(it->GetOwnerOfSystem() != "");
 			calc.HandlePopulationEffects(*it, pMajor);
 			it->CalculateVariables();
 
@@ -3409,7 +3410,7 @@ void CBotEDoc::CalcNewRoundData()
 		if (it->GetSunSystem() && system_owner != "")
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(system_owner));
-			assert(pMajor);
+			AssertBotE(pMajor);
 			CEmpire* empire = pMajor->GetEmpire();
 
 			// Hier die Credits durch Handelsrouten berechnen und
@@ -3459,7 +3460,7 @@ void CBotEDoc::CalcTrade()
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
-		ASSERT(pMajor);
+		AssertBotE(pMajor);
 
 		///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 		// Hier die Boni durch die Uniqueforschung "Handel" -> keine Handelsgebühr
@@ -3497,7 +3498,7 @@ void CBotEDoc::CalcTrade()
 			//hh.Format("Steuern auf %d: %d Credits",i,taxMoney[i]);
 			//AfxMessageBox(hh);
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(CTrade::GetMonopolOwner(i)));
-			ASSERT(pMajor);
+			AssertBotE(pMajor);
 			if (pMajor)
 				pMajor->GetEmpire()->SetCredits(taxMoney[i]);
 		}
@@ -3511,7 +3512,7 @@ void CBotEDoc::CalcTrade()
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			CMajor* pMajor = it->second;
-			ASSERT(pMajor);
+			AssertBotE(pMajor);
 
 			if (pMajor->GetTrade()->GetMonopolBuying()[i] > max)
 			{
@@ -3524,7 +3525,7 @@ void CBotEDoc::CalcTrade()
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			CMajor* pMajor = it->second;
-			ASSERT(pMajor);
+			AssertBotE(pMajor);
 
 			CString sNews = "";
 			// Die anderen Rassen bekommen ihr Geld zurück
@@ -3552,7 +3553,7 @@ void CBotEDoc::CalcTrade()
 			if (sMonopolRace.IsEmpty() == false && sMonopolRace != pMajor->GetRaceID())
 			{
 				CMajor* pMonopolRace = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sMonopolRace));
-				ASSERT(pMonopolRace);
+				AssertBotE(pMonopolRace);
 
 				CString sRace = CLoc::GetString("UNKNOWN");
 				if (pMajor->IsRaceContacted(sMonopolRace))
@@ -3571,7 +3572,7 @@ void CBotEDoc::CalcTrade()
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
-		ASSERT(pMajor);
+		AssertBotE(pMajor);
 
 		pMajor->GetTrade()->CalculatePrices(pmMajors, pMajor);
 		// Hier die aktuellen Kursdaten in die History schreiben
@@ -3585,13 +3586,13 @@ void CBotEDoc::CalcTrade()
 
 bool CBotEDoc::BuildStation(CShips& ship, CSector& sector, SHIP_ORDER::Typ order, CSystem& system) {
 	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(ship.GetOwnerOfShip()));
-	assert(pMajor);
+	AssertBotE(pMajor);
 	const CString& owner = ship.GetOwnerOfShip();
 
 	const SHIP_TYPE::Typ type = (order == SHIP_ORDER::BUILD_STARBASE || order == SHIP_ORDER::UPGRADE_STARBASE)
 		? SHIP_TYPE::STARBASE : SHIP_TYPE::OUTPOST;
 	const short id = pMajor->BestBuildableVariant(type, m_ShipInfoArray);
-	assert(id != -1);
+	AssertBotE(id != -1);
 	CShips::StationWorkResult result;
 	if (sector.IsStationBuildable(order, pMajor->GetRaceID())) {
 		sector.SetIsStationBuilding(order, owner);
@@ -3603,7 +3604,7 @@ bool CBotEDoc::BuildStation(CShips& ship, CSector& sector, SHIP_ORDER::Typ order
 	else
 		ship.UnsetCurrentOrder();
 	//If we didn't finish, the leader (or any ship doing the station work) must not be removed.
-	assert(!result.remove_leader || result.finished);
+	AssertBotE(!result.remove_leader || result.finished);
 
 	if(order != SHIP_ORDER::BUILD_OUTPOST && result.finished) {
 		// Wenn wir jetzt die Station gebaut haben, dann müssen wir die alten Station aus der
@@ -3611,7 +3612,7 @@ bool CBotEDoc::BuildStation(CShips& ship, CSector& sector, SHIP_ORDER::Typ order
 		for(CShipMap::iterator k = m_ShipMap.begin(); k != m_ShipMap.end(); ++k)
 			if (k->second->IsStation() && k->second->GetKO() == sector.GetKO())
 			{
-				assert(k->second->Key() != ship.Key());
+				AssertBotE(k->second->Key() != ship.Key());
 				k->second->Scrap(*pMajor, sector, system, false);
 				m_ShipMap.EraseAt(k, true);
 				break;
@@ -3625,7 +3626,7 @@ namespace //helpers for CBotEDoc::CalcShipOrders()
 	bool AttackStillValid(const CShips& ship, const CRaceController& RaceCtrl,
 			const CSector& se, const CSystem& sy)
 	{
-		assert(se.GetSunSystem());
+		AssertBotE(se.GetSunSystem());
 		const CString& ownerofship = ship.GetOwnerOfShip();
 		const CString& ownerofsector = se.GetOwnerOfSector();
 		// Wenn die Bevölkerung komplett vernichtet wurde
@@ -3636,9 +3637,9 @@ namespace //helpers for CBotEDoc::CalcShipOrders()
 		else if (!ownerofsector.IsEmpty() && ownerofsector != ownerofship)
 		{
 			const CRace* pRace = RaceCtrl.GetRace(ownerofsector);
-			assert(pRace);
+			AssertBotE(pRace);
 			const CRace* pShipOwner = RaceCtrl.GetRace(ownerofship);
-			assert(pShipOwner);
+			AssertBotE(pShipOwner);
 			if (pRace->GetAgreement(pShipOwner->GetRaceID()) != DIPLOMATIC_AGREEMENT::WAR &&
 				!pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
 				return false;
@@ -3685,7 +3686,7 @@ void CBotEDoc::CalcShipOrders()
 		if(pRace->IsMinor())
 			continue;//minors don't currently can do something else
 		CMajor* pMajor = dynamic_cast<CMajor*>(pRace);
-		assert(pMajor);
+		AssertBotE(pMajor);
 
 		 // Planet soll kolonisiert werden
 		if (current_order == SHIP_ORDER::COLONIZE)
@@ -3697,7 +3698,7 @@ void CBotEDoc::CalcShipOrders()
 				y->second->UnsetCurrentOrder();
 				continue;
 			}
-			assert(y->second->GetTerraform() == -1);
+			AssertBotE(y->second->GetTerraform() == -1);
 			pSector->DistributeColonists(y->second->GetStartHabitants() / terraformedPlanets);
 			pSystem->Colonize(*y->second, *pMajor);
 			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
@@ -3714,7 +3715,7 @@ void CBotEDoc::CalcShipOrders()
 		// hier wird ein Planet geterraformed
 		else if (current_order == SHIP_ORDER::TERRAFORM)
 		{
-			assert(y->second->GetTerraform() != -1);
+			AssertBotE(y->second->GetTerraform() != -1);
 
 			if (pSector->GetPlanet(y->second->GetTerraform())->GetTerraformed() == FALSE)
 			{
@@ -3751,7 +3752,7 @@ void CBotEDoc::CalcShipOrders()
 				{
 					//if a ship in a fleet isn't able to take over this command, it should have terraforming_planet=-1
 					if(x->second->GetCurrentOrder() != SHIP_ORDER::TERRAFORM) {
-						assert(x->second->GetTerraform() == -1);
+						AssertBotE(x->second->GetTerraform() == -1);
 						continue;
 					}
 					if (pSector->GetPlanet(y->second->GetTerraform())->GetTerraformed() == FALSE)
@@ -3824,7 +3825,7 @@ void CBotEDoc::CalcShipOrders()
 		else if (current_order == SHIP_ORDER::ASSIGN_FLAGSHIP)
 		{
 			//SHIP_ORDER::ASSIGN_FLAGSHIP is executed immediately now as opposed to at turn change
-			assert(false);
+			AssertBotE(false);
 		}
 		else if (current_order == SHIP_ORDER::TRAIN_SHIP)
 		{
@@ -3840,13 +3841,13 @@ void CBotEDoc::CalcShipOrders()
 		}
 		else if (current_order == SHIP_ORDER::ENCLOAK)
 		{
-			assert(y->second->CanCloak(true));
+			AssertBotE(y->second->CanCloak(true));
 			y->second->SetCloak(true);
 			y->second->UnsetCurrentOrder();
 		}
 		else if (current_order == SHIP_ORDER::DECLOAK)
 		{
-			assert(y->second->CanCloak(true));
+			AssertBotE(y->second->CanCloak(true));
 			y->second->SetCloak(false);
 			y->second->UnsetCurrentOrder();
 		}
@@ -3867,7 +3868,7 @@ void CBotEDoc::CalcShipOrders()
 					{
 						int blockadeValue = pSystem->GetBlockade();
 						//this command shouldn't be possible for ships without blockade special
-						assert(y->second->HasSpecial(SHIP_SPECIAL::BLOCKADESHIP));
+						AssertBotE(y->second->HasSpecial(SHIP_SPECIAL::BLOCKADESHIP));
 						blockadeValue += rand()%20 + 1;
 						blockadeStillActive = TRUE;
 						y->second->CalcExp();
@@ -3875,7 +3876,7 @@ void CBotEDoc::CalcShipOrders()
 						// Blockadeeigenschaft den Blockadewert
 						for (CShips::iterator x = y->second->begin(); x != y->second->end(); ++x)
 						{
-							assert(x->second->HasSpecial(SHIP_SPECIAL::BLOCKADESHIP));
+							AssertBotE(x->second->HasSpecial(SHIP_SPECIAL::BLOCKADESHIP));
 							blockadeValue += rand()%20 + 1;
 							blockadeStillActive = TRUE;
 							x->second->CalcExp();
@@ -3991,9 +3992,9 @@ void CBotEDoc::CalcShipMovement()
 		Sector targetKO((char)y->second->GetTargetKO().x,(char)y->second->GetTargetKO().y);
 		Sector nextKO(-1,-1);
 
-		assert(shipKO.on_map());
+		AssertBotE(shipKO.on_map());
 		//no target set by targetKO == current coords is no longer allowed
-		assert(shipKO != targetKO);
+		AssertBotE(shipKO != targetKO);
 
 		// Weltraummonster gesondert behandeln (Geschwindigkeit der Flotte sollte egal sein, nur das Alien muss fliegen können)
 		if (y->second->IsAlien() && y->second->GetSpeed(true) > 0)
@@ -4225,7 +4226,7 @@ void CBotEDoc::CalcShipCombat()
 	}
 
 	// es sollten immer Schiffe im Array sein, sonst hätte in diesem Sektor kein Kampf stattfinden dürfen
-	assert(!vInvolvedShips.IsEmpty());
+	AssertBotE(!vInvolvedShips.IsEmpty());
 
 	// Kampf-KI
 	CCombatAI AI;
@@ -4287,7 +4288,7 @@ void CBotEDoc::CalcShipCombat()
 			m_VictoryObserver.AddCombatWin(it->first);
 
 			CMajor* pMajor = dynamic_cast<CMajor*>(it->second);
-			ASSERT(pMajor);
+			AssertBotE(pMajor);
 
 			CEmpireNews message;
 			message.CreateNews(CLoc::GetString("WIN_COMBAT", false, sSectorName), EMPIRE_NEWS_TYPE::MILITARY, "", p);
@@ -4304,7 +4305,7 @@ void CBotEDoc::CalcShipCombat()
 			if (it->second->IsMajor())
 			{
 				CMajor* pMajor = dynamic_cast<CMajor*>(it->second);
-				ASSERT(pMajor);
+				AssertBotE(pMajor);
 
 				CEmpireNews message;
 				message.CreateNews(CLoc::GetString("LOSE_COMBAT", false, sSectorName), EMPIRE_NEWS_TYPE::MILITARY, "", p);
@@ -4333,7 +4334,7 @@ void CBotEDoc::CalcShipCombat()
 		else if (winner[it->first] == 3 && it->second->IsMajor())
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(it->second);
-			ASSERT(pMajor);
+			AssertBotE(pMajor);
 
 			CEmpireNews message;
 			message.CreateNews(CLoc::GetString("DRAW_COMBAT", false, sSectorName), EMPIRE_NEWS_TYPE::MILITARY, "", p);
@@ -4405,7 +4406,7 @@ void CBotEDoc::CalcShipCombat()
 			}
 
 		CRace* pOwner = m_pRaceCtrl->GetRace(i->second->GetOwnerOfShip());
-		assert(pOwner);
+		AssertBotE(pOwner);
 		if (i->second->RemoveDestroyed(*pOwner, m_iRound, CLoc::GetString("COMBAT"),	CLoc::GetString("DESTROYED"), &destroyedShips))
 		{
 			++i;
@@ -4559,7 +4560,7 @@ void CBotEDoc::CalcContactMinor(CMajor& Major, const CSector& sector, const CPoi
 		return;
 	// in dem Sektor lebt eine Minorrace
 	CMinor* pMinor = m_pRaceCtrl->GetMinorRace(sector.GetName());
-	assert(pMinor);
+	AssertBotE(pMinor);
 	// kann der Sektorbesitzer andere Rassen kennenlernen?
 	if (pMinor->CanBeContactedBy(Major.GetRaceID()))
 		// die Rasse ist noch nicht bekannt
@@ -4586,11 +4587,11 @@ void CBotEDoc::CalcContactNewRaces()
 		if(sOwnerOfSector.IsEmpty() || sOwnerOfSector == sRace)
 			continue;
 		CRace* pOwnerOfSector = m_pRaceCtrl->GetRace(sOwnerOfSector);
-		assert(pOwnerOfSector);
+		AssertBotE(pOwnerOfSector);
 		if(pRace->IsMinor()) {
 			if(pOwnerOfSector->CanBeContactedBy(sRace) && pOwnerOfSector->IsMajor()) {
 				CMajor* pMajor = dynamic_cast<CMajor*>(pOwnerOfSector);
-				assert(pMajor);
+				AssertBotE(pMajor);
 				CalcContactCommutative(*pMajor, *pRace, p);
 			}
 			continue;
@@ -4598,12 +4599,12 @@ void CBotEDoc::CalcContactNewRaces()
 		//At present, a race is always either a major or a minor.
 		//If this changes, this code needs to be adapted.
 		CMajor* pMajor = dynamic_cast<CMajor*>(pRace);
-		assert(pMajor);
+		AssertBotE(pMajor);
 		CalcContactMinor(*pMajor, sector, p);
 		if (!pOwnerOfSector->CanBeContactedBy(sRace))
 			continue;
 		//At this point, pOwnerOfSector must be of type major, since independent or no diplo minors are handled.
-		assert(pOwnerOfSector->IsMajor());
+		AssertBotE(pOwnerOfSector->IsMajor());
 		CalcContactCommutative(*pMajor, *pOwnerOfSector, p);
 	}//for (int y = 0; y < m_ShipMap.GetSize(); y++)
 }
@@ -4614,7 +4615,7 @@ void CBotEDoc::CalcEffectsMinorEleminated(CMinor* pMinor)
 {
 	if (!pMinor)
 	{
-		ASSERT(pMinor);
+		AssertBotE(pMinor);
 		return;
 	}
 
@@ -5017,7 +5018,7 @@ void CBotEDoc::CalcRandomAlienEntities()
 {
 	const CIniLoader* pIni = CIniLoader::GetInstance();
 	float frequency = 0;
-	assert(pIni->ReadValue("Special", "ALIENENTITIES", frequency));
+	AssertBotE(pIni->ReadValue("Special", "ALIENENTITIES", frequency));
 	if (frequency == 0.0f)
 		return;
 
@@ -5033,7 +5034,7 @@ void CBotEDoc::CalcRandomAlienEntities()
 		{
 			if (!pAlien->IsAlienRace())
 			{
-				ASSERT(pAlien->IsAlienRace());
+				AssertBotE(pAlien->IsAlienRace());
 				continue;
 			}
 
@@ -5195,7 +5196,7 @@ void CBotEDoc::CalcAlienShipEffects()
 		CMinor* pAlien = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(ship->second->GetOwnerOfShip()));
 		if (!pAlien || !pAlien->IsAlienRace())
 		{
-			ASSERT(FALSE);
+			AssertBotE(FALSE);
 			continue;
 		}
 
@@ -5295,7 +5296,7 @@ void CBotEDoc::CalcAlienShipEffects()
 						pShip->SetIsShipFlagShip(FALSE);
 
 						CMajor* pShipOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip()));
-						assert(pShipOwner);
+						AssertBotE(pShipOwner);
 						// für jedes Schiff eine Meldung über den Verlust machen
 						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 						pShipOwner->AddToLostShipHistory(*pShip, CLoc::GetString("COMBAT"), CLoc::GetString("MISSED"), m_iRound);

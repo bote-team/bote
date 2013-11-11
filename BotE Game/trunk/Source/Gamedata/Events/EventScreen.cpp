@@ -71,16 +71,16 @@ void CEventScreen::Create(void)
 
 	CString sFile = CIOData::GetInstance()->GetAppPath() + m_strImagePath;
 	m_pBGImage = Bitmap::FromFile(CComBSTR(sFile));
-	ASSERT(m_pBGImage);
+	AssertBotE(m_pBGImage);
 	if (m_pBGImage->GetLastStatus() != Ok)
 		return;
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// alle Buttons in der View anlegen und Grafiken laden
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sRace));
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	CString sPrefix = pMajor->GetPrefix();
 

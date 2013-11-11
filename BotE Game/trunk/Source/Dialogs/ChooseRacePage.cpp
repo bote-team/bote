@@ -48,14 +48,14 @@ BOOL CChooseRacePage::OnInitDialog()
 
 	// Zeiger auf Steuerelemente
 	m_pParent = dynamic_cast<CMainDlg*>(GetParent());
-	ASSERT(m_pParent);
+	AssertBotE(m_pParent);
 
 	using namespace network;
 	// Name der Buttons aus dem ResourceManager auslesen
 	int ids[] = {IDC_RACE, IDC_RACE2, IDC_RACE3, IDC_RACE4, IDC_RACE5, IDC_RACE6};
 	for (int nRace = 0; nRace < RACE_COUNT; nRace++)
 	{
-		ASSERT(nRace < 6);
+		AssertBotE(nRace < 6);
 		network::RACE race = (network::RACE)(RACE_FIRST + nRace);
 		CString empireName;
 		switch (race)
@@ -198,9 +198,9 @@ void CChooseRacePage::EnableRaceButtons()
 	// Buttons aktivieren/deaktivieren, aus-/abwählen, Anzahl der Spieler zählen
 	for (int nRace = 0; nRace < RACE_COUNT; nRace++)
 	{
-		ASSERT(nRace < 6);
+		AssertBotE(nRace < 6);
 		CButton *pButton = (CButton *)GetDlgItem(ids[nRace]);
-		ASSERT(pButton);
+		AssertBotE(pButton);
 		network::RACE race = (network::RACE)(RACE_FIRST + nRace);
 
 		if (client.IsPlayer(race))
@@ -234,10 +234,10 @@ afx_msg void CChooseRacePage::OnChooseRace(UINT nID)
 
 	for (int i = 0; i < RACE_COUNT; i++)
 	{
-		ASSERT(i < 6);
+		AssertBotE(i < 6);
 
 		CButton *pButton = (CButton *)GetDlgItem(ids[i]);
-		ASSERT(pButton);
+		AssertBotE(pButton);
 
 		if (ids[i] == nID)
 		{

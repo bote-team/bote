@@ -15,7 +15,7 @@
 #include <map>
 #include <set>
 #include <vector>
-#include <cassert>
+
 
 #include "BotE.h"
 

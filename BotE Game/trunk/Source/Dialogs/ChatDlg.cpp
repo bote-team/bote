@@ -14,7 +14,7 @@ IMPLEMENT_DYNAMIC(CChatDlg, CDialog)
 CChatDlg::CChatDlg(CBotEDoc *pDoc, CWnd* pParent /*=NULL*/)
 	: CDialog(CChatDlg::IDD, pParent), m_pDoc(pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 }
 
 CChatDlg::~CChatDlg()

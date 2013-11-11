@@ -117,7 +117,7 @@ void CGalaxyMenuView::OnNewRound()
 	ASSERT_VALID(pDoc);
 
 	CMajor* pPlayer = m_pPlayersRace;
-	ASSERT(pPlayer);
+	AssertBotE(pPlayer);
 
 	// Bei jeder neuen Runde die Galaxiekarte neu generieren
 	GenerateGalaxyMap();
@@ -154,7 +154,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -501,7 +501,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 			CPen pen(PS_SOLID , 0, color);
 			pDC->SelectObject(&brush);
 			pDC->SelectObject(&pen);
-			assert(pDoc->CurrentShip()->second->GetPath()->GetAt(i).on_map());
+			AssertBotE(pDoc->CurrentShip()->second->GetPath()->GetAt(i).on_map());
 			CPoint pt = pMajor->GetStarmap()->GetSectorCoords(pDoc->CurrentShip()->second->GetPath()->GetAt(i));
 			pDC->Ellipse(pt.x+STARMAP_SECTOR_WIDTH/2-4,pt.y+STARMAP_SECTOR_HEIGHT/2-4,pt.x+STARMAP_SECTOR_WIDTH/2+4,pt.y+STARMAP_SECTOR_HEIGHT/2+4);
 		}
@@ -583,10 +583,10 @@ void CGalaxyMenuView::OnInitialUpdate()
 void CGalaxyMenuView::LoadRaceGraphics()
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	CString sAppPath = CIOData::GetInstance()->GetAppPath();
 	CString prefix = pMajor->GetPrefix();
@@ -612,7 +612,7 @@ void CGalaxyMenuView::LoadRaceGraphics()
 	else
 		img.Stretch_Smooth(STARMAP_TOTALWIDTH, img.Height()*STARMAP_TOTALWIDTH/img.Width());
 
-	assert(m_pGalaxyGraphic && m_pGalaxyGraphic->GetLastStatus() == Ok);
+	AssertBotE(m_pGalaxyGraphic && m_pGalaxyGraphic->GetLastStatus() == Ok);
 	delete m_pGalaxyGraphic;
 	m_pGalaxyGraphic = FCWin32::GDIPlus_CreateBitmap(img);
 
@@ -793,13 +793,13 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -988,13 +988,13 @@ BOOL CGalaxyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return CScrollView::OnMouseWheel(nFlags, zDelta, point);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return CScrollView::OnMouseWheel(nFlags, zDelta, point);
 
@@ -1068,13 +1068,13 @@ void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -1106,7 +1106,7 @@ void CGalaxyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -1143,7 +1143,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -1152,7 +1152,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	if (m_bShipMove && m_nRange)
 	{
 		CMajor* pMajor = m_pPlayersRace;
-		ASSERT(pMajor);
+		AssertBotE(pMajor);
 		if (!pMajor)
 			return;
 
@@ -1185,7 +1185,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	else if (m_bDrawTradeRoute == TRUE)
 	{
 		CMajor* pMajor = m_pPlayersRace;
-		ASSERT(pMajor);
+		AssertBotE(pMajor);
 		if (!pMajor)
 			return;
 
@@ -1207,7 +1207,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	else if (m_bDrawResourceRoute == TRUE)
 	{
 		CMajor* pMajor = m_pPlayersRace;
-		ASSERT(pMajor);
+		AssertBotE(pMajor);
 		if (!pMajor)
 			return;
 
@@ -1229,7 +1229,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	else if (nFlags &= MK_LBUTTON)
 	{
 		CMajor* pMajor = m_pPlayersRace;
-		ASSERT(pMajor);
+		AssertBotE(pMajor);
 		if (!pMajor)
 			return;
 
@@ -1276,7 +1276,7 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -1418,7 +1418,7 @@ void CGalaxyMenuView::HandleShipHotkeys(const UINT nChar, CBotEDoc* pDoc)
 
 void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotEDoc* pDoc, SHIP_ORDER::Typ order)
 {
-	assert(m_pPlayersRace);
+	AssertBotE(m_pPlayersRace);
 	if(pDoc->m_ShipMap.empty())
 		return;
 
@@ -1453,7 +1453,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotEDoc* pDoc, SHIP_ORDER::
 			if(i->second->HasNothingToDo()) {
 				if(previous_ship != pDoc->m_ShipMap.end() && order != SHIP_ORDER::NONE) {
 					previous_ship->second->SetCurrentOrder(order);
-					assert(order == SHIP_ORDER::WAIT_SHIP_ORDER || order == SHIP_ORDER::SENTRY_SHIP_ORDER);
+					AssertBotE(order == SHIP_ORDER::WAIT_SHIP_ORDER || order == SHIP_ORDER::SENTRY_SHIP_ORDER);
 					//In case the previous ship was selected via mouse instead via hotkey, which
 					//checks whether there's a target != -1,-1 set, it can be a ship which still
 					//has a valid target, but still would get order sentry or wait
@@ -1509,14 +1509,14 @@ int CGalaxyMenuView::GetRangeBorder(const unsigned char range1, const unsigned c
 void CGalaxyMenuView::GenerateGalaxyMap()
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	if (!m_pGalaxyGraphic)
 	{
-		ASSERT(m_pGalaxyGraphic);
+		AssertBotE(m_pGalaxyGraphic);
 		return;
 	}
 
@@ -1529,7 +1529,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 
 	// Kopie der Galaxiegrafik machen und bearbeiten
 	m_pGalaxyBackground = m_pGalaxyGraphic->Clone(0,0,STARMAP_TOTALWIDTH,STARMAP_TOTALHEIGHT,m_pGalaxyGraphic->GetPixelFormat());
-	assert(m_pGalaxyBackground && m_pGalaxyBackground->GetLastStatus() == Ok);
+	AssertBotE(m_pGalaxyBackground && m_pGalaxyBackground->GetLastStatus() == Ok);
 
 	Graphics* g = Graphics::FromImage(m_pGalaxyBackground);
 	//g->SetSmoothingMode(SmoothingModeHighQuality);
@@ -1648,13 +1648,13 @@ void CGalaxyMenuView::CenterOnScrollSector()
 CString CGalaxyMenuView::CreateTooltip(void)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return "";
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return "";
 

@@ -47,14 +47,14 @@ void CEventAlienEntity::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	SolidBrush fontBrush(Color::White);
 
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sRace));
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	// Bild der Alien-Entity
 	CMinor* pAlien = dynamic_cast<CMinor*>(pDoc->GetRaceCtrl()->GetRace(m_sAlienEntityID));
-	ASSERT(pAlien);
+	AssertBotE(pAlien);
 
 	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\" + pAlien->GetGraphicFileName());
 	if (graphic == NULL)

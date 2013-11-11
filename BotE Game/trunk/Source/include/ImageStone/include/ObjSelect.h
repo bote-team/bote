@@ -51,7 +51,7 @@ public:
     {
         if (&sel == this)
         {
-            assert(false); return *this;
+            AssertBotE(false); return *this;
         }
 
         __SetSelectionEmpty(); // enable empty copy

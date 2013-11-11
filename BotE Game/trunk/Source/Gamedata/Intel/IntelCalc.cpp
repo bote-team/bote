@@ -6,14 +6,14 @@
 #include "IOData.h"
 #include "General/Loc.h"
 
-#include <cassert>
+
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CIntelCalc::CIntelCalc(CBotEDoc* pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 	m_pDoc = pDoc;
 }
 
@@ -28,7 +28,7 @@ CIntelCalc::~CIntelCalc(void)
 /// Die Funktion verschickt auch alle relevanten Nachrichten an die betroffenen Imperien.
 void CIntelCalc::StartCalc(CMajor* pRace)
 {
-	ASSERT(pRace);
+	AssertBotE(pRace);
 	// resultierende Spionagegeheimdienstpunkte bei einer Rasse
 	map<CString, UINT> m_iSpySP;
 	// resultierende Sabotagegeheimdienstpunkte bei einer Rasse
@@ -146,7 +146,7 @@ void CIntelCalc::StartCalc(CMajor* pRace)
 /// Funktion addiert Innere Sicherheitspunkte sowie die ganzen Depotgeheimdienstpunkte einer Rasse zu den vorhandenen.
 void CIntelCalc::AddPoints(CMajor* pRace)
 {
-	ASSERT(pRace);
+	AssertBotE(pRace);
 	CIntelligence* pIntel = pRace->GetEmpire()->GetIntelligence();
 
 	// Punkte der inneren Sicherheit hinzufügen
@@ -173,7 +173,7 @@ void CIntelCalc::AddPoints(CMajor* pRace)
 /// aller anderen Geheimdienstfunktionen aufgerufen werden.
 void CIntelCalc::ReduceDepotPoints(CMajor* pRace, int perc)
 {
-	ASSERT(pRace);
+	AssertBotE(pRace);
 	CIntelligence* pIntel = pRace->GetEmpire()->GetIntelligence();
 
 	// bei perc == -1 wird der rassenspezifische Prozentsatz verwendet
@@ -284,8 +284,8 @@ void CIntelCalc::ReduceDepotPoints(CMajor* pRace, int perc)
 USHORT CIntelCalc::IsSuccess(CMajor* pEnemyRace, int ourSP, BOOLEAN isSpy, CMajor* pResponsibleRace, BYTE type)
 {
 	MYTRACE("intel")(MT::LEVEL_INFO, "CIntelCalc::IsSuccess() begin...\n");
-	ASSERT(pEnemyRace);
-	ASSERT(pResponsibleRace);
+	AssertBotE(pEnemyRace);
+	AssertBotE(pResponsibleRace);
 	USHORT actions = NULL;
 
 	int enemyInnerSec = GetCompleteInnerSecPoints(pEnemyRace);
@@ -1491,7 +1491,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					m_pDoc->m_ShipMap.Add(ship);
 					CShips& old_leader = m_pDoc->m_ShipMap.at(n.x);
 					CShips::iterator stolen_ship = old_leader.find(n.y);
-					assert(stolen_ship != old_leader.end());
+					AssertBotE(stolen_ship != old_leader.end());
 					old_leader.RemoveShipFromFleet(stolen_ship, false);
 				}
 				if (report)
@@ -1520,14 +1520,14 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				if (n.y == -1)		// nicht in Flotte
 				{
 					CShips::iterator destroyed_ship = m_pDoc->m_ShipMap.find(n.x);
-					assert(destroyed_ship != m_pDoc->m_ShipMap.end());
+					AssertBotE(destroyed_ship != m_pDoc->m_ShipMap.end());
 					m_pDoc->RemoveShip(destroyed_ship);
 				}
 				else	// Schiff ist in Flotte
 				{
 					CShips& s = m_pDoc->m_ShipMap.at(n.x);
 					CShips::iterator destroyed_ship = s.find(n.y);
-					assert(destroyed_ship != s.end());
+					AssertBotE(destroyed_ship != s.end());
 					s.RemoveShipFromFleet(destroyed_ship, false);
 				}
 				if (report)
@@ -1689,7 +1689,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 		{
 			CString major = report->GetMajorRaceID();
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(major));
-			ASSERT(pMajor);
+			AssertBotE(pMajor);
 			// hier zwei Möglichkeiten: verschlechtern der Beziehung zwischen Geheimdienstopfer und Major oder Verbesserung
 			// der Beziehung zwischen uns und dem Geheimdienstopfer
 
@@ -1853,7 +1853,7 @@ void CIntelCalc::CreateMsg(CMajor* pResponsibleRace, CMajor* pEnemyRace, BYTE ty
 /// Funktion führt einen Anschlag durch.
 BOOLEAN CIntelCalc::ExecuteAttempt(CMajor* pRace, UINT ourSP)
 {
-	ASSERT(pRace);
+	AssertBotE(pRace);
 	CMajor* pResponsibleRace = pRace;
 	// Ist ein Anschlagsobjekt vorhanden?
 	if (pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->GetAttemptObject())
@@ -1904,7 +1904,7 @@ BOOLEAN CIntelCalc::ExecuteAttempt(CMajor* pRace, UINT ourSP)
 /// Funktion gibt die aktuell komplett generierten inneren Sicherheitspunkte eines Imperiums zurück.
 UINT CIntelCalc::GetCompleteInnerSecPoints(CMajor* pEnemyRace)
 {
-	ASSERT(pEnemyRace);
+	AssertBotE(pEnemyRace);
 
 	CIntelligence* pIntel = pEnemyRace->GetEmpire()->GetIntelligence();
 

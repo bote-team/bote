@@ -457,7 +457,7 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, std::v
 					break;
 				}
 			}
-			ASSERT(remainingRes == 0);
+			AssertBotE(remainingRes == 0);
 		}
 		// anderenfalls werden nur die benötigten Ressourcen aus dem lokalen Lager abgezogen
 		else

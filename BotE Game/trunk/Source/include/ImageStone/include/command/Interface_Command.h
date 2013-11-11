@@ -44,8 +44,8 @@ private:
  */
 class FCCmdOnceExecute : public FCCmdArtPrider
 {
-    virtual void Undo (FCObjCanvas& canvas) {assert(false);}
-    virtual void Redo (FCObjCanvas& canvas) {assert(false);}
+    virtual void Undo (FCObjCanvas& canvas) {AssertBotE(false);}
+    virtual void Redo (FCObjCanvas& canvas) {AssertBotE(false);}
 public:
     FCCmdOnceExecute() {SetDeleteFlagAfterExecute(true);}
 };

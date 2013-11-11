@@ -5,18 +5,18 @@
 #include "Races\RaceController.h"
 #include "Ships/Ships.h"
 
-#include <cassert>
+
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CShipAI::CShipAI(CBotEDoc* pDoc) : m_pSectorAI()
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 	m_pDoc = pDoc;
 
 	map<CString, CRace*>* mRaces = m_pDoc->GetRaceCtrl()->GetRaces();
-	ASSERT(mRaces);
+	AssertBotE(mRaces);
 
 	// Durchschnittsmoral berechnen
 	map<CString, int> moralAll;
@@ -52,7 +52,7 @@ CShipAI::~CShipAI(void)
 /// Diese Funktion erteilt allen Schiffen aller computergesteuerten Rassen Befehle.
 void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 {
-	ASSERT(SectorAI);
+	AssertBotE(SectorAI);
 	m_pSectorAI = SectorAI;
 
 	// einen möglichen Angriffssektor berechnen lassen
@@ -254,7 +254,7 @@ bool CShipAI::DoTerraform(CShips* pShip)
 {
 	if (!pShip)
 	{
-		ASSERT(pShip);
+		AssertBotE(pShip);
 		return false;
 	}
 
@@ -318,7 +318,7 @@ bool CShipAI::DoColonize(CShips* pShip)
 {
 	if (!pShip)
 	{
-		ASSERT(pShip);
+		AssertBotE(pShip);
 		return false;
 	}
 
@@ -356,13 +356,13 @@ bool CShipAI::DoAttackMove(CShips* pShip, const CMajor* pMajor)
 {
 	if (!pShip)
 	{
-		ASSERT(pShip);
+		AssertBotE(pShip);
 		return false;
 	}
 
 	if (!pMajor)
 	{
-		ASSERT(pMajor);
+		AssertBotE(pMajor);
 		return false;
 	}
 
@@ -446,7 +446,7 @@ bool CShipAI::DoBombardSystem(CShips* pShip)
 {
 	if (!pShip)
 	{
-		ASSERT(pShip);
+		AssertBotE(pShip);
 		return false;
 	}
 
@@ -508,7 +508,7 @@ bool CShipAI::DoCamouflage(CShips* pShip, bool bCamouflage/* = true*/)
 {
 	if (!pShip)
 	{
-		ASSERT(pShip);
+		AssertBotE(pShip);
 		return false;
 	}
 
@@ -590,7 +590,7 @@ bool CShipAI::DoStationBuild(CShips* pShip)
 {
 	if (!pShip)
 	{
-		ASSERT(pShip);
+		AssertBotE(pShip);
 		return false;
 	}
 

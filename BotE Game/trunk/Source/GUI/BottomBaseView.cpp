@@ -59,7 +59,7 @@ void CBottomBaseView::OnInitialUpdate()
 
 /*	CString sID = pDoc->GetPlayersRaceID();
 	m_pPlayersRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
-	ASSERT(m_pPlayersRace);
+	AssertBotE(m_pPlayersRace);
 	*/
 
 	// Größe der View in logischen Koordinaten
@@ -77,10 +77,10 @@ BOOL CBottomBaseView::OnEraseBkgnd(CDC* /*pDC*/)
 
 Gdiplus::Color CBottomBaseView::GetFontColorForSmallButton(void)
 {
-	ASSERT((CBotEDoc*)GetDocument());
+	AssertBotE((CBotEDoc*)GetDocument());
 
 	CMajor* pPlayer = m_pPlayersRace;
-	ASSERT(pPlayer);
+	AssertBotE(pPlayer);
 
 	Color color;
 	color.SetFromCOLORREF(pPlayer->GetDesign()->m_clrSmallBtn);

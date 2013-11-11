@@ -431,7 +431,7 @@ BYTE CCombatShip::GetAccBoniFromSpecials(void)
 	if (m_pShip->HasSpecial(SHIP_SPECIAL::DOGKILLER) && m_pTarget->m_pShip->HasSpecial(SHIP_SPECIAL::DOGFIGHTER))
 		boni += 30;
 
-	ASSERT(boni >= 0 && boni <= 255);
+	AssertBotE(boni >= 0 && boni <= 255);
 	return (BYTE)boni;
 }
 

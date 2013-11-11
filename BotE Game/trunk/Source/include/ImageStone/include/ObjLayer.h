@@ -189,7 +189,7 @@ public:
         FCObjLayer::SetMemoObj (pMemo) ;
         if (pMemo->GetMemoType() != FCMemoLayer::MEMO_LAYER_TEXT)
         {
-            assert(false) ;
+            AssertBotE(false) ;
             return ;
         }
         const FCMemoTextLayer   * pTxt = (const FCMemoTextLayer*)pMemo ;

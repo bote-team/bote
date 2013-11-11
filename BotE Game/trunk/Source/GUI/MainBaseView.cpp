@@ -55,11 +55,11 @@ void CMainBaseView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
 
-	ASSERT((CBotEDoc*)GetDocument());
+	AssertBotE((CBotEDoc*)GetDocument());
 
 /*	CString sID = pDoc->GetPlayersRaceID();
 	m_pPlayersRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
-	ASSERT(m_pPlayersRace);*/
+	AssertBotE(m_pPlayersRace);*/
 
 	// TODO: Add your specialized code here and/or call the base class
 	m_TotalSize = CSize(1075, 750);
@@ -95,7 +95,7 @@ BOOL CMainBaseView::OnEraseBkgnd(CDC* /*pDC*/)
 void CMainBaseView::DrawGDIButtons(Graphics* g, CArray<CMyButton*>* buttonArray, int counter, Gdiplus::Font &font, Gdiplus::SolidBrush &fontBrush)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// Wenn wir im jeweiligen Menü sind, prüfen, ob der dazugehörige Button auch inaktiv ist.
 	for (int j = 0; j < buttonArray->GetSize(); j++)
@@ -114,7 +114,7 @@ void CMainBaseView::DrawGDIButtons(Graphics* g, CArray<CMyButton*>* buttonArray,
 
 void CMainBaseView::ButtonReactOnMouseOver(const CPoint &point, CArray<CMyButton*>* buttonArray)
 {
-	ASSERT((CBotEDoc*)GetDocument());
+	AssertBotE((CBotEDoc*)GetDocument());
 
 	for (int i = 0; i < buttonArray->GetSize(); i++)
 	{

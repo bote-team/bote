@@ -6,7 +6,7 @@
 #include "BuildingInfo.h"
 #include "General/Loc.h"
 
-#include <cassert>
+
 
 IMPLEMENT_SERIAL (CBuildingInfo, CObject, 1)
 //////////////////////////////////////////////////////////////////////
@@ -1072,7 +1072,7 @@ int CBuildingInfo::GetXProd(WORKER::Typ x) const
 		case WORKER::CRYSTAL_WORKER: return m_iCrystal;
 		case WORKER::IRIDIUM_WORKER: return m_iIridium;
 	}
-	assert(false);
+	AssertBotE(false);
 	return 0;
 }
 
@@ -1088,6 +1088,6 @@ int CBuildingInfo::GetXProd(RESOURCES::TYPE x) const
 		case RESOURCES::IRIDIUM: return m_iIridium;
 		case RESOURCES::DERITIUM: return m_iDeritium;
 	}
-	assert(false);
+	AssertBotE(false);
 	return 0;
 }

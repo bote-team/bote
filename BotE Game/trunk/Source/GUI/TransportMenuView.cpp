@@ -62,7 +62,7 @@ void CTransportMenuView::OnNewRound()
 void CTransportMenuView::OnDraw(CDC* dc)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -126,10 +126,10 @@ void CTransportMenuView::OnInitialUpdate()
 void CTransportMenuView::LoadRaceGraphics()
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	CreateButtons();
 
@@ -157,10 +157,10 @@ BOOL CTransportMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 void CTransportMenuView::DrawTransportMenue(Graphics* g)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 	if (!pMajor)
 		return;
 
@@ -448,7 +448,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -516,7 +516,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						if (nPos == -1)
 						{
 							// darf nicht sein
-							ASSERT(FALSE);
+							AssertBotE(FALSE);
 							break;
 						}
 
@@ -732,10 +732,10 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CTransportMenuView::CreateButtons()
 {
-	ASSERT((CBotEDoc*)GetDocument());
+	AssertBotE((CBotEDoc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	// alle Buttons in der View anlegen und Grafiken laden
 	CString sPrefix = pMajor->GetPrefix();
@@ -768,13 +768,13 @@ void CTransportMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	resources::pMainFrame->SelectMainView(VIEWS::GALAXY_VIEW, pMajor->GetRaceID());
 	resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
@@ -786,13 +786,13 @@ void CTransportMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
 	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	AssertBotE(pMajor);
 
 	// Wenn wir in der Transportansicht sind (brauchen auch nur Klicks überprüfen, wenn das Schiff Lagerraum hat)
 	const CShips::const_iterator& ship = pDoc->CurrentShip();
@@ -815,7 +815,7 @@ void CTransportMenuView::OnMouseMove(UINT nFlags, CPoint point)
 void CTransportMenuView::CreateTransportedTroopsVector()
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	const CShipMap::const_iterator& ship = pDoc->CurrentShip();
 
@@ -833,7 +833,7 @@ void CTransportMenuView::CreateTransportedTroopsVector()
 CString CTransportMenuView::CreateTooltip(void)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return "";

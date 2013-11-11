@@ -2,7 +2,7 @@
 #include "TradeRoute.h"
 #include "BotEDoc.h"
 #include "Races\RaceController.h"
-#include <cassert>
+
 
 IMPLEMENT_SERIAL (CTradeRoute, CObject, 1)
 //////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ void CTradeRoute::Serialize(CArchive &ar)
 /// Funktion legt die Handelsroute zum System mit der Koordinate <code>ko</code> an.
 void CTradeRoute::GenerateTradeRoute(CPoint ko)
 {
-	assert(ko != CPoint(-1, -1));
+	AssertBotE(ko != CPoint(-1, -1));
 	m_KO = ko;
 	m_iDuration = 20;
 }
@@ -86,7 +86,7 @@ USHORT CTradeRoute::GetCredits(short boni) const
 /// Die Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Handelsroute noch Bestand haben darf.
 bool CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBotEDoc* pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CSector* pDestSector = &(pDoc->GetSector(pDest.x, pDest.y));
 	CSystem* pDestSystem = &(pDoc->GetSystem(pDest.x, pDest.y));
@@ -138,10 +138,10 @@ bool CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBot
 /// und ein Zeiger auf das Dokument <code>pDoc</code> übergeben.
 void CTradeRoute::PerhapsChangeRelationship(const CPoint& pFrom, const CPoint& pDest, CBotEDoc* pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	CSector* pDestSector = &(pDoc->GetSector(pDest.x, pDest.y));
-	ASSERT(pDestSector);
+	AssertBotE(pDestSector);
 
 	CString  sOwner = pDoc->GetSystem(pFrom.x, pFrom.y).GetOwnerOfSystem();
 	if (sOwner == "")

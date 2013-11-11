@@ -11,7 +11,7 @@
 //////////////////////////////////////////////////////////////////////
 CSectorAI::CSectorAI(CBotEDoc* pDoc)
 {
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 	m_pDoc = pDoc;
 
 	Clear();
@@ -186,7 +186,7 @@ void CSectorAI::CalculateMinorraceSectors(int x, int y)
 		return;
 
 	CMinor* pMinor = dynamic_cast<CMinor*>(pOwner);
-	ASSERT(pMinor);
+	AssertBotE(pMinor);
 
 	// Eintrag für die jeweilige Rasse machen.
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();

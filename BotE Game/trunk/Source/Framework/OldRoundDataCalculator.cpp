@@ -4,7 +4,7 @@
 #include "Races/RaceController.h"
 #include "General/Loc.h"
 #include "ClientWorker.h"
-#include <cassert>
+
 
 
 COldRoundDataCalculator::COldRoundDataCalculator(void)
@@ -80,7 +80,7 @@ void COldRoundDataCalculator::ExecuteRebellion(CSystem& system, CMajor* pMajor) 
 	if (system.GetMinorRace())
 	{
 		CMinor* pMinor = pRaceCtrl->GetMinorRace(sectorname);
-		assert(pMinor);
+		AssertBotE(pMinor);
 		system.SetOwnerOfSector(pMinor->GetRaceID());
 
 		if (system.GetTakenSector() == FALSE)
@@ -192,9 +192,9 @@ void COldRoundDataCalculator::FinishBuild(const int to_build, CSystem& system,
 		// Gebäude mit RunningNumbner == nPredecessorID werden durch UpdateBuilding() gelöscht und
 		// deren Anzahl wird zurückgegeben.
 		USHORT nPredecessorID = BuildingInfo[list-1].GetPredecessorID();
-		ASSERT(nPredecessorID > 0);
+		AssertBotE(nPredecessorID > 0);
 		const CBuildingInfo* pPredecessorBuilding = &(BuildingInfo[nPredecessorID - 1]);
-		ASSERT(pPredecessorBuilding->GetRunningNumber() == nPredecessorID);
+		AssertBotE(pPredecessorBuilding->GetRunningNumber() == nPredecessorID);
 		int nNumberOfNewBuildings = system.UpdateBuildings(nPredecessorID, pPredecessorBuilding->GetNeededEnergy());
 		// So, nun bauen wir so viel mal das nächste
 		for (int z = 0; z < nNumberOfNewBuildings; z++)

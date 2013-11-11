@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SystemProd.h"
 
-#include <cassert>
+
 
 // statische Variablen initialisieren
 std::map<CString, short> CSystemProd::m_iMoralProdEmpireWide;
@@ -431,7 +431,7 @@ int CSystemProd::GetResourceProd(BYTE res) const
 	case RESOURCES::DERITIUM:
 		return m_iDeritiumProd;
 	}
-	assert(false);
+	AssertBotE(false);
 	return 0;
 }
 
@@ -528,6 +528,6 @@ int CSystemProd::GetXProd(WORKER::Typ x) const
 		case WORKER::CRYSTAL_WORKER: return m_iCrystalProd;
 		case WORKER::IRIDIUM_WORKER: return m_iIridiumProd;
 	}
-	assert(false);
+	AssertBotE(false);
 	return 0;
 }

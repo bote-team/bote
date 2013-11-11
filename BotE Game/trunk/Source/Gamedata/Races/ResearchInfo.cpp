@@ -139,7 +139,7 @@ void CResearchInfo::ChangeStatusOfComplex(RESEARCH_STATUS::Typ nNewStatus)
 {
 	if (m_nCurrentComplex == RESEARCH_COMPLEX::NONE)
 	{
-		ASSERT(m_nCurrentComplex != RESEARCH_COMPLEX::NONE);
+		AssertBotE(m_nCurrentComplex != RESEARCH_COMPLEX::NONE);
 		return;
 	}
 

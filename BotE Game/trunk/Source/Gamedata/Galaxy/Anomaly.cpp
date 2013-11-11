@@ -4,7 +4,7 @@
 #include "BotE.h"
 #include "BotEDoc.h"
 #include "Races/RaceController.h"
-#include <cassert>
+
 #include "Ships/Ships.h"
 #include "General/Loc.h"
 #include "Galaxy/Sector.h"
@@ -114,7 +114,7 @@ void CAnomaly::Draw(Graphics* g, const CPoint& ptSector) const
 
 	CString sFile = CIOData::GetInstance()->GetAppPath() + "Graphics\\MapStars\\" + m_sImageFile;
 	pBGImage = Bitmap::FromFile(CComBSTR(sFile));
-	assert(pBGImage);
+	AssertBotE(pBGImage);
 
 	if (m_bFlipHorz)
 		pBGImage->RotateFlip(Gdiplus::RotateNoneFlipX);
@@ -339,7 +339,7 @@ void CAnomaly::ReduceScanPower(const CPoint &pt) const
 	if (m_byType == BLACKHOLE || m_byType == RADIOPULSAR || m_byType == XRAYPULSAR || m_byType == MAGNETAR)
 	{
 		CBotEDoc* pDoc = resources::pDoc;
-		assert(pDoc);
+		AssertBotE(pDoc);
 
 		// Scanstärke verringern
 		map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
@@ -355,7 +355,7 @@ void CAnomaly::ReduceScanPower(const CPoint &pt) const
 void CAnomaly::PerhabsStrand(CShips* pShip) const
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
+	AssertBotE(pDoc);
 
 	// Antriebstech der Schiffes ermitteln
 	int nPropTech = 0;

@@ -160,10 +160,10 @@ void CDiplomacyInfo::Reset(void)
 //////////////////////////////////////////////////////////////////////
 CDiplomacyAI::CDiplomacyAI(CRace* pRace) : m_pRace(pRace)
 {
-	ASSERT(m_pRace);
+	AssertBotE(m_pRace);
 
 	m_pDoc = resources::pDoc;
-	ASSERT(m_pDoc);
+	AssertBotE(m_pDoc);
 }
 
 CDiplomacyAI::~CDiplomacyAI(void)
