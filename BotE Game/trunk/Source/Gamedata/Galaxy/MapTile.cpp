@@ -268,11 +268,6 @@ void CMapTile::BuildStation(SHIP_TYPE::Typ station, const CString& race) {
 		m_Outpost.Empty();
 		m_Starbase = race;
 	}
-	// Nur wenn der Sektor uns selbst gehört oder niemanden gehört und keine Minorrace darin lebt
-	if(m_sOwnerOfSector == race || (!GetOwned() && ! GetMinorRace())) {
-		SetOwned(TRUE);
-		m_sOwnerOfSector = race;
-	}
 	SetScanned(race);
 	SetShipPort(TRUE, race);
 
