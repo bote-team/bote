@@ -1076,6 +1076,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Source\General\BoteStandardTypes.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Source\General\CommandLineParameters.h"
 					>
 				</File>

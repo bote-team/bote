@@ -120,48 +120,27 @@ void CMapTile::Reset()
 //////////////////////////////////////////////////////////////////////
 void CMapTile::Serialize(CArchive &ar)
 {
+	// alle Maps speichern
+	// Maps laden
+	m_Status.Serialize(ar);
+	m_bShipPort.Serialize(ar);
+	m_IsStationBuild.Serialize(ar);
+	m_bWhoIsOwnerOfShip.Serialize(ar);
+	m_mNumbersOfShips.Serialize(ar);
+	m_iNeededStationPoints.Serialize(ar);
+	m_iStartStationPoints.Serialize(ar);
+	m_iScanPower.Serialize(ar);
+	m_iNeededScanPower.Serialize(ar);
+	m_byOwnerPoints.Serialize(ar);
+
 	// Wird geschrieben?
 	if (ar.IsStoring())
 	// Alle Variablen in der richtigen Reihenfolge schreiben
 	{
 		ar << m_Attributes;
 		ar << m_KO;
-
-		// alle Maps speichern
-		ar << m_Status.size();
-		for (map<CString, DISCOVER_STATUS>::const_iterator it = m_Status.begin(); it != m_Status.end(); ++it)
-			ar << it->first << static_cast<BYTE>(it->second);
-		ar << m_bShipPort.size();
-		for (set<CString>::const_iterator it = m_bShipPort.begin(); it != m_bShipPort.end(); ++it)
-			ar << *it;
 		ar << m_Outpost;
 		ar << m_Starbase;
-		ar << m_IsStationBuild.size();
-		for (std::map<CString, SHIP_ORDER::Typ>::const_iterator it = m_IsStationBuild.begin();
-				it != m_IsStationBuild.end(); ++it)
-			ar << it->first << static_cast<unsigned>(it->second);
-		ar << m_bWhoIsOwnerOfShip.size();
-		for (set<CString>::const_iterator it = m_bWhoIsOwnerOfShip.begin(); it != m_bWhoIsOwnerOfShip.end(); ++it)
-			ar << *it;
-		ar << m_mNumbersOfShips.size();
-		for(std::map<CString, unsigned>::const_iterator it = m_mNumbersOfShips.begin(); it != m_mNumbersOfShips.end(); ++it)
-			ar << it->first << it->second;
-		ar << m_iNeededStationPoints.size();
-		for (map<CString, short>::const_iterator it = m_iNeededStationPoints.begin(); it != m_iNeededStationPoints.end(); ++it)
-			ar << it->first << it->second;
-		ar << m_iStartStationPoints.size();
-		for (map<CString, short>::const_iterator it = m_iStartStationPoints.begin(); it != m_iStartStationPoints.end(); ++it)
-			ar << it->first << it->second;
-		ar << m_iScanPower.size();
-		for (map<CString, short>::const_iterator it = m_iScanPower.begin(); it != m_iScanPower.end(); ++it)
-			ar << it->first << it->second;
-		ar << m_iNeededScanPower.size();
-		for (map<CString, short>::const_iterator it = m_iNeededScanPower.begin(); it != m_iNeededScanPower.end(); ++it)
-			ar << it->first << it->second;
-		ar << m_byOwnerPoints.size();
-		for (map<CString, BYTE>::const_iterator it = m_byOwnerPoints.begin(); it != m_byOwnerPoints.end(); ++it)
-			ar << it->first << it->second;
-
 		ar << m_sOwnerOfSector;
 
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen gespeichert werden
@@ -175,119 +154,10 @@ void CMapTile::Serialize(CArchive &ar)
 	{
 		ar >> m_Attributes;
 		ar >> m_KO;
-
-		// Maps laden
-		m_Status.clear();
-		size_t mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			BYTE value;
-			ar >> key;
-			ar >> value;
-			m_Status[key] = static_cast<DISCOVER_STATUS>(value);
-		}
-		m_bShipPort.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString value;
-			ar >> value;
-			m_bShipPort.insert(value);
-		}
 		m_Outpost.Empty();
 		ar >> m_Outpost;
 		m_Starbase.Empty();
 		ar >> m_Starbase;
-		m_IsStationBuild.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			ar >> key;
-			unsigned value;
-			ar >> value;
-			m_IsStationBuild.insert(std::pair<CString, SHIP_ORDER::Typ>(key, static_cast<SHIP_ORDER::Typ>(value)));
-		}
-		m_bWhoIsOwnerOfShip.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString value;
-			ar >> value;
-			m_bWhoIsOwnerOfShip.insert(value);
-		}
-		m_mNumbersOfShips.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for(unsigned i = 0; i < mapSize; ++i)
-		{
-			CString key;
-			ar >> key;
-			unsigned value;
-			ar >> value;
-			m_mNumbersOfShips.insert(std::pair<CString, unsigned>(key, value));
-		}
-		m_iNeededStationPoints.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			short value;
-			ar >> key;
-			ar >> value;
-			m_iNeededStationPoints[key] = value;
-		}
-		m_iStartStationPoints.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			short value;
-			ar >> key;
-			ar >> value;
-			m_iStartStationPoints[key] = value;
-		}
-		m_iScanPower.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			short value;
-			ar >> key;
-			ar >> value;
-			m_iScanPower[key] = value;
-		}
-		m_iNeededScanPower.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			short value;
-			ar >> key;
-			ar >> value;
-			m_iNeededScanPower[key] = value;
-		}
-		m_byOwnerPoints.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			BYTE value;
-			ar >> key;
-			ar >> value;
-			m_byOwnerPoints[key] = value;
-		}
-
 		ar >> m_sOwnerOfSector;
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen geladen werden
 		if (GetSunSystem())
@@ -295,7 +165,6 @@ void CMapTile::Serialize(CArchive &ar)
 		else
 			m_strSectorName = "";
 
-	
 		delete m_pAnomaly;
 		ar >> m_pAnomaly;
 	}
