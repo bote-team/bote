@@ -43,6 +43,11 @@ public:
 			}
 		}
 	}
+
+	CBotEMap& operator=(const std::map<Key, Value>& other){
+		map::operator=(other);
+		return *this;
+	};
 };
 
 template <class Value>
