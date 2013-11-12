@@ -34,6 +34,12 @@ void CMajor::Serialize(CArchive &ar)
 {
 	CRace::Serialize(ar);
 
+	// noch verbleibende Runden des Vertrags (NULL == unbegrenzt)
+	m_mAgrDuration.Serialize(ar);
+	// Dauer des Verteidigungspaktes, einzeln speichern,
+	// weil er separat zu anderen Verträgen abgeschlossen werden kann.
+	m_mDefDuration.Serialize(ar);
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -45,14 +51,6 @@ void CMajor::Serialize(CArchive &ar)
 		ar << m_sPrefix;					// Rassenprefix
 		ar << m_nDiplomacyBonus;			// Bonus bei diplomatischen Verhandlungen, NULL == kein Bonus/kein Malus
 
-		// noch verbleibende Runden des Vertrags (NULL == unbegrenzt)
-		ar << m_mAgrDuration.size();
-		for (map<CString, short>::const_iterator it = m_mAgrDuration.begin(); it != m_mAgrDuration.end(); ++it)
-			ar << it->first << it->second;
-		// Dauer des Verteidigungspaktes, einzeln speichern, weil er separat zu anderen Verträgen abgeschlossen werden kann.
-		ar << m_mDefDuration.size();
-		for (map<CString, short>::const_iterator it = m_mDefDuration.begin(); it != m_mDefDuration.end(); ++it)
-			ar << it->first << it->second;
 		// besitzt die Majorrace eines Verteidigungspakt mit einer anderen Majorrace (Rassen-ID, Wahrheitswert)
 		ar << m_vDefencePact.size();
 		for (vector<CString>::const_iterator it = m_vDefencePact.begin(); it != m_vDefencePact.end(); ++it)
@@ -69,30 +67,6 @@ void CMajor::Serialize(CArchive &ar)
 		ar >> m_sPrefix;					// Rassenprefix
 		ar >> m_nDiplomacyBonus;			// Bonus bei diplomatischen Verhandlungen, NULL == kein Bonus/kein Malus
 
-		// noch verbleibende Runden des Vertrags (NULL == unbegrenzt)
-		m_mAgrDuration.clear();
-		size_t mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			short value;
-			ar >> key;
-			ar >> value;
-			m_mAgrDuration[key] = value;
-		}
-		// Dauer des Verteidigungspaktes, einzeln speichern, weil er separat zu anderen Verträgen abgeschlossen werden kann.
-		m_mDefDuration.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			short value;
-			ar >> key;
-			ar >> value;
-			m_mDefDuration[key] = value;
-		}
 		// besitzt die Majorrace eines Verteidigungspakt mit einer anderen Majorrace (Rassen-ID, Wahrheitswert)
 		m_vDefencePact.clear();
 		size_t vectorSize = 0;

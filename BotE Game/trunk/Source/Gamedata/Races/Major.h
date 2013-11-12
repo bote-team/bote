@@ -189,9 +189,9 @@ protected:
 
 	short				m_nDiplomacyBonus;				///<!!! Bonus bei diplomatischen Verhandlungen, NULL == kein Bonus/kein Malus
 
-	map<CString, short>	m_mAgrDuration;					///< noch verbleibende Runden des Vertrags (NULL == unbegrenzt)
+	CBotEMap<CString, short>	m_mAgrDuration;					///< noch verbleibende Runden des Vertrags (NULL == unbegrenzt)
 	vector<CString>		m_vDefencePact;					///< besitzt die Majorrace eines Verteidigungspakt mit einer anderen Majorrace (Rassen-ID)
-	map<CString, short>	m_mDefDuration;					///< Dauer des Verteidigungspaktes, einzeln speichern, weil er separat zu anderen Verträgen abgeschlossen werden kann.
+	CBotEMap<CString, short>	m_mDefDuration;					///< Dauer des Verteidigungspaktes, einzeln speichern, weil er separat zu anderen Verträgen abgeschlossen werden kann.
 
 	CRaceDesign			m_RaceDesign;					///!!!< Objekt welches gestalterische Informationen zur Rasse beinhaltet
 
