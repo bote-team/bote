@@ -46,7 +46,6 @@ CMapTile::CMapTile(const CMapTile& other) :
 	m_bSunSystem(other.m_bSunSystem),
 	m_bOwned(other.m_bOwned),
 	m_bMinor(other.m_bMinor),
-	m_bTaken(other.m_bTaken),
 	m_Status(other.m_Status),
 	m_bShipPort(other.m_bShipPort),
 	m_Outpost(other.m_Outpost),
@@ -74,7 +73,6 @@ CMapTile& CMapTile::operator=(const CMapTile& other){
 		m_bSunSystem = other.m_bSunSystem;
 		m_bOwned = other.m_bOwned;
 		m_bMinor = other.m_bMinor;
-		m_bTaken = other.m_bTaken;
 		m_Status = other.m_Status;
 		m_bShipPort = other.m_bShipPort;
 		m_Outpost = other.m_Outpost;
@@ -106,7 +104,6 @@ void CMapTile::Reset()
 	m_bSunSystem = false;
 	m_bOwned = false;
 	m_bMinor = false;
-	m_bTaken = false;
 
 	// Maps löschen
 	m_Status.clear();
@@ -147,7 +144,6 @@ void CMapTile::Serialize(CArchive &ar)
 		ar << m_bSunSystem;
 		ar << m_bOwned;
 		ar << m_bMinor;
-		ar << m_bTaken;
 		ar << m_KO;
 		ar << m_Outpost;
 		ar << m_Starbase;
@@ -165,7 +161,6 @@ void CMapTile::Serialize(CArchive &ar)
 		ar >> m_bSunSystem;
 		ar >> m_bOwned;
 		ar >> m_bMinor;
-		ar >> m_bTaken;
 		ar >> m_KO;
 		m_Outpost.Empty();
 		ar >> m_Outpost;

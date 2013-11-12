@@ -47,7 +47,8 @@ CSector::CSector(const CSector& other) :
 	CMapTile(other),
 	m_Planets(other.m_Planets),
 	m_sColonyOwner(other.m_sColonyOwner),
-	m_bySunColor(other.m_bySunColor)
+	m_bySunColor(other.m_bySunColor),
+	m_bTaken(other.m_bTaken)
 {
 };
 
@@ -57,6 +58,7 @@ CSector& CSector::operator=(const CSector& other){
 		m_Planets = other.m_Planets;
 		m_sColonyOwner = other.m_sColonyOwner;
 		m_bySunColor = other.m_bySunColor;
+		m_bTaken = other.m_bTaken;
 	}
 
 	return *this;
@@ -73,7 +75,8 @@ void CSector::Reset(bool call_up)
 	if(call_up)
 		CMapTile::Reset();
 
-	m_sColonyOwner = "";
+	m_sColonyOwner.Empty();
+	m_bTaken = false;
 	m_Planets.clear();
 
 	ClearAllPoints(false);
@@ -90,6 +93,7 @@ void CSector::Serialize(CArchive &ar)
 	// Alle Variablen in der richtigen Reihenfolge schreiben
 	{
 		ar << m_sColonyOwner;
+		ar << m_bTaken;
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen gespeichert werden
 		if (GetSunSystem())
 		{
@@ -101,6 +105,7 @@ void CSector::Serialize(CArchive &ar)
 	// Alle Variablen in der richtigen Reihenfolge lesen
 	{
 		ar >> m_sColonyOwner;
+		ar >> m_bTaken;
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen geladen werden
 		if (GetSunSystem())
 		{

@@ -86,6 +86,9 @@ public:
 	///die Farbe als Adjektiv.
 	BYTE GetSunColor() const {return m_bySunColor;}
 
+	/// Diese Funktion gibt zurück, ob der Sektor militärisch erobert wurde.
+	bool GetTakenSector(void) const {return m_bTaken;}
+
 	/// Diese Funktion gibt die Anzahl der Planeten zurück, die in dem Sektor beheimatet sind.
 	BYTE GetNumberOfPlanets(void) const {return m_Planets.size();}
 
@@ -106,6 +109,9 @@ public:
 	/// Funktion legt fest, welcher Majorrace der Sektor zuerst gehörte. Das gilt aber nur für
 	/// eigene Kolonien und dem Heimatsektor
 	void SetColonyOwner(const CString& sOwner) {m_sColonyOwner = sOwner;}
+
+	/// Funktion legt fest, ob der Sektor militärisch erobert wurde.
+	void SetTakenSector(BOOLEAN is) { m_bTaken = is; }
 
 //////////////////////////////////////////////////////////////////////
 // planets
@@ -172,5 +178,7 @@ private:
 
 	/// Die Farbe der Sonne in diesem Sektor
 	BYTE m_bySunColor;
+
+	bool m_bTaken;// Wurde der Sector militärisch eingenommen, also keine eigene Kolonie oder Heimatsystem
 
 };
