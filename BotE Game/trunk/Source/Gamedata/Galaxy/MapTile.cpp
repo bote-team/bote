@@ -486,24 +486,10 @@ void CMapTile::DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlay
 // owner
 //////////////////////////////////////////////////////////////////////
 
-#pragma warning (push)
-#pragma warning (disable : 4702)
 /// Diese Funktion berechnet anhand der Besitzerpunkte und anderen Enflüssen, wem dieser Sektor schlussendlich
 /// gehört.
-void CMapTile::CalculateOwner(const CString& sSystemOwner)
+void CMapTile::CalculateOwner()
 {
-	// Wenn in diesem Sektor das System jemanden gehört, oder hier eine Schiffswerft durch Außenposten oder Sternbasis
-	// steht, dann ändert sich nichts am Besitzer
-	if (sSystemOwner != "")
-	{
-		SetOwned(TRUE);
-		m_sOwnerOfSector = sSystemOwner;
-		return;
-	}
-	// Sektor gehört einer Minorrace
-	else if (m_sOwnerOfSector != "" && sSystemOwner == "" && this->GetMinorRace() == TRUE)
-		return;
-
 	if(!m_Outpost.IsEmpty())
 	{
 		SetOwned(TRUE);
@@ -521,7 +507,7 @@ void CMapTile::CalculateOwner(const CString& sSystemOwner)
 	// Gleichstand haben wir neutrales Gebiet. Es werden mindst. 2 Punkte benötigt, um als neuer Besitzer des Sektors
 	// zu gelten.
 	BYTE mostPoints = 1;
-	CString newOwner = "";
+	CString newOwner;
 	for (map<CString, BYTE>::const_iterator it = m_byOwnerPoints.begin(); it != m_byOwnerPoints.end(); ++it)
 	{
 		if (it->second > mostPoints)
@@ -531,9 +517,9 @@ void CMapTile::CalculateOwner(const CString& sSystemOwner)
 		}
 		// bei Gleichstand wird der Besitzer wieder gelöscht
 		else if (it->second == mostPoints)
-			newOwner = "";
+			newOwner.Empty();
 	}
-	if (newOwner != "")
+	if (!newOwner.IsEmpty())
 	{
 		SetOwned(TRUE);
 		SetScanned(newOwner);
@@ -542,7 +528,6 @@ void CMapTile::CalculateOwner(const CString& sSystemOwner)
 		SetOwned(FALSE);
 	m_sOwnerOfSector = newOwner;
 }
-#pragma warning (pop)
 
 //////////////////////////////////////////////////////////////////////
 // other functions

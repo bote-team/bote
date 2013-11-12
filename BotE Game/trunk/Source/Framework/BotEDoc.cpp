@@ -4904,7 +4904,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 	// Jetzt die Besitzer berechnen und die Variablen, welche nächste Runde auch angezeigt werden sollen.
 	for(std::vector<CSystem>::iterator it = m_Systems.begin(); it != m_Systems.end(); ++it)
 	{
-		it->CalculateOwner(it->GetOwnerOfSystem());
+		it->CalculateOwner();
 		if (it->GetSunSystem() == TRUE && it->GetOwnerOfSystem() != "")
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(it->GetOwnerOfSystem()));

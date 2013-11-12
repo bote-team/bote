@@ -3236,6 +3236,31 @@ void CSystem::TrainTroops()
 }
 
 //////////////////////////////////////////////////////////////////////
+// owner
+//////////////////////////////////////////////////////////////////////
+
+void CSystem::CalculateOwner()
+{
+	// Wenn in diesem Sektor das System jemandem gehört,
+	// oder hier eine Schiffswerft durch Außenposten oder Sternbasis
+	// steht, dann ändert sich nichts am Besitzer
+	if (!m_sOwnerOfSystem.IsEmpty())
+	{
+		SetOwned(TRUE);
+		m_sOwnerOfSector = m_sOwnerOfSystem;
+		return;
+	}
+	// Sektor gehört einer Minorrace
+	else if (GetMinorRace())
+	{
+		AssertBotE(!m_sOwnerOfSector.IsEmpty());
+		return;
+	}
+
+	CMapTile::CalculateOwner();
+}
+
+//////////////////////////////////////////////////////////////////////
 // other functions
 //////////////////////////////////////////////////////////////////////
 

@@ -431,9 +431,11 @@ public:
 	/// dazu.
 	void AddOwnerPoints(BYTE ownerPoints, const CString& sOwner) {m_byOwnerPoints[sOwner] += ownerPoints;}
 
+protected:
 	/// Diese Funktion berechnet anhand der Besitzerpunkte und anderen Enflüssen, wem dieser Sektor schlussendlich
 	/// gehört. Übergeben wird dafür auch der mögliche Besitzer des Systems in diesem Sektor.
-	void CalculateOwner(const CString& sSystemOwner);
+	void CalculateOwner();
+public:
 
 
 //////////////////////////////////////////////////////////////////////
