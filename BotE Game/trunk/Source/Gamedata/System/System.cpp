@@ -172,8 +172,15 @@ void CSystem::ResetSystem(bool call_up)
 //////////////////////////////////////////////////////////////////////
 // serialization
 //////////////////////////////////////////////////////////////////////
-void CSystem::Serialize(CArchive &ar)
+void CSystem::Serialize(CArchive &ar, bool end_of_round)
 {
+	if(!end_of_round)
+	{
+		CSector::Serialize(ar);
+		if(!GetSunSystem() || GetOwnerOfSector().IsEmpty() && GetColonyOwner().IsEmpty() && !GetMinorRace())
+			return;
+	}
+
 	m_AssemblyList.Serialize(ar);
 	m_Production.Serialize(ar);
 	m_Workers.Serialize(ar);

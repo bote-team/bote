@@ -341,15 +341,7 @@ void CBotEDoc::Serialize(CArchive& ar)
 void CBotEDoc::SerializeSectorsAndSystems(CArchive& ar)
 {
 	for(std::vector<CSystem>::iterator it = m_Systems.begin(); it != m_Systems.end(); ++it)
-	{
-		CSector& sector = static_cast<CSector&>(*it);
-		sector.Serialize(ar);
-		if(!sector.GetSunSystem() ||
-			sector.GetOwnerOfSector().IsEmpty() && sector.GetColonyOwner().IsEmpty() && !sector.GetMinorRace())
-				continue;
-
-		it->Serialize(ar);
-	}
+		it->Serialize(ar, false);
 }
 
 /// Serialisiert die Daten, welche am Anfang des Spiels einmal gesendet werden müssen.
@@ -569,7 +561,7 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 		for(std::vector<int>::const_iterator it = systems.begin(); it != systems.end(); ++it)
 		{
 			ar << *it;
-			m_Systems.at(*it).Serialize(ar);
+			m_Systems.at(*it).Serialize(ar, true);
 		}
 
 		pPlayer->Serialize(ar);
@@ -614,7 +606,7 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 		{
 			int index;;
 			ar >> index;
-			m_Systems.at(index).Serialize(ar);
+			m_Systems.at(index).Serialize(ar, true);
 		}
 
 		pMajor->Serialize(ar);
