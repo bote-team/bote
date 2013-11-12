@@ -103,16 +103,16 @@ public:
 
 //// SectorAttributes ////
 	/// Diese Funktion gibt zurück, ob sich in diesem Sektor ein Sonnensystem befindet.
-	BOOLEAN GetSunSystem(void) const {return (m_Attributes & SECTOR_SUNSYSTEM) == SECTOR_SUNSYSTEM;}
+	BOOLEAN GetSunSystem(void) const {return m_bSunSystem;}
 
 	/// Diese Funktion gibt zurück, ob der Sektor irgendeiner Majorrasse gehört.
-	BOOLEAN GetOwned(void) const {return (m_Attributes & SECTOR_OWNED) == SECTOR_OWNED;}
+	BOOLEAN GetOwned(void) const {return m_bOwned;}
 
 	/// Diese Funktion gibt zurück, ob sich in diesem Sektor eine Minorrace befindet.
-	BOOLEAN GetMinorRace(void) const {return (m_Attributes & SECTOR_MINORRACE) == SECTOR_MINORRACE;}
+	BOOLEAN GetMinorRace(void) const {return m_bMinor;}
 
 	/// Diese Funktion gibt zurück, ob der Sektor militärisch erobert wurde.
-	BOOLEAN GetTakenSector(void) const {return (m_Attributes & SECTOR_CONQUERED) == SECTOR_CONQUERED;}
+	BOOLEAN GetTakenSector(void) const {return m_bTaken;}
 
 	/// Diese Funktion gibt zurück, wer im Besitz dieses Sektors ist.
 	CString GetOwnerOfSector(void) const {return m_sOwnerOfSector;}
@@ -280,16 +280,16 @@ public:
 
 //// SectorAttributes ////
 	/// Diese Funktion legt fest, ob sich ein Sonnensystem in diesem Sektor befindet.
-	void SetSunSystem(BOOLEAN is) {SetAttributes(is, SECTOR_SUNSYSTEM, m_Attributes);}
+	void SetSunSystem(BOOLEAN is) { m_bSunSystem = is; }
 
 	/// Funktion legt fest, ob der Sektor irgendwem gehört.
-	void SetOwned(BOOLEAN is) {SetAttributes(is, SECTOR_OWNED, m_Attributes);}
+	void SetOwned(BOOLEAN is) { m_bOwned = is; }
 
 	/// Funktion legt fest, ob sich eine Minorrace in diesem Sektor befindet.
-	void SetMinorRace(BOOLEAN is) {SetAttributes(is, SECTOR_MINORRACE, m_Attributes);}
+	void SetMinorRace(BOOLEAN is) { m_bMinor = is; }
 
 	/// Funktion legt fest, ob der Sektor militärisch erobert wurde.
-	void SetTakenSector(BOOLEAN is) {SetAttributes(is, SECTOR_CONQUERED, m_Attributes);}
+	void SetTakenSector(BOOLEAN is) { m_bTaken = is; }
 
 	/// Funktion legt fest, wem der Sektor gehört.
 	void SetOwnerOfSector(const CString& sOwner) {m_sOwnerOfSector = sOwner;}
@@ -487,8 +487,10 @@ private:
 	/// Der Name des Sectors
 	CString m_strSectorName;
 
-	/// Diese Variable beinhaltet alle Sektorattribute.
-	int m_Attributes;
+	bool m_bSunSystem;// Ist ein Sonnensystem in diesem Sektor?
+	bool m_bOwned;// Gehört der Sektor einer irgendeiner Rasse?
+	bool m_bMinor;// Gibt es eine kleine Rasse in dem Sector
+	bool m_bTaken;// Wurde der Sector militärisch eingenommen, also keine eigene Kolonie oder Heimatsystem
 
 	/// Variable speichert den Status über diesen Sektor, wobei 0 -> nichts, 1 -> gescannt,
 	/// 2 -> Name bekannt, 3 -> alles inkl. Planeten bekannt, bedeutet

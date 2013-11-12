@@ -27,7 +27,6 @@ static char THIS_FILE[]=__FILE__;
 //////////////////////////////////////////////////////////////////////
 CMapTile::CMapTile(void) :
 	m_KO(-1, -1),
-	m_Attributes(0),
 	m_pAnomaly(NULL)
 {
 	Reset();
@@ -35,7 +34,6 @@ CMapTile::CMapTile(void) :
 
 CMapTile::CMapTile(int x, int y) :
 	m_KO(x, y),
-	m_Attributes(0),
 	m_pAnomaly(NULL)
 {
 	Reset();
@@ -45,7 +43,10 @@ CMapTile::CMapTile(const CMapTile& other) :
 	m_KO(other.m_KO),
 	m_sOwnerOfSector(other.m_sOwnerOfSector),
 	m_strSectorName(other.m_strSectorName),
-	m_Attributes(other.m_Attributes),
+	m_bSunSystem(other.m_bSunSystem),
+	m_bOwned(other.m_bOwned),
+	m_bMinor(other.m_bMinor),
+	m_bTaken(other.m_bTaken),
 	m_Status(other.m_Status),
 	m_bShipPort(other.m_bShipPort),
 	m_Outpost(other.m_Outpost),
@@ -68,9 +69,12 @@ CMapTile& CMapTile::operator=(const CMapTile& other){
 	if(this != &other )
 	{
 		m_KO = other.m_KO;
-		m_strSectorName = other.m_strSectorName;
-		m_Attributes = other.m_Attributes;
 		m_sOwnerOfSector = other.m_sOwnerOfSector;
+		m_strSectorName = other.m_strSectorName;
+		m_bSunSystem = other.m_bSunSystem;
+		m_bOwned = other.m_bOwned;
+		m_bMinor = other.m_bMinor;
+		m_bTaken = other.m_bTaken;
 		m_Status = other.m_Status;
 		m_bShipPort = other.m_bShipPort;
 		m_Outpost = other.m_Outpost;
@@ -99,7 +103,10 @@ CMapTile::~CMapTile(void)
 /// Resetfunktion für die Klasse CMapTile
 void CMapTile::Reset()
 {
-	m_Attributes = 0;
+	m_bSunSystem = false;
+	m_bOwned = false;
+	m_bMinor = false;
+	m_bTaken = false;
 
 	// Maps löschen
 	m_Status.clear();
@@ -137,7 +144,10 @@ void CMapTile::Serialize(CArchive &ar)
 	if (ar.IsStoring())
 	// Alle Variablen in der richtigen Reihenfolge schreiben
 	{
-		ar << m_Attributes;
+		ar << m_bSunSystem;
+		ar << m_bOwned;
+		ar << m_bMinor;
+		ar << m_bTaken;
 		ar << m_KO;
 		ar << m_Outpost;
 		ar << m_Starbase;
@@ -152,7 +162,10 @@ void CMapTile::Serialize(CArchive &ar)
 	else
 	// Alle Variablen in der richtigen Reihenfolge lesen
 	{
-		ar >> m_Attributes;
+		ar >> m_bSunSystem;
+		ar >> m_bOwned;
+		ar >> m_bMinor;
+		ar >> m_bTaken;
 		ar >> m_KO;
 		m_Outpost.Empty();
 		ar >> m_Outpost;
