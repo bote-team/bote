@@ -13,14 +13,11 @@
 
 #include <map>
 #include <set>
+#include <vector>
 
 template <class Key, class Value, class Serializable = Value>
 class CBotEMap : public std::map<Key, Value>
 {
-
-//////////////////////////////////////////////////////////////////////
-// serialization
-//////////////////////////////////////////////////////////////////////
 
 public:
 	void Serialize(CArchive &ar)
@@ -51,9 +48,6 @@ public:
 template <class Value>
 class CBotESet : public std::set<Value>
 {
-//////////////////////////////////////////////////////////////////////
-// serialization
-//////////////////////////////////////////////////////////////////////
 
 public:
 	void Serialize(CArchive &ar)
@@ -76,5 +70,26 @@ public:
 				insert(value);
 			}
 		}
+	}
+};
+
+template <class Value>
+class CBotEVector : public std::vector<Value>
+{
+
+public:
+	void Serialize(CArchive &ar)
+	{
+		if (ar.IsStoring())
+			ar << size();
+		else
+		{
+			unsigned int size = 0;
+			ar >> size;
+			clear();
+			resize(size);
+		}
+		for(std::vector<Value>::iterator it = begin(); it != end(); ++it)
+			it->Serialize(ar);
 	}
 };
