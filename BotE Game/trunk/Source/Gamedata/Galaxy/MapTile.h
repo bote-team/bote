@@ -31,21 +31,6 @@ class CShip;
 class CMapTile
 {
 
-private:
-
-	/// Liefert verschiedene Attributswerte der Sektorklasse.
-	enum SectorAttributes
-	{
-		/// Ist ein Sonnensystem in diesem Sektor?
-		SECTOR_SUNSYSTEM	= 1,
-		/// Gehört der Sektor einer irgendeiner Rasse?
-		SECTOR_OWNED		= 2,
-		/// Gibt es eine kleine Rasse in dem Sector
-		SECTOR_MINORRACE	= 4,
-		/// Wurde der Sector militärisch eingenommen, also keine eigene Kolonie oder Heimatsystem
-		SECTOR_CONQUERED	= 8
-	};
-
 public:
 
 	enum DISCOVER_STATUS
