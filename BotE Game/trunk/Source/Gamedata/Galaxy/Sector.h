@@ -89,6 +89,9 @@ public:
 	/// Diese Funktion gibt zurück, ob der Sektor militärisch erobert wurde.
 	bool GetTakenSector(void) const {return m_bTaken;}
 
+	/// Diese Funktion gibt zurück, ob sich in diesem Sektor eine Minorrace befindet.
+	bool GetMinorRace(void) const {return m_bMinor;}
+
 	/// Diese Funktion gibt die Anzahl der Planeten zurück, die in dem Sektor beheimatet sind.
 	BYTE GetNumberOfPlanets(void) const {return m_Planets.size();}
 
@@ -112,6 +115,9 @@ public:
 
 	/// Funktion legt fest, ob der Sektor militärisch erobert wurde.
 	void SetTakenSector(BOOLEAN is) { m_bTaken = is; }
+
+	/// Funktion legt fest, ob sich eine Minorrace in diesem Sektor befindet.
+	void SetMinorRace(bool is) { m_bMinor = is; }
 
 //////////////////////////////////////////////////////////////////////
 // planets
@@ -180,5 +186,7 @@ private:
 	BYTE m_bySunColor;
 
 	bool m_bTaken;// Wurde der Sector militärisch eingenommen, also keine eigene Kolonie oder Heimatsystem
+
+	bool m_bMinor;// Gibt es eine kleine Rasse in dem Sector
 
 };

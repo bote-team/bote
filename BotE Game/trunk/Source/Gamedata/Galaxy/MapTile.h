@@ -93,9 +93,6 @@ public:
 	/// Diese Funktion gibt zurück, ob der Sektor irgendeiner Majorrasse gehört.
 	BOOLEAN GetOwned(void) const {return m_bOwned;}
 
-	/// Diese Funktion gibt zurück, ob sich in diesem Sektor eine Minorrace befindet.
-	BOOLEAN GetMinorRace(void) const {return m_bMinor;}
-
 	/// Diese Funktion gibt zurück, wer im Besitz dieses Sektors ist.
 	CString GetOwnerOfSector(void) const {return m_sOwnerOfSector;}
 
@@ -266,9 +263,6 @@ public:
 
 	/// Funktion legt fest, ob der Sektor irgendwem gehört.
 	void SetOwned(BOOLEAN is) { m_bOwned = is; }
-
-	/// Funktion legt fest, ob sich eine Minorrace in diesem Sektor befindet.
-	void SetMinorRace(BOOLEAN is) { m_bMinor = is; }
 
 	/// Funktion legt fest, wem der Sektor gehört.
 	void SetOwnerOfSector(const CString& sOwner) {m_sOwnerOfSector = sOwner;}
@@ -470,7 +464,6 @@ private:
 
 	bool m_bSunSystem;// Ist ein Sonnensystem in diesem Sektor?
 	bool m_bOwned;// Gehört der Sektor einer irgendeiner Rasse?
-	bool m_bMinor;// Gibt es eine kleine Rasse in dem Sector
 
 	/// Variable speichert den Status über diesen Sektor, wobei 0 -> nichts, 1 -> gescannt,
 	/// 2 -> Name bekannt, 3 -> alles inkl. Planeten bekannt, bedeutet
