@@ -168,7 +168,6 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetFullKnown(pMajor->GetRaceID());
 				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetOwnerOfSystem(pMajor->GetRaceID());
 				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetOwnerOfSector(pMajor->GetRaceID());
-				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetOwned(TRUE);
 				// Der Sector gilt jetzt als nicht eingenommen
 				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetTakenSector(FALSE);
 				// Nun Gebäude in neuen System bauen
@@ -210,7 +209,6 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 			if (pMinor->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP && pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetMinorRace() == TRUE &&
 				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetTakenSector() == FALSE)
 			{
-				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetOwned(FALSE);
 				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetOwnerOfSector(pMinor->GetRaceID());
 				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetOwnerOfSystem("");
 				CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sOwner));

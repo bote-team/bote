@@ -1549,7 +1549,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
 			CPoint pt = pMajor->GetStarmap()->GetSectorCoords(struct::Sector(x, y));
-			if (pDoc->GetSector(x,y).GetOwned() && pDoc->GetSector(x,y).GetScanned(pMajor->GetRaceID())
+			if (pDoc->GetSystem(x,y).GetOwned() && pDoc->GetSector(x,y).GetScanned(pMajor->GetRaceID())
 				&& pMajor->IsRaceContacted(pDoc->GetSector(x,y).GetOwnerOfSector()) || pDoc->GetSector(x,y).GetOwnerOfSector() == pMajor->GetRaceID())
 			{
 				g->DrawImage(m_mOwnerMark[pDoc->GetSector(x,y).GetOwnerOfSector()], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
@@ -1560,7 +1560,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 				g->DrawImage(m_mOwnerMark[sFogOfWarID], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
 			}
 			// lebt eine Minorrace darauf und der Sektor ist uns bekannt, gehört aber noch niemanden
-			else if (pDoc->GetSector(x,y).GetMinorRace() && !pDoc->GetSector(x,y).GetOwned() && pDoc->GetSector(x,y).GetKnown(pMajor->GetRaceID()))
+			else if (pDoc->GetSystem(x,y).GetMinorRace() && !pDoc->GetSystem(x,y).GetOwned() && pDoc->GetSector(x,y).GetKnown(pMajor->GetRaceID()))
 			{
 				g->DrawImage(m_mOwnerMark[sMinorID], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
 			}

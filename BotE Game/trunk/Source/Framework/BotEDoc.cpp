@@ -1043,7 +1043,6 @@ void CBotEDoc::GenerateGalaxy()
 		sector.SetSectorsName(pMajor->GetHomesystemName());
 		sector.SetSunSystem(TRUE);
 		sector.SetFullKnown(it->first);
-		sector.SetOwned(TRUE);
 		sector.SetOwnerOfSector(it->first);
 		sector.SetColonyOwner(it->first);
 		sector.CreatePlanets(it->first);
@@ -2554,7 +2553,6 @@ void CBotEDoc::CalcSystemAttack()
 					GetSystem(p.x, p.y).BuildBuildingsForMinorRace(&BuildingInfo, m_Statistics.GetAverageTechLevel(), pMinor);
 					// Sektor gilt ab jetzt als erobert.
 					GetSector(p.x, p.y).SetTakenSector(TRUE);
-					GetSector(p.x, p.y).SetOwned(TRUE);
 					GetSector(p.x, p.y).SetOwnerOfSector(attacker);
 					// Beziehung zu dieser Minorrace verschlechtert sich auf 0 Punkte
 					pMinor->SetRelation(attacker, -100);
@@ -2640,7 +2638,6 @@ void CBotEDoc::CalcSystemAttack()
 					}
 					// Sektor gilt ab jetzt als nicht mehr erobert.
 					GetSector(p.x, p.y).SetTakenSector(FALSE);
-					GetSector(p.x, p.y).SetOwned(FALSE);
 					GetSector(p.x, p.y).SetOwnerOfSector(pMinor->GetRaceID());
 					GetSystem(p.x, p.y).SetOwnerOfSystem("");
 					// Moral in dem System um rand()%50+25 erhöhen
@@ -2937,7 +2934,6 @@ void CBotEDoc::CalcSystemAttack()
 					GetSector(p.x, p.y).SetOwnerOfSector("");
 					GetSector(p.x, p.y).SetColonyOwner("");
 					GetSector(p.x, p.y).SetTakenSector(FALSE);
-					GetSector(p.x, p.y).SetOwned(FALSE);
 
 					// war der Verteidiger eine Majorrace und wurde sie durch den Verlust des Systems komplett ausgelöscht,
 					// so bekommt der Eroberer einen kräftigen Moralschub
@@ -4801,7 +4797,6 @@ void CBotEDoc::CalcEndDataForNextRound()
 				{
 					sy->SetOwnerOfSector("");
 					sy->SetOwnerOfSystem("");
-					sy->SetOwned(false);
 					sy->SetTakenSector(false);
 				}
 				// Den ersten Besitzer als Historie merken. Diese Variable nicht zurücksetzen!

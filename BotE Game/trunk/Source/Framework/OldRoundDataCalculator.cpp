@@ -101,7 +101,6 @@ void COldRoundDataCalculator::ExecuteRebellion(CSystem& system, CMajor* pMajor) 
 	}
 
 	// wichtige Variablen zurücksetzen
-	system.SetOwned(FALSE);
 	system.SetTakenSector(FALSE);
 	system.SetShipPort(FALSE, pMajor->GetRaceID());
 	system.SetOwnerOfSystem("");

@@ -140,7 +140,7 @@ void CTradeRoute::PerhapsChangeRelationship(const CPoint& pFrom, const CPoint& p
 {
 	AssertBotE(pDoc);
 
-	CSector* pDestSector = &(pDoc->GetSector(pDest.x, pDest.y));
+	CSystem* pDestSector = &(pDoc->GetSystem(pDest.x, pDest.y));
 	AssertBotE(pDestSector);
 
 	CString  sOwner = pDoc->GetSystem(pFrom.x, pFrom.y).GetOwnerOfSystem();

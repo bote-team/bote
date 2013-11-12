@@ -2014,7 +2014,6 @@ void CSystem::Colonize(const CShips& ship, CMajor& major)
 	if (GetOwnerOfSystem().IsEmpty())
 	{
 		// Sector- und Systemwerte ändern
-		SetOwned(TRUE);
 		m_sOwnerOfSector = shipowner;
 		m_sColonyOwner = shipowner;
 		SetOwnerOfSystem(shipowner);
@@ -3246,7 +3245,6 @@ void CSystem::CalculateOwner()
 	// steht, dann ändert sich nichts am Besitzer
 	if (!m_sOwnerOfSystem.IsEmpty())
 	{
-		SetOwned(TRUE);
 		m_sOwnerOfSector = m_sOwnerOfSystem;
 		return;
 	}
@@ -3258,6 +3256,15 @@ void CSystem::CalculateOwner()
 	}
 
 	CMapTile::CalculateOwner();
+}
+
+bool CSystem::GetOwned() const
+{
+	if(!m_sOwnerOfSystem.IsEmpty())
+		return true;
+	if(GetMinorRace())
+		return false;
+	return !m_sOwnerOfSector.IsEmpty();
 }
 
 //////////////////////////////////////////////////////////////////////

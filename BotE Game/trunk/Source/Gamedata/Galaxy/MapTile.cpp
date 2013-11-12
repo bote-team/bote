@@ -44,7 +44,6 @@ CMapTile::CMapTile(const CMapTile& other) :
 	m_sOwnerOfSector(other.m_sOwnerOfSector),
 	m_strSectorName(other.m_strSectorName),
 	m_bSunSystem(other.m_bSunSystem),
-	m_bOwned(other.m_bOwned),
 	m_Status(other.m_Status),
 	m_bShipPort(other.m_bShipPort),
 	m_Outpost(other.m_Outpost),
@@ -70,7 +69,6 @@ CMapTile& CMapTile::operator=(const CMapTile& other){
 		m_sOwnerOfSector = other.m_sOwnerOfSector;
 		m_strSectorName = other.m_strSectorName;
 		m_bSunSystem = other.m_bSunSystem;
-		m_bOwned = other.m_bOwned;
 		m_Status = other.m_Status;
 		m_bShipPort = other.m_bShipPort;
 		m_Outpost = other.m_Outpost;
@@ -100,7 +98,6 @@ CMapTile::~CMapTile(void)
 void CMapTile::Reset()
 {
 	m_bSunSystem = false;
-	m_bOwned = false;
 
 	// Maps löschen
 	m_Status.clear();
@@ -139,7 +136,6 @@ void CMapTile::Serialize(CArchive &ar)
 	// Alle Variablen in der richtigen Reihenfolge schreiben
 	{
 		ar << m_bSunSystem;
-		ar << m_bOwned;
 		ar << m_KO;
 		ar << m_Outpost;
 		ar << m_Starbase;
@@ -155,7 +151,6 @@ void CMapTile::Serialize(CArchive &ar)
 	// Alle Variablen in der richtigen Reihenfolge lesen
 	{
 		ar >> m_bSunSystem;
-		ar >> m_bOwned;
 		ar >> m_KO;
 		m_Outpost.Empty();
 		ar >> m_Outpost;
@@ -482,13 +477,11 @@ void CMapTile::CalculateOwner()
 {
 	if(!m_Outpost.IsEmpty())
 	{
-		SetOwned(TRUE);
 		m_sOwnerOfSector = m_Outpost;
 		return;
 	}
 	if(!m_Starbase.IsEmpty())
 	{
-		SetOwned(TRUE);
 		m_sOwnerOfSector = m_Starbase;
 		return;
 	}
@@ -510,12 +503,7 @@ void CMapTile::CalculateOwner()
 			newOwner.Empty();
 	}
 	if (!newOwner.IsEmpty())
-	{
-		SetOwned(TRUE);
 		SetScanned(newOwner);
-	}
-	else
-		SetOwned(FALSE);
 	m_sOwnerOfSector = newOwner;
 }
 

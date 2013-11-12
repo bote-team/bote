@@ -90,9 +90,6 @@ public:
 	/// Diese Funktion gibt zurück, ob sich in diesem Sektor ein Sonnensystem befindet.
 	BOOLEAN GetSunSystem(void) const {return m_bSunSystem;}
 
-	/// Diese Funktion gibt zurück, ob der Sektor irgendeiner Majorrasse gehört.
-	BOOLEAN GetOwned(void) const {return m_bOwned;}
-
 	/// Diese Funktion gibt zurück, wer im Besitz dieses Sektors ist.
 	CString GetOwnerOfSector(void) const {return m_sOwnerOfSector;}
 
@@ -261,9 +258,6 @@ public:
 	/// Diese Funktion legt fest, ob sich ein Sonnensystem in diesem Sektor befindet.
 	void SetSunSystem(BOOLEAN is) { m_bSunSystem = is; }
 
-	/// Funktion legt fest, ob der Sektor irgendwem gehört.
-	void SetOwned(BOOLEAN is) { m_bOwned = is; }
-
 	/// Funktion legt fest, wem der Sektor gehört.
 	void SetOwnerOfSector(const CString& sOwner) {m_sOwnerOfSector = sOwner;}
 
@@ -431,7 +425,6 @@ protected:
 	void CalculateOwner();
 public:
 
-
 //////////////////////////////////////////////////////////////////////
 // other functions
 //////////////////////////////////////////////////////////////////////
@@ -463,7 +456,6 @@ private:
 	CString m_strSectorName;
 
 	bool m_bSunSystem;// Ist ein Sonnensystem in diesem Sektor?
-	bool m_bOwned;// Gehört der Sektor einer irgendeiner Rasse?
 
 	/// Variable speichert den Status über diesen Sektor, wobei 0 -> nichts, 1 -> gescannt,
 	/// 2 -> Name bekannt, 3 -> alles inkl. Planeten bekannt, bedeutet
