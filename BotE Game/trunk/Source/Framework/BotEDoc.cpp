@@ -3561,7 +3561,7 @@ void CBotEDoc::CalcTrade()
 
 /////BEGIN: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
 
-bool CBotEDoc::BuildStation(CShips& ship, CSector& sector, SHIP_ORDER::Typ order, CSystem& system) {
+bool CBotEDoc::BuildStation(CShips& ship, SHIP_ORDER::Typ order, CSystem& system) {
 	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(ship.GetOwnerOfShip()));
 	AssertBotE(pMajor);
 	const CString& owner = ship.GetOwnerOfShip();
@@ -3571,12 +3571,12 @@ bool CBotEDoc::BuildStation(CShips& ship, CSector& sector, SHIP_ORDER::Typ order
 	const short id = pMajor->BestBuildableVariant(type, m_ShipInfoArray);
 	AssertBotE(id != -1);
 	CShips::StationWorkResult result;
-	if (sector.IsStationBuildable(order, pMajor->GetRaceID())) {
-		sector.SetIsStationBuilding(order, owner);
-		if (sector.GetStartStationPoints(owner) == 0)
-			sector.SetStartStationPoints(m_ShipInfoArray.GetAt((id-10000)).
+	if (system.IsStationBuildable(order, pMajor->GetRaceID())) {
+		system.SetIsStationBuilding(order, owner);
+		if (system.GetStartStationPoints(owner) == 0)
+			system.SetStartStationPoints(m_ShipInfoArray.GetAt((id-10000)).
 					GetBaseIndustry(),owner);
-		result = ship.BuildStation(order, sector, *pMajor, id);
+		result = ship.BuildStation(order, system, *pMajor, id);
 	}
 	else
 		ship.UnsetCurrentOrder();
@@ -3587,7 +3587,7 @@ bool CBotEDoc::BuildStation(CShips& ship, CSector& sector, SHIP_ORDER::Typ order
 		// Wenn wir jetzt die Station gebaut haben, dann müssen wir die alten Station aus der
 		// Schiffsliste nehmen
 		for(CShipMap::iterator k = m_ShipMap.begin(); k != m_ShipMap.end(); ++k)
-			if (k->second->IsStation() && k->second->GetKO() == sector.GetKO())
+			if (k->second->IsStation() && k->second->GetKO() == system.GetKO())
 			{
 				AssertBotE(k->second->Key() != ship.Key());
 				k->second->Scrap(*pMajor, system, false);
@@ -3783,7 +3783,7 @@ void CBotEDoc::CalcShipOrders()
 		}
 		// hier wird ein Aussenposten/Sternbasis gebaut/geupgradet
 		else if (y->second->IsDoingStationWork()) {
-			if(BuildStation(*y->second, *pSector, current_order, *pSystem)) {
+			if(BuildStation(*y->second, current_order, *pSystem)) {
 				RemoveShip(y);
 				increment = false;
 				continue;
