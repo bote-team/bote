@@ -449,7 +449,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 	CalcLogicalPoint(pt);
 
 	// wurde die Maus über den Namen einer Rasse gehalten
-	if (!pDoc->GetSector(KO.x, KO.y).Owner().IsEmpty())
+	if (!pDoc->GetSector(KO.x, KO.y).Free())
 	{
 		if (CRect(735,190,885,220).PtInRect(pt))
 		{

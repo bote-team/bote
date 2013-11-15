@@ -96,7 +96,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 			// schon einer anderen Rasse gehört
 			if (i->second->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 			{
-				if (!m_pDoc->GetSector(ptKO.x, ptKO.y).Owner().IsEmpty() && m_pDoc->GetSector(ptKO.x, ptKO.y).Owner() != sOwner)
+				if (!m_pDoc->GetSector(ptKO.x, ptKO.y).Free() && m_pDoc->GetSector(ptKO.x, ptKO.y).Owner() != sOwner)
 				{
 					// Terraforming abbrechen
 					i->second->UnsetCurrentOrder();
@@ -106,7 +106,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 
 			CPoint ptTarget = i->second->GetTargetKO();
 			// nur wenn der Sektor noch niemandem gehört bzw. uns selbst ist, sollen Planeten terraformt werden
-			if (ptTarget != CPoint(-1,-1) && !m_pDoc->GetSector(ptTarget.x, ptTarget.y).Owner().IsEmpty() && m_pDoc->GetSector(ptTarget.x, ptTarget.y).Owner() != sOwner)
+			if (ptTarget != CPoint(-1,-1) && !m_pDoc->GetSector(ptTarget.x, ptTarget.y).Free() && m_pDoc->GetSector(ptTarget.x, ptTarget.y).Owner() != sOwner)
 			{
 				// nicht weiter fliegen und Kurs löschen
 				i->second->SetTargetKO(CPoint(-1, -1));
@@ -268,7 +268,7 @@ bool CShipAI::DoTerraform(CShips* pShip)
 
 	CSector* pSector = &m_pDoc->GetSector(pShip->GetKO().x, pShip->GetKO().y);
 	// nur wenn der Sektor noch niemandem gehört bzw. uns selbst ist, sollen Planeten terraformt werden
-	if (!pSector->Owner().IsEmpty() && pSector->Owner() != pShip->GetOwnerOfShip())
+	if (!pSector->Free() && pSector->Owner() != pShip->GetOwnerOfShip())
 		return false;
 
 	int nMinTerraPoints = INT_MAX;
@@ -328,7 +328,7 @@ bool CShipAI::DoColonize(CShips* pShip)
 
 	CSector* pSector = &m_pDoc->GetSector(pShip->GetKO().x, pShip->GetKO().y);
 	// Gehört der Sektor aktuell auch keiner Minorrace (also niemanden oder uns selbst)
-	if (!pSector->Owner().IsEmpty() && pSector->Owner() != pShip->GetOwnerOfShip())
+	if (!pSector->Free() && pSector->Owner() != pShip->GetOwnerOfShip())
 		return false;
 
 	// Kolonisierungsbefehl geben
@@ -606,7 +606,7 @@ bool CShipAI::DoStationBuild(CShips* pShip)
 		return false;
 
 	// Nur wenn der Sektor uns bzw. niemanden gehört
-	if (m_pDoc->GetSector(ptKO.x, ptKO.y).Owner().IsEmpty() || m_pDoc->GetSector(ptKO.x, ptKO.y).Owner() == sRace)
+	if (m_pDoc->GetSector(ptKO.x, ptKO.y).Free() || m_pDoc->GetSector(ptKO.x, ptKO.y).Owner() == sRace)
 	{
 		pShip->SetTargetKO(CPoint(-1, -1));
 		pShip->SetCurrentOrder(SHIP_ORDER::BUILD_OUTPOST);

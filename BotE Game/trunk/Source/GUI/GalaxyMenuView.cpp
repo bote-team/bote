@@ -1685,7 +1685,7 @@ CString CGalaxyMenuView::CreateTooltip(void)
 		sTip = CHTMLStringBuilder::GetHTMLCenter(sTip);
 
 		// wenn der Sektor irgendwem gehört, dann Verteidigungsgebäude anzeigen
-		if (pSector->GetSunSystem() && !pSector->Owner().IsEmpty() &&
+		if (pSector->GetSunSystem() && !pSector->Free() &&
 			(pSector->GetScanPower(pMajor->GetRaceID()) > 50 || pSector->Owner() == pMajor->GetRaceID()))
 		{
 			map<CString, int> mOnlineDefenceBuildings;

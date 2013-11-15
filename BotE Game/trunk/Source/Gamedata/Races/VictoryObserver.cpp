@@ -276,7 +276,7 @@ int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 		nValue = 0;
 		for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				if (pDoc->GetSector(x,y).GetCurrentHabitants() > 0.0 && !pDoc->GetSector(x,y).Owner().IsEmpty())
+				if (pDoc->GetSector(x,y).GetCurrentHabitants() > 0.0 && !pDoc->GetSector(x,y).Free())
 					nValue++;
 		MYTRACE("general")(MT::LEVEL_INFO, "VICTORYTYPE_CONQUEST - needed value: %i", nValue/2);
 		return max(nValue >> 1, 10);

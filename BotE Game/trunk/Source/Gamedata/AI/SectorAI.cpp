@@ -162,7 +162,7 @@ void CSectorAI::CalculateTerraformSectors(int x, int y)
 		map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			if (it->second->GetStarmap()->GetRange(CPoint(x,y)) != 3)
-				if (m_pDoc->GetSector(x, y).Owner().IsEmpty() || m_pDoc->GetSector(x, y).Owner() == it->first)
+				if (m_pDoc->GetSector(x, y).Free() || m_pDoc->GetSector(x, y).Owner() == it->first)
 				{
 					SectorToTerraform stt(pop,CPoint(x,y));
 					m_vSectorsToTerraform[it->first].push_back(stt);

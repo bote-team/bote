@@ -119,7 +119,7 @@ bool CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBot
 			return true;
 	}
 	// gehört der Zielsektor einer Minorrace
-	else if (!pDestSector->Owner().IsEmpty() && pDestSector->GetMinorRace() == TRUE)
+	else if (!pDestSector->Free() && pDestSector->GetMinorRace() == TRUE)
 	{
 		CMinor* pMinor = dynamic_cast<CMinor*>(pDoc->GetRaceCtrl()->GetRace(pDestSector->Owner()));
 		if (pMinor)

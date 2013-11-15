@@ -1499,7 +1499,7 @@ void CBotEDoc::ApplyShipsAtStartup()
 			if (!GetSector(p.x, p.y).GetSunSystem())
 				continue;
 
-			if (!GetSector(p.x, p.y).Owner().IsEmpty())
+			if (!GetSector(p.x, p.y).Free())
 				continue;
 
 			if (GetSector(p.x, p.y).GetMinorRace())
