@@ -142,7 +142,7 @@ void CMapTile::Serialize(CArchive &ar)
 		ar << m_sOwner;
 
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen gespeichert werden
-		if (GetSunSystem())
+		if (m_bSunSystem)
 			ar << m_strSectorName;
 
 		ar << m_pAnomaly;
@@ -158,7 +158,7 @@ void CMapTile::Serialize(CArchive &ar)
 		ar >> m_Starbase;
 		ar >> m_sOwner;
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen geladen werden
-		if (GetSunSystem())
+		if (m_bSunSystem)
 			ar >> m_strSectorName;
 		else
 			m_strSectorName = "";
@@ -181,7 +181,7 @@ CString CMapTile::GetName(BOOLEAN longName) const
 		return m_strSectorName;
 	else
 	{
-		if (GetSunSystem())
+		if (m_bSunSystem)
 			return m_strSectorName;
 		else
 		{
