@@ -3001,7 +3001,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	// Wenn wir uns in der Systemansicht befinden
 	int temp = m_bySubMenu;
-	if (ButtonReactOnLeftClick(point, &m_BuildMenueMainButtons, temp, FALSE))
+	if (ButtonReactOnLeftClick(point, &m_BuildMenueMainButtons, temp, FALSE, FALSE, 5))
 	{
 		if(temp == 5)
 		{

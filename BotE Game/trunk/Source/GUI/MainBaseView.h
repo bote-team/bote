@@ -74,7 +74,7 @@ protected:
 	/// @param invalidate gibt an ob die Funktion automatisch die View neuzeichnen soll
 	/// @param onlyActivate gibt an ob der Button beim Klick nur aktiviert, nicht deaktiviert wird
 	/// @return wurde ein Button angeklickt gibt die Funktion <code>TRUE</code> zurück, ansonsten <code>FALSE</code>
-	BOOLEAN ButtonReactOnLeftClick(const CPoint &point, CArray<CMyButton*>* buttonArray, int &counter, BOOLEAN invalidate = TRUE, BOOLEAN onlyActivate = FALSE);
+	BOOLEAN ButtonReactOnLeftClick(const CPoint &point, CArray<CMyButton*>* buttonArray, int &counter, BOOLEAN invalidate = TRUE, BOOLEAN onlyActivate = FALSE, int ignore = -1);
 
 	/// Funktion rechnet einen übergebenen Punkt in logische Koordinaten um.
 	/// @param point Referenz auf umzurechnenden Punkt

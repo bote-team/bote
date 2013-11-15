@@ -138,7 +138,7 @@ void CMainBaseView::ButtonReactOnMouseOver(const CPoint &point, CArray<CMyButton
 	}
 }
 
-BOOLEAN CMainBaseView::ButtonReactOnLeftClick(const CPoint &point, CArray<CMyButton*>* buttonArray, int &counter, BOOLEAN invalidate, BOOLEAN onlyActivate)
+BOOLEAN CMainBaseView::ButtonReactOnLeftClick(const CPoint &point, CArray<CMyButton*>* buttonArray, int &counter, BOOLEAN invalidate, BOOLEAN onlyActivate, int ignore)
 {
 	for (int i = 0; i < buttonArray->GetSize(); i++)
 		if (buttonArray->GetAt(i)->ClickedOnButton(point))
@@ -147,7 +147,7 @@ BOOLEAN CMainBaseView::ButtonReactOnLeftClick(const CPoint &point, CArray<CMyBut
 			if (buttonArray->GetAt(i)->GetState() == BUTTON_STATE::DEACTIVATED)
 				return FALSE;
 			counter = i;
-			if(counter == 5)
+			if(counter == ignore)
 				return TRUE;
 			if (!onlyActivate)
 			{
