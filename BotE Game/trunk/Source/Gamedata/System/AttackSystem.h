@@ -57,7 +57,7 @@ public:
 	 * durchgeführt. Der Rückgabewert ist <code>TRUE</code>, wenn der Angriff erfolgreich war, bei Misserfolg
 	 * ist der Rückgabewert <code>FALSE</code>.
 	 */
-	BOOLEAN Calculate();
+	BOOLEAN Calculate(CString& new_owner);
 
 	/// Diese Funktion gibt zurück, ob der Verteidiger ungleich dem/den Angreifer/n ist.
 	/// @param defender Verteidiger des Systems

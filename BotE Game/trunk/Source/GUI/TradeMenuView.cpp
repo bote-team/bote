@@ -80,7 +80,7 @@ void CTradeMenuView::OnDraw(CDC* dc)
 
 	// ***************************** DIE HANDELSANSICHT ZEICHNEN **********************************
 	// System einstellen, in welchem wir handeln möchten
-	if (pDoc->CurrentSystem().TileOwner() != pMajor->GetRaceID())
+	if (pDoc->CurrentSystem().Owner() != pMajor->GetRaceID())
 	{
 		if (pMajor->GetEmpire()->GetSystemList()->GetSize() > 0)
 			pDoc->SetKO(pMajor->GetEmpire()->GetSystemList()->GetAt(0).ko.x, pMajor->GetEmpire()->GetSystemList()->GetAt(0).ko.y);
@@ -406,7 +406,7 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 			// den doppelten Preis bezahlen
 			for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-					if (pDoc->GetSystem(x, y).Majorized() && (pDoc->GetSystem(x, y).TileOwner() == pMajor->GetRaceID() || pMajor->IsRaceContacted(pDoc->GetSystem(x, y).TileOwner()) == TRUE))
+					if (pDoc->GetSystem(x, y).Majorized() && (pDoc->GetSystem(x, y).Owner() == pMajor->GetRaceID() || pMajor->IsRaceContacted(pDoc->GetSystem(x, y).Owner()) == TRUE))
 						m_dMonopolCosts[i] += pDoc->GetSystem(x, y).GetHabitants();
 			// Wenn wir das Monopol schon besitzen oder es in der Runde schon gekauft haben
 			if (CTrade::GetMonopolOwner(i) == pMajor->GetRaceID() || pMajor->GetTrade()->GetMonopolBuying()[i] != 0.0f)

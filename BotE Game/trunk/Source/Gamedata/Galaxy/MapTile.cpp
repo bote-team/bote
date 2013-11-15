@@ -220,7 +220,7 @@ short CMapTile::GetScanPower(const CString& sRace, bool bWith_ships) const
 //////////////////////////////////////////////////////////////////////
 
 static bool StationBuildContinuable(const CString& race, const CMapTile& sector) {
-	const CString& owner = sector.TileOwner();
+	const CString& owner = sector.Owner();
 	return owner.IsEmpty() || owner == race || sector.GetIsStationBuilding(race);
 }
 
@@ -342,7 +342,7 @@ void CMapTile::PutScannedSquare(unsigned range, const int power,
 void CMapTile::DrawSectorsName(CDC *pDC, CBotEDoc* pDoc, CMajor* pPlayer)
 {
 	// befindet sich kein Sonnensystem oder keine Anomalie im Sektor
-	if (!GetSunSystem() && !GetAnomaly())
+	if (!m_bSunSystem && !m_pAnomaly)
 		return;
 
 	AssertBotE(pDC);
@@ -354,7 +354,7 @@ void CMapTile::DrawSectorsName(CDC *pDC, CBotEDoc* pDoc, CMajor* pPlayer)
 	{
 		COLORREF clrTextColor = CFontLoader::GetFontColor(pPlayer, 0);
 		pDC->SetTextColor(clrTextColor);
-		CMajor* pOwner = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pDoc->GetSystem(m_KO.x, m_KO.y).TileOwner()));
+		CMajor* pOwner = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sOwner));
 		if (pOwner)
 		{
 			if (pPlayer->IsRaceContacted(pOwner->GetRaceID()) == true || pPlayer->GetRaceID() == pOwner->GetRaceID())

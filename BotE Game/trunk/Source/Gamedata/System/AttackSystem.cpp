@@ -67,7 +67,7 @@ void CAttackSystem::Init(CRace* pDefender, CSystem* system, CShipMap* ships, CSe
 /// Diese Funktion führt den Angriff durch. Außerdem werden alle Berechnungen der Auswirkungen des Angriffs
 /// durchgeführt. Der Rückgabewert ist <code>TRUE</code>, wenn der Angriff erfolgreich war, bei Misserfolg
 /// ist der Rückgabewert <code>FALSE</code>.
-BOOLEAN CAttackSystem::Calculate()
+BOOLEAN CAttackSystem::Calculate(CString& new_owner)
 {
 	m_fKilledPop = (float)m_pSector->GetCurrentHabitants();
 	USHORT killedTroopsInSystem = m_pSystem->GetTroops()->GetSize();
@@ -125,6 +125,8 @@ BOOLEAN CAttackSystem::Calculate()
 		// jetzt die Truppen dem System hinzufügen
 		for (int i = 0; i < m_pTroops.GetSize(); i++)
 			m_pSystem->AddTroop(m_pTroops.GetAt(i));
+
+		new_owner = m_pTroops.GetAt(0)->GetOwner();
 
 		// Alle Truppen von den Transportern löschen, da diese jetzt im System sind
 		for (int i = 0; i < m_pShips.GetSize(); i++)

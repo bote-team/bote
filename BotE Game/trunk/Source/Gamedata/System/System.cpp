@@ -2780,7 +2780,7 @@ public:
 		const CShipInfo* pShipInfo, const CTroopInfo* pTroopInfo)
 	{
 		const CMajor* pMajor = dynamic_cast<CMajor*>(
-			resources::pDoc->GetRaceCtrl()->GetRace(system.TileOwner()));
+			resources::pDoc->GetRaceCtrl()->GetRace(system.Owner()));
 		system.GetAssemblyList()->CalculateNeededRessources(
 			pBuildingInfo,
 			pShipInfo, pTroopInfo, system.GetAllBuildings(), index,
@@ -3257,33 +3257,13 @@ void CSystem::CalculateOwner()
 	// Wenn in diesem Sektor das System jemandem gehört,
 	// oder hier eine Schiffswerft durch Außenposten oder Sternbasis
 	// steht, dann ändert sich nichts am Besitzer
-	if (Majorized() || m_OwningStatus == OWNING_STATUS_REBELLED)
-		return;
-	// Sektor gehört einer Minorrace
-	else if (m_bMinor)
+	if(m_OwningStatus != OWNING_STATUS_EMPTY)
 	{
 		AssertBotE(!m_sOwner.IsEmpty());
 		return;
 	}
 
 	CMapTile::CalculateOwner();
-}
-
-bool CSystem::GetOwned() const
-{
-	if(Majorized())
-		return true;
-	if(m_bMinor)
-		return false;
-	return !m_sOwner.IsEmpty();
-}
-
-/// Diese Funktion gibt zurück, wer im Besitz dieses Sektors ist.
-CString CSystem::TileOwner(void) const
-{
-	if(Majorized() || m_bMinor)
-		return CMapTile::TileOwner();
-	return "";
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -3316,6 +3296,9 @@ bool CSystem::CheckSanity() const
 {
 	const CRaceController& RaceCtrl = *resources::pDoc->GetRaceCtrl();
 	AssertBotE(!HasOutpost() || !HasStarbase());
+
+	if(m_bMinor)
+		AssertBotE(GetCurrentHabitants() > 0);
 
 	switch(m_OwningStatus)
 	{

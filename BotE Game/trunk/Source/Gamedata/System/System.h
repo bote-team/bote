@@ -38,7 +38,10 @@ class CSystem : public CSector
 public:
 	enum OWNING_STATUS
 	{
+		//owned or unowned tile without planets
+		//or owned or unowned tile with planets but unpopulated
 		OWNING_STATUS_EMPTY,
+
 		OWNING_STATUS_INDEPENDENT_MINOR,
 		OWNING_STATUS_REBELLED,
 		OWNING_STATUS_TAKEN,
@@ -84,6 +87,7 @@ public:
 	/// Diese Funktion gibt zurück, ob der Sektor militärisch erobert wurde.
 	bool Taken(void) const {return m_OwningStatus == OWNING_STATUS_TAKEN;}
 	bool Rebelled() const { return m_OwningStatus == OWNING_STATUS_REBELLED; }
+	bool IndependentMinor() const { return m_OwningStatus == OWNING_STATUS_INDEPENDENT_MINOR; }
 
 	// Funktion gibt die aktuelle Bevölkerung des Systems zurück.
 	double GetHabitants() const {return m_dHabitants;}
@@ -446,8 +450,6 @@ public:
 	void ChangeOwner(const CString& new_one, OWNING_STATUS status);
 
 	void CalculateOwner();
-	bool GetOwned() const;
-	CString TileOwner(void) const;
 
 //////////////////////////////////////////////////////////////////////
 // other functions

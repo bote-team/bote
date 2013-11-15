@@ -30,7 +30,7 @@ CSystemAI::~CSystemAI(void)
 /// des Systems übergeben.
 void CSystemAI::ExecuteSystemAI(CPoint ko)
 {
-	CString sRace = m_pDoc->GetSystem(ko.x, ko.y).TileOwner();
+	const CString& sRace = m_pDoc->GetSystem(ko.x, ko.y).Owner();
 	if (sRace.IsEmpty())
 	{
 		CString s;
@@ -349,8 +349,7 @@ bool CSystemAI::CheckMoral(const CBuildingInfo& bi, bool build) const {
 /// Wird <code>0</code> zurückgegeben, so wurde kein Gebäude gefunden, welches in das Anforderungsprofil passt.
 int CSystemAI::ChooseBuilding()
 {
-	CPoint ko = m_KO;
-	CString race = m_pDoc->GetSystem(ko.x, ko.y).TileOwner();
+	const CPoint& ko = m_KO;
 	BOOLEAN chooseCombatship = FALSE;
 	BOOLEAN chooseColoship   = FALSE;
 	BOOLEAN chooseTransport	 = FALSE;
@@ -499,8 +498,8 @@ int CSystemAI::ChooseBuilding()
 int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColoship, BOOLEAN chooseTransport)
 {
 	int min = prio;
-	CPoint ko = m_KO;
-	CString sRace = m_pDoc->GetSystem(ko.x, ko.y).TileOwner();
+	const CPoint& ko = m_KO;
+	const CString& sRace = m_pDoc->GetSystem(ko.x, ko.y).Owner();
 	if (sRace.IsEmpty())
 		return 0;
 
@@ -917,8 +916,8 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 {
 	chooseCombatship = chooseColoship = chooseTransport = FALSE;
 	int min = 0;
-	CPoint ko = m_KO;
-	CString sRace = m_pDoc->GetSystem(ko.x, ko.y).TileOwner();
+	const CPoint& ko = m_KO;
+	const CString& sRace = m_pDoc->GetSystem(ko.x, ko.y).Owner();
 	if (sRace.IsEmpty())
 		return min;
 
@@ -1113,8 +1112,8 @@ void CSystemAI::CalcProd()
 /// Beziehung zu Minorraces verbessert.
 void CSystemAI::ApplyTradeRoutes()
 {
-	CPoint ko = m_KO;
-	CString race = m_pDoc->GetSystem(ko.x, ko.y).TileOwner();
+	const CPoint& ko = m_KO;
+	const CString& race = m_pDoc->GetSystem(ko.x, ko.y).Owner();
 	if (m_pDoc->GetSystem(ko.x, ko.y).CanAddTradeRoute(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()) == TRUE)
 	{
 		// primär zu Minorraces
@@ -1136,8 +1135,8 @@ void CSystemAI::ApplyTradeRoutes()
 		// sekundär zu den anderen Majorraces
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				if (m_pDoc->GetSystem(x, y).Majorized() && m_pDoc->GetSystem(x, y).TileOwner() != race)
-					if (m_pMajor->GetAgreement(m_pDoc->GetSystem(x, y).TileOwner()) >= DIPLOMATIC_AGREEMENT::TRADE)
+				if (m_pDoc->GetSystem(x, y).Majorized() && m_pDoc->GetSystem(x, y).Owner() != race)
+					if (m_pMajor->GetAgreement(m_pDoc->GetSystem(x, y).Owner()) >= DIPLOMATIC_AGREEMENT::TRADE)
 						m_pDoc->GetSystem(ko.x, ko.y).AddTradeRoute(CPoint(x,y), m_pDoc->m_Systems, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 	}
 }
@@ -1357,7 +1356,7 @@ int CSystemAI::GetIntelPrio(double dMaxHab) const
 	if (!CheckBuilding(WORKER::SECURITY_WORKER))
 		return 0;
 
-	CString sRace = m_pDoc->GetSystem(m_KO.x, m_KO.y).TileOwner();
+	const CString& sRace = m_pDoc->GetSystem(m_KO.x, m_KO.y).Owner();
 	int nPrio = m_pDoc->m_pAIPrios->GetIntelAI()->GetIntelPrio(sRace);
 
 	return min(nPrio, 255);

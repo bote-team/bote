@@ -124,7 +124,7 @@ void CDiplomacyMenuView::OnNewRound()
 	CString race = pPlayer->GetRaceID();
 
 	CPoint ko = pDoc->GetRaceKO(race);
-	if (ko != CPoint(-1,-1) && pDoc->GetSystem(ko.x, ko.y).TileOwner() == race)
+	if (ko != CPoint(-1,-1) && pDoc->GetSystem(ko.x, ko.y).Owner() == race)
 		m_ptResourceFromSystem = pDoc->GetRaceKO(race);
 	// Systeme nochmal durchgehen um ein System zu finden, aus dem wir Rohstoffe verschenken könnten
 	else if (pPlayer->GetEmpire()->GetSystemList()->GetSize() > 0)
@@ -991,11 +991,11 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 
 								s.Format("%s",pDoc->GetSector(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).GetName());
 								// Wenn hier noch kein System eingestellt ist, dann müssen wir uns eins suchen
-								if (s.IsEmpty() || pDoc->GetSystem(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).TileOwner() != pPlayer->GetRaceID())
+								if (s.IsEmpty() || pDoc->GetSystem(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).Owner() != pPlayer->GetRaceID())
 								{
 									for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 										for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-											if (pDoc->GetSystem(x,y).TileOwner() == pPlayer->GetRaceID() && pDoc->GetSector(x,y).GetSunSystem() == TRUE)
+											if (pDoc->GetSystem(x,y).Owner() == pPlayer->GetRaceID() && pDoc->GetSector(x,y).GetSunSystem() == TRUE)
 											{
 												m_ptResourceFromSystem = CPoint(x,y);
 												m_pIncomingInfo->m_ptKO = m_ptResourceFromSystem;
@@ -1006,7 +1006,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 								// Überprüfen ob wir auf dem gewählten System die Menge der geforderten
 								// Ressource im Lager haben und ob wir auch die geforderten Credits bezahlen können
 								for (int r = RESOURCES::TITAN; r <= RESOURCES::DERITIUM; r++)
-									if (resource[r] > 0 && pDoc->GetSystem(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).GetResourceStore(r) < resource[r] && pDoc->GetSystem(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).TileOwner() == pPlayer->GetRaceID())
+									if (resource[r] > 0 && pDoc->GetSystem(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).GetResourceStore(r) < resource[r] && pDoc->GetSystem(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).Owner() == pPlayer->GetRaceID())
 										m_bShowSendButton = false;
 								fontFormat.SetAlignment(StringAlignmentCenter);
 								g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(500,97+count*25,120,30), &fontFormat, &btnBrush);

@@ -682,7 +682,7 @@ public:
 		for(std::set<CString>::const_iterator it = races.begin(); it != races.end();)
 		{
 			const DIPLOMATIC_AGREEMENT::Typ agreement = race_ctrl.GetRace(*it)
-				->GetAgreement(m_pSystem->TileOwner());
+				->GetAgreement(m_pSystem->Owner());
 			if(agreement != DIPLOMATIC_AGREEMENT::WAR)
 			{
 				it = races.erase(it);
@@ -699,7 +699,7 @@ private:
 	bool CheckShips(const std::set<CString>& enemies) const
 	{
 		const CShipMap& ships = resources::pDoc->m_ShipMap;
-		const int scan_power = m_pSystem->GetScanPower(m_pSystem->TileOwner(), true);
+		const int scan_power = m_pSystem->GetScanPower(m_pSystem->Owner(), true);
 		for(CShipMap::const_iterator it = ships.begin(); it != ships.end(); ++it)
 		{
 			if(it->second->GetKO() != m_pSystem->GetKO() || enemies.find(it->second->GetOwnerOfShip()) == enemies.end())
@@ -756,7 +756,7 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system)
 			should_be_online = !system.Taken();
 
 		if(info.GetShipTraining() > 0)
-			should_be_online = system.GetOwnerOfShip(system.TileOwner());
+			should_be_online = system.GetOwnerOfShip(system.Owner());
 
 		if(info.GetTroopTraining() > 0)
 			should_be_online = !system.GetTroops()->IsEmpty();

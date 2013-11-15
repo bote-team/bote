@@ -79,7 +79,7 @@ void CShipBottomView::OnNewRound()
 static bool ShipCanHaveOrder(const CShips& ships, SHIP_ORDER::Typ order, const CSystem* system = NULL) {
 	switch(order) {
 		case SHIP_ORDER::TRAIN_SHIP:
-			return system->GetSunSystem() && system->TileOwner() == ships.GetOwnerOfShip()
+			return system->GetSunSystem() && system->Owner() == ships.GetOwnerOfShip()
 				&& system->GetProduction()->GetShipTraining() > 0 && ships.CanHaveOrder(order, true);
 		case SHIP_ORDER::REPAIR:
 			return ships.CanHaveOrder(SHIP_ORDER::REPAIR, true)
@@ -418,9 +418,9 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 			// Wenn im System noch Bevölkerung vorhanden ist
 			system.GetCurrentHabitants() > 0.0f &&
 			// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
-			m_dc.pDoc->CurrentSystem().TileOwner() != pShip.GetOwnerOfShip())
+			m_dc.pDoc->CurrentSystem().Owner() != pShip.GetOwnerOfShip())
 		{
-			CRace* pOwnerOfSector = m_dc.pDoc->GetRaceCtrl()->GetRace(system.TileOwner());
+			CRace* pOwnerOfSector = m_dc.pDoc->GetRaceCtrl()->GetRace(system.Owner());
 
 			// Wenn im System eine Rasse lebt und wir mit ihr im Krieg sind
 			if (pOwnerOfSector != NULL && pMajor->GetAgreement(pOwnerOfSector->GetRaceID()) == DIPLOMATIC_AGREEMENT::WAR
@@ -442,7 +442,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 	{
 		// Überprüfen ob man eine Blockade im System überhaupt errichten kann
 		// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
-		CRace* pOwnerOfSystem = m_dc.pDoc->GetRaceCtrl()->GetRace(m_dc.pDoc->CurrentSystem().TileOwner());
+		CRace* pOwnerOfSystem = m_dc.pDoc->GetRaceCtrl()->GetRace(m_dc.pDoc->CurrentSystem().Owner());
 		if (pOwnerOfSystem != NULL && pOwnerOfSystem->GetRaceID() != pShip.GetOwnerOfShip()
 			&& pMajor->GetAgreement(pOwnerOfSystem->GetRaceID()) < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 		{
@@ -571,7 +571,7 @@ short CShipBottomView::DrawSingleTurnOrderMenu() {
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::COLONIZE))
 	{
 		// Wenn das System uns bzw. niemanden gehört können wir nur kolonisieren
-		if (!system.Majorized() || system.TileOwner() == pShip.GetOwnerOfShip())
+		if (!system.Majorized() || system.Owner() == pShip.GetOwnerOfShip())
 			for (int l = 0; l < system.GetNumberOfPlanets(); l++)
 				if (system.GetPlanet(l)->GetTerraformed() == TRUE
 					&& system.GetPlanet(l)->GetCurrentHabitant() == 0.0f)

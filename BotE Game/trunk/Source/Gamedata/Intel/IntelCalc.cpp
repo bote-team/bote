@@ -465,7 +465,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 	CArray<CPoint> sectors;
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_pDoc->GetSystem(x, y).TileOwner() == pEnemyRace->GetRaceID())
+			if (m_pDoc->GetSystem(x, y).Owner() == pEnemyRace->GetRaceID())
 				sectors.Add(CPoint(x,y));
 	if (sectors.GetSize())
 	{
@@ -685,7 +685,7 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 	CArray<CPoint> sectors;
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_pDoc->GetSystem(x, y).TileOwner() == pEnemyRace->GetRaceID())
+			if (m_pDoc->GetSystem(x, y).Owner() == pEnemyRace->GetRaceID())
 				sectors.Add(CPoint(x,y));
 	if (sectors.GetSize())
 	{
@@ -832,7 +832,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 		CArray<CPoint> troopSectors;
 		for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				if (m_pDoc->GetSystem(x, y).TileOwner() == pEnemyRace->GetRaceID())
+				if (m_pDoc->GetSystem(x, y).Owner() == pEnemyRace->GetRaceID())
 					if (m_pDoc->GetSystem(x, y).GetTroops()->GetSize())
 						troopSectors.Add(CPoint(x,y));
 		if (troopSectors.GetSize())
@@ -867,7 +867,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 	CArray<CPoint> sectors;
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_pDoc->GetSystem(x, y).TileOwner() == pEnemyRace->GetRaceID())
+			if (m_pDoc->GetSystem(x, y).Owner() == pEnemyRace->GetRaceID())
 				sectors.Add(CPoint(x,y));
 	if (sectors.GetSize())
 	{

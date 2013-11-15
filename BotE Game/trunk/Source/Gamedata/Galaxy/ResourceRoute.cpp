@@ -69,7 +69,7 @@ void CResourceRoute::Serialize(CArchive &ar)
 /// Funktion überprüft, ob die Ressourcenroute noch Bestand haben darf.
 BOOLEAN CResourceRoute::CheckResourceRoute(const CString& sOwner, CSector* dest)
 {
-	if (sOwner != dest->TileOwner())
+	if (sOwner != dest->Owner())
 		return FALSE;
 
 	// wenn keine Leute in dem System leben, so gibt es auch keine Route.

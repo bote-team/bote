@@ -554,7 +554,7 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 		std::vector<int> systems;
 		for(std::vector<CSystem>::const_iterator it = m_Systems.begin(); it != m_Systems.end(); ++it)
 		{
-			if(it->Majorized() && it->TileOwner() == pPlayer->GetRaceID())
+			if(it->Owner() == pPlayer->GetRaceID() && it->Majorized())
 				systems.push_back(it - m_Systems.begin());
 		}
 		ar << systems.size();
@@ -1325,7 +1325,7 @@ void CBotEDoc::NextRound()
 
 		CPoint ko = pMinor->GetRaceKO();
 
-		if (ko != CPoint(-1,-1) && !GetSystem(ko.x, ko.y).Majorized() && GetSector(ko.x, ko.y).TileOwner() == pMinor->GetRaceID())
+		if (ko != CPoint(-1,-1) && !GetSystem(ko.x, ko.y).Majorized() && GetSector(ko.x, ko.y).Owner() == pMinor->GetRaceID())
 		{
 			// Vielleicht kolonisiert die Minorrace weitere Planeten in ihrem System
 			if (pMinor->PerhapsExtend(this))
@@ -1499,7 +1499,7 @@ void CBotEDoc::ApplyShipsAtStartup()
 			if (!GetSector(p.x, p.y).GetSunSystem())
 				continue;
 
-			if (!GetSector(p.x, p.y).TileOwner().IsEmpty())
+			if (!GetSector(p.x, p.y).Owner().IsEmpty())
 				continue;
 
 			if (GetSector(p.x, p.y).GetMinorRace())
@@ -1642,7 +1642,7 @@ void CBotEDoc::ApplyBuildingsAtStartup()
 			system->SetHabitants(system->GetCurrentHabitants());
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			{
-				if (system->TileOwner() == it->first)
+				if (system->Owner() == it->first)
 				{
 					CMajor* pMajor = it->second;
 					AssertBotE(pMajor);
@@ -1665,7 +1665,7 @@ void CBotEDoc::ApplyBuildingsAtStartup()
 			for (int i = 0; i < system->GetAllBuildings()->GetSize(); i++)
 			{
 				USHORT nID = system->GetAllBuildings()->GetAt(i).GetRunningNumber();
-				CString sRaceID = system->TileOwner();
+				const CString& sRaceID = system->Owner();
 				if (GetBuildingInfo(nID).GetMaxInEmpire() > 0)
 					m_GlobalBuildings.AddGlobalBuilding(sRaceID, nID);
 			}
@@ -2275,7 +2275,7 @@ void CBotEDoc::BuildTroop(BYTE ID, CPoint ko)
 {
 	// Mal Testweise paar Truppen anlegen
 	GetSystem(ko.x, ko.y).AddTroop((CTroop*)&m_TroopInfo.GetAt(ID));
-	CString sRace = GetSector(ko.x, ko.y).TileOwner();
+	CString sRace = GetSector(ko.x, ko.y).Owner();
 	if (sRace == "")
 		return;
 
@@ -2329,7 +2329,7 @@ void CBotEDoc::GenerateStarmap(const CString& sOnlyForRaceID)
 
 			CMajor* pMajor = it->second;
 			// Wenn in dem System eine aktive Werft ist bzw. eine Station/Werft im Sektor ist
-			if ((system->GetProduction()->GetShipYard() == TRUE && system->TileOwner() == pMajor->GetRaceID())
+			if ((system->GetProduction()->GetShipYard() == TRUE && system->Owner() == pMajor->GetRaceID())
 				|| system->GetShipPort(pMajor->GetRaceID()))
 			{
 				pMajor->GetStarmap()->AddBase(Sector(system->GetKO()),
@@ -2338,7 +2338,7 @@ void CBotEDoc::GenerateStarmap(const CString& sOnlyForRaceID)
 
 			if (system->GetSunSystem())
 			{
-				if (system->TileOwner() == it->first || system->TileOwner().IsEmpty())
+				if (system->Owner() == it->first || system->Free())
 				{
 					CMajor* pMajor = it->second;
 					pMajor->GetStarmap()->AddKnownSystem(Sector(system->GetKO()));
@@ -2475,7 +2475,7 @@ void CBotEDoc::CalcSystemAttack()
 
 			CPoint p = y->second->GetKO();
 			// Besitzer des Systems (hier Sector wegen Minors) vor dem Systemangriff
-			CString sDefender = GetSector(p.x, p.y).TileOwner();
+			CString sDefender = GetSector(p.x, p.y).Owner();
 	MYTRACE("general")(MT::LEVEL_INFO, "Attack of System ???, Defender %s\n", sDefender);
 			// Angreifer bzw. neuer Besitzer des Systems nach dem Angriff
 			set<CString> attackers;
@@ -2529,10 +2529,10 @@ void CBotEDoc::CalcSystemAttack()
 							&& pSystemAttack->IsDefenderNotAttacker(sDefender, &attackers))
 							GetSystem(i, j).SetMoral(-rand()%5);
 
+			CString attacker;
 			// Wurde das System mit Truppen erobert, so wechselt es den Besitzer
-			if (pSystemAttack->Calculate())
+			if (pSystemAttack->Calculate(attacker))
 			{
-				CString attacker = GetSystem(p.x, p.y).TileOwner();
 				CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(attacker));
 				AssertBotE(pMajor);
 
@@ -2675,7 +2675,7 @@ void CBotEDoc::CalcSystemAttack()
 						GetSystem(p.x, p.y).SetMoral(rand()%25+10);
 					}
 					// Handelte es sich dabei um das Heimatsystem einer Rasse
-					else if (defender != NULL && defender->IsMajor() && GetSector(p.x, p.y).TileOwner() == defender->GetRaceID() && GetSector(p.x, p.y).GetName() == dynamic_cast<CMajor*>(defender)->GetHomesystemName())
+					else if (defender != NULL && defender->IsMajor() && GetSector(p.x, p.y).Owner() == defender->GetRaceID() && GetSector(p.x, p.y).GetName() == dynamic_cast<CMajor*>(defender)->GetHomesystemName())
 					{
 						CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 						// Eventnachricht an den ehemaligen Heimatsystembesitzer (Heimatsystem verloren)
@@ -3170,10 +3170,10 @@ void CBotEDoc::CalcResearch()
 	// Forschungsboni, die die Systeme machen holen. Wir benötigen diese dann für die CalculateResearch Funktion
 	std::map<CString, CSystemProd::RESEARCHBONI> researchBoni;
 	for(std::vector<CSystem>::const_iterator system = m_Systems.begin(); system != m_Systems.end(); ++system) {
-		const CString& owner = system->TileOwner();
-		if(owner == "") continue;
+		if(!system->Majorized())
+			continue;
 		const CSystemProd* prod = system->GetProduction();
-		researchBoni[owner] += prod->GetResearchBoni();
+		researchBoni[system->Owner()] += prod->GetResearchBoni();
 	}
 
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
@@ -3264,7 +3264,9 @@ void CBotEDoc::UpdateGlobalBuildings(const CSystem& system) {
 	for (int i = 0; i < system.GetAllBuildings()->GetSize(); i++)
 	{
 		USHORT nID = system.GetAllBuildings()->GetAt(i).GetRunningNumber();
-		CString sRaceID = system.TileOwner();
+		if(!system.Majorized())
+			continue;
+		const CString& sRaceID = system.Owner();
 		if (GetBuildingInfo(nID).GetMaxInEmpire() > 0)
 			m_GlobalBuildings.AddGlobalBuilding(sRaceID, nID);
 	}
@@ -3273,7 +3275,9 @@ void CBotEDoc::UpdateGlobalBuildings(const CSystem& system) {
 		if (system.GetAssemblyList()->GetAssemblyListEntry(i) > 0 && system.GetAssemblyList()->GetAssemblyListEntry(i) < 10000)
 		{
 			USHORT nID = abs(system.GetAssemblyList()->GetAssemblyListEntry(i));
-			CString sRaceID = system.TileOwner();
+			if(!system.Majorized())
+				continue;
+			const CString& sRaceID = system.Owner();
 			if (GetBuildingInfo(nID).GetMaxInEmpire() > 0)
 				m_GlobalBuildings.AddGlobalBuilding(sRaceID, nID);
 		}
@@ -3304,10 +3308,8 @@ void CBotEDoc::CalcOldRoundData()
 			continue;
 		}
 
-		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(it->TileOwner()));
+		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(it->Owner()));
 		AssertBotE(pMajor);
-		if (!pMajor)
-			continue;
 
 		// Jetzt das produzierte Credits im System dem jeweiligen Imperium geben, Gebäude abreisen, Moral im System berechnen
 		COldRoundDataCalculator::CreditsDestructionMoral(pMajor, *it, this->BuildingInfo, m_fDifficultyLevel);
@@ -3335,7 +3337,7 @@ void CBotEDoc::CalcOldRoundData()
 		// Wenn es keine Rebellion gab, dann Bau und KI im System berechnen
 		if (!bIsRebellion)
 		{
-			AssertBotE(!it->TileOwner().IsEmpty());
+			AssertBotE(!it->Free());
 			calc.HandlePopulationEffects(*it, pMajor);
 			it->CalculateVariables();
 
@@ -3381,7 +3383,7 @@ void CBotEDoc::CalcNewRoundData()
 #ifdef CONSISTENCY_CHECKS
 		CSanity::GetInstance()->SanityCheckSectorAndSystem(*it);
 #endif
-		const CString& system_owner = it->TileOwner();
+		const CString& system_owner = it->Owner();
 		if (it->Majorized())
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(system_owner));
@@ -3588,7 +3590,7 @@ bool CBotEDoc::BuildStation(CShips& ship, CSector& sector, SHIP_ORDER::Typ order
 			if (k->second->IsStation() && k->second->GetKO() == sector.GetKO())
 			{
 				AssertBotE(k->second->Key() != ship.Key());
-				k->second->Scrap(*pMajor, sector, system, false);
+				k->second->Scrap(*pMajor, system, false);
 				m_ShipMap.EraseAt(k, true);
 				break;
 			}
@@ -3603,10 +3605,10 @@ namespace //helpers for CBotEDoc::CalcShipOrders()
 	{
 		AssertBotE(se.GetSunSystem());
 		const CString& ownerofship = ship.GetOwnerOfShip();
-		const CString& ownerofsector = se.TileOwner();
+		const CString& ownerofsector = se.Owner();
 		// Wenn die Bevölkerung komplett vernichtet wurde
 		// Wenn das System der angreifenden Rasse gehört
-		if (sy.GetHabitants() <= 0.000001 || sy.TileOwner() == ownerofship)
+		if (sy.GetHabitants() <= 0.000001 || sy.Owner() == ownerofship)
 			return false;
 		// Wenn eine Rasse in dem System lebt
 		else if (!ownerofsector.IsEmpty() && ownerofsector != ownerofship)
@@ -3668,7 +3670,7 @@ void CBotEDoc::CalcShipOrders()
 		{
 			const int terraformedPlanets = pSector->CountOfTerraformedPlanets();
 			// Überprüfen das der Sector auch nur mir oder niemandem geh?rt
-			if(!ColonizeStillValid(pSector->TileOwner(), *y->second) || terraformedPlanets <= 0)
+			if(!ColonizeStillValid(pSector->Owner(), *y->second) || terraformedPlanets <= 0)
 			{
 				y->second->UnsetCurrentOrder();
 				continue;
@@ -3790,7 +3792,7 @@ void CBotEDoc::CalcShipOrders()
 		// Wenn wir das Schiff abracken/zerst?ren/demontieren wollen
 		else if (current_order == SHIP_ORDER::DESTROY_SHIP)	// das Schiff wird demontiert
 		{
-			y->second->Scrap(*pMajor, *pSector, *pSystem, true);
+			y->second->Scrap(*pMajor, *pSystem, true);
 			m_ShipMap.EraseAt(y, true);//no memory leak for fleet ships due to Reset() call in CShips::~CShips()
 			increment = false;
 			continue;
@@ -3805,7 +3807,7 @@ void CBotEDoc::CalcShipOrders()
 		else if (current_order == SHIP_ORDER::TRAIN_SHIP)
 		{
 			// Checken ob der Befehl noch Gültigkeit hat
-			if (pSystem->Majorized() && pSystem->TileOwner() == y->second->GetOwnerOfShip())
+			if (pSystem->Majorized() && pSystem->Owner() == y->second->GetOwnerOfShip())
 			{
 				// Wenn ein Schiff mit Veteranenstatus (Level 4) in der Trainingsflotte ist, dann verdoppelt sich der Erfahrungsgewinn
 				// für die niedrigstufigen Schiffe
@@ -3830,12 +3832,12 @@ void CBotEDoc::CalcShipOrders()
 		{
 			BOOLEAN blockadeStillActive = FALSE;
 			// Überprüfen ob der Blockadebefehl noch Gültigkeit hat
-			if (pSystem->TileOwner() != y->second->GetOwnerOfShip())
+			if (pSystem->Owner() != y->second->GetOwnerOfShip())
 				// handelt es sich beim Systembesitzer um eine andere Majorrace
 				if (pSystem->Majorized())
 				{
-					CString systemOwner = pSystem->TileOwner();
-					CString shipOwner   = y->second->GetOwnerOfShip();
+					const CString& systemOwner = pSystem->Owner();
+					const CString& shipOwner   = y->second->GetOwnerOfShip();
 					CRace* pShipOwner	= m_pRaceCtrl->GetRace(shipOwner);
 					// haben wir einen Vertrag kleiner einem Freundschaftsvertrag mit der Majorrace
 					if (pShipOwner->GetAgreement(systemOwner) < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
@@ -3882,11 +3884,11 @@ void CBotEDoc::CalcShipOrders()
 				}
 				if (pSystem->Majorized())
 				{
-					CRace* pSystemOwner = m_pRaceCtrl->GetRace(pSystem->TileOwner());
-					CMajor* pSystemOwnerMajor = NULL;
-					if (pSystemOwner != NULL && pSystemOwner->IsMajor() && (pSystemOwnerMajor = dynamic_cast<CMajor*>(pSystemOwner))->IsHumanPlayer())
+					CMajor* pSystemOwnerMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pSystem->Owner()));
+					AssertBotE(pSystemOwnerMajor);
+					if (pSystemOwnerMajor->IsHumanPlayer())
 					{
-						CEventBlockade* eventScreen = new CEventBlockade(pSystem->TileOwner(), CLoc::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSector->GetName()), CLoc::GetString("BLOCKADEEVENT_TEXT_" + pSystemOwner->GetRaceID(), FALSE, pSector->GetName()));
+						CEventBlockade* eventScreen = new CEventBlockade(pSystem->Owner(), CLoc::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSector->GetName()), CLoc::GetString("BLOCKADEEVENT_TEXT_" + pSystemOwnerMajor->GetRaceID(), FALSE, pSector->GetName()));
 						pSystemOwnerMajor->GetEmpire()->GetEvents()->Add(eventScreen);
 					}
 				}
@@ -4556,7 +4558,7 @@ void CBotEDoc::CalcContactNewRaces()
 			continue;
 		const CPoint& p = y->second->GetKO();
 		const CSector& sector = GetSector(p.x, p.y);
-		const CString& sOwnerOfSector = sector.TileOwner();
+		const CString& sOwnerOfSector = sector.Owner();
 		CalcContactShipToMajorShip(*pRace, sector, p);
 		if(sOwnerOfSector.IsEmpty() || sOwnerOfSector == sRace)
 			continue;
@@ -4779,7 +4781,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 			// Sektoren und Systeme neutral schalten
 			for(std::vector<CSystem>::iterator sy = m_Systems.begin(); sy != m_Systems.end(); ++sy) {
 				const CString& ID = pMajor->GetRaceID();
-				if (sy->TileOwner() == ID)
+				if (sy->Owner() == ID)
 					sy->ChangeOwner("", CSystem::OWNING_STATUS_EMPTY);
 				// Den ersten Besitzer als Historie merken. Diese Variable nicht zurücksetzen!
 				// Sonst würde dieses System nicht mehr serialisiert werden, da es ja niemandem mehr gehört...
@@ -4842,38 +4844,38 @@ void CBotEDoc::CalcEndDataForNextRound()
 		if (it->second->GetEmpire()->CountSystems() == 0)
 			continue;
 
-		CString sID = it->first;
-		for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
+		const CString& sID = it->first;
+		for(std::vector<CSystem>::const_iterator it = m_Systems.begin(); it != m_Systems.end(); ++it)
 		{
-			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+			const CPoint& p = it->GetKO();
+			const int x = p.x;
+			const int y = p.y;
+			// Befindet sich ein Außenposten oder ein System in einem der umliegenden Sektoren, so bekommt der
+			// Sektor einen Besitzerpunkt. Bei einer Sternbasis sind es sogar zwei Besitzerpunkte.
+			int ownerPoints = 0;
+			if (it->Majorized() && it->Owner() == sID)
+				ownerPoints += 1;
+			if (it->GetOutpost(sID))
+				ownerPoints += 1;
+			if (it->GetStarbase(sID))
+				ownerPoints += 2;
+			if (ownerPoints > 0)
 			{
-				// Befindet sich ein Außenposten oder ein System in einem der umliegenden Sektoren, so bekommt der
-				// Sektor einen Besitzerpunkt. Bei einer Sternbasis sind es sogar zwei Besitzerpunkte.
-				BYTE ownerPoints = 0;
-				if (GetSystem(x, y).TileOwner() == sID)
-					ownerPoints += 1;
-				if (GetSector(x, y).GetOutpost(sID) == TRUE)
-					ownerPoints += 1;
-				if (GetSector(x, y).GetStarbase(sID) == TRUE)
-					ownerPoints += 2;
-				if (ownerPoints > 0)
-				{
-					for (int j = -1; j <= 1; j++)
-						for (int i = -1; i <= 1; i++)
-							if ((y+j < STARMAP_SECTORS_VCOUNT && y+j > -1) && (x+i < STARMAP_SECTORS_HCOUNT && x+i > -1))
-								GetSector(x + i, y + j).AddOwnerPoints(ownerPoints, sID);
+				for (int j = -1; j <= 1; j++)
+					for (int i = -1; i <= 1; i++)
+						if ((y+j < STARMAP_SECTORS_VCOUNT && y+j > -1) && (x+i < STARMAP_SECTORS_HCOUNT && x+i > -1))
+							GetSector(x + i, y + j).AddOwnerPoints(ownerPoints, sID);
 
-					// in vertikaler und horizontaler Ausrichtung gibt es sogar 2 Felder vom Sector entfernt noch
-					// Besitzerpunkte
-					if (x-2 >= 0)
-						GetSector(x - 2, y).AddOwnerPoints(ownerPoints, sID);
-					if (x+2 < STARMAP_SECTORS_HCOUNT)
-						GetSector(x + 2, y).AddOwnerPoints(ownerPoints, sID);
-					if (y-2 >= 0)
-						GetSector(x, y - 2).AddOwnerPoints(ownerPoints, sID);
-					if (y+2 < STARMAP_SECTORS_VCOUNT)
-						GetSector(x, y + 2).AddOwnerPoints(ownerPoints, sID);
-				}
+				// in vertikaler und horizontaler Ausrichtung gibt es sogar 2 Felder vom Sector entfernt noch
+				// Besitzerpunkte
+				if (x-2 >= 0)
+					GetSector(x - 2, y).AddOwnerPoints(ownerPoints, sID);
+				if (x+2 < STARMAP_SECTORS_HCOUNT)
+					GetSector(x + 2, y).AddOwnerPoints(ownerPoints, sID);
+				if (y-2 >= 0)
+					GetSector(x, y - 2).AddOwnerPoints(ownerPoints, sID);
+				if (y+2 < STARMAP_SECTORS_VCOUNT)
+					GetSector(x, y + 2).AddOwnerPoints(ownerPoints, sID);
 			}
 		}
 	}
@@ -4884,10 +4886,9 @@ void CBotEDoc::CalcEndDataForNextRound()
 		it->CalculateOwner();
 		if (it->Majorized())
 		{
-			AssertBotE(it->GetSunSystem() && !it->TileOwner().IsEmpty());
-			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(it->TileOwner()));
-			if (!pMajor || !pMajor->IsMajor())
-				continue;
+			AssertBotE(it->GetSunSystem() && !it->Free());
+			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(it->Owner()));
+			AssertBotE(pMajor && pMajor->IsMajor());
 
 			// baubare Gebäude, Schiffe und Truppen berechnen
 			it->CalculateBuildableBuildings(&m_GlobalBuildings);
@@ -5179,10 +5180,11 @@ void CBotEDoc::CalcAlienShipEffects()
 			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 				continue;
 
-			CString sSystemOwner = GetSystem(co.x, co.y).TileOwner();
-			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner));
-			if (!pOwner)
+			if(!GetSystem(co.x, co.y).Majorized())
 				continue;
+			const CString& sSystemOwner = GetSystem(co.x, co.y).Owner();
+			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner));
+			AssertBotE(pOwner);
 
 			// Energie im System auf 0 setzen
 			GetSystem(co.x, co.y).SetDisabledProduction(WORKER::ENERGY_WORKER);
@@ -5210,7 +5212,7 @@ void CBotEDoc::CalcAlienShipEffects()
 			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 				continue;
 
-			CString sSystemOwner = GetSystem(co.x, co.y).TileOwner();
+			const CString& sSystemOwner = GetSystem(co.x, co.y).Owner();
 			if (CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner)))
 			{
 				// Nahrung im System auf 0 setzen
@@ -5287,7 +5289,7 @@ void CBotEDoc::CalcAlienShipEffects()
 			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 				continue;
 
-			CString sSystemOwner = GetSystem(co.x, co.y).TileOwner();
+			const CString& sSystemOwner = GetSystem(co.x, co.y).Owner();
 			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner));
 			if (!pOwner)
 				continue;
@@ -5320,7 +5322,7 @@ void CBotEDoc::CalcAlienShipEffects()
 
 			// Creditproduktion auf 0 stellen
 			CSystem* pSystem = &GetSystem(co.x, co.y);
-			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pSystem->TileOwner()));
+			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pSystem->Owner()));
 			if (!pOwner)
 				continue;
 
@@ -5375,7 +5377,7 @@ void CBotEDoc::CalcAlienShipEffects()
 			// wahrscheinlicher ist es, dass Krieg erklärt wird (nur den Midways helfen indem man Credits
 			// übergibt kann dagegen helfen).
 			CSystem* pSystem = &GetSystem(co.x, co.y);
-			if (CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pSystem->TileOwner())))
+			if (CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pSystem->Owner())))
 			{
 				if (pOwner->GetAgreement(pAlien->GetRaceID()) != DIPLOMATIC_AGREEMENT::WAR)
 				{
@@ -5449,7 +5451,7 @@ void CBotEDoc::CalcAlienShipEffects()
 			}
 
 			// Wenn über einem System von einem Major, dann die Energie auf 0 setzen
-			CString sSystemOwner = GetSystem(co.x, co.y).TileOwner();
+			const CString& sSystemOwner = GetSystem(co.x, co.y).Owner();
 			if (CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner)))
 			{
 				// Energie im System auf 0 setzen

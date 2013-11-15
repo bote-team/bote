@@ -6,7 +6,7 @@
 #include "Ships.h"
 #include "Races/race.h"
 #include "Loc.h"
-#include "Galaxy/Sector.h"
+#include "system/System.h"
 
 
 
@@ -572,18 +572,18 @@ CShips::StationWorkResult CShips::BuildStation(SHIP_ORDER::Typ order, CSector& s
 	return result;
 }
 
-void CShips::Scrap(CMajor& major, CSector& se, CSystem& sy, bool disassembly)
+void CShips::Scrap(CMajor& major, CSystem& sy, bool disassembly)
 {
 	for(CShips::const_iterator x = begin(); x != end(); ++x)
-		x->second->Scrap(major, se, sy, disassembly);
-	m_Leader.Scrap(major, se, sy, disassembly);
+		x->second->Scrap(major, sy, disassembly);
+	m_Leader.Scrap(major, sy, disassembly);
 
 	// Wenn es ein Au?enposten oder eine Sternbasis ist,
 	// dann dem Sektor bekanntgeben, dass in ihm keine Station mehr ist
 	if (IsStation() && disassembly)
 	{
-		se.UnsetOutpost(GetOwnerOfShip());
-		se.UnsetStarbase(GetOwnerOfShip());
+		sy.UnsetOutpost(GetOwnerOfShip());
+		sy.UnsetStarbase(GetOwnerOfShip());
 	}
 }
 

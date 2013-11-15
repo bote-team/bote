@@ -91,7 +91,9 @@ public:
 	BOOLEAN GetSunSystem(void) const {return m_bSunSystem;}
 
 	/// Diese Funktion gibt zurück, wer im Besitz dieses Sektors ist.
-	CString TileOwner(void) const {return m_sOwner;}
+	CString Owner(void) const {return m_sOwner;}
+
+	bool Free() const { return m_sOwner.IsEmpty(); }
 
 //// DISCOVER_STATUS ////
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob dieser Sektor von der Majorrace

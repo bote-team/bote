@@ -1141,7 +1141,7 @@ void CEmpireMenuView::DrawEmpireTop5Menue(Gdiplus::Graphics *g)
 	{
 		CSector* pSector = &pDoc->GetSector(it->x, it->y);
 		// Ist das System komplett bekannt oder ist der Besitzer bekannt und das System gescannt -> dann wird das System angezeigt
-		if (pSector->GetFullKnown(pMajor->GetRaceID()) || pMajor->IsRaceContacted(pSector->TileOwner()) && pSector->GetScanned(pMajor->GetRaceID()))
+		if (pSector->GetFullKnown(pMajor->GetRaceID()) || pMajor->IsRaceContacted(pSector->Owner()) && pSector->GetScanned(pMajor->GetRaceID()))
 		{
 			// Planeten zeichnen
 			DrawSunSystem(g, *it, 110 + 110 * nCount);
@@ -1149,9 +1149,9 @@ void CEmpireMenuView::DrawEmpireTop5Menue(Gdiplus::Graphics *g)
 			s.Format("%s %d: %s", CLoc::GetString("PLACE"), nCount + 1, pSector->GetName());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(150, 135 + 110 * nCount, m_TotalSize.cx - 250, 25), &fontFormat, &fontBrush);
 			// Besitzerimperium zeichnen
-			if (pMajor->IsRaceContacted(pSector->TileOwner()) || pMajor->GetRaceID() == pSector->TileOwner())
+			if (pMajor->IsRaceContacted(pSector->Owner()) || pMajor->GetRaceID() == pSector->Owner())
 			{
-				CMajor* pOwner = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pSector->TileOwner()));
+				CMajor* pOwner = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pSector->Owner()));
 				if (pOwner)
 				{
 					s = pOwner->GetEmpiresName();
@@ -1813,7 +1813,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 									pView->ScrollToSector(p);
 
 								// Systemansicht anzeigen
-								if (pDoc->GetSystem(p.x,p.y).TileOwner() == pMajor->GetRaceID())
+								if (pDoc->GetSystem(p.x,p.y).Owner() == pMajor->GetRaceID())
 								{
 									resources::pMainFrame->SelectMainView(VIEWS::SYSTEM_VIEW, pMajor->GetRaceID());
 									resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetFlag());
@@ -1841,7 +1841,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 									pView->ScrollToSector(p);
 
 								// Systemansicht anzeigen
-								if (pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetFlag() == 1 && pDoc->GetSystem(p.x,p.y).TileOwner() == pMajor->GetRaceID())
+								if (pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetFlag() == 1 && pDoc->GetSystem(p.x,p.y).Owner() == pMajor->GetRaceID())
 								{
 									resources::pMainFrame->SelectMainView(VIEWS::SYSTEM_VIEW, pMajor->GetRaceID());
 									resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), 0);

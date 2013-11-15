@@ -119,7 +119,7 @@ void CNewRoundDataCalculator::CalcPreLoop() {
 				sy->CalculateEmpireWideMoralProd(&m_pDoc->BuildingInfo);
 			}
 			if(system_owner_exists || sy->GetMinorRace()) {
-				const CString& sector_owner = sy->TileOwner();
+				const CString& sector_owner = sy->Owner();
 				AssertBotE(!sector_owner.IsEmpty());
 				//Building scan power and range in a system isn't influenced by other systems, is it...?
 				//This needs to be here in the first loop, since when calculating the scan power that
@@ -198,7 +198,7 @@ namespace {
 			if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
 				settings.scanned = true;
 
-		if (sector.TileOwner() == from) {
+		if (sector.Owner() == from) {
 			if (agreement >= DIPLOMATIC_AGREEMENT::TRADE)
 				settings.scanned = true;
 			if (agreement >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)

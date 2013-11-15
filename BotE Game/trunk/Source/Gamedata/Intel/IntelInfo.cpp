@@ -71,10 +71,10 @@ void CIntelInfo::CalcIntelInfo(CBotEDoc* pDoc, CMajor* pOurRace)
 			{
 				// Nun noch überprüfen, ob diese Informationen auch wirklich noch zutreffen. Veraltete Geheimdienstberichte
 				// können falsche Informationen beinhalten.
-				if (pDoc->GetSector(ko.x, ko.y).TileOwner() == intelObj->GetEnemy())
+				if (pDoc->GetSector(ko.x, ko.y).Owner() == intelObj->GetEnemy())
 				{
 					sectors[ko.x][ko.y][intelObj->GetEnemy()] = 1;
-					if (pDoc->GetSystem(ko.x, ko.y).TileOwner() == intelObj->GetEnemy())
+					if (pDoc->GetSystem(ko.x, ko.y).Owner() == intelObj->GetEnemy())
 					{
 						sectors[ko.x][ko.y][intelObj->GetEnemy()] = 2;
 						if (pDoc->GetSector(ko.x, ko.y).GetCurrentHabitants() > 0.0f)
@@ -149,7 +149,7 @@ void CIntelInfo::CalcIntelInfo(CBotEDoc* pDoc, CMajor* pOurRace)
 			{
 				if (it->second->IsRaceContacted(pOurRace->GetRaceID()) || it->first == pOurRace->GetRaceID())
 					if (pDoc->GetSector(x, y).GetScanned(pOurRace->GetRaceID()))
-						if (pDoc->GetSector(x, y).TileOwner() == it->first)
+						if (pDoc->GetSector(x, y).Owner() == it->first)
 						{
 							if (sectors[x][y][it->first] < 1)
 								sectors[x][y][it->first] = 1;

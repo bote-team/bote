@@ -275,7 +275,7 @@ public:
 	// @return true in case outpost/starbase was finished by this ship
 	bool BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major,  short id);
 
-	void Scrap(CMajor& major, const CSector& se, CSystem& sy, bool disassembly);
+	void Scrap(CMajor& major, CSystem& sy, bool disassembly);
 
 	CString SanityCheckUniqueness(std::set<CString>& already_encountered) const;
 	bool SanityCheckOrdersConsistency(const CShip& with) const;

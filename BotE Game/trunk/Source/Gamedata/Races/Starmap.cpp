@@ -199,11 +199,13 @@ void CStarmap::AddBase(const Sector &sector, BYTE propTech)
 // Nichtangriffspakt mit dieser Rasse haben.
 void CStarmap::SynchronizeWithMap(const std::vector<CSystem>& systems, const std::set<CString>* races)
 {
-	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (!systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).TileOwner().IsEmpty())
-				if (m_Range[x][y] > 0 && races->find(systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).TileOwner()) != races->end())
-					m_Range[x][y] = 0;
+	for(std::vector<CSystem>::const_iterator it = systems.begin(); it != systems.end(); ++it)
+		if(!it->Free())
+		{
+			const CPoint& co = it->GetKO();
+			if (m_Range[co.x][co.y] > 0 && races->find(it->Owner())!= races->end())
+				m_Range[co.x][co.y] = 0;
+		}
 }
 
 // Führt für gefährliche Anomalien mathematische Gewichte hinzu, so dass dieser Sektor bei der automatischen
@@ -860,33 +862,36 @@ void CStarmap::SetBadAIBaseSectors(const std::vector<CSystem>& systems, const CS
 		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
 			m_AIBadPoints[i][j]=0;
 
-	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_Range[x][y] >= m_nAIRange)
+	for(std::vector<CSystem>::const_iterator it = systems.begin(); it != systems.end(); ++it)
+	{
+		const CPoint& co = it->GetKO();
+		const CString& owner = it->Owner();
+		if (m_Range[co.x][co.y] >= m_nAIRange)
+		{
+			double dValue = 0.0;
+			if (owner == race || it->Free())
 			{
-				double dValue = 0.0;
-				if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).TileOwner() == race || systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).TileOwner().IsEmpty())
-				{
-					int number = 0;
-					// in einem Umkreis von einem Sektor um den Sektor scannen
-					for (int j = -1; j <= 1; j++)
-						for (int i = -1; i <= 1; i++)
-							if (y + j > -1 && y + j < STARMAP_SECTORS_VCOUNT && x + i > -1 && x + i < STARMAP_SECTORS_HCOUNT)
-								if (systems.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).TileOwner() != race && !systems.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).TileOwner().IsEmpty())
-									number++;
-					dValue += (50.0 * number);
-				}
-				else
-					dValue += 1000.0;
-
-				if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly())
-					dValue += systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly()->GetWaySearchWeight() * 100.0;
-
-				if ((double)m_AIBadPoints[x][y] + dValue > MAXSHORT)
-					m_AIBadPoints[x][y] = MAXSHORT;
-				else
-					m_AIBadPoints[x][y] += (short)dValue;
+				int number = 0;
+				// in einem Umkreis von einem Sektor um den Sektor scannen
+				for (int j = -1; j <= 1; j++)
+					for (int i = -1; i <= 1; i++)
+						if (co.y + j > -1 && co.y + j < STARMAP_SECTORS_VCOUNT && co.x + i > -1 && co.x + i < STARMAP_SECTORS_HCOUNT)
+							if (systems.at(co.x+i+(co.y+j)*STARMAP_SECTORS_HCOUNT).Owner() != race && !systems.at(co.x+i+(co.y+j)*STARMAP_SECTORS_HCOUNT).Free())
+								number++;
+				dValue += (50.0 * number);
 			}
+			else
+				dValue += 1000.0;
+
+			if (it->GetAnomaly())
+				dValue += it->GetAnomaly()->GetWaySearchWeight() * 100.0;
+
+			if ((double)m_AIBadPoints[co.x][co.y] + dValue > MAXSHORT)
+				m_AIBadPoints[co.x][co.y] = MAXSHORT;
+			else
+				m_AIBadPoints[co.x][co.y] += (short)dValue;
+		}
+	}
 }
 
 BaseSector CStarmap::CalcAIBaseSector(double variance)

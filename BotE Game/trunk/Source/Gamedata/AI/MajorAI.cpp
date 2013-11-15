@@ -510,7 +510,7 @@ ANSWER_STATUS::Typ CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 				CPoint ptSystem(-1,-1);
 				for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 					for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-						if (m_pDoc->GetSystem(x,y).TileOwner() == info.m_sToRace)
+						if (m_pDoc->GetSystem(x,y).Owner() == info.m_sToRace)
 						{
 							nMaxRes = max(nMaxRes, m_pDoc->GetSystem(x,y).GetResourceStore(nRes));
 							ptSystem.x = x;
@@ -1266,7 +1266,7 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 			CPoint ptSystem(-1,-1);
 			for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-					if (m_pDoc->GetSystem(x,y).TileOwner() == pOurRace->GetRaceID())
+					if (m_pDoc->GetSystem(x,y).Owner() == pOurRace->GetRaceID())
 					{
 						nMostRes = max(m_pDoc->GetSystem(x,y).GetResourceStore(whichRes), nMostRes);
 						ptSystem.x = x;
