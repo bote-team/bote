@@ -357,7 +357,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 				pDC->SelectObject(&gridPen);
 				// besitzt der aktuelle Sektor oder der Sektor rechts daneben einen Scanpower, so wird
 				// der Scangrid geladen
-				if (pDoc->GetSector(j, i).GetScanPower(pMajor->GetRaceID()) > 0 && pDoc->GetSector(j + 1, i).GetScanPower(pMajor->GetRaceID()) > 0)
+				if (pDoc->GetSystem(j, i).GetScanPower(pMajor->GetRaceID()) > 0 && pDoc->GetSystem(j + 1, i).GetScanPower(pMajor->GetRaceID()) > 0)
 					pDC->SelectObject(&scanPen);
 
 				// Grenze der Reichweite;
@@ -382,7 +382,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 
 			// zeichnen
 			// es ist auskommentiert, dass das Grid nicht auf unbekannten Sektoren gezeichnet wird
-			if (pStarmap->GetRange(CPoint(j,i)) != 3 && pDoc->GetSector(j,i).GetScanned(pMajor->GetRaceID()) == TRUE || (pDC->GetCurrentPen() != &gridPen && pDC->GetCurrentPen() != &scanPen))
+			if (pStarmap->GetRange(CPoint(j,i)) != 3 && pDoc->GetSystem(j,i).GetScanned(pMajor->GetRaceID()) == TRUE || (pDC->GetCurrentPen() != &gridPen && pDC->GetCurrentPen() != &scanPen))
 			{
 				pDC->MoveTo(x + STARMAP_SECTOR_WIDTH, y);
 				pDC->LineTo(x + STARMAP_SECTOR_WIDTH, y + STARMAP_SECTOR_HEIGHT);
@@ -401,7 +401,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 				pDC->SelectObject(&gridPen);
 				// besitzt der aktuelle Sektor oder der Sektor darunter eine Scanpower, so wird
 				// der Scangrid geladen
-				if (pDoc->GetSector(j, i).GetScanPower(pMajor->GetRaceID()) > 0 && pDoc->GetSector(j, i + 1).GetScanPower(pMajor->GetRaceID()) > 0)
+				if (pDoc->GetSystem(j, i).GetScanPower(pMajor->GetRaceID()) > 0 && pDoc->GetSystem(j, i + 1).GetScanPower(pMajor->GetRaceID()) > 0)
 					pDC->SelectObject(&scanPen);
 				// Grenze der Reichweite
 				int border = GetRangeBorder(pStarmap->m_Range[j][i], pStarmap->m_Range[j][i + 1], m_nRange);
@@ -422,7 +422,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 
 			// zeichnen
 			// es ist auskommentiert, dass das Grid nicht auf unbekannten Sektoren gezeichnet wird
-			if (pStarmap->GetRange(CPoint(j,i)) != 3 && pDoc->GetSector(j, i).GetScanned(pMajor->GetRaceID()) == TRUE || (pDC->GetCurrentPen() != &gridPen && pDC->GetCurrentPen() != &scanPen))
+			if (pStarmap->GetRange(CPoint(j,i)) != 3 && pDoc->GetSystem(j, i).GetScanned(pMajor->GetRaceID()) == TRUE || (pDC->GetCurrentPen() != &gridPen && pDC->GetCurrentPen() != &scanPen))
 				pDC->LineTo(x, y + STARMAP_SECTOR_HEIGHT);
 		}
 
@@ -526,7 +526,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
-			pDoc->GetSector(x,y).DrawSectorsName(pDC ,pDoc, m_pPlayersRace);
+			pDoc->GetSystem(x,y).DrawSectorsName(pDC ,pDoc, m_pPlayersRace);
 			// eigene Handelsrouten zeichnen
 			if (bShowTraderoutes)
 				if (pDoc->GetSystem(x, y).Owner() == pMajor->GetRaceID())
@@ -830,7 +830,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (modulo.x > STARMAP_SECTOR_WIDTH * 0.66 && modulo.y < STARMAP_SECTOR_HEIGHT * 0.33)
 			{
 				const std::map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
-				const CSector& s = pDoc->GetSector(sector.x, sector.y);
+				const CSector& s = pDoc->GetSystem(sector.x, sector.y);
 				for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
 					if (s.ShouldDrawShip(*pMajor, it->first))
 					{
@@ -859,7 +859,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			else if (modulo.x < STARMAP_SECTOR_WIDTH * 0.33 && modulo.y > STARMAP_SECTOR_HEIGHT * 0.66)
 			{
 				bool bShowStation = false;
-				const CSector& s = pDoc->GetSector(sector.x, sector.y);
+				const CSector& s = pDoc->GetSystem(sector.x, sector.y);
 				const std::map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
 				for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
 					if (s.ShouldDrawOutpost(*pMajor, it->first))
@@ -894,7 +894,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			CPoint p = pDoc->GetKO();
 			BYTE numberOfRoutes = pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetSize();
 			// konnten erfolgreich eine hinzufügen aufgrund der Bevölkerung
-			if (pDoc->GetSector(sector.x, sector.y).GetSunSystem() == TRUE && pDoc->GetSystem(p.x, p.y).AddTradeRoute(CPoint(sector.x,sector.y), pDoc->m_Systems, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
+			if (pDoc->GetSystem(sector.x, sector.y).GetSunSystem() == TRUE && pDoc->GetSystem(p.x, p.y).AddTradeRoute(CPoint(sector.x,sector.y), pDoc->m_Systems, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
 			{
 				// wurde keine hinzugefügt, dann fertig
 				if (numberOfRoutes == pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetSize())
@@ -930,7 +930,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			CPoint p = pDoc->GetKO();
 			// konnten erfolgreich eine hinzufügen aufgrund der Bevölkerung
-			if (pDoc->GetSector(sector.x, sector.y).GetSunSystem() == TRUE && p != CPoint(sector.x,sector.y) &&
+			if (pDoc->GetSystem(sector.x, sector.y).GetSunSystem() == TRUE && p != CPoint(sector.x,sector.y) &&
 				pDoc->GetSystem(p.x, p.y).AddResourceRoute(CPoint(sector.x,sector.y), CSystemMenuView::GetResourceRouteRes(), pDoc->m_Systems, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
 			{
 				m_bDrawResourceRoute = FALSE;
@@ -1090,7 +1090,7 @@ void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		const CCommandLineParameters* const clp = resources::pClp;
 		if (sector.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT) &&
 			(clp->SeeAllOfMap() || pDoc->GetSystem(sector.x, sector.y).Owner() == pMajor->GetRaceID()) &&
-			pDoc->GetSector(sector.x, sector.y).GetSunSystem() == TRUE)
+			pDoc->GetSystem(sector.x, sector.y).GetSunSystem() == TRUE)
 			{
 				// falls ein Schiff markiert war wird dieses abgewählt
 				SetMoveShip(FALSE);
@@ -1549,35 +1549,35 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
 			CPoint pt = pMajor->GetStarmap()->GetSectorCoords(struct::Sector(x, y));
-			if (!pDoc->GetSystem(x,y).Free() && !pDoc->GetSystem(x,y).IndependentMinor() && pDoc->GetSector(x,y).GetScanned(pMajor->GetRaceID())
-				&& pMajor->IsRaceContacted(pDoc->GetSector(x,y).Owner()) || pDoc->GetSector(x,y).Owner() == pMajor->GetRaceID())
+			if (!pDoc->GetSystem(x,y).Free() && !pDoc->GetSystem(x,y).IndependentMinor() && pDoc->GetSystem(x,y).GetScanned(pMajor->GetRaceID())
+				&& pMajor->IsRaceContacted(pDoc->GetSystem(x,y).Owner()) || pDoc->GetSystem(x,y).Owner() == pMajor->GetRaceID())
 			{
-				g->DrawImage(m_mOwnerMark[pDoc->GetSector(x,y).Owner()], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
+				g->DrawImage(m_mOwnerMark[pDoc->GetSystem(x,y).Owner()], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
 			}
 			// Wurde der Sektor noch nicht gescannt, sprich ist noch Nebel des Krieges da?
-			else if (!pDoc->GetSector(x,y).GetScanned(pMajor->GetRaceID()) && !pDoc->GetSector(x,y).GetKnown(pMajor->GetRaceID()))
+			else if (!pDoc->GetSystem(x,y).GetScanned(pMajor->GetRaceID()) && !pDoc->GetSystem(x,y).GetKnown(pMajor->GetRaceID()))
 			{
 				g->DrawImage(m_mOwnerMark[sFogOfWarID], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
 			}
 			// lebt eine Minorrace darauf und der Sektor ist uns bekannt, gehört aber noch niemanden
-			else if (pDoc->GetSector(x,y).GetKnown(pMajor->GetRaceID()) && (pDoc->GetSystem(x,y).GetMinorRace() && !pDoc->GetSystem(x,y).Majorized() || pDoc->GetSystem(x,y).Rebelled()))
+			else if (pDoc->GetSystem(x,y).GetKnown(pMajor->GetRaceID()) && (pDoc->GetSystem(x,y).GetMinorRace() && !pDoc->GetSystem(x,y).Majorized() || pDoc->GetSystem(x,y).Rebelled()))
 			{
 				g->DrawImage(m_mOwnerMark[sMinorID], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
 			}
 			// Sonne bzw. Anomalie zeichnen
-			if (pDoc->GetSector(x,y).GetScanned(pMajor->GetRaceID()))
+			if (pDoc->GetSystem(x,y).GetScanned(pMajor->GetRaceID()))
 			{
-				if (pDoc->GetSector(x,y).GetSunSystem())
+				if (pDoc->GetSystem(x,y).GetSunSystem())
 				{
-					g->DrawImage(m_vStars[pDoc->GetSector(x,y).GetSunColor()], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
+					g->DrawImage(m_vStars[pDoc->GetSystem(x,y).GetSunColor()], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
 				}
-				else if (pDoc->GetSector(x,y).GetAnomaly())
+				else if (pDoc->GetSystem(x,y).GetAnomaly())
 				{
-					pDoc->GetSector(x,y).GetAnomaly()->Draw(g, pt);
+					pDoc->GetSystem(x,y).GetAnomaly()->Draw(g, pt);
 				}
 			}
 
-			pDoc->GetSector(x,y).DrawShipSymbolInSector(g, pDoc, m_pPlayersRace);
+			pDoc->GetSystem(x,y).DrawShipSymbolInSector(g, pDoc, m_pPlayersRace);
 		}
 
 	delete g;
@@ -1669,7 +1669,7 @@ CString CGalaxyMenuView::CreateTooltip(void)
 	struct::Sector ko = pMajor->GetStarmap()->GetClickedSector(pt);
 	if (ko.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
 	{
-		CSector* pSector = &(pDoc->GetSector(ko.x, ko.y));
+		CSector* pSector = &(pDoc->GetSystem(ko.x, ko.y));
 		CString sTip;
 		if (pSector->GetScanned(pMajor->GetRaceID()) == FALSE)
 			sTip = CLoc::GetString("UNKNOWN");
@@ -1678,7 +1678,7 @@ CString CGalaxyMenuView::CreateTooltip(void)
 		else if (pSector->GetKnown(pMajor->GetRaceID()) == FALSE)
 			sTip.Format("%s %c%i", CLoc::GetString("SECTOR"),(char)(ko.y+97), ko.x+1);
 		else
-			sTip = pDoc->GetSector(ko.x, ko.y).GetName(true);
+			sTip = pDoc->GetSystem(ko.x, ko.y).GetName(true);
 
 		sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
 		sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h5"));

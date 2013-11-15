@@ -71,13 +71,13 @@ void CIntelInfo::CalcIntelInfo(CBotEDoc* pDoc, CMajor* pOurRace)
 			{
 				// Nun noch überprüfen, ob diese Informationen auch wirklich noch zutreffen. Veraltete Geheimdienstberichte
 				// können falsche Informationen beinhalten.
-				if (pDoc->GetSector(ko.x, ko.y).Owner() == intelObj->GetEnemy())
+				if (pDoc->GetSystem(ko.x, ko.y).Owner() == intelObj->GetEnemy())
 				{
 					sectors[ko.x][ko.y][intelObj->GetEnemy()] = 1;
 					if (pDoc->GetSystem(ko.x, ko.y).Owner() == intelObj->GetEnemy())
 					{
 						sectors[ko.x][ko.y][intelObj->GetEnemy()] = 2;
-						if (pDoc->GetSector(ko.x, ko.y).GetCurrentHabitants() > 0.0f)
+						if (pDoc->GetSystem(ko.x, ko.y).GetCurrentHabitants() > 0.0f)
 							sectors[ko.x][ko.y][intelObj->GetEnemy()] = 3;
 					}
 				}
@@ -90,7 +90,7 @@ void CIntelInfo::CalcIntelInfo(CBotEDoc* pDoc, CMajor* pOurRace)
 					if (races[ko.x][ko.y][intelObj->GetEnemy()] < 2)
 					{
 						// überprüfen, ob die Minorrace noch vorhanden ist
-						CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(ko.x, ko.y).GetName());
+						CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSystem(ko.x, ko.y).GetName());
 						if (pMinor != NULL)
 						{
 							if (dynamic_cast<CDiplomacyIntelObj*>(intelObj)->GetAgreement() == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
@@ -126,7 +126,7 @@ void CIntelInfo::CalcIntelInfo(CBotEDoc* pDoc, CMajor* pOurRace)
 		}
 		// kann nur eintreten, wenn wir zu dieser Minorrace weniger als eine Freundschaft haben. Denn nur dann könnte
 		// die andere Rasse eine Mitgliedschaft zu der Minorrace haben.
-		else if (pDoc->GetSector(ko.x, ko.y).GetKnown(pOurRace->GetRaceID()))
+		else if (pDoc->GetSystem(ko.x, ko.y).GetKnown(pOurRace->GetRaceID()))
 		{
 			for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)
 				if (jt->first != pOurRace->GetRaceID())
@@ -148,16 +148,16 @@ void CIntelInfo::CalcIntelInfo(CBotEDoc* pDoc, CMajor* pOurRace)
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			{
 				if (it->second->IsRaceContacted(pOurRace->GetRaceID()) || it->first == pOurRace->GetRaceID())
-					if (pDoc->GetSector(x, y).GetScanned(pOurRace->GetRaceID()))
-						if (pDoc->GetSector(x, y).Owner() == it->first)
+					if (pDoc->GetSystem(x, y).GetScanned(pOurRace->GetRaceID()))
+						if (pDoc->GetSystem(x, y).Owner() == it->first)
 						{
 							if (sectors[x][y][it->first] < 1)
 								sectors[x][y][it->first] = 1;
-							if (pDoc->GetSector(x, y).GetSunSystem())
+							if (pDoc->GetSystem(x, y).GetSunSystem())
 							{
 								if (sectors[x][y][it->first] < 2)
 									sectors[x][y][it->first] = 2;
-								if (pDoc->GetSector(x, y).GetKnown(pOurRace->GetRaceID()) && pDoc->GetSystem(x, y).GetHabitants() > 0.0f)
+								if (pDoc->GetSystem(x, y).GetKnown(pOurRace->GetRaceID()) && pDoc->GetSystem(x, y).GetHabitants() > 0.0f)
 									if (sectors[x][y][it->first] < 3)
 										sectors[x][y][it->first] = 3;
 							}

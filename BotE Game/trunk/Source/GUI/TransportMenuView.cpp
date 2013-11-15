@@ -438,7 +438,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	fontBrush.SetColor(normalColor);
 	// Transport auf "Systemname" mit größerer Schrift in der Mitte zeichnen
 	if (systemOwner == shipOwner)
-		s = CLoc::GetString("TRANSPORT_MENUE")+" "+pDoc->GetSector(p.x,p.y).GetName();
+		s = CLoc::GetString("TRANSPORT_MENUE")+" "+pDoc->GetSystem(p.x,p.y).GetName();
 	else
 		s = CLoc::GetString("TRANSPORT_MENUE")+" "+CLoc::GetString("SHIP");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);

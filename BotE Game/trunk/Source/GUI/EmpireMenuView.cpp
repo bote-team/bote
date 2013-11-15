@@ -1139,7 +1139,7 @@ void CEmpireMenuView::DrawEmpireTop5Menue(Gdiplus::Graphics *g)
 	int nCount = 0;
 	for (list<CPoint>::const_iterator it = lSystems.begin(); it != lSystems.end(); ++it)
 	{
-		CSector* pSector = &pDoc->GetSector(it->x, it->y);
+		CSector* pSector = &pDoc->GetSystem(it->x, it->y);
 		// Ist das System komplett bekannt oder ist der Besitzer bekannt und das System gescannt -> dann wird das System angezeigt
 		if (pSector->GetFullKnown(pMajor->GetRaceID()) || pMajor->IsRaceContacted(pSector->Owner()) && pSector->GetScanned(pMajor->GetRaceID()))
 		{
@@ -1202,7 +1202,7 @@ void CEmpireMenuView::DrawSunSystem(Gdiplus::Graphics *g, const CPoint& ptKO, in
 
 	// Sonne zeichnen
 	Bitmap* graphic = NULL;
-	switch (pDoc->GetSector(ptKO.x, ptKO.y).GetSunColor())
+	switch (pDoc->GetSystem(ptKO.x, ptKO.y).GetSunColor())
 	{
 	case 0:
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_blue.bop");		break;
@@ -1227,9 +1227,9 @@ void CEmpireMenuView::DrawSunSystem(Gdiplus::Graphics *g, const CPoint& ptKO, in
 	}
 
 	// Planeten zeichnen
-	for (int i = 0; i < pDoc->GetSector(ptKO.x, ptKO.y).GetNumberOfPlanets(); i++)
+	for (int i = 0; i < pDoc->GetSystem(ptKO.x, ptKO.y).GetNumberOfPlanets(); i++)
 	{
-		const CPlanet* pPlanet = pDoc->GetSector(ptKO.x, ptKO.y).GetPlanet(i);
+		const CPlanet* pPlanet = pDoc->GetSystem(ptKO.x, ptKO.y).GetPlanet(i);
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Planets\\" + pPlanet->GetPlanetName() + ".bop");
 		if (graphic == NULL)
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic(pPlanet->GetGraphicFile());
@@ -1853,7 +1853,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 								}
 
 								// Befinden sich Schiffe im System, dann Schiffsansicht zeigen, sonst Planetenansicht
-								if (pDoc->GetSector(p.x, p.y).GetIsShipInSector())
+								if (pDoc->GetSystem(p.x, p.y).GetIsShipInSector())
 								{
 									resources::pMainFrame->SelectBottomView(VIEWS::SHIP_BOTTOM_VIEW);
 									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
@@ -1921,7 +1921,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				CPoint pt = CPoint(-1,-1);
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 					for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-						if (pDoc->GetSector(x,y).GetName(true) == pShipHistory->m_strCurrentSector)
+						if (pDoc->GetSystem(x,y).GetName(true) == pShipHistory->m_strCurrentSector)
 						{
 							pt = CPoint(x,y);
 							break;

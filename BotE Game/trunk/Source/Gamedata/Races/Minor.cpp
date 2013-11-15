@@ -117,14 +117,14 @@ bool CMinor::PerhapsExtend(CBotEDoc* pDoc)
 
 	// Wenn der dazugehörige Sektor nicht der kleinen Rasse gehört, also eine andere Rasse diese vereinnahmt hat,
 	// dann wächst das System auch nicht mehr automatisch
-	if (pDoc->GetSector(m_ptKO.x, m_ptKO.y).Owner() != m_sID)
+	if (pDoc->GetSystem(m_ptKO.x, m_ptKO.y).Owner() != m_sID)
 		return false;
 
-	bool bColonized = pDoc->GetSector(m_ptKO.x, m_ptKO.y).PerhapsMinorExtends(m_iTechnologicalProgress);
+	bool bColonized = pDoc->GetSystem(m_ptKO.x, m_ptKO.y).PerhapsMinorExtends(m_iTechnologicalProgress);
 
 	if (bColonized)
 		// dann sind im System auch weitere Einwohner hinzugekommen
-		pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetHabitants(pDoc->GetSector(m_ptKO.x, m_ptKO.y).GetCurrentHabitants());
+		pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetHabitants(pDoc->GetSystem(m_ptKO.x, m_ptKO.y).GetCurrentHabitants());
 
 	return bColonized;
 }
@@ -144,7 +144,7 @@ void CMinor::PerhapsBuildShip(CBotEDoc* pDoc)
 
 	// Wenn der dazugehörige Sektor nicht der kleinen Rasse gehört, also eine andere Rasse diese vereinnahmt hat,
 	// dann wächst das System auch nicht mehr automatisch
-	if (pDoc->GetSector(m_ptKO.x, m_ptKO.y).Owner() != m_sID)
+	if (pDoc->GetSystem(m_ptKO.x, m_ptKO.y).Owner() != m_sID)
 		return;
 
 	// Vielleicht baut die Minorrace ein Schiff in dieser Runde
@@ -243,7 +243,7 @@ void CMinor::ConsumeResources(CBotEDoc* pDoc)
 
 	// bewohnbar sind:    C,F,G,H,K,L,M,N,O,P,Q,R
 	BOOLEAN exist[RESOURCES::DERITIUM + 1] = {0};
-	pDoc->GetSector(m_ptKO.x, m_ptKO.y).GetAvailableResources(exist, true);
+	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).GetAvailableResources(exist, true);
 
 	short div;
 	int value;

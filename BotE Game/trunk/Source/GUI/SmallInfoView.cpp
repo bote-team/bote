@@ -447,8 +447,8 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			if (pShip->second->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 			{
 				const short terraform = pShip->second->GetTerraform();
-				AssertBotE(-1 < terraform && terraform < static_cast<int>(pDoc->GetSector(pShip->second->GetKO().x, pShip->second->GetKO().y).GetNumberOfPlanets()));
-				s.Format("%s: %s\n%s",CLoc::GetString("ORDER"), pShip->second->GetCurrentOrderAsString(), pDoc->GetSector(pShip->second->GetKO().x, pShip->second->GetKO().y).GetPlanet(pShip->second->GetTerraform())->GetPlanetName());
+				AssertBotE(-1 < terraform && terraform < static_cast<int>(pDoc->GetSystem(pShip->second->GetKO().x, pShip->second->GetKO().y).GetNumberOfPlanets()));
+				s.Format("%s: %s\n%s",CLoc::GetString("ORDER"), pShip->second->GetCurrentOrderAsString(), pDoc->GetSystem(pShip->second->GetKO().x, pShip->second->GetKO().y).GetPlanet(pShip->second->GetTerraform())->GetPlanetName());
 			}
 			else
 				s.Format("%s: %s",CLoc::GetString("ORDER"), pShip->second->GetCurrentOrderAsString());

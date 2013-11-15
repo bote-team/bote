@@ -989,17 +989,17 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 								if (graphic)
 									g->DrawImage(graphic, 500, 97+count*25, 120, 30);
 
-								s.Format("%s",pDoc->GetSector(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).GetName());
+								s.Format("%s",pDoc->GetSystem(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).GetName());
 								// Wenn hier noch kein System eingestellt ist, dann müssen wir uns eins suchen
 								if (s.IsEmpty() || pDoc->GetSystem(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).Owner() != pPlayer->GetRaceID())
 								{
 									for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 										for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-											if (pDoc->GetSystem(x,y).Owner() == pPlayer->GetRaceID() && pDoc->GetSector(x,y).GetSunSystem() == TRUE)
+											if (pDoc->GetSystem(x,y).Owner() == pPlayer->GetRaceID() && pDoc->GetSystem(x,y).GetSunSystem() == TRUE)
 											{
 												m_ptResourceFromSystem = CPoint(x,y);
 												m_pIncomingInfo->m_ptKO = m_ptResourceFromSystem;
-												s.Format("%s",pDoc->GetSector(x,y).GetName());
+												s.Format("%s",pDoc->GetSystem(x,y).GetName());
 												break;
 											}
 								}
@@ -1107,14 +1107,14 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 		{
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			{
-				if(pDoc->GetSector(x,y).GetName()==s&&pDoc->GetSector(x,y).GetKnown(pPlayer->GetRaceID()))
+				if(pDoc->GetSystem(x,y).GetName()==s&&pDoc->GetSystem(x,y).GetKnown(pPlayer->GetRaceID()))
 				{
 					CString coords;
 					coords.Format(" (%c%i)", (char)y+97,x+1);
 					s += coords;
 					break;
 				}
-				else if(pDoc->GetSector(x,y).GetName()==s&&!pDoc->GetSector(x,y).GetKnown(pPlayer->GetRaceID()))
+				else if(pDoc->GetSystem(x,y).GetName()==s&&!pDoc->GetSystem(x,y).GetKnown(pPlayer->GetRaceID()))
 				{
 					CString coords;
 					coords.Format(" (%s)", CLoc::GetString("UNKNOWN"));
@@ -1399,7 +1399,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 				{
 					if (graphic)
 						g->DrawImage(graphic, 510, 605, 120, 30);
-					s.Format("%s", pDoc->GetSector(m_OutgoingInfo.m_ptKO.x, m_OutgoingInfo.m_ptKO.y).GetName());
+					s.Format("%s", pDoc->GetSystem(m_OutgoingInfo.m_ptKO.x, m_OutgoingInfo.m_ptKO.y).GetName());
 					g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(510,605,120,30), &fontFormat, &btnBrush);
 					s = CLoc::GetString("FROM_SYSTEM");
 					g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(510,577,120,30), &fontFormat, &fontBrush);

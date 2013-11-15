@@ -205,7 +205,7 @@ void CSystemAI::CalcPriorities()
 				// CHECK WW: KI sollte hier anteilige Ressourcen zurückbekommen
 				m_pDoc->GetSystem(ko.x, ko.y).GetAssemblyList()->ClearAssemblyList(ko, m_pDoc->m_Systems);
 				m_pDoc->GetSystem(ko.x, ko.y).CalculateVariables();
-				MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Removed current buildorder because of low moral in System '%s'\n", m_pDoc->GetSector(ko.x, ko.y).GetName());
+				MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Removed current buildorder because of low moral in System '%s'\n", m_pDoc->GetSystem(ko.x, ko.y).GetName());
 			}
 		}
 
@@ -223,7 +223,7 @@ void CSystemAI::CalcPriorities()
 			int nRandom = rand()%buildings.GetSize();
 			if (MakeEntryInAssemblyList(buildings.GetAt(nRandom)))
 			{
-				MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Found building to increase moral in System '%s'\n", m_pDoc->GetSector(ko.x, ko.y).GetName());
+				MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Found building to increase moral in System '%s'\n", m_pDoc->GetSystem(ko.x, ko.y).GetName());
 				// Moralverbesserungsgebäude gefunden -> aus Funktion springen
 				return;
 			}
@@ -237,7 +237,7 @@ void CSystemAI::CalcPriorities()
 		return;
 
 	double dMaxHab = 0.0;
-	const CSector& sector = m_pDoc->GetSector(ko.x, ko.y);
+	const CSector& sector = m_pDoc->GetSystem(ko.x, ko.y);
 	for(CSector::const_iterator it = sector.begin(); it != sector.end(); ++it)
 		if (it->GetCurrentHabitant() > 0.0)
 			dMaxHab += it->GetMaxHabitant();
@@ -313,11 +313,11 @@ void CSystemAI::CalcPriorities()
 	if (id > 0 && id < 10000)
 		name = m_pDoc->GetBuildingName(id);
 
-	if (m_pDoc->GetSector(ko.x, ko.y).GetName() == "Tinaca")
+	if (m_pDoc->GetSystem(ko.x, ko.y).GetName() == "Tinaca")
 	{
 		CString s;
 		s.Format("System: %s\n\nFood: %d\nIndstry: %d\nEnergy: %d\nSecurity: %d\nResearch: %d\nTitan: %d\nDeuterium: %d\nDuranium: %d\nCrystal: %d\nIridium: %d\n\nchoosen Building: %s\nID: %d\nAssemblyListEntry: %d\nneeded IP: %d",
-			m_pDoc->GetSector(ko.x, ko.y).GetName(),
+			m_pDoc->GetSystem(ko.x, ko.y).GetName(),
 			m_iPriorities[0],m_iPriorities[1],m_iPriorities[2],m_iPriorities[3],m_iPriorities[4],m_iPriorities[5],m_iPriorities[6],
 			m_iPriorities[7],m_iPriorities[8],m_iPriorities[9],name,id,m_pDoc->GetSystem(ko.x, ko.y).GetAssemblyList()->GetAssemblyListEntry(0),
 			m_pDoc->GetSystem(ko.x, ko.y).GetAssemblyList()->GetNeededIndustryForBuild());
@@ -325,7 +325,7 @@ void CSystemAI::CalcPriorities()
 	}
 */
 	if (id == 0)
-		MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Could not create buildcontract in system '%s'\n", m_pDoc->GetSector(ko.x, ko.y).GetName());
+		MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Could not create buildcontract in system '%s'\n", m_pDoc->GetSystem(ko.x, ko.y).GetName());
 }
 
 bool CSystemAI::CheckMoral(const CBuildingInfo& bi, bool build) const {
@@ -535,7 +535,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 						if (MakeEntryInAssemblyList(id))
 						{
 							m_pDoc->m_pAIPrios->ChoosedColoShipPrio(sRace);
-							MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build colonyship in system: %s\n", m_pDoc->GetSector(m_KO.x, m_KO.y).GetName());
+							MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build colonyship in system: %s\n", m_pDoc->GetSystem(m_KO.x, m_KO.y).GetName());
 							return id;
 						}
 			}
@@ -555,7 +555,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 						if (MakeEntryInAssemblyList(id))
 						{
 							m_pDoc->m_pAIPrios->ChoosedTransportShipPrio(sRace);
-							MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build transportship in system: %s\n", m_pDoc->GetSector(m_KO.x, m_KO.y).GetName());
+							MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build transportship in system: %s\n", m_pDoc->GetSystem(m_KO.x, m_KO.y).GetName());
 							return id;
 						}
 			}
@@ -590,7 +590,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 		c_arraysort<CArray<SHIPLIST>, SHIPLIST> (ships, sort_desc);
 		if(MT::CMyTrace::IsLoggingEnabledFor("ai"))
 		{
-			MYTRACE_CHECKED("ai")(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build combatship in system: %s\n", m_pDoc->GetSector(m_KO.x, m_KO.y).GetName());
+			MYTRACE_CHECKED("ai")(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build combatship in system: %s\n", m_pDoc->GetSystem(m_KO.x, m_KO.y).GetName());
 			for (int i = 0; i < ships.GetSize(); i++)
 				MYTRACE_CHECKED("ai")(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): buildable combatships %s - ID: %d - Power: %d\n", m_pDoc->m_ShipInfoArray[ships.GetAt(i).id - 10000].GetShipClass(),
 					ships.GetAt(i).id-10000, ships.GetAt(i).strenght);
@@ -879,7 +879,7 @@ void CSystemAI::ScrapBuildings()
 		// Nur wenn 80% der maximal Bevölkerung schon im System leben
 		float currentHab = 0.0f;
 		float maxHab = 0.0f;
-		const CSector& sector = m_pDoc->GetSector(ko.x, ko.y);
+		const CSector& sector = m_pDoc->GetSystem(ko.x, ko.y);
 		for(CSector::const_iterator it = sector.begin(); it != sector.end(); ++it)
 		{
 			currentHab += it->GetCurrentHabitant();
@@ -930,13 +930,13 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 		if (m_pDoc->m_pAIPrios->GetColoShipPrio(sRace) > 0)
 		{
 			min = rand()%(m_pDoc->m_pAIPrios->GetColoShipPrio(sRace) + 1);
-			MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - ColonyShipPrio: %d (max %d)\n",sRace,m_pDoc->GetSector(ko.x, ko.y).GetName(),min,m_pDoc->m_pAIPrios->GetColoShipPrio(sRace));
+			MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - ColonyShipPrio: %d (max %d)\n",sRace,m_pDoc->GetSystem(ko.x, ko.y).GetName(),min,m_pDoc->m_pAIPrios->GetColoShipPrio(sRace));
 			chooseColoship = TRUE;
 		}
 		if (m_pDoc->m_pAIPrios->GetTransportShipPrio(sRace) > 0)
 		{
 			int random = rand()%(m_pDoc->m_pAIPrios->GetTransportShipPrio(sRace) + 1);
-			MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - TransportShipPrio: %d (max %d)\n",sRace, m_pDoc->GetSector(ko.x, ko.y).GetName(),random,m_pDoc->m_pAIPrios->GetTransportShipPrio(sRace));
+			MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - TransportShipPrio: %d (max %d)\n",sRace, m_pDoc->GetSystem(ko.x, ko.y).GetName(),random,m_pDoc->m_pAIPrios->GetTransportShipPrio(sRace));
 			if (random > min)
 			{
 				min = random;
@@ -947,7 +947,7 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 		if (m_pDoc->m_pAIPrios->GetCombatShipPrio(sRace) > 0)
 		{
 			int random = rand()%(m_pDoc->m_pAIPrios->GetCombatShipPrio(sRace) + 1);
-			MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - CombatShipPrio: %d (max %d)\n",sRace,m_pDoc->GetSector(ko.x, ko.y).GetName(),random,m_pDoc->m_pAIPrios->GetCombatShipPrio(sRace));
+			MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - CombatShipPrio: %d (max %d)\n",sRace,m_pDoc->GetSystem(ko.x, ko.y).GetName(),random,m_pDoc->m_pAIPrios->GetCombatShipPrio(sRace));
 			if (random > min)
 			{
 				// Schiffsbevölkerungsunterstützungskosten - Schiffsunterstützungskosten
@@ -956,7 +956,7 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 				if (shipCosts < 0 && abs(shipCosts) > (long)(pMajor->GetEmpire()->GetCredits() * 0.05))
 				{
 					chooseCombatship = FALSE;
-					MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - can't build ships because of too high shipcosts!\n",sRace, m_pDoc->GetSector(ko.x, ko.y).GetName());
+					MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - can't build ships because of too high shipcosts!\n",sRace, m_pDoc->GetSystem(ko.x, ko.y).GetName());
 				}
 				else
 				{
@@ -1052,7 +1052,7 @@ void CSystemAI::CalcProd()
 			tmpEnergyBoni		+= buildingInfo->GetEnergyBoni();
 		}
 	}
-	const CSector& sector = m_pDoc->GetSector(m_KO.x, m_KO.y);
+	const CSector& sector = m_pDoc->GetSystem(m_KO.x, m_KO.y);
 	// Jetzt werden noch eventuelle Boni durch die Planetenklassen dazugerechnet
 	for(CSector::const_iterator it = sector.begin(); it != sector.end(); ++it)
 	{
@@ -1397,7 +1397,7 @@ int CSystemAI::GetResourcePrio(WORKER::Typ nWorker, double dMaxHab) const
 	// vorhandene Ressourcen durch die Planeten holen. Wenn eine Ressource nicht vorhanden ist, wird die entsprechende
 	// Priorität auf NULL gesetzt. Denn dafür haben wir dann auch keine Gebäude in der Bauliste.
 	BOOLEAN bResExist[RESOURCES::DERITIUM + 1] = {0};
-	m_pDoc->GetSector(m_KO.x, m_KO.y).GetAvailableResources(bResExist, true);
+	m_pDoc->GetSystem(m_KO.x, m_KO.y).GetAvailableResources(bResExist, true);
 
 	int nRes = nWorker - 5;
 	AssertBotE(nRes >= RESOURCES::TITAN && nRes <= RESOURCES::DERITIUM);

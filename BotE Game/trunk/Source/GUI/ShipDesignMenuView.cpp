@@ -863,7 +863,7 @@ CString CShipDesignMenuView::CheckIfShipIsBuilding(const CShipInfo* pShipInfo) c
 			if (pDoc->GetSystem(x,y).Owner() == pMajor->GetRaceID())
 				for (int i = 0; i < ALE; i++)
 					if (pDoc->GetSystem(x,y).GetAssemblyList()->GetAssemblyListEntry(i) == ID)
-						return pDoc->GetSector(x,y).GetName();
+						return pDoc->GetSystem(x,y).GetName();
 
 	return "";
 }

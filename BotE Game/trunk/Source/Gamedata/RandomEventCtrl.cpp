@@ -101,18 +101,18 @@ bool CRandomEventCtrl::SystemEvent(const CPoint &ko, CMajor* pRace)
 
 	if(nEventNumber==SYSTEMEVENTMORALBOOST)//If abfrage mit allen möglichen Randomevents; evtl. hier bedingungen einfügen
 	{
-		sMsgText=CLoc::GetString("SYSTEMEVENTMORALBOOST",false,pDoc->GetSector(ko.x, ko.y).GetName());
+		sMsgText=CLoc::GetString("SYSTEMEVENTMORALBOOST",false,pDoc->GetSystem(ko.x, ko.y).GetName());
 		pDoc->GetSystem(ko.x, ko.y).SetMoral(10);
 	}
 	else if(nEventNumber==SYSTEMEVENTMORALMALUS)
 	{
-		sMsgText=CLoc::GetString("SYSTEMEVENTMORALMALUS",false,pDoc->GetSector(ko.x, ko.y).GetName());
+		sMsgText=CLoc::GetString("SYSTEMEVENTMORALMALUS",false,pDoc->GetSystem(ko.x, ko.y).GetName());
 		pDoc->GetSystem(ko.x, ko.y).SetMoral(-10);
 	}
 	else if(nEventNumber==SYSTEMEVENTPLANETMOVEMENT)//Planetenveränderung
-		pDoc->GetSector(ko.x, ko.y).SystemEventPlanetMovement(sMsgText);
+		pDoc->GetSystem(ko.x, ko.y).SystemEventPlanetMovement(sMsgText);
 	else if(nEventNumber==SYSTEMEVENTDEMOGRAPHIC)
-		pDoc->GetSector(ko.x, ko.y).SystemEventDemographic(sMsgText, *pRace);
+		pDoc->GetSystem(ko.x, ko.y).SystemEventDemographic(sMsgText, *pRace);
 	if(!sMsgText.IsEmpty())
 	{
 		CEmpireNews message;
@@ -176,7 +176,7 @@ void CRandomEventCtrl::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMa
 		int nAdd = (50 + rand()%101) * nSystemCount;
 		pRace->GetEmpire()->AddFP(nAdd);
 
-		CString sSectorName = pDoc->GetSector(ko.x, ko.y).GetName(false);
+		CString sSectorName = pDoc->GetSystem(ko.x, ko.y).GetName(false);
 		if (sSectorName.IsEmpty())
 			sSectorName.Format("%c%i", (char)(ko.y+97), ko.x + 1);
 
@@ -200,7 +200,7 @@ void CRandomEventCtrl::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMa
 			}
 		}
 
-		sMessageText = CLoc::GetString("EVENTSHIPXP",false,pDoc->GetSector(ko.x, ko.y).GetName(true));
+		sMessageText = CLoc::GetString("EVENTSHIPXP",false,pDoc->GetSystem(ko.x, ko.y).GetName(true));
 		typ = EMPIRE_NEWS_TYPE::MILITARY;
 	}
 
@@ -232,7 +232,7 @@ void CRandomEventCtrl::CalcShipEvents() const
 				continue;
 
 			// gibt es keine Schiffe im Sektor, dann macht ein Hüllenvirus auch nichts
-			CSector* pSector = &(pDoc->GetSector(x, y));
+			CSector* pSector = &(pDoc->GetSystem(x, y));
 			if (!pSector->GetIsShipInSector())
 				continue;
 

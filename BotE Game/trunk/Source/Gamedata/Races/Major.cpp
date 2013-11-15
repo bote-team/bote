@@ -478,7 +478,7 @@ void CMajor::AddToLostShipHistory(const CShips& Ship, const CString& sEvent,
 {
 	const CPoint& co = Ship.GetKO();
 	const CBotEDoc& doc = *resources::pDoc;
-	m_ShipHistory.ModifyShip(&Ship, doc.GetSector(co.x, co.y).GetName(TRUE), round, sEvent, sStatus);
+	m_ShipHistory.ModifyShip(&Ship, doc.GetSystem(co.x, co.y).GetName(TRUE), round, sEvent, sStatus);
 }
 
 void CMajor::LostFlagShip(const CShip& ship)

@@ -88,16 +88,15 @@ bool CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBot
 {
 	AssertBotE(pDoc);
 
-	CSector* pDestSector = &(pDoc->GetSector(pDest.x, pDest.y));
-	CSystem* pDestSystem = &(pDoc->GetSystem(pDest.x, pDest.y));
+	const CSystem* pDestSystem = &(pDoc->GetSystem(pDest.x, pDest.y));
 	const CString&  sOwner = pDoc->GetSystem(pFrom.x, pFrom.y).Owner();
 
 	// wurde der Zielsektor durch uns gescannt
-	if (!pDestSector->GetScanned(sOwner))
+	if (!pDestSystem->GetScanned(sOwner))
 		return false;
 
 	// zu allererst das Credits berechnen
-	float habitants = pDestSector->GetCurrentHabitants();
+	float habitants = pDestSystem->GetCurrentHabitants();
 	// wenn keine Leute in dem System leben, so gibt es auch keine Handelsroute.
 	if (habitants == 0.0f)
 		return false;
@@ -119,9 +118,9 @@ bool CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBot
 			return true;
 	}
 	// gehört der Zielsektor einer Minorrace
-	else if (!pDestSector->Free() && pDestSector->GetMinorRace() == TRUE)
+	else if (!pDestSystem->Free() && pDestSystem->GetMinorRace())
 	{
-		CMinor* pMinor = dynamic_cast<CMinor*>(pDoc->GetRaceCtrl()->GetRace(pDestSector->Owner()));
+		CMinor* pMinor = dynamic_cast<CMinor*>(pDoc->GetRaceCtrl()->GetRace(pDestSystem->Owner()));
 		if (pMinor)
 		{
 			if (pMinor->GetAgreement(sOwner) >= DIPLOMATIC_AGREEMENT::TRADE && pMinor->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP)

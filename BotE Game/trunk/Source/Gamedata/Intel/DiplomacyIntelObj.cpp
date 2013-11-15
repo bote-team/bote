@@ -137,7 +137,7 @@ void CDiplomacyIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param
 
 							if (m_MinorRaceKO != CPoint(-1,-1))
 							{
-								s = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(m_MinorRaceKO.x, m_MinorRaceKO.y).GetName())->GetRaceName();
+								s = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSystem(m_MinorRaceKO.x, m_MinorRaceKO.y).GetName())->GetRaceName();
 								csInput.Replace("$minor$", s);
 							}
 							switch (m_nAgreement)
@@ -195,7 +195,7 @@ void CDiplomacyIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param
 									s = pMajor->GetEmpireNameWithArticle();
 							}
 							else if (m_MinorRaceKO != CPoint(-1,-1))
-								s = CLoc::GetString("FEMALE_ARTICLE")+" " + pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(m_MinorRaceKO.x, m_MinorRaceKO.y).GetName())->GetRaceName();
+								s = CLoc::GetString("FEMALE_ARTICLE")+" " + pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSystem(m_MinorRaceKO.x, m_MinorRaceKO.y).GetName())->GetRaceName();
 							csInput.Replace("$major$", s);
 
 							if (m_nRelationship < 5) s = CLoc::GetString("HATEFUL");
@@ -213,7 +213,7 @@ void CDiplomacyIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param
 
 							if (m_MinorRaceKO != CPoint(-1,-1))
 							{
-								s = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(m_MinorRaceKO.x, m_MinorRaceKO.y).GetName())->GetRaceName();
+								s = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSystem(m_MinorRaceKO.x, m_MinorRaceKO.y).GetName())->GetRaceName();
 								csInput.Replace("$minor$", s);
 							}
 						}
@@ -267,7 +267,7 @@ void CDiplomacyIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param
 							}
 							if (m_MinorRaceKO != CPoint(-1,-1))
 							{
-								s = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(m_MinorRaceKO.x, m_MinorRaceKO.y).GetName())->GetRaceName();
+								s = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSystem(m_MinorRaceKO.x, m_MinorRaceKO.y).GetName())->GetRaceName();
 								csInput.Replace("$minor$", s);
 							}
 							if (m_sMajor != "")

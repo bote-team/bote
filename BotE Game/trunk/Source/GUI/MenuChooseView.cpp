@@ -435,7 +435,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 			 {
 				 for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 					 for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-						 if (pDoc->GetSector(x, y).GetSunSystem() == TRUE
+						 if (pDoc->GetSystem(x, y).GetSunSystem() == TRUE
 							 && pDoc->GetSystem(x, y).Owner() == pMajor->GetRaceID())
 							{
 								pDoc->SetKO(x,y);

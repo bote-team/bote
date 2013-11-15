@@ -158,14 +158,14 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 
 			// Wenn wir mit der Minorrace mindst. einen Handelsvertrag abgeschlossen haben, dann wird deren Sector gescannt/gesehen
 			if (pMinor->GetAgreement(pMajor->GetRaceID()) >= DIPLOMATIC_AGREEMENT::TRADE)
-				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetScanned(pMajor->GetRaceID());
+				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetScanned(pMajor->GetRaceID());
 			// Wenn wir mit der Minorrace mindst. einen Freundschaftsvertrag abgeschlossen haben, dann wird deren Sector bekannt
 			if (pMinor->GetAgreement(pMajor->GetRaceID()) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
-				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetKnown(pMajor->GetRaceID());
+				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetKnown(pMajor->GetRaceID());
 			// Wenn wir eine Mitgliedschaft mit der kleinen Rasse haben und das System noch der kleinen Rasse gehört, dann bekommen wir das
 			if (pMinor->IsMemberTo(pMajor->GetRaceID()) && !pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).Majorized())
 			{
-				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetFullKnown(pMajor->GetRaceID());
+				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetFullKnown(pMajor->GetRaceID());
 				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).ChangeOwner(pMajor->GetRaceID(),
 					CSystem::OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME);
 				// Nun Gebäude in neuen System bauen
@@ -183,7 +183,7 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 
 						i->second->SetOwnerOfShip(pMajor->GetRaceID());
 						// Schiff in die Shiphistory stecken
-						pMajor->GetShipHistory()->AddShip(i->second, pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(true), pDoc->GetCurrentRound());
+						pMajor->GetShipHistory()->AddShip(i->second, pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(true), pDoc->GetCurrentRound());
 					}
 				}
 			}
@@ -204,7 +204,7 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 			// Wenn wir eine Mitgliedschaft bei der kleinen Rasse hatten, sprich uns das System noch gehört, wir aber
 			// der kleinen Rasse den Krieg erklären bzw. den Vertrag aufheben (warum auch immer?!?) und das System nicht
 			// gewaltätig erobert wurde, dann gehört uns das System auch nicht mehr
-			if (pMinor->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP && pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetMinorRace() == TRUE &&
+			if (pMinor->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP && pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetMinorRace() == TRUE &&
 				!pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).Taken())
 			{
 				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).ChangeOwner(pMinor->GetRaceID(), 

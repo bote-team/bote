@@ -312,7 +312,7 @@ void CMapTile::PutScannedSquare(unsigned range, const int power,
 				const int y = m_KO.y + j;
 				if(0 <= y && y < STARMAP_SECTORS_VCOUNT) {
 					CBotEDoc* pDoc = resources::pDoc;
-					CMapTile& scanned_sector = static_cast<CMapTile&>(pDoc->GetSector(x, y));
+					CMapTile& scanned_sector = static_cast<CMapTile&>(pDoc->GetSystem(x, y));
 					// Teiler für die Scanstärke berechnen
 					int div = max(abs(i), abs(j));
 					if(anomaly)

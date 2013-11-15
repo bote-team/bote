@@ -905,7 +905,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				pDoc->SetCurrentShip(next_current_ship);
 				const CPoint& co = next_current_ship->second->GetKO();
 				if (was_terraform)
-					pDoc->GetSector(co.x, co.y).RecalcPlanetsTerraformingStatus();
+					pDoc->GetSystem(co.x, co.y).RecalcPlanetsTerraformingStatus();
 
 				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CFleetMenuView));
 				Invalidate(FALSE);
@@ -1309,7 +1309,7 @@ CString CShipBottomView::CreateTooltip(void)
 //
 //			const CString& sRaceID = pMajor->GetRaceID();
 //			if (pShip->GetOwnerOfShip() != sRaceID
-//				&& pDoc->GetSector(active_sector.x, active_sector.y).GetScanPower(sRaceID) <= stealthPower)
+//				&& pDoc->GetSystem(active_sector.x, active_sector.y).GetScanPower(sRaceID) <= stealthPower)
 //				continue;
 //			if (counter < m_iPage*9 && counter >= (m_iPage-1)*9)
 //			{

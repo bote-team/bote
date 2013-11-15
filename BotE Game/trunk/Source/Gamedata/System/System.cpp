@@ -3144,7 +3144,7 @@ unsigned CSystem::CheckResourceRoutesExistence(CBotEDoc& pDoc) {
 		CResourceRoute& res_route = m_ResourceRoutes.GetAt(i);
 		const CPoint dest = res_route.GetKO();
 
-		if (!res_route.CheckResourceRoute(m_sOwner, &pDoc.GetSector(dest.x, dest.y)))
+		if (!res_route.CheckResourceRoute(m_sOwner, &pDoc.GetSystem(dest.x, dest.y)))
 		{
 			m_ResourceRoutes.RemoveAt(i--);
 			deletedResourceRoutes++;

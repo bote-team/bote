@@ -571,7 +571,7 @@ void CShip::UnsetCurrentOrder() {
 	const bool was_terraform = m_iCurrentOrder == SHIP_ORDER::TERRAFORM;
 	m_iCurrentOrder = SHIP_ORDER::NONE;
 	if(was_terraform)
-		resources::pDoc->GetSector(m_KO.x, m_KO.y).RecalcPlanetsTerraformingStatus();
+		resources::pDoc->GetSystem(m_KO.x, m_KO.y).RecalcPlanetsTerraformingStatus();
 }
 
 bool CShip::RemoveDestroyed(CRace& owner, unsigned short round, const CString& sEvent, const CString& sStatus, CStringArray* destroyedShips, const CString& anomaly) {
@@ -601,7 +601,7 @@ void CShip::SetTerraform(short planetNumber) {
 	else
 		m_iCurrentOrder = SHIP_ORDER::TERRAFORM;
 	m_nTerraformingPlanet = planetNumber;
-	resources::pDoc->GetSector(m_KO.x, m_KO.y).RecalcPlanetsTerraformingStatus();
+	resources::pDoc->GetSystem(m_KO.x, m_KO.y).RecalcPlanetsTerraformingStatus();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -1253,7 +1253,7 @@ void CShip::DrawOrderTerraform(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool,
 	AssertBotE(pDoc);
 
 	if (pDoc->m_bDataReceived) {
-		CSector sec = pDoc->GetSector(GetKO().x, GetKO().y);
+		CSector sec = pDoc->GetSystem(GetKO().x, GetKO().y);
 		CString s = sec.GetPlanet(GetTerraform())->GetPlanetGraphicFile();
 		Bitmap* graphic = pGraphicPool->GetGDIGraphic(s);
 
@@ -1576,7 +1576,7 @@ bool CShip::SanityCheckOrdersConsistency(const CShip& with) const {
 	AssertBotE(CanHaveOrder(with.m_iCurrentOrder, false));
 	if(m_iCurrentOrder == SHIP_ORDER::TERRAFORM) {
 		AssertBotE(0 <= m_nTerraformingPlanet &&
-			m_nTerraformingPlanet < static_cast<int>(resources::pDoc->GetSector(m_KO.x, m_KO.y).GetNumberOfPlanets()));
+			m_nTerraformingPlanet < static_cast<int>(resources::pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfPlanets()));
 	}
 	return m_iCurrentOrder == with.m_iCurrentOrder
 		&& m_nCombatTactic == with.m_nCombatTactic

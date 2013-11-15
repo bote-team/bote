@@ -139,13 +139,6 @@ public:
 	/// @return Koordinate auf der Galaxiemap
 	CPoint GetRaceKO(const CString& sMajorID) const;
 
-	CSector& GetSector(int x, int y) {
-		return static_cast<CSector&>(GetSystem(x, y));
-	}
-	const CSector& GetSector(int x, int y) const {
-		return static_cast<const CSector&>(GetSystem(x, y));
-	}
-
 	CSystem& GetSystem(int x, int y) {
 		return m_Systems.at(x+y*STARMAP_SECTORS_HCOUNT);
 	}
