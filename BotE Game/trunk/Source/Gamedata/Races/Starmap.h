@@ -187,6 +187,7 @@ public:
 	 * @param nAIRange maximale Reichweite, innerhalb derer Auﬂenposten gebaut werden sollen und die zusammenh‰ngen soll
 	 */
 	CStarmap(BOOL bAICalculation = FALSE, char nAIRange = SM_RANGE_NEAR);
+	static void AllocateStatics();
 	virtual ~CStarmap();
 
 	/**

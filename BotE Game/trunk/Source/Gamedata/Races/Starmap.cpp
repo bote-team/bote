@@ -19,7 +19,7 @@ static char THIS_FILE[]=__FILE__;
 
 
 // statische Variablen initialisieren
-std::vector<double> CStarmap::m_BadMapModifiers(STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT, 0);
+std::vector<double> CStarmap::m_BadMapModifiers(0, 0);
 
 
 /**
@@ -66,6 +66,11 @@ CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICal
 
 	pathMap = std::vector<std::vector<PathSector>>(
 		STARMAP_SECTORS_HCOUNT, std::vector<PathSector>(STARMAP_SECTORS_VCOUNT));
+}
+
+void CStarmap::AllocateStatics()
+{
+	m_BadMapModifiers.resize(STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT, 0);
 }
 
 CStarmap::~CStarmap()

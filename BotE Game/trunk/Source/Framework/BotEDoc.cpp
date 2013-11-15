@@ -5694,6 +5694,8 @@ void CBotEDoc::AllocateSystems()
 	for(int y = 0; y < STARMAP_SECTORS_VCOUNT; ++y)
 		for(int x = 0; x < STARMAP_SECTORS_HCOUNT; ++x)
 			m_Systems.push_back(CSystem(x, y));
+
+	CStarmap::AllocateStatics();
 }
 
 void CBotEDoc::RandomSeed(const int* OnlyIfDifferentThan) {
