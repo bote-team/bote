@@ -117,7 +117,7 @@ bool CMinor::PerhapsExtend(CBotEDoc* pDoc)
 
 	// Wenn der dazugehörige Sektor nicht der kleinen Rasse gehört, also eine andere Rasse diese vereinnahmt hat,
 	// dann wächst das System auch nicht mehr automatisch
-	if (pDoc->GetSector(m_ptKO.x, m_ptKO.y).GetOwnerOfSector() != m_sID)
+	if (pDoc->GetSector(m_ptKO.x, m_ptKO.y).TileOwner() != m_sID)
 		return false;
 
 	bool bColonized = pDoc->GetSector(m_ptKO.x, m_ptKO.y).PerhapsMinorExtends(m_iTechnologicalProgress);
@@ -144,7 +144,7 @@ void CMinor::PerhapsBuildShip(CBotEDoc* pDoc)
 
 	// Wenn der dazugehörige Sektor nicht der kleinen Rasse gehört, also eine andere Rasse diese vereinnahmt hat,
 	// dann wächst das System auch nicht mehr automatisch
-	if (pDoc->GetSector(m_ptKO.x, m_ptKO.y).GetOwnerOfSector() != m_sID)
+	if (pDoc->GetSector(m_ptKO.x, m_ptKO.y).TileOwner() != m_sID)
 		return;
 
 	// Vielleicht baut die Minorrace ein Schiff in dieser Runde

@@ -220,7 +220,7 @@ void CMoralObserver::CalculateEvents(std::vector<CSystem>& systems, const CStrin
 	{
 		const short moral = m_iMoralMatrix[m_iEvents.GetAt(0)][byMappedRaceNumber - 1];
 		for(std::vector<CSystem>::iterator it = systems.begin(); it != systems.end(); ++it)
-			if(it->GetOwnerOfSystem() == sRaceID)
+			if(it->TileOwner() == sRaceID)
 				it->SetMoral(moral);
 		m_iEvents.RemoveAt(0);
 	}

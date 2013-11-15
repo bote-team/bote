@@ -73,7 +73,7 @@ BOOLEAN CAttackSystem::Calculate()
 	USHORT killedTroopsInSystem = m_pSystem->GetTroops()->GetSize();
 
 	int shipDefence = 0;
-	if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->IsMajor())
+	if (m_pSystem->Majorized() && m_pDefender != NULL && m_pDefender->IsMajor())
 		shipDefence = m_pSystem->GetProduction()->GetShipDefend();
 //MYTRACE("general")(MT::LEVEL_INFO, "m_sOwnerOfSystem %s\n", sRace);
 
@@ -122,7 +122,6 @@ BOOLEAN CAttackSystem::Calculate()
 	if (m_pTroops.GetSize() > 0 && m_pSystem->GetHabitants() > 0.0f)
 	{
 		// Das System wurde erobert. Truppen aus dem Transporter werden in dem System stationiert
-		m_pSystem->SetOwnerOfSystem(m_pTroops.GetAt(0)->GetOwner());
 		// jetzt die Truppen dem System hinzufügen
 		for (int i = 0; i < m_pTroops.GetSize(); i++)
 			m_pSystem->AddTroop(m_pTroops.GetAt(i));
@@ -206,7 +205,7 @@ void CAttackSystem::CalculateShipDefence()
 	MYTRACE("general")(MT::LEVEL_INFO, "CAttackSystem::CalculateShipDefence() begin...\n");
 	int defence = 0;
 	USHORT killedShips = 0;
-	if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->IsMajor())
+	if (m_pSystem->Majorized() && m_pDefender != NULL && m_pDefender->IsMajor())
 		defence = m_pSystem->GetProduction()->GetShipDefend();
 		MYTRACE("general")(MT::LEVEL_INFO, "System Attack: Defender %s, System %s, ShipDefence %d\n", m_pDefender, m_pSystem, defence);
 	// einfacher Algorithmus:
@@ -332,7 +331,7 @@ MYTRACE("general")(MT::LEVEL_INFO, "SHIELDS_SAVED_LIFE\n", torpedoDamage);
 		// Wenn der Torpedoangriff Gebäude zerstört hat, dann dies bei dem System beachten. Deshalb werden die Werte des
 		// Systems neu berechnet. Speziel muss man hier die Gebäude beachten, die durch einen Energiemangel hätten ausfallen
 		// können. Diese auch offline schalten und dann die Sache nochmal berechnen.
-		if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->IsMajor())
+		if (m_pSystem->Majorized() && m_pDefender != NULL && m_pDefender->IsMajor())
 		{
 			m_pSystem->CalculateVariables();
 			m_pSystem->CheckEnergyBuildings();
@@ -485,7 +484,7 @@ MYTRACE("general")(MT::LEVEL_INFO, "ti = \"%f\"\n", ti);
 	if (fighted)
 	{
 		m_pSystem->SetHabitants(m_pSector->GetCurrentHabitants());
-		if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->IsMajor())
+		if (m_pSystem->Majorized() && m_pDefender != NULL && m_pDefender->IsMajor())
 		{
 			m_pSystem->CalculateVariables();
 			m_pSystem->CheckEnergyBuildings();

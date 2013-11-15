@@ -41,7 +41,7 @@ CMapTile::CMapTile(int x, int y) :
 
 CMapTile::CMapTile(const CMapTile& other) :
 	m_KO(other.m_KO),
-	m_sOwnerOfSector(other.m_sOwnerOfSector),
+	m_sOwner(other.m_sOwner),
 	m_strSectorName(other.m_strSectorName),
 	m_bSunSystem(other.m_bSunSystem),
 	m_Status(other.m_Status),
@@ -66,7 +66,7 @@ CMapTile& CMapTile::operator=(const CMapTile& other){
 	if(this != &other )
 	{
 		m_KO = other.m_KO;
-		m_sOwnerOfSector = other.m_sOwnerOfSector;
+		m_sOwner = other.m_sOwner;
 		m_strSectorName = other.m_strSectorName;
 		m_bSunSystem = other.m_bSunSystem;
 		m_Status = other.m_Status;
@@ -104,8 +104,8 @@ void CMapTile::Reset()
 	m_iStartStationPoints.clear();
 	m_iNeededStationPoints.clear();
 
-	m_sOwnerOfSector = "";
-	m_strSectorName = "";
+	m_sOwner.Empty();
+	m_strSectorName.Empty();
 
 	delete m_pAnomaly;
 	m_pAnomaly = NULL;
@@ -139,7 +139,7 @@ void CMapTile::Serialize(CArchive &ar)
 		ar << m_KO;
 		ar << m_Outpost;
 		ar << m_Starbase;
-		ar << m_sOwnerOfSector;
+		ar << m_sOwner;
 
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen gespeichert werden
 		if (GetSunSystem())
@@ -156,7 +156,7 @@ void CMapTile::Serialize(CArchive &ar)
 		ar >> m_Outpost;
 		m_Starbase.Empty();
 		ar >> m_Starbase;
-		ar >> m_sOwnerOfSector;
+		ar >> m_sOwner;
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen geladen werden
 		if (GetSunSystem())
 			ar >> m_strSectorName;
@@ -220,7 +220,7 @@ short CMapTile::GetScanPower(const CString& sRace, bool bWith_ships) const
 //////////////////////////////////////////////////////////////////////
 
 static bool StationBuildContinuable(const CString& race, const CMapTile& sector) {
-	const CString& owner = sector.GetOwnerOfSector();
+	const CString& owner = sector.TileOwner();
 	return owner.IsEmpty() || owner == race || sector.GetIsStationBuilding(race);
 }
 
@@ -297,7 +297,7 @@ void CMapTile::PutScannedSquare(unsigned range, const int power,
 	// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor befindet,
 	// dann wird die Scanleistung um 20% erhöht.
 	if(patrolship) {
-		if(race_id == m_sOwnerOfSector || race.GetAgreement(m_sOwnerOfSector) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
+		if(race_id == m_sOwner || race.GetAgreement(m_sOwner) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
 			boni = 1.2f;
 	}
 	if(bBetterScanner) {
@@ -354,7 +354,7 @@ void CMapTile::DrawSectorsName(CDC *pDC, CBotEDoc* pDoc, CMajor* pPlayer)
 	{
 		COLORREF clrTextColor = CFontLoader::GetFontColor(pPlayer, 0);
 		pDC->SetTextColor(clrTextColor);
-		CMajor* pOwner = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pDoc->GetSystem(m_KO.x, m_KO.y).GetOwnerOfSystem()));
+		CMajor* pOwner = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pDoc->GetSystem(m_KO.x, m_KO.y).TileOwner()));
 		if (pOwner)
 		{
 			if (pPlayer->IsRaceContacted(pOwner->GetRaceID()) == true || pPlayer->GetRaceID() == pOwner->GetRaceID())
@@ -477,12 +477,12 @@ void CMapTile::CalculateOwner()
 {
 	if(!m_Outpost.IsEmpty())
 	{
-		m_sOwnerOfSector = m_Outpost;
+		m_sOwner = m_Outpost;
 		return;
 	}
 	if(!m_Starbase.IsEmpty())
 	{
-		m_sOwnerOfSector = m_Starbase;
+		m_sOwner = m_Starbase;
 		return;
 	}
 
@@ -504,7 +504,7 @@ void CMapTile::CalculateOwner()
 	}
 	if (!newOwner.IsEmpty())
 		SetScanned(newOwner);
-	m_sOwnerOfSector = newOwner;
+	m_sOwner = newOwner;
 }
 
 //////////////////////////////////////////////////////////////////////

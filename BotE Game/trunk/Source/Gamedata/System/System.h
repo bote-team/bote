@@ -34,7 +34,16 @@ class CGlobalBuildings;
 
 class CSystem : public CSector
 {
+
 public:
+	enum OWNING_STATUS
+	{
+		OWNING_STATUS_EMPTY,
+		OWNING_STATUS_INDEPENDENT_MINOR,
+		OWNING_STATUS_REBELLED,
+		OWNING_STATUS_TAKEN,
+		OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME
+	};
 
 //////////////////////////////////////////////////////////////////////
 // construction/destruction
@@ -69,8 +78,12 @@ public:
 
 // Zugriffsfunktionen
 	// zum Lesen der Membervariablen
-	// Funktion gibt den Besitzer des Systems zurück, sollte eigentlich immer auch der Besitzer des Sektors sein.
-	const CString& GetOwnerOfSystem() const {return m_sOwnerOfSystem;}
+
+	const bool Majorized() const;
+
+	/// Diese Funktion gibt zurück, ob der Sektor militärisch erobert wurde.
+	bool Taken(void) const {return m_OwningStatus == OWNING_STATUS_TAKEN;}
+	bool Rebelled() const { return m_OwningStatus == OWNING_STATUS_REBELLED; }
 
 	// Funktion gibt die aktuelle Bevölkerung des Systems zurück.
 	double GetHabitants() const {return m_dHabitants;}
@@ -187,10 +200,6 @@ public:
 //////////////////////////////////////////////////////////////////////
 // setting
 //////////////////////////////////////////////////////////////////////
-
-	// zum Schreiben der Membervariabblen
-	// Funktion setzt den neuen Besitzer des Systems. Übergeben wird der Besitzer.
-	void SetOwnerOfSystem(const CString& sOwnerOfSystem);
 
 	// Funktion setzt die Bevölkerungsanzahl des Systems. Übergeben wird die Bevölkerung aller Planeten des Sektors.
 	// Gleichzeitig überprüft die Funktion auch, ob man eine weitere Handelsroute aufgrund der Bevölkerung bekommt, dann
@@ -432,8 +441,13 @@ public:
 // owner
 //////////////////////////////////////////////////////////////////////
 
+	// zum Schreiben der Membervariabblen
+	// Funktion setzt den neuen Besitzer des Systems. Übergeben wird der Besitzer.
+	void ChangeOwner(const CString& new_one, OWNING_STATUS status);
+
 	void CalculateOwner();
 	bool GetOwned() const;
+	CString TileOwner(void) const;
 
 //////////////////////////////////////////////////////////////////////
 // other functions
@@ -441,14 +455,15 @@ public:
 
 	void ExecuteManager(CMajor& owner, bool turn_change, bool energy = true);
 
+	bool CheckSanity() const;
+
 //////////////////////////////////////////////////////////////////////
 // member variables
 //////////////////////////////////////////////////////////////////////
 
 private:
 
-	// Der Besitzer des Systems
-	CString m_sOwnerOfSystem;
+	OWNING_STATUS m_OwningStatus;
 
 	// Einwohner in dem System
 	double m_dHabitants;

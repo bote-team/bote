@@ -23,10 +23,10 @@ CShipAI::CShipAI(CBotEDoc* pDoc) : m_pSectorAI()
 	map<CString, int> systems;
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_pDoc->GetSystem(x, y).GetOwnerOfSystem() != "")
+			if (m_pDoc->GetSystem(x, y).Majorized())
 			{
-				moralAll[m_pDoc->GetSystem(x, y).GetOwnerOfSystem()] += m_pDoc->GetSystem(x, y).GetMoral();
-				systems[m_pDoc->GetSystem(x, y).GetOwnerOfSystem()] += 1;
+				moralAll[m_pDoc->GetSystem(x, y).TileOwner()] += m_pDoc->GetSystem(x, y).GetMoral();
+				systems[m_pDoc->GetSystem(x, y).TileOwner()] += 1;
 			}
 
 	// alles initial initialisieren
@@ -96,7 +96,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 			// schon einer anderen Rasse gehört
 			if (i->second->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 			{
-				if (m_pDoc->GetSector(ptKO.x, ptKO.y).GetOwnerOfSector() != "" && m_pDoc->GetSector(ptKO.x, ptKO.y).GetOwnerOfSector() != sOwner)
+				if (!m_pDoc->GetSector(ptKO.x, ptKO.y).TileOwner().IsEmpty() && m_pDoc->GetSector(ptKO.x, ptKO.y).TileOwner() != sOwner)
 				{
 					// Terraforming abbrechen
 					i->second->UnsetCurrentOrder();
@@ -106,7 +106,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 
 			CPoint ptTarget = i->second->GetTargetKO();
 			// nur wenn der Sektor noch niemandem gehört bzw. uns selbst ist, sollen Planeten terraformt werden
-			if (ptTarget != CPoint(-1,-1) && m_pDoc->GetSector(ptTarget.x, ptTarget.y).GetOwnerOfSector() != "" && m_pDoc->GetSector(ptTarget.x, ptTarget.y).GetOwnerOfSector() != sOwner)
+			if (ptTarget != CPoint(-1,-1) && !m_pDoc->GetSector(ptTarget.x, ptTarget.y).TileOwner().IsEmpty() && m_pDoc->GetSector(ptTarget.x, ptTarget.y).TileOwner() != sOwner)
 			{
 				// nicht weiter fliegen und Kurs löschen
 				i->second->SetTargetKO(CPoint(-1, -1));
@@ -225,7 +225,7 @@ void CShipAI::CalculateAlienShipOrders(CShips& ship)
 		const CSystem& system = m_pDoc->GetSystem(co.x, co.y);
 		if (system.GetSunSystem())
 		{
-			const CRace* owner = m_pDoc->GetRaceCtrl()->GetRace(system.GetOwnerOfSystem());
+			const CRace* owner = m_pDoc->GetRaceCtrl()->GetRace(system.TileOwner());
 			if (owner && owner->IsMajor() && owner->GetAgreement(StrToCStr(MIDWAY_ZEITREISENDE)) == DIPLOMATIC_AGREEMENT::WAR)
 			{
 				// Damit irgendwann auch einmal der Angriffsbegehl zurückgenommen wird und das Midwayschiff nicht
@@ -268,7 +268,7 @@ bool CShipAI::DoTerraform(CShips* pShip)
 
 	CSector* pSector = &m_pDoc->GetSector(pShip->GetKO().x, pShip->GetKO().y);
 	// nur wenn der Sektor noch niemandem gehört bzw. uns selbst ist, sollen Planeten terraformt werden
-	if (pSector->GetOwnerOfSector() != "" && pSector->GetOwnerOfSector() != pShip->GetOwnerOfShip())
+	if (!pSector->TileOwner().IsEmpty() && pSector->TileOwner() != pShip->GetOwnerOfShip())
 		return false;
 
 	int nMinTerraPoints = INT_MAX;
@@ -328,7 +328,7 @@ bool CShipAI::DoColonize(CShips* pShip)
 
 	CSector* pSector = &m_pDoc->GetSector(pShip->GetKO().x, pShip->GetKO().y);
 	// Gehört der Sektor aktuell auch keiner Minorrace (also niemanden oder uns selbst)
-	if (pSector->GetOwnerOfSector() != "" && pSector->GetOwnerOfSector() != pShip->GetOwnerOfShip())
+	if (!pSector->TileOwner().IsEmpty() && pSector->TileOwner() != pShip->GetOwnerOfShip())
 		return false;
 
 	// Kolonisierungsbefehl geben
@@ -606,7 +606,7 @@ bool CShipAI::DoStationBuild(CShips* pShip)
 		return false;
 
 	// Nur wenn der Sektor uns bzw. niemanden gehört
-	if (m_pDoc->GetSector(ptKO.x, ptKO.y).GetOwnerOfSector() == "" || m_pDoc->GetSector(ptKO.x, ptKO.y).GetOwnerOfSector() == sRace)
+	if (m_pDoc->GetSector(ptKO.x, ptKO.y).TileOwner().IsEmpty() || m_pDoc->GetSector(ptKO.x, ptKO.y).TileOwner() == sRace)
 	{
 		pShip->SetTargetKO(CPoint(-1, -1));
 		pShip->SetCurrentOrder(SHIP_ORDER::BUILD_OUTPOST);

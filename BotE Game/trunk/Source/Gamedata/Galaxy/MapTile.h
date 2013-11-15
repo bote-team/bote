@@ -91,7 +91,7 @@ public:
 	BOOLEAN GetSunSystem(void) const {return m_bSunSystem;}
 
 	/// Diese Funktion gibt zurück, wer im Besitz dieses Sektors ist.
-	CString GetOwnerOfSector(void) const {return m_sOwnerOfSector;}
+	CString TileOwner(void) const {return m_sOwner;}
 
 //// DISCOVER_STATUS ////
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob dieser Sektor von der Majorrace
@@ -257,9 +257,6 @@ public:
 //// SectorAttributes ////
 	/// Diese Funktion legt fest, ob sich ein Sonnensystem in diesem Sektor befindet.
 	void SetSunSystem(BOOLEAN is) { m_bSunSystem = is; }
-
-	/// Funktion legt fest, wem der Sektor gehört.
-	void SetOwnerOfSector(const CString& sOwner) {m_sOwnerOfSector = sOwner;}
 
 //// DISCOVER_STATUS ////
 	/// Diese Funktion legt fest, ob der Sektor von der Majorrace <code>Race</code> gescannt ist.
@@ -448,7 +445,7 @@ protected:
 	CPoint m_KO;
 
 	/// Wem gehört der Sektor?
-	CString m_sOwnerOfSector;
+	CString m_sOwner;
 
 private:
 

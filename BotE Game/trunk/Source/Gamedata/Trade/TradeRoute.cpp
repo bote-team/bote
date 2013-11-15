@@ -90,7 +90,7 @@ bool CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBot
 
 	CSector* pDestSector = &(pDoc->GetSector(pDest.x, pDest.y));
 	CSystem* pDestSystem = &(pDoc->GetSystem(pDest.x, pDest.y));
-	CString  sOwner = pDoc->GetSystem(pFrom.x, pFrom.y).GetOwnerOfSystem();
+	CString  sOwner = pDoc->GetSystem(pFrom.x, pFrom.y).TileOwner();
 
 	// wurde der Zielsektor durch uns gescannt
 	if (!pDestSector->GetScanned(sOwner))
@@ -111,16 +111,17 @@ bool CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBot
 	m_iCredits = max(m_iCredits, 1);
 
 	// gehört der Zielsektor einer Majorrace und nicht uns?
-	if (pDestSystem->GetOwnerOfSystem() != "" && pDestSystem->GetOwnerOfSystem() != sOwner)
+	if (pDestSystem->Majorized() && pDestSystem->TileOwner() != sOwner)
 	{
-		CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pDestSystem->GetOwnerOfSystem()));
-		if (pMajor && pMajor->GetAgreement(sOwner) >= DIPLOMATIC_AGREEMENT::TRADE)
+		CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pDestSystem->TileOwner()));
+		AssertBotE(pMajor);
+		if (pMajor->GetAgreement(sOwner) >= DIPLOMATIC_AGREEMENT::TRADE)
 			return true;
 	}
 	// gehört der Zielsektor einer Minorrace
-	else if (pDestSector->GetOwnerOfSector() != "" && pDestSector->GetMinorRace() == TRUE)
+	else if (!pDestSector->TileOwner().IsEmpty() && pDestSector->GetMinorRace() == TRUE)
 	{
-		CMinor* pMinor = dynamic_cast<CMinor*>(pDoc->GetRaceCtrl()->GetRace(pDestSector->GetOwnerOfSector()));
+		CMinor* pMinor = dynamic_cast<CMinor*>(pDoc->GetRaceCtrl()->GetRace(pDestSector->TileOwner()));
 		if (pMinor)
 		{
 			if (pMinor->GetAgreement(sOwner) >= DIPLOMATIC_AGREEMENT::TRADE && pMinor->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP)
@@ -143,14 +144,15 @@ void CTradeRoute::PerhapsChangeRelationship(const CPoint& pFrom, const CPoint& p
 	CSystem* pDestSector = &(pDoc->GetSystem(pDest.x, pDest.y));
 	AssertBotE(pDestSector);
 
-	CString  sOwner = pDoc->GetSystem(pFrom.x, pFrom.y).GetOwnerOfSystem();
+	CString  sOwner = pDoc->GetSystem(pFrom.x, pFrom.y).TileOwner();
 	if (sOwner == "")
 		return;
 
-	if (pDestSector->GetOwnerOfSector() != "" && pDestSector->GetMinorRace() == TRUE)
+	if (pDestSector->GetMinorRace())
 	{
+		AssertBotE(!pDestSector->TileOwner().IsEmpty());
 		// Minorrace holen
-		CMinor* pMinor = dynamic_cast<CMinor*>(pDoc->GetRaceCtrl()->GetRace(pDestSector->GetOwnerOfSector()));
+		CMinor* pMinor = dynamic_cast<CMinor*>(pDoc->GetRaceCtrl()->GetRace(pDestSector->TileOwner()));
 		if (pMinor)
 		{
 			short relAdd = rand()%(pMinor->GetCorruptibility()+1);

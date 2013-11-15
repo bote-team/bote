@@ -276,7 +276,7 @@ int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 		nValue = 0;
 		for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				if (pDoc->GetSector(x,y).GetCurrentHabitants() > 0.0 && pDoc->GetSector(x,y).GetOwnerOfSector() != "")
+				if (pDoc->GetSector(x,y).GetCurrentHabitants() > 0.0 && !pDoc->GetSector(x,y).TileOwner().IsEmpty())
 					nValue++;
 		MYTRACE("general")(MT::LEVEL_INFO, "VICTORYTYPE_CONQUEST - needed value: %i", nValue/2);
 		return max(nValue >> 1, 10);
@@ -388,7 +388,7 @@ void CVictoryObserver::Observe(void)
 			for (int i = 0; i < pMajor->GetEmpire()->GetSystemList()->GetSize(); i++)
 			{
 				const EMPIRE_SYSTEMS* pInfo = &pMajor->GetEmpire()->GetSystemList()->GetAt(i);
-				if (pDoc->GetSector(pInfo->ko.x, pInfo->ko.y).GetTakenSector())
+				if (pDoc->GetSystem(pInfo->ko.x, pInfo->ko.y).Taken())
 					nValue++;
 			}
 			if (nValue > 0)

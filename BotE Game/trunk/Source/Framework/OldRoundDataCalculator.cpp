@@ -81,9 +81,8 @@ void COldRoundDataCalculator::ExecuteRebellion(CSystem& system, CMajor* pMajor) 
 	{
 		CMinor* pMinor = pRaceCtrl->GetMinorRace(sectorname);
 		AssertBotE(pMinor);
-		system.SetOwnerOfSector(pMinor->GetRaceID());
 
-		if (system.GetTakenSector() == FALSE)
+		if (!system.Taken())
 		{
 			pMinor->SetAgreement(pMajor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 			pMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
@@ -94,16 +93,13 @@ void COldRoundDataCalculator::ExecuteRebellion(CSystem& system, CMajor* pMajor) 
 			message.CreateNews(news, EMPIRE_NEWS_TYPE::DIPLOMACY, "", co);
 			pEmpire->AddMsg(message);
 		}
+		system.ChangeOwner(pMinor->GetRaceID(), CSystem::OWNING_STATUS_INDEPENDENT_MINOR);
 	}
 	else
-	{
-		system.SetOwnerOfSector("");
-	}
+		system.ChangeOwner("", CSystem::OWNING_STATUS_REBELLED);
 
 	// wichtige Variablen zurücksetzen
-	system.SetTakenSector(FALSE);
 	system.SetShipPort(FALSE, pMajor->GetRaceID());
-	system.SetOwnerOfSystem("");
 }
 
 void COldRoundDataCalculator::ExecuteFamine(CSystem& system, CMajor* pMajor)

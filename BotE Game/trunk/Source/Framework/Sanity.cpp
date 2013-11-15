@@ -117,28 +117,9 @@ void CSanity::CheckShipUniqueness(const CShips& ship, std::set<CString>& already
 	Notify(s);
 }
 
-void CSanity::SanityCheckSectorAndSystem(const CSystem& system, const CBotEDoc& doc)
+void CSanity::SanityCheckSectorAndSystem(const CSystem& system)
 {
-	CString s;
-	AssertBotE(!system.HasOutpost() || ! system.HasStarbase());
-	const CString& sOwnerOfSystem = system.GetOwnerOfSystem();
-	const CString& sOwnerOfSector = system.GetOwnerOfSector();
-	bool minor = false;
-	if(sOwnerOfSector != sOwnerOfSystem)
-	{
-		AssertBotE(sOwnerOfSystem.IsEmpty());
-		AssertBotE(!sOwnerOfSector.IsEmpty());
-		if(system.GetMinorRace())
-			minor = true;
-		else
-			AssertBotE(system.GetCurrentHabitants() == 0);
-	}
-	if(sOwnerOfSector.IsEmpty())
-		return;
-	const CRaceController& RaceCtrl = *doc.GetRaceCtrl();
-	const CRace* pRace = RaceCtrl.GetRace(sOwnerOfSector);
-	AssertBotE(pRace);
-	AssertBotE(minor ? pRace->IsMinor() : pRace->IsMajor());
+	AssertBotE(system.CheckSanity());
 }
 
 //void CSanity::ShipInfo(const CArray<CShip, CShip>& shiparray, int index, const CString& indexname) {

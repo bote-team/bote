@@ -12,6 +12,7 @@
 #include "Ships/ships.h"
 #include "ClientWorker.h"
 #include "AssertBotE.h"
+#include "resources.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -37,7 +38,7 @@ CSystem::CSystem(int x, int y) :
 
 CSystem::CSystem(const CSystem &other) :
 	CSector(other),
-	m_sOwnerOfSystem(other.m_sOwnerOfSystem),
+	m_OwningStatus(other.m_OwningStatus),
 	m_dHabitants(other.m_dHabitants),
 	m_AssemblyList(other.m_AssemblyList),
 	m_Production(other.m_Production),
@@ -84,7 +85,7 @@ CSystem::~CSystem()
 
 CSystem& CSystem::operator=(const CSystem& other)
 {
-	m_sOwnerOfSystem = other.m_sOwnerOfSystem;
+	m_OwningStatus = other.m_OwningStatus;
 	m_dHabitants = other.m_dHabitants;
 	m_AssemblyList = other.m_AssemblyList;
 	m_Production = other.m_Production;
@@ -131,7 +132,7 @@ void CSystem::ResetSystem(bool call_up)
 	if(call_up)
 		CSector::Reset(call_up);
 
-	m_sOwnerOfSystem = "";			// Der Besitzer des Systems
+	m_OwningStatus = OWNING_STATUS_EMPTY;
 	m_dHabitants = 0.0f;			// Einwohner in dem System
 	m_iMoral = 100;					// Moral im System
 	m_byBlockade = 0;				// Prozentwert der Blockade im System
@@ -177,7 +178,7 @@ void CSystem::Serialize(CArchive &ar, bool end_of_round)
 	if(!end_of_round)
 	{
 		CSector::Serialize(ar);
-		if(!GetSunSystem() || GetOwnerOfSector().IsEmpty() && GetColonyOwner().IsEmpty() && !GetMinorRace())
+		if(!GetSunSystem() || TileOwner().IsEmpty() && GetColonyOwner().IsEmpty() && !GetMinorRace())
 			return;
 	}
 
@@ -189,7 +190,7 @@ void CSystem::Serialize(CArchive &ar, bool end_of_round)
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
-		ar << m_sOwnerOfSystem;
+		ar << static_cast<int>(m_OwningStatus);
 		ar << m_dHabitants;
 		ar << m_iMoral;
 		ar << m_byBlockade;
@@ -231,7 +232,8 @@ void CSystem::Serialize(CArchive &ar, bool end_of_round)
 	if (ar.IsLoading())
 	{
 		int number = 0;
-		ar >> m_sOwnerOfSystem;
+		ar >> number;
+		m_OwningStatus = static_cast<OWNING_STATUS>(number);
 		ar >> m_dHabitants;
 		ar >> m_iMoral;
 		ar >> m_byBlockade;
@@ -290,6 +292,12 @@ void CSystem::Serialize(CArchive &ar, bool end_of_round)
 //////////////////////////////////////////////////////////////////////
 // proper getting
 //////////////////////////////////////////////////////////////////////
+
+const bool CSystem::Majorized() const
+{
+	return m_OwningStatus == OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME
+		|| m_OwningStatus == OWNING_STATUS_TAKEN;
+}
 
 // Funktion gibt die Anzahl oder die RunningNumber (ID) der Gebäude zurück, welche Arbeiter benötigen.
 // Wir übergeben dafür als Parameter den Typ des Gebäudes (FARM, BAUHOF usw.) und einen Modus.
@@ -424,7 +432,7 @@ USHORT CSystem::GetNumberOfBuilding(USHORT runningNumber) const
 UINT CSystem::GetDeritiumStoreMax() const
 {
 	short multi = 1;
-	const CMajor* major = dynamic_cast<CMajor*>(resources::pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
+	const CMajor* major = dynamic_cast<CMajor*>(resources::pDoc->GetRaceCtrl()->GetRace(m_sOwner));
 	const CResearchInfo* info = major->GetEmpire()->GetResearch()->GetResearchInfo();
 	if (info->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->
 		GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
@@ -543,27 +551,6 @@ int* CSystem::GetResourceStorages(USHORT res)
 // setting
 //////////////////////////////////////////////////////////////////////
 
-// Funktion setzt den neuen Besitzer des Systems. Übergeben wird der Besitzer.
-void CSystem::SetOwnerOfSystem(const CString& sOwnerOfSystem)
-{
-	// ändert sich nichts, dann aus der Funktion springen
-	if (m_sOwnerOfSystem == sOwnerOfSystem)
-		return;
-
-	// neuen Besitzer festlegen
-	m_sOwnerOfSystem = sOwnerOfSystem;
-
-	// alle alten Ressourcen- und Handelsrouten löschen
-	m_TradeRoutes.RemoveAll();
-	m_ResourceRoutes.RemoveAll();
-
-	// Alle Truppen entfernen
-	m_Troops.RemoveAll();
-
-	// Bauliste hart löschen
-	m_AssemblyList.Reset();
-}
-
 // Funktion setzt die Bevölkerungsanzahl des Systems. Übergeben wird die Bevölkerung aller Planeten des Sektors.
 // Gleichzeitig überprüft die Funktion auch, ob man eine weitere Handelsroute aufgrund der Bevölkerung bekommt, dann
 // gibt die Funktion ein <code>TRUE</code> zurück, ansonsten <code>FALSE</code>.
@@ -574,7 +561,7 @@ BOOLEAN CSystem::SetHabitants(double habitants)
 	if (((USHORT)m_dHabitants / TRADEROUTEHAB) > m_byMaxTradeRoutesFromHab)
 	{
 		m_byMaxTradeRoutesFromHab++;
-		if (m_sOwnerOfSystem != "")
+		if (Majorized())
 			return TRUE;
 	}
 	// Wenn die Bevölkerung wieder zu niedrig ist, dann die Varibale wieder runterzählen
@@ -809,7 +796,7 @@ namespace //helpers for CalculateVariables()
 // Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der System-Klasse.
 void CSystem::CalculateVariables()
 {
-	const CMajor* pOwner = dynamic_cast<CMajor*>(resources::pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
+	const CMajor* pOwner = dynamic_cast<CMajor*>(resources::pDoc->GetRaceCtrl()->GetRace(m_sOwner));
 	AssertBotE(pOwner);
 	const CResearchInfo* const ResearchInfo = pOwner->GetEmpire()->GetResearch()->GetResearchInfo();
 	const BuildingInfoArray* const buildingInfos = resources::BuildingInfo;
@@ -885,15 +872,15 @@ void CSystem::CalculateVariables()
 
 	// Besitzt jemand ein Monopol auf eine Ressource, so verdoppelt sich seine Produktion
 	const CString *const sMonopolOwner = CTrade::GetMonopolOwner();
-	if (sMonopolOwner[RESOURCES::TITAN] == m_sOwnerOfSystem)
+	if (sMonopolOwner[RESOURCES::TITAN] == m_sOwner)
 		m_Production.m_iTitanProd *= 2;
-	if (sMonopolOwner[RESOURCES::DEUTERIUM] == m_sOwnerOfSystem)
+	if (sMonopolOwner[RESOURCES::DEUTERIUM] == m_sOwner)
 		m_Production.m_iDeuteriumProd *= 2;
-	if (sMonopolOwner[RESOURCES::DURANIUM] == m_sOwnerOfSystem)
+	if (sMonopolOwner[RESOURCES::DURANIUM] == m_sOwner)
 		m_Production.m_iDuraniumProd *= 2;
-	if (sMonopolOwner[RESOURCES::CRYSTAL] == m_sOwnerOfSystem)
+	if (sMonopolOwner[RESOURCES::CRYSTAL] == m_sOwner)
 		m_Production.m_iCrystalProd *= 2;
-	if (sMonopolOwner[RESOURCES::IRIDIUM] == m_sOwnerOfSystem)
+	if (sMonopolOwner[RESOURCES::IRIDIUM] == m_sOwner)
 		m_Production.m_iIridiumProd *= 2;
 
 	// Die Boni auf die einzelnen Produktionen berechnen
@@ -1056,7 +1043,7 @@ void CSystem::CalculateVariables()
 	m_Production.m_iEnergyProd -= neededEnergy;
 
 	// imperiumweite Moralprod mit aufrechnen
-	m_Production.m_iMoralProd += m_Production.m_iMoralProdEmpireWide[m_sOwnerOfSystem];
+	m_Production.m_iMoralProd += m_Production.m_iMoralProdEmpireWide[m_sOwner];
 	// Den Moralboni im System noch auf die einzelnen Produktionen anrechnen
 	m_Production.IncludeSystemMoral(m_iMoral);
 	// benötigte Nahrung durch Bevölkerung von der Produktion abiehen
@@ -1129,7 +1116,6 @@ BOOLEAN CSystem::CalculateStorages(CResearchInfo* researchInfo, int diliAdd)
 		USHORT random = rand()%(m_iMoral+1);
 		if (random < 8)
 		{
-			m_sOwnerOfSystem = "";
 			m_Production.m_iFoodProd = 10;
 			m_Production.m_iIndustryProd = 5;
 			m_iMoral = 65;
@@ -1149,7 +1135,7 @@ void CSystem::CalculateBuildableShips()
 	m_BuildableShips.FreeExtra();
 	// Hier jetzt schauen ob wir eine Werft haben und anhand der größe der Werft können wir bestimmte
 	// Schiffstypen bauen
-	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
+	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sOwner));
 	if (!pMajor)
 		return;
 
@@ -1296,7 +1282,7 @@ void CSystem::CalculateEmpireWideMoralProd(const BuildingInfoArray *buildingInfo
 		if (m_Buildings.GetAt(i).GetIsBuildingOnline())
 		{
 			const CBuildingInfo *buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
-			m_Production.m_iMoralProdEmpireWide[m_sOwnerOfSystem] += buildingInfo->GetMoralProdEmpire();
+			m_Production.m_iMoralProdEmpireWide[m_sOwner] += buildingInfo->GetMoralProdEmpire();
 		}
 }
 
@@ -1366,7 +1352,7 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 	// max. X Gebäude von ID im Imperium
 	if (building->GetMaxInEmpire() > 0)
 	{
-		int nCount = globals->GetCountGlobalBuilding(m_sOwnerOfSystem, building->GetRunningNumber());
+		int nCount = globals->GetCountGlobalBuilding(m_sOwner, building->GetRunningNumber());
 		if (nCount >= building->GetMaxInEmpire())
 			return FALSE;
 	}
@@ -1380,7 +1366,7 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 		}
 		if (building->GetOnlyOwnColony())
 		{
-			if (GetColonyOwner() == m_sOwnerOfSystem && GetName() != pMajor->GetHomesystemName())
+			if (GetColonyOwner() == m_sOwner && GetName() != pMajor->GetHomesystemName())
 				return TRUE;
 		}
 		if (building->GetOnlyMinorRace())
@@ -1390,7 +1376,7 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 		}
 		if (building->GetOnlyTakenSystem())
 		{
-			if (GetTakenSector() == TRUE)
+			if (m_OwningStatus == OWNING_STATUS_TAKEN)
 				return TRUE;
 		}
 		return FALSE;
@@ -1398,7 +1384,7 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 	// Zuerst eigene Kolonie checken
 	if (building->GetOnlyOwnColony())
 	{
-		if (GetColonyOwner() == m_sOwnerOfSystem && GetName() != pMajor->GetHomesystemName())
+		if (GetColonyOwner() == m_sOwner && GetName() != pMajor->GetHomesystemName())
 		{
 			return TRUE;
 		}
@@ -1414,7 +1400,7 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 		}
 		if (building->GetOnlyTakenSystem())
 		{
-			if (GetTakenSector() == TRUE)
+			if (m_OwningStatus == OWNING_STATUS_TAKEN)
 				return TRUE;
 		}
 		return FALSE;
@@ -1433,12 +1419,12 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 		}
 		if (building->GetOnlyOwnColony())
 		{
-			if (GetColonyOwner() == m_sOwnerOfSystem && GetName() != pMajor->GetHomesystemName())
+			if (GetColonyOwner() == m_sOwner && GetName() != pMajor->GetHomesystemName())
 				return TRUE;
 		}
 		if (building->GetOnlyTakenSystem())
 		{
-			if (GetTakenSector() == TRUE)
+			if (m_OwningStatus == OWNING_STATUS_TAKEN)
 				return TRUE;
 		}
 		return FALSE;
@@ -1446,7 +1432,7 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 	// Zuerst erobertes System checken
 	if (building->GetOnlyTakenSystem())
 	{
-		if (GetTakenSector() == TRUE)
+		if (m_OwningStatus == OWNING_STATUS_TAKEN)
 		{
 			return TRUE;
 		}
@@ -1457,7 +1443,7 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 		}
 		if (building->GetOnlyOwnColony())
 		{
-			if (GetColonyOwner() == m_sOwnerOfSystem && GetName() != pMajor->GetHomesystemName())
+			if (GetColonyOwner() == m_sOwner && GetName() != pMajor->GetHomesystemName())
 				return TRUE;
 		}
 		if (building->GetOnlyMinorRace())
@@ -1733,7 +1719,7 @@ namespace //helpers for CalculateBuildableBuildings()
 void CSystem::CalculateBuildableBuildings(CGlobalBuildings* globals)
 {
 	const BuildingInfoArray* buildingInfo = resources::BuildingInfo;
-	CMajor* pMajor = dynamic_cast<CMajor*>(resources::pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
+	CMajor* pMajor = dynamic_cast<CMajor*>(resources::pDoc->GetRaceCtrl()->GetRace(m_sOwner));
 
 	CEmpire* empire = pMajor->GetEmpire();
 	AssertBotE(empire);
@@ -2011,12 +1997,11 @@ void CSystem::Colonize(const CShips& ship, CMajor& major)
 	CEmpire* empire = major.GetEmpire();
 	// Gebäude bauen, wenn wir das System zum ersten Mal kolonisieren,
 	// sprich das System noch niemanden gehört
-	if (GetOwnerOfSystem().IsEmpty())
+	if (!Majorized())
 	{
 		// Sector- und Systemwerte ändern
-		m_sOwnerOfSector = shipowner;
+		ChangeOwner(shipowner, OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME);
 		m_sColonyOwner = shipowner;
-		SetOwnerOfSystem(shipowner);
 		// Gebäude nach einer Kolonisierung bauen
 		BuildBuildingsAfterColonization(resources::BuildingInfo,ship.GetColonizePoints());
 		// Nachricht an das Imperium senden, das ein System neu kolonisiert wurde
@@ -2060,7 +2045,7 @@ void CSystem::BuildBuildingsAfterColonization(const BuildingInfoArray *buildingI
 	CBotEDoc* pDoc = resources::pDoc;
 	AssertBotE(pDoc);
 
-	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(GetOwnerOfSector()));
+	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(TileOwner()));
 	AssertBotE(pMajor);
 
 	// alle Gebäude die wir nach Systemeroberung nicht haben dürfen werden aus der Liste der aktuellen Gebäude entfernt
@@ -2648,7 +2633,7 @@ BOOLEAN CSystem::AssemblyListCheck(const BuildingInfoArray* buildingInfo, CGloba
 		if (buildingInfo->GetAt(entry - 1).GetMaxInEmpire() > 0)
 		{
 			short ID = buildingInfo->GetAt(entry - 1).GetRunningNumber();
-			short nCount = globals->GetCountGlobalBuilding(m_sOwnerOfSystem, ID);
+			short nCount = globals->GetCountGlobalBuilding(m_sOwner, ID);
 			if (nCount >= buildingInfo->GetAt(entry - 1).GetMaxInEmpire())
 				bFound = true;
 		}
@@ -2703,7 +2688,7 @@ BOOLEAN CSystem::AssemblyListCheck(const BuildingInfoArray* buildingInfo, CGloba
 			USHORT nID = m_AssemblyList.GetAssemblyListEntry(i);
 			if (buildingInfo->GetAt(nID - 1).GetMaxInEmpire() > 0)
 			{
-				int nCount = globals->GetCountGlobalBuilding(m_sOwnerOfSystem, nID);
+				int nCount = globals->GetCountGlobalBuilding(m_sOwner, nID);
 				// Haben wir dieses Gebäude schon "oft genug" stehen und in der Bauliste der Systeme, dann aus der
 				// Bauliste nehmen
 				if (nCount >= buildingInfo->GetAt(nID - 1).GetMaxInEmpire())
@@ -2795,7 +2780,7 @@ public:
 		const CShipInfo* pShipInfo, const CTroopInfo* pTroopInfo)
 	{
 		const CMajor* pMajor = dynamic_cast<CMajor*>(
-			resources::pDoc->GetRaceCtrl()->GetRace(system.GetOwnerOfSystem()));
+			resources::pDoc->GetRaceCtrl()->GetRace(system.TileOwner()));
 		system.GetAssemblyList()->CalculateNeededRessources(
 			pBuildingInfo,
 			pShipInfo, pTroopInfo, system.GetAllBuildings(), index,
@@ -2942,7 +2927,7 @@ BOOLEAN CSystem::AddTradeRoute(CPoint dest, std::vector<CSystem>& systems, CRese
 	// System haben.
 	if (canAddTradeRoute)
 		for(std::vector<CSystem>::const_iterator it = systems.begin(); it != systems.end(); ++it)
-			if(it->GetOwnerOfSystem() == m_sOwnerOfSystem)
+			if(it->TileOwner() == m_sOwner)
 				if(&*it != this)
 					for (int i = 0; i < it->GetTradeRoutes()->GetSize(); i++)
 						if(it->GetTradeRoutes()->GetAt(i).GetDestKO() == dest)
@@ -3096,7 +3081,7 @@ BOOLEAN CSystem::AddResourceRoute(CPoint dest, BYTE res, const std::vector<CSyst
 
 	USHORT maxResourceRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes() + addResRoute;
 
-	if (systems.at(dest.x+(dest.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != this->GetOwnerOfSystem())
+	if (systems.at(dest.x+(dest.y)*STARMAP_SECTORS_HCOUNT).TileOwner() != this->TileOwner())
 		return FALSE;
 	if (systems.at(dest.x+(dest.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() == 0.0f || this->GetHabitants() == 0.0f)
 		return FALSE;
@@ -3159,7 +3144,7 @@ unsigned CSystem::CheckResourceRoutesExistence(CBotEDoc& pDoc) {
 		CResourceRoute& res_route = m_ResourceRoutes.GetAt(i);
 		const CPoint dest = res_route.GetKO();
 
-		if (!res_route.CheckResourceRoute(m_sOwnerOfSystem, &pDoc.GetSector(dest.x, dest.y)))
+		if (!res_route.CheckResourceRoute(m_sOwner, &pDoc.GetSector(dest.x, dest.y)))
 		{
 			m_ResourceRoutes.RemoveAt(i--);
 			deletedResourceRoutes++;
@@ -3180,7 +3165,7 @@ void CSystem::CalculateBuildableTroops(const CArray<CTroopInfo>* troopInfos, con
 	// Hier jetzt schauen ob wir eine Kaserne haben
 	if (m_Production.GetBarrack())
 		for (int i = 0; i < troopInfos->GetSize(); i++)
-			if (troopInfos->GetAt(i).GetOwner() == m_sOwnerOfSystem)
+			if (troopInfos->GetAt(i).GetOwner() == m_sOwner)
 			{
 				BOOLEAN buildable = TRUE;
 				// zuerstmal die Forschungsstufen checken
@@ -3238,20 +3223,46 @@ void CSystem::TrainTroops()
 // owner
 //////////////////////////////////////////////////////////////////////
 
+// Funktion setzt den neuen Besitzer des Systems. Übergeben wird der Besitzer.
+void CSystem::ChangeOwner(const CString& new_one, OWNING_STATUS status)
+{
+	if(new_one.IsEmpty())
+		AssertBotE(status == OWNING_STATUS_EMPTY || status == OWNING_STATUS_REBELLED);
+	else
+		AssertBotE(status == OWNING_STATUS_TAKEN || status == OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME
+			|| status == OWNING_STATUS_INDEPENDENT_MINOR);
+
+	m_OwningStatus = status;
+
+	// neuen Besitzer festlegen
+	m_sOwner = new_one;
+
+	// ändert sich nichts, dann aus der Funktion springen
+	if (m_sOwner == new_one)
+		return;
+
+	// alle alten Ressourcen- und Handelsrouten löschen
+	m_TradeRoutes.RemoveAll();
+	m_ResourceRoutes.RemoveAll();
+
+	// Alle Truppen entfernen
+	m_Troops.RemoveAll();
+
+	// Bauliste hart löschen
+	m_AssemblyList.Reset();
+}
+
 void CSystem::CalculateOwner()
 {
 	// Wenn in diesem Sektor das System jemandem gehört,
 	// oder hier eine Schiffswerft durch Außenposten oder Sternbasis
 	// steht, dann ändert sich nichts am Besitzer
-	if (!m_sOwnerOfSystem.IsEmpty())
-	{
-		m_sOwnerOfSector = m_sOwnerOfSystem;
+	if (Majorized() || m_OwningStatus == OWNING_STATUS_REBELLED)
 		return;
-	}
 	// Sektor gehört einer Minorrace
 	else if (GetMinorRace())
 	{
-		AssertBotE(!m_sOwnerOfSector.IsEmpty());
+		AssertBotE(!m_sOwner.IsEmpty());
 		return;
 	}
 
@@ -3260,11 +3271,19 @@ void CSystem::CalculateOwner()
 
 bool CSystem::GetOwned() const
 {
-	if(!m_sOwnerOfSystem.IsEmpty())
+	if(Majorized())
 		return true;
 	if(GetMinorRace())
 		return false;
-	return !m_sOwnerOfSector.IsEmpty();
+	return !m_sOwner.IsEmpty();
+}
+
+/// Diese Funktion gibt zurück, wer im Besitz dieses Sektors ist.
+CString CSystem::TileOwner(void) const
+{
+	if(Majorized() || GetMinorRace())
+		return CMapTile::TileOwner();
+	return "";
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -3291,4 +3310,26 @@ void CSystem::ExecuteManager(CMajor& owner, bool turn_change, bool energy)
 		ManagerMessage(CLoc::GetString("MANAGER_MALFUNCTION",false, name), owner, m_KO);
 	if(turn_change && m_Manager.CheckFamine(*this))
 		ManagerMessage(CLoc::GetString("MANAGER_FAMINE_WARNING",false, name), owner, m_KO);
+}
+
+bool CSystem::CheckSanity() const
+{
+	const CRaceController& RaceCtrl = *resources::pDoc->GetRaceCtrl();
+	AssertBotE(!HasOutpost() || !HasStarbase());
+
+	switch(m_OwningStatus)
+	{
+		case OWNING_STATUS_EMPTY:
+			return GetCurrentHabitants() == 0;
+		case OWNING_STATUS_INDEPENDENT_MINOR:
+			return RaceCtrl.GetMinorRace(GetName())->GetRaceID() == m_sOwner
+				&& GetCurrentHabitants() > 0;
+		case OWNING_STATUS_REBELLED:
+			return m_sOwner.IsEmpty() && GetCurrentHabitants() > 0;
+		case OWNING_STATUS_TAKEN:
+		case OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME:
+			return GetCurrentHabitants() > 0 && RaceCtrl.GetRace(m_sOwner)->IsMajor();
+	}
+	AssertBotE(false);
+	return false;
 }

@@ -163,13 +163,11 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 			if (pMinor->GetAgreement(pMajor->GetRaceID()) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetKnown(pMajor->GetRaceID());
 			// Wenn wir eine Mitgliedschaft mit der kleinen Rasse haben und das System noch der kleinen Rasse gehört, dann bekommen wir das
-			if (pMinor->IsMemberTo(pMajor->GetRaceID()) && pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetOwnerOfSystem() == "")
+			if (pMinor->IsMemberTo(pMajor->GetRaceID()) && !pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).Majorized())
 			{
 				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetFullKnown(pMajor->GetRaceID());
-				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetOwnerOfSystem(pMajor->GetRaceID());
-				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetOwnerOfSector(pMajor->GetRaceID());
-				// Der Sector gilt jetzt als nicht eingenommen
-				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetTakenSector(FALSE);
+				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).ChangeOwner(pMajor->GetRaceID(),
+					CSystem::OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME);
 				// Nun Gebäude in neuen System bauen
 				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).BuildBuildingsForMinorRace(&pDoc->BuildingInfo, pDoc->GetStatistics()->GetAverageTechLevel(), pMinor);
 				// Gebäude so weit wie möglich mit Arbeitern besetzen
@@ -200,17 +198,17 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 		if (pMinor->GetRaceKO() == CPoint(-1,-1))
 			continue;
 
-		CString sOwner = pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetOwnerOfSystem();
+		CString sOwner = pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).TileOwner();
 		if (sOwner != "")
 		{
 			// Wenn wir eine Mitgliedschaft bei der kleinen Rasse hatten, sprich uns das System noch gehört, wir aber
 			// der kleinen Rasse den Krieg erklären bzw. den Vertrag aufheben (warum auch immer?!?) und das System nicht
 			// gewaltätig erobert wurde, dann gehört uns das System auch nicht mehr
 			if (pMinor->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP && pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetMinorRace() == TRUE &&
-				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetTakenSector() == FALSE)
+				!pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).Taken())
 			{
-				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetOwnerOfSector(pMinor->GetRaceID());
-				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetOwnerOfSystem("");
+				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).ChangeOwner(pMinor->GetRaceID(), 
+					CSystem::OWNING_STATUS_INDEPENDENT_MINOR);
 				CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sOwner));
 				if (pMajor)
 				{
@@ -301,7 +299,7 @@ void CDiplomacyController::SendToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDiplom
 				{
 					CPoint p = pDoc->GetRaceKO(pToMajor->GetRaceID());
 					// gehört das System auch noch dem Major
-					if (p != CPoint(-1,-1) && pDoc->GetSystem(p.x, p.y).GetOwnerOfSystem() == pToMajor->GetRaceID())
+					if (p != CPoint(-1,-1) && pDoc->GetSystem(p.x, p.y).TileOwner() == pToMajor->GetRaceID())
 						pDoc->GetSystem(p.x, p.y).SetDeritiumStore(pInfo->m_nResources[RESOURCES::DERITIUM]);
 				}
 
@@ -541,7 +539,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						{
 							CPoint p = pDoc->GetRaceKO(pToMajor->GetRaceID());
 							// gehört das System auch noch dem Major
-							if (p != CPoint(-1,-1) && pDoc->GetSystem(p.x, p.y).GetOwnerOfSystem() == pToMajor->GetRaceID())
+							if (p != CPoint(-1,-1) && pDoc->GetSystem(p.x, p.y).TileOwner() == pToMajor->GetRaceID())
 								pDoc->GetSystem(p.x, p.y).SetDeritiumStore(pInfo->m_nResources[RESOURCES::DERITIUM]);
 						}
 
@@ -599,7 +597,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						{
 							CPoint pt = answer.m_ptKO;
 							if (pt != CPoint(-1,-1))
-								if (pDoc->GetSystem(pt.x, pt.y).GetOwnerOfSystem() == pFromRace->GetRaceID())
+								if (pDoc->GetSystem(pt.x, pt.y).TileOwner() == pFromRace->GetRaceID())
 									pDoc->GetSystem(pt.x, pt.y).SetResourceStore(res, answer.m_nResources[res]);
 						}
 					}
@@ -628,7 +626,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						{
 							CPoint p = pDoc->GetRaceKO(pFromRace->GetRaceID());
 							// gehört das System auch noch dem Major
-							if (p != CPoint(-1,-1) && pDoc->GetSystem(p.x, p.y).GetOwnerOfSystem() == pFromRace->GetRaceID())
+							if (p != CPoint(-1,-1) && pDoc->GetSystem(p.x, p.y).TileOwner() == pFromRace->GetRaceID())
 								pDoc->GetSystem(p.x, p.y).SetDeritiumStore(pInfo->m_nResources[RESOURCES::DERITIUM]);
 						}
 
@@ -699,7 +697,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						{
 							CPoint p = pDoc->GetRaceKO(pToMajor->GetRaceID());
 							// gehört das System auch noch dem Major
-							if (p != CPoint(-1,-1) && pDoc->GetSystem(p.x, p.y).GetOwnerOfSystem() == pToMajor->GetRaceID())
+							if (p != CPoint(-1,-1) && pDoc->GetSystem(p.x, p.y).TileOwner() == pToMajor->GetRaceID())
 								pDoc->GetSystem(p.x, p.y).SetDeritiumStore(pInfo->m_nResources[RESOURCES::DERITIUM]);
 						}
 
@@ -793,7 +791,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						{
 							CPoint pt = answer.m_ptKO;
 							if (pt != CPoint(-1,-1))
-								if (pDoc->GetSystem(pt.x, pt.y).GetOwnerOfSystem() == pFromRace->GetRaceID())
+								if (pDoc->GetSystem(pt.x, pt.y).TileOwner() == pFromRace->GetRaceID())
 									pDoc->GetSystem(pt.x, pt.y).SetResourceStore(res, answer.m_nResources[res]);
 						}
 					}
@@ -1137,7 +1135,7 @@ void CDiplomacyController::ReceiveToMinor(CBotEDoc* pDoc, CMinor* pToMinor, CDip
 					{
 						CPoint pt = pInfo->m_ptKO;
 						if (pt != CPoint(-1,-1))
-							if (pDoc->GetSystem(pt.x, pt.y).GetOwnerOfSystem() == pFromMajor->GetRaceID())
+							if (pDoc->GetSystem(pt.x, pt.y).TileOwner() == pFromMajor->GetRaceID())
 								pDoc->GetSystem(pt.x, pt.y).SetResourceStore(res, pInfo->m_nResources[res]);
 					}
 				}

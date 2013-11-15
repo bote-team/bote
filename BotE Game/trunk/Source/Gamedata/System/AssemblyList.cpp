@@ -507,7 +507,7 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, std::vecto
 	{
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
-			if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == system->GetOwnerOfSystem() && CPoint(x,y) != ko)
+			if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).TileOwner() == system->TileOwner() && CPoint(x,y) != ko)
 			{
 				for (int i = 0; i < systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize(); i++)
 				{
@@ -682,7 +682,7 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, std::vector<CSystem>& sy
 	{
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
-			if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == system->GetOwnerOfSystem() && CPoint(x,y) != ko)
+			if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).TileOwner() == system->TileOwner() && CPoint(x,y) != ko)
 			{
 				for (int i = 0; i < systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize(); i++)
 				{

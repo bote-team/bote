@@ -93,8 +93,8 @@ void CStatistics::GetDemographicsBSP(const CString& sRaceID, int& nPlace, float&
 	// es werden alle Creditseinnahmen aller Systeme betrachtet
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (pDoc->GetSystem(x,y).GetOwnerOfSystem() != "")
-				mMap[pDoc->GetSystem(x,y).GetOwnerOfSystem()] += pDoc->GetSystem(x,y).GetProduction()->GetCreditsProd();
+			if (pDoc->GetSystem(x,y).Majorized())
+				mMap[pDoc->GetSystem(x,y).TileOwner()] += pDoc->GetSystem(x,y).GetProduction()->GetCreditsProd();
 
 			MYTRACE("general")(MT::LEVEL_INFO, "Demographics - BSP: multiply with 5 ");
 	CalcDemoValues(sRaceID, &mMap, nPlace, fValue, fAverage, fFirst, fLast);
@@ -116,13 +116,13 @@ void CStatistics::GetDemographicsProductivity(const CString& sRaceID, int& nPlac
 	// Es wird die komplette Industrieproduktion und Ressourcenproduktion aller Rassen betrachtet
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (pDoc->GetSystem(x,y).GetOwnerOfSystem() != "")
+			if (pDoc->GetSystem(x,y).Majorized())
 			{
 				float fResProd = 0.0f;
 				for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 					fResProd += pDoc->GetSystem(x,y).GetProduction()->GetResourceProd(i);
 				fResProd /= 2.5;
-				mMap[pDoc->GetSystem(x,y).GetOwnerOfSystem()] += pDoc->GetSystem(x,y).GetProduction()->GetIndustryProd() + fResProd;
+				mMap[pDoc->GetSystem(x,y).TileOwner()] += pDoc->GetSystem(x,y).GetProduction()->GetIndustryProd() + fResProd;
 			}
 
 			MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Productivity: 1:1");
@@ -180,8 +180,8 @@ void CStatistics::GetDemographicsResearch(const CString& sRaceID, int& nPlace, f
 	// Es wird die komplette Industrieproduktion aller Rassen betrachtet
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (pDoc->GetSystem(x,y).GetOwnerOfSystem() != "")
-				mMap[pDoc->GetSystem(x,y).GetOwnerOfSystem()] += pDoc->GetSystem(x,y).GetProduction()->GetResearchProd();
+			if (pDoc->GetSystem(x,y).Majorized())
+				mMap[pDoc->GetSystem(x,y).TileOwner()] += pDoc->GetSystem(x,y).GetProduction()->GetResearchProd();
 
 	MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Research: multiply with 5");
 	CalcDemoValues(sRaceID, &mMap, nPlace, fValue, fAverage, fFirst, fLast);
@@ -204,10 +204,10 @@ void CStatistics::GetDemographicsMoral(const CString& sRaceID, int& nPlace, floa
 	// Es wird die komplette Industrieproduktion aller Rassen betrachtet
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (pDoc->GetSystem(x,y).GetOwnerOfSystem() != "")
+			if (pDoc->GetSystem(x,y).Majorized())
 			{
-				mMap[pDoc->GetSystem(x,y).GetOwnerOfSystem()] += pDoc->GetSystem(x,y).GetMoral();
-				mCount[pDoc->GetSystem(x,y).GetOwnerOfSystem()] += 1;
+				mMap[pDoc->GetSystem(x,y).TileOwner()] += pDoc->GetSystem(x,y).GetMoral();
+				mCount[pDoc->GetSystem(x,y).TileOwner()] += 1;
 			}
 
 	for (std::map<CString, float>::iterator it = mMap.begin(); it != mMap.end(); ++it)
@@ -278,7 +278,7 @@ void CStatistics::GetTopSystems(int nLimit, std::list<CPoint>& lSystems) const
 	{
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
-			if (pDoc->GetSystem(x,y).GetOwnerOfSystem() != "")
+			if (pDoc->GetSystem(x,y).Majorized())
 			{
 				// Wert berechnen
 				int nValue = 0;

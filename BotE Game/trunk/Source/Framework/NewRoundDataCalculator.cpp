@@ -101,7 +101,7 @@ void CNewRoundDataCalculator::CalcIntelligenceBoni(const CSystemProd* production
 
 void CNewRoundDataCalculator::CalcMoral(CSystem& system, CArray<CTroopInfo>& TroopInfo) {
 	// Wurde das System militärisch erobert, so verringert sich die Moral pro Runde etwas
-	if (system.GetTakenSector() && system.GetMoral() > 70)
+	if (system.Taken() && system.GetMoral() > 70)
 		system.SetMoral(-rand()%2);
 	// möglicherweise wird die Moral durch stationierte Truppen etwas stabilisiert
 	system.IncludeTroopMoralValue(&TroopInfo);
@@ -113,13 +113,13 @@ void CNewRoundDataCalculator::CalcPreLoop() {
 	// übertragen
 	for(std::vector<CSystem>::iterator sy = m_pDoc->m_Systems.begin(); sy != m_pDoc->m_Systems.end(); ++sy) {
 		if(sy->GetSunSystem()) {
-			const bool system_owner_exists = !sy->GetOwnerOfSystem().IsEmpty();
+			const bool system_owner_exists = sy->Majorized();
 			if(system_owner_exists) {
 				// imperiumsweite Moralproduktion aus diesem System berechnen
 				sy->CalculateEmpireWideMoralProd(&m_pDoc->BuildingInfo);
 			}
 			if(system_owner_exists || sy->GetMinorRace()) {
-				const CString& sector_owner = sy->GetOwnerOfSector();
+				const CString& sector_owner = sy->TileOwner();
 				AssertBotE(!sector_owner.IsEmpty());
 				//Building scan power and range in a system isn't influenced by other systems, is it...?
 				//This needs to be here in the first loop, since when calculating the scan power that
@@ -198,7 +198,7 @@ namespace {
 			if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
 				settings.scanned = true;
 
-		if (sector.GetOwnerOfSector() == from) {
+		if (sector.TileOwner() == from) {
 			if (agreement >= DIPLOMATIC_AGREEMENT::TRADE)
 				settings.scanned = true;
 			if (agreement >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)

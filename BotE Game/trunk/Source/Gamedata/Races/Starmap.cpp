@@ -201,8 +201,8 @@ void CStarmap::SynchronizeWithMap(const std::vector<CSystem>& systems, const std
 {
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "")
-				if (m_Range[x][y] > 0 && races->find(systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector()) != races->end())
+			if (!systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).TileOwner().IsEmpty())
+				if (m_Range[x][y] > 0 && races->find(systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).TileOwner()) != races->end())
 					m_Range[x][y] = 0;
 }
 
@@ -865,14 +865,14 @@ void CStarmap::SetBadAIBaseSectors(const std::vector<CSystem>& systems, const CS
 			if (m_Range[x][y] >= m_nAIRange)
 			{
 				double dValue = 0.0;
-				if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == race || systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == "")
+				if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).TileOwner() == race || systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).TileOwner().IsEmpty())
 				{
 					int number = 0;
 					// in einem Umkreis von einem Sektor um den Sektor scannen
 					for (int j = -1; j <= 1; j++)
 						for (int i = -1; i <= 1; i++)
 							if (y + j > -1 && y + j < STARMAP_SECTORS_VCOUNT && x + i > -1 && x + i < STARMAP_SECTORS_HCOUNT)
-								if (systems.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != race && systems.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "")
+								if (systems.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).TileOwner() != race && !systems.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).TileOwner().IsEmpty())
 									number++;
 					dValue += (50.0 * number);
 				}

@@ -197,7 +197,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		g->DrawImage(bg_transportmenu, 0, 0, 1075, 750);
 
 	CString s;
-	CString systemOwner = pDoc->GetSystem(p.x, p.y).GetOwnerOfSystem();
+	CString systemOwner = pDoc->GetSystem(p.x, p.y).TileOwner();
 	CString shipOwner = pDoc->CurrentShip()->second->GetOwnerOfShip();
 
 	Gdiplus::Font font(CComBSTR(fontName), fontSize);
@@ -465,7 +465,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	CalcLogicalPoint(point);
 
 	CPoint p = pDoc->GetKO();
-	CString systemOwner = pDoc->GetSystem(p.x, p.y).GetOwnerOfSystem();
+	CString systemOwner = pDoc->GetSystem(p.x, p.y).TileOwner();
 	CString shipOwner   = ship->second->GetOwnerOfShip();
 
 	BOOLEAN isFleet = FALSE;
@@ -800,7 +800,7 @@ void CTransportMenuView::OnMouseMove(UINT nFlags, CPoint point)
 		return;
 
 	CPoint p = pDoc->GetKO();
-	CString systemOwner = pDoc->GetSystem(p.x, p.y).GetOwnerOfSystem();
+	CString systemOwner = pDoc->GetSystem(p.x, p.y).TileOwner();
 	CString shipOwner   = ship->second->GetOwnerOfShip();
 
 	if (systemOwner == shipOwner)

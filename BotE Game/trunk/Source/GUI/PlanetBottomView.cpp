@@ -248,8 +248,8 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		}
 	}
 	// Symbole zu Truppen zeichnen
-	if (pDoc->GetSector(KO.x, KO.y).GetSunSystem() && pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector() != "" &&
-		(pDoc->GetSector(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) > 50 || pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector() == pMajor->GetRaceID()))
+	if (pDoc->GetSystem(KO.x, KO.y).Majorized() &&
+		(pDoc->GetSector(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) > 50 || pDoc->GetSector(KO.x, KO.y).TileOwner() == pMajor->GetRaceID()))
 	{
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\troopSmall.bop");
 		int nTroopNumber = pDoc->GetSystem(KO.x, KO.y).GetTroops()->GetSize();
@@ -287,10 +287,10 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(711,0), &fontFormat, &fontBrush);
 	}
 	// Namen des Besitzers des Sector unten rechts zeichnen
-	if (pDoc->GetSector(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector())
-		|| pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector() == pMajor->GetRaceID())
+	if (pDoc->GetSector(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->GetSector(KO.x, KO.y).TileOwner())
+		|| pDoc->GetSector(KO.x, KO.y).TileOwner() == pMajor->GetRaceID())
 	{
-		CRace* pOwner = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector());
+		CRace* pOwner = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSector(KO.x, KO.y).TileOwner());
 		if (pOwner)
 		{
 			s = pOwner->GetRaceName();
@@ -449,7 +449,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 	CalcLogicalPoint(pt);
 
 	// wurde die Maus über den Namen einer Rasse gehalten
-	if (pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector() != "")
+	if (!pDoc->GetSector(KO.x, KO.y).TileOwner().IsEmpty())
 	{
 		if (CRect(735,190,885,220).PtInRect(pt))
 		{
@@ -458,9 +458,9 @@ CString CPlanetBottomView::CreateTooltip(void)
 			if (!pMajor)
 				return "";
 
-			if (pDoc->GetSector(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector()) || pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector() == pMajor->GetRaceID())
+			if (pDoc->GetSector(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->GetSector(KO.x, KO.y).TileOwner()) || pDoc->GetSector(KO.x, KO.y).TileOwner() == pMajor->GetRaceID())
 			{
-				CRace* pOwner = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector());
+				CRace* pOwner = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSector(KO.x, KO.y).TileOwner());
 				if (!pOwner)
 					return "";
 
