@@ -639,7 +639,7 @@ Military sabotage bonus
 [SHIPYARD]
 Shipyard
 [MAX_SHIPSIZE]
-max. ship size
+Max. ship size
 [SHIPYARD_EFFICIENCY]
 Shipyard efficiency
 [BARRACK]
@@ -673,13 +673,13 @@ Troop training
 [RESISTANCE]
 Bribery resistance
 [ADDED_TRADEROUTES]
-added trade routes
+Added trade routes
 [INCOME_ON_TRADEROUTES]
-income on trade routes
+Income on trade routes
 [SHIPRECYCLING]
 Ship recycling
 [BUILDING_BUILDSPEED]
-construction speed
+Construction speed
 [UPGRADE_BUILDSPEED]
 Upgrade construction speed
 [SHIP_BUILDSPEED]
@@ -691,33 +691,33 @@ Troop construction speed
 [PREREQUISITES]
 Prerequisites
 [ONCE_PER_EMPIRE]
-once per empire
+Once per empire
 [MAX_PER_EMPIRE]
-max § per empire
+Max § per empire
 [MAX_ID_PER_EMPIRE]
-max § § per empire
+Max § § per empire
 [ONCE_PER_SYSTEM]
-once per system
+Once per system
 [MAX_PER_SYSTEM]
-max § per system
+Max § per system
 [MAX_ID_PER_SYSTEM]
-max § § in system
+Max § § in system
 [MIN_PER_EMPIRE]
 § § per empire
 [MIN_PER_SYSTEM]
 § § per system
 [ONLY_HOMEPLANET]
-homeworld
+Homeworld
 [ONLY_OWN_COLONY]
-our colony
+Our colony
 [ONLY_MINORRACE_SYSTEM]
-membership system
+Membership system
 [ONLY_TAKEN_SYSTEM]
-conquered system
+Conquered system
 [NEED_MIN_HABITANTS]
-min. § inhabitants
+Min. § inhabitants
 [NEED_WORKER]
-labor unit needed
+Labor unit needed
 
 // successful research news
 [BIO_FINISHED]
