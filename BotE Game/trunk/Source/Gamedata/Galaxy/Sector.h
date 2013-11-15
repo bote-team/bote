@@ -179,6 +179,7 @@ private:
 	/// Die Farbe der Sonne in diesem Sektor
 	BYTE m_bySunColor;
 
+protected:
 	bool m_bMinor;// Gibt es eine kleine Rasse in dem Sector
 
 };

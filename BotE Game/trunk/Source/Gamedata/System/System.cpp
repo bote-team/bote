@@ -178,7 +178,7 @@ void CSystem::Serialize(CArchive &ar, bool end_of_round)
 	if(!end_of_round)
 	{
 		CSector::Serialize(ar);
-		if(!GetSunSystem() || TileOwner().IsEmpty() && GetColonyOwner().IsEmpty() && !GetMinorRace())
+		if(!m_bSunSystem || m_sOwner.IsEmpty() && m_sColonyOwner.IsEmpty() && !m_bMinor)
 			return;
 	}
 
@@ -1144,7 +1144,7 @@ void CSystem::CalculateBuildableShips()
 	{
 		// Array mit baubaren Minorraceschiffen füllen
 		int nMinorShipNumber = -1;
-		if (GetMinorRace())
+		if (m_bMinor)
 		{
 			CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(GetName());
 			if (pMinor)
@@ -1366,12 +1366,12 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 		}
 		if (building->GetOnlyOwnColony())
 		{
-			if (GetColonyOwner() == m_sOwner && GetName() != pMajor->GetHomesystemName())
+			if (m_sColonyOwner == m_sOwner && GetName() != pMajor->GetHomesystemName())
 				return TRUE;
 		}
 		if (building->GetOnlyMinorRace())
 		{
-			if (GetMinorRace() == TRUE)
+			if (m_bMinor)
 				return TRUE;
 		}
 		if (building->GetOnlyTakenSystem())
@@ -1384,7 +1384,7 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 	// Zuerst eigene Kolonie checken
 	if (building->GetOnlyOwnColony())
 	{
-		if (GetColonyOwner() == m_sOwner && GetName() != pMajor->GetHomesystemName())
+		if (m_sColonyOwner == m_sOwner && GetName() != pMajor->GetHomesystemName())
 		{
 			return TRUE;
 		}
@@ -1395,7 +1395,7 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 		}
 		if (building->GetOnlyMinorRace())
 		{
-			if (GetMinorRace() == TRUE)
+			if (m_bMinor)
 				return TRUE;
 		}
 		if (building->GetOnlyTakenSystem())
@@ -1408,7 +1408,7 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 	// Zuerst Minorraceplanet checken
 	if (building->GetOnlyMinorRace())
 	{
-		if (GetMinorRace() == TRUE)
+		if (m_bMinor)
 		{
 			return TRUE;
 		}
@@ -1419,7 +1419,7 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 		}
 		if (building->GetOnlyOwnColony())
 		{
-			if (GetColonyOwner() == m_sOwner && GetName() != pMajor->GetHomesystemName())
+			if (m_sColonyOwner == m_sOwner && GetName() != pMajor->GetHomesystemName())
 				return TRUE;
 		}
 		if (building->GetOnlyTakenSystem())
@@ -1443,12 +1443,12 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 		}
 		if (building->GetOnlyOwnColony())
 		{
-			if (GetColonyOwner() == m_sOwner && GetName() != pMajor->GetHomesystemName())
+			if (m_sColonyOwner == m_sOwner && GetName() != pMajor->GetHomesystemName())
 				return TRUE;
 		}
 		if (building->GetOnlyMinorRace())
 		{
-			if (GetMinorRace() == TRUE)
+			if (m_bMinor)
 				return TRUE;
 		}
 		return FALSE;
@@ -2045,7 +2045,7 @@ void CSystem::BuildBuildingsAfterColonization(const BuildingInfoArray *buildingI
 	CBotEDoc* pDoc = resources::pDoc;
 	AssertBotE(pDoc);
 
-	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(TileOwner()));
+	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sOwner));
 	AssertBotE(pMajor);
 
 	// alle Gebäude die wir nach Systemeroberung nicht haben dürfen werden aus der Liste der aktuellen Gebäude entfernt
@@ -2927,7 +2927,7 @@ BOOLEAN CSystem::AddTradeRoute(CPoint dest, std::vector<CSystem>& systems, CRese
 	// System haben.
 	if (canAddTradeRoute)
 		for(std::vector<CSystem>::const_iterator it = systems.begin(); it != systems.end(); ++it)
-			if(it->TileOwner() == m_sOwner)
+			if(it->m_sOwner == m_sOwner)
 				if(&*it != this)
 					for (int i = 0; i < it->GetTradeRoutes()->GetSize(); i++)
 						if(it->GetTradeRoutes()->GetAt(i).GetDestKO() == dest)
@@ -3081,7 +3081,7 @@ BOOLEAN CSystem::AddResourceRoute(CPoint dest, BYTE res, const std::vector<CSyst
 
 	USHORT maxResourceRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes() + addResRoute;
 
-	if (systems.at(dest.x+(dest.y)*STARMAP_SECTORS_HCOUNT).TileOwner() != this->TileOwner())
+	if (systems.at(dest.x+(dest.y)*STARMAP_SECTORS_HCOUNT).m_sOwner != this->m_sOwner)
 		return FALSE;
 	if (systems.at(dest.x+(dest.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() == 0.0f || this->GetHabitants() == 0.0f)
 		return FALSE;
@@ -3260,7 +3260,7 @@ void CSystem::CalculateOwner()
 	if (Majorized() || m_OwningStatus == OWNING_STATUS_REBELLED)
 		return;
 	// Sektor gehört einer Minorrace
-	else if (GetMinorRace())
+	else if (m_bMinor)
 	{
 		AssertBotE(!m_sOwner.IsEmpty());
 		return;
@@ -3273,7 +3273,7 @@ bool CSystem::GetOwned() const
 {
 	if(Majorized())
 		return true;
-	if(GetMinorRace())
+	if(m_bMinor)
 		return false;
 	return !m_sOwner.IsEmpty();
 }
@@ -3281,7 +3281,7 @@ bool CSystem::GetOwned() const
 /// Diese Funktion gibt zurück, wer im Besitz dieses Sektors ist.
 CString CSystem::TileOwner(void) const
 {
-	if(Majorized() || GetMinorRace())
+	if(Majorized() || m_bMinor)
 		return CMapTile::TileOwner();
 	return "";
 }

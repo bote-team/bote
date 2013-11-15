@@ -447,12 +447,11 @@ protected:
 	/// Wem gehört der Sektor?
 	CString m_sOwner;
 
-private:
-
 	/// Der Name des Sectors
 	CString m_strSectorName;
 
 	bool m_bSunSystem;// Ist ein Sonnensystem in diesem Sektor?
+private:
 
 	/// Variable speichert den Status über diesen Sektor, wobei 0 -> nichts, 1 -> gescannt,
 	/// 2 -> Name bekannt, 3 -> alles inkl. Planeten bekannt, bedeutet

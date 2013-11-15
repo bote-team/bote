@@ -95,7 +95,7 @@ void CSector::Serialize(CArchive &ar)
 		ar << m_sColonyOwner;
 		ar << m_bMinor;
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen gespeichert werden
-		if (GetSunSystem())
+		if (m_bSunSystem)
 		{
 			ar << m_bySunColor;
 			m_Planets.Serialize(ar);
@@ -107,7 +107,7 @@ void CSector::Serialize(CArchive &ar)
 		ar >> m_sColonyOwner;
 		ar >> m_bMinor;
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen geladen werden
-		if (GetSunSystem())
+		if (m_bSunSystem)
 		{
 			ar >> m_bySunColor;
 			m_Planets.Serialize(ar);
@@ -187,16 +187,16 @@ void CSector::GetAvailableResources(BOOLEAN bResources[RESOURCES::DERITIUM + 1],
 /// wird die Wahrscheinlichkeit in Prozent übergeben, dass sich in dem Sektor eine Minorrace befindet.
 void CSector::GenerateSector(int sunProb, int minorProb)
 {
-	if (GetSunSystem())
+	if (m_bSunSystem)
 		return;
 
 	// Zahl[0,99] generieren und vergleichen (Sonnensystem?)
 	if (rand()%100 >= (100 - sunProb))
 	{
-		SetSunSystem(TRUE);
+		m_bSunSystem = true;
 		// Zahl[0,99] generieren und vergleichen (Minorrace?)
 		bool bMinor = rand()%100 >= (100 - minorProb);
-		SetSectorsName(CGenSectorName::GetInstance()->GetNextRandomSectorName(m_KO, bMinor));
+		m_strSectorName = CGenSectorName::GetInstance()->GetNextRandomSectorName(m_KO, bMinor);
 		// bMinor wird in der Generierungsfunktion angepasst, falls es keine Minorracesystemnamen mehr gibt
 		SetMinorRace(bMinor);
 
@@ -237,7 +237,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 {
 	m_Planets.clear();
 
-	if (GetSunSystem())
+	if (m_bSunSystem)
 	{
 		// Es gibt 7 verschiedene Sonnenfarben
 		m_bySunColor = rand()%7;
