@@ -184,10 +184,6 @@ public:
 		return &m_Buildings;
 	}
 
-	// Funktion gibt einen Zeiger auf das Arbeiterobjekt der Systemklasse zurück.
-	const CWorker* GetWorker() const {return &m_Workers;}
-	CWorker* GetWorker() {return &m_Workers;}
-
 	/// Funktion gibt einen Zeiger auf die Handelsrouten von diesem System aus zurück
 	const CArray<CTradeRoute>* GetTradeRoutes() const {return &m_TradeRoutes;}
 	CArray<CTradeRoute>* GetTradeRoutes() {return &m_TradeRoutes;}
@@ -224,15 +220,6 @@ public:
 	/// @param newStatus neuer Status des Gebäudes - <code>1</code> für online, ansonsten <code>NULL</code>
 	void SetIsBuildingOnline(int index, BOOLEAN newStatus);
 
-	enum SetWorkerMode { SET_WORKER_MODE_INCREMENT, SET_WORKER_MODE_DECREMENT, SET_WORKER_MODE_SET };
-	// Komplette Zugriffsfunktion für das Arbeiterobjekt.
-	//Bei Modus 0 wird der "WhatWorker" inkrementiert, bei Modus 2 wird
-	// er dekrementiert und bei Modus 2 wird der "WhatWorker" auf den Wert von Value gesetzt.
-	void SetWorker(WORKER::Typ nWhatWorker, SetWorkerMode Modus, int Value = -1);
-
-	// Funktion setzt alle vorhandenen Arbeiter soweit wie möglich in Gebäude, die Arbeiter benötigen.
-	void SetWorkersIntoBuildings();
-
 	// Funktion addiert moralAdd zu m_iMoral dazu und mach gleichzeitig noch die Überprüfen auf den richtigen Bereich.
 	void SetMoral(short moralAdd) {if ((m_iMoral+moralAdd) >= 0) m_iMoral += moralAdd; if (m_iMoral > 200) m_iMoral = 200;}
 
@@ -267,10 +254,25 @@ public:
 	/// param is <code>TRUE</code> wenn eingeschalten, ansonsten <code>FALSE</code>
 	void SetAutoBuild(BOOLEAN is) {m_bAutoBuild = is;}
 
-	void FreeAllWorkers();
-
 	/// Alle deaktivierten Produktionen zurücksetzen
 	void ClearDisabledProductions();
+
+//////////////////////////////////////////////////////////////////////
+// workers
+//////////////////////////////////////////////////////////////////////
+
+	enum SetWorkerMode { SET_WORKER_MODE_INCREMENT, SET_WORKER_MODE_DECREMENT, SET_WORKER_MODE_SET };
+	// Komplette Zugriffsfunktion für das Arbeiterobjekt.
+	//Bei Modus 0 wird der "WhatWorker" inkrementiert, bei Modus 2 wird
+	// er dekrementiert und bei Modus 2 wird der "WhatWorker" auf den Wert von Value gesetzt.
+	void SetWorker(WORKER::Typ nWhatWorker, SetWorkerMode Modus, int Value = -1);
+	void IncrementWorker(WORKER::Typ nWhatWorker);
+	void DecrementWorker(WORKER::Typ nWhatWorker);
+
+	// Funktion setzt alle vorhandenen Arbeiter soweit wie möglich in Gebäude, die Arbeiter benötigen.
+	void SetWorkersIntoBuildings();
+
+	void FreeAllWorkers();
 
 //////////////////////////////////////////////////////////////////////
 // bool info
@@ -336,9 +338,11 @@ public:
 
 	void Colonize(const CShips& ship, CMajor& major);
 
+private:
 	// Funktion berechnet und baut die Startgebäude in einem System, nachdem wir einen Planeten
 	// in diesem kolonisiert haben.
 	void BuildBuildingsAfterColonization(const BuildingInfoArray* buildingInfo, USHORT ColonizationPoints);
+public:
 
 	// Funktion baut die Gebäude der Minorrace, wenn wir eine Mitgliedschaft mit dieser erreicht haben.
 	void BuildBuildingsForMinorRace(BuildingInfoArray* buildingInfo, USHORT averageTechlevel, const CMinor* pMinor);

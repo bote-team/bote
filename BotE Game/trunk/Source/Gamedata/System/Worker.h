@@ -51,17 +51,18 @@ private:
 		int all;
 	};
 public:
-	CWorker::EmployedFreeAll CalculateFreeWorkers();
-	void CheckWorkers();	// Fkt. überprüft, ob wir nicht zuviele Arbeiter eingestellt haben
 	void FreeAll();
 	int Cap(WORKER::Typ type, int number);
 
 private:
 	std::map<WORKER::Typ, int> m_Workers;
+	int m_AllWorkers;
+	int m_FreeWorkers;
 
 	typedef std::map<WORKER::Typ, int> ::const_iterator const_iterator;
 	typedef std::map<WORKER::Typ, int> ::iterator iterator;
 
+	void CheckWorkers();	// Fkt. überprüft, ob wir nicht zuviele Arbeiter eingestellt haben
 	EmployedFreeAll Workers() const;
 
 

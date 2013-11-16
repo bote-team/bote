@@ -611,50 +611,6 @@ void CSystem::SetIsBuildingOnline(int index, BOOLEAN newStatus)
 	m_Buildings.ElementAt(index).SetIsBuildingOnline(newStatus);
 }
 
-// Komplette Zugriffsfunktion für das Arbeiterobjekt. Bei Modus 0 wird der "WhatWorker" inkrementiert, bei Modus 2 wird
-// er dekrementiert und bei Modus 2 wird der "WhatWorker" auf den Wert von Value gesetzt.
-void CSystem::SetWorker(WORKER::Typ nWhatWorker, SetWorkerMode Modus, int Value)
-{
-	if(Modus != SET_WORKER_MODE_SET)
-		AssertBotE(Value == -1);
-	else
-		AssertBotE(Value >= 0);
-
-	// Modus == 0 --> Inkrement
-	// Modus == 1 --> Dekrement
-	// Modus == 2 --> SetWorkers inkl. Value
-	if (Modus == SET_WORKER_MODE_INCREMENT)
-		m_Workers.InkrementWorker(nWhatWorker);
-	else if (Modus == SET_WORKER_MODE_DECREMENT)
-		m_Workers.DekrementWorker(nWhatWorker);
-	else if (Modus == SET_WORKER_MODE_SET)
-		m_Workers.SetWorker(nWhatWorker, Value);
-}
-
-// Funktion setzt alle vorhandenen Arbeiter soweit wie möglich in Gebäude, die Arbeiter benötigen.
-void CSystem::SetWorkersIntoBuildings()
-{
-	m_Workers.SetWorker(WORKER::ALL_WORKER, (int)(m_dHabitants));
-	m_Workers.CalculateFreeWorkers();
-
-	while(m_Workers.GetWorker(WORKER::FREE_WORKER) > 0)
-	{
-		bool all_buildings_full = true;
-		for (int i = WORKER::FOOD_WORKER; i <= WORKER::IRIDIUM_WORKER; i++)
-		{
-			WORKER::Typ nWorker = (WORKER::Typ)i;
-			if (m_Workers.GetWorker(WORKER::FREE_WORKER) > 0 && GetNumberOfWorkbuildings(nWorker,0) > m_Workers.GetWorker(nWorker))
-			{
-				all_buildings_full = false;
-				m_Workers.InkrementWorker(nWorker);
-				m_Workers.DekrementWorker(WORKER::FREE_WORKER);
-			}
-		}
-		if(all_buildings_full)
-			break;
-	}
-}
-
 void CSystem::SetStores(const GameResources& add)
 {
 	m_Store += add;
@@ -703,15 +659,78 @@ void CSystem::SetBuildingDestroy(int RunningNumber, BOOLEAN add)
 	}
 }
 
-void CSystem::FreeAllWorkers()
-{
-	m_Workers.FreeAll();
-}
-
 // Alle deaktivierten Produktionen zurücksetzen
 void CSystem::ClearDisabledProductions()
 {
 	memset(m_bDisabledProductions, false, sizeof(m_bDisabledProductions));
+}
+
+//////////////////////////////////////////////////////////////////////
+// workers
+//////////////////////////////////////////////////////////////////////
+
+// Komplette Zugriffsfunktion für das Arbeiterobjekt. Bei Modus 0 wird der "WhatWorker" inkrementiert, bei Modus 2 wird
+// er dekrementiert und bei Modus 2 wird der "WhatWorker" auf den Wert von Value gesetzt.
+void CSystem::SetWorker(WORKER::Typ nWhatWorker, SetWorkerMode Modus, int Value)
+{
+	if(Modus != SET_WORKER_MODE_SET)
+		AssertBotE(Value == -1);
+	else
+		AssertBotE(Value >= 0);
+
+	// Modus == 0 --> Inkrement
+	// Modus == 1 --> Dekrement
+	// Modus == 2 --> SetWorkers inkl. Value
+	if (Modus == SET_WORKER_MODE_INCREMENT)
+		IncrementWorker(nWhatWorker);
+	else if (Modus == SET_WORKER_MODE_DECREMENT)
+		DecrementWorker(nWhatWorker);
+	else if (Modus == SET_WORKER_MODE_SET)
+	{
+		AssertBotE(0 <= Value);
+		if(nWhatWorker != WORKER::ALL_WORKER)
+			AssertBotE(Value <= GetNumberOfWorkbuildings(nWhatWorker, 0));
+		m_Workers.SetWorker(nWhatWorker, Value);
+	}
+}
+
+void CSystem::IncrementWorker(WORKER::Typ nWhatWorker)
+{
+	AssertBotE(GetWorker(nWhatWorker) <= GetNumberOfWorkbuildings(nWhatWorker, 0));
+	m_Workers.InkrementWorker(nWhatWorker);
+}
+
+void CSystem::DecrementWorker(WORKER::Typ nWhatWorker)
+{
+	AssertBotE(GetWorker(nWhatWorker) >= 0);
+	m_Workers.DekrementWorker(nWhatWorker);
+}
+
+// Funktion setzt alle vorhandenen Arbeiter soweit wie möglich in Gebäude, die Arbeiter benötigen.
+void CSystem::SetWorkersIntoBuildings()
+{
+	SetWorker(WORKER::ALL_WORKER, SET_WORKER_MODE_SET, (int)(m_dHabitants));
+
+	while(m_Workers.GetWorker(WORKER::FREE_WORKER) > 0)
+	{
+		bool all_buildings_full = true;
+		for (int i = WORKER::FOOD_WORKER; i <= WORKER::IRIDIUM_WORKER; i++)
+		{
+			WORKER::Typ nWorker = (WORKER::Typ)i;
+			if (m_Workers.GetWorker(WORKER::FREE_WORKER) > 0 && GetNumberOfWorkbuildings(nWorker,0) > m_Workers.GetWorker(nWorker))
+			{
+				all_buildings_full = false;
+				IncrementWorker(nWorker);
+			}
+		}
+		if(all_buildings_full)
+			break;
+	}
+}
+
+void CSystem::FreeAllWorkers()
+{
+	m_Workers.FreeAll();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -743,7 +762,6 @@ bool CSystem::CanTakeOnline(const CBuildingInfo& info) const
 
 bool CSystem::SanityCheckWorkers()
 {
-	m_Workers.CalculateFreeWorkers();
 	const bool in_range = SanityCheckWorkersInRange(WORKER::FOOD_WORKER)
 		&& SanityCheckWorkersInRange(WORKER::INDUSTRY_WORKER)
 		&& SanityCheckWorkersInRange(WORKER::ENERGY_WORKER)
@@ -805,8 +823,7 @@ void CSystem::CalculateVariables()
 	// Alle werde wieder auf NULL setzen
 	m_Production.Reset();
 	// Die Anzahl der Arbeiter aus der aktuellen Bevölkerung berechnen und auch an die Klasse CWorker übergeben
-	m_Workers.SetWorker(WORKER::ALL_WORKER,(int)(m_dHabitants));
-	m_Workers.CheckWorkers();
+	SetWorker(WORKER::ALL_WORKER, SET_WORKER_MODE_SET, (int)(m_dHabitants));
 
 	// Die Creditsprod. aus der Bevölkerung berechnen und modifizieren durch jeweilige Rasseneigenschaft
 	m_Production.m_iCreditsProd = (int)(m_dHabitants);
@@ -1053,8 +1070,6 @@ void CSystem::CalculateVariables()
 	else
 		m_Production.m_iFoodProd = m_Production.m_iMaxFoodProd;
 
-	// Jetzt noch die freien Arbeiter berechnen
-	m_Workers.CalculateFreeWorkers();
 }
 
 // Funktion berechnet die Lagerinhalte des Systems. Aufrufen bei Ende bzw. Beginn einer neuen Runde.
@@ -2035,6 +2050,7 @@ void CSystem::Colonize(const CShips& ship, CMajor& major)
 	SetHabitants(GetCurrentHabitants());
 
 	CalculateNumberOfWorkbuildings(resources::BuildingInfo);
+	SetWorkersIntoBuildings();
 	CalculateVariables();
 }
 
@@ -2156,11 +2172,8 @@ void CSystem::BuildBuildingsAfterColonization(const BuildingInfoArray *buildingI
 				building.SetIsBuildingOnline(buildingInfo->GetAt(runningNumber[build]-1).GetAllwaysOnline());
 				m_Buildings.Add(building);
 			}
-			// Gebäude mit Arbeitern besetzen
-			this->SetWorker(nWorker,SET_WORKER_MODE_SET, colonizationPoints*2);
 		}
 	}
-	this->CalculateNumberOfWorkbuildings(buildingInfo);
 
 	// Wenn das System nach einer Bombardierung komplett ausgelöscht wurde und von uns wieder neu kolonisiert wurde,
 	// so müssen die mindst. immer baubaren Gebäude gelöscht werden. Dies wird hier jedesmal gemacht, wenn man
@@ -2551,25 +2564,25 @@ int CSystem::SetNewBuildingOnline(const BuildingInfoArray *buildingInfos)
 	if (pBuildingInfo->GetWorker() == TRUE)
 	{
 		if (pBuildingInfo->GetFoodProd() > 0)
-			m_Workers.InkrementWorker(WORKER::FOOD_WORKER);
+			IncrementWorker(WORKER::FOOD_WORKER);
 		else if (pBuildingInfo->GetIPProd() > 0)
-			m_Workers.InkrementWorker(WORKER::INDUSTRY_WORKER);
+			IncrementWorker(WORKER::INDUSTRY_WORKER);
 		else if (pBuildingInfo->GetEnergyProd() > 0)
-			m_Workers.InkrementWorker(WORKER::ENERGY_WORKER);
+			IncrementWorker(WORKER::ENERGY_WORKER);
 		else if (pBuildingInfo->GetSPProd() > 0)
-			m_Workers.InkrementWorker(WORKER::SECURITY_WORKER);
+			IncrementWorker(WORKER::SECURITY_WORKER);
 		else if (pBuildingInfo->GetFPProd() > 0)
-			m_Workers.InkrementWorker(WORKER::RESEARCH_WORKER);
+			IncrementWorker(WORKER::RESEARCH_WORKER);
 		else if (pBuildingInfo->GetTitanProd() > 0)
-			m_Workers.InkrementWorker(WORKER::TITAN_WORKER);
+			IncrementWorker(WORKER::TITAN_WORKER);
 		else if (pBuildingInfo->GetDeuteriumProd() > 0)
-			m_Workers.InkrementWorker(WORKER::DEUTERIUM_WORKER);
+			IncrementWorker(WORKER::DEUTERIUM_WORKER);
 		else if (pBuildingInfo->GetDuraniumProd() > 0)
-			m_Workers.InkrementWorker(WORKER::DURANIUM_WORKER);
+			IncrementWorker(WORKER::DURANIUM_WORKER);
 		else if (pBuildingInfo->GetCrystalProd() > 0)
-			m_Workers.InkrementWorker(WORKER::CRYSTAL_WORKER);
+			IncrementWorker(WORKER::CRYSTAL_WORKER);
 		else if (pBuildingInfo->GetIridiumProd() > 0)
-			m_Workers.InkrementWorker(WORKER::IRIDIUM_WORKER);
+			IncrementWorker(WORKER::IRIDIUM_WORKER);
 		else
 			AssertBotE(FALSE);
 	}
