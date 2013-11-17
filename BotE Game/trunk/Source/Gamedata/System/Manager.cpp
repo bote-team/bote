@@ -57,7 +57,7 @@ CSystemManager& CSystemManager::operator=(const CSystemManager& o)
 void CSystemManager::Reset()
 {
 	m_bActive = false;
-	m_bSafeMoral = true;
+	m_bSafeMoral = false;
 	m_bMaxIndustry = false;
 	m_bNeglectFood = false;
 	m_iMinMoral = max_min_moral;
