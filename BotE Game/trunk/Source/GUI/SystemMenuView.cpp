@@ -392,7 +392,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 
 		// noch verbleibende Runden bis das Projekt fertig wird
 		const int nRounds = pDoc->GetSystem(p.x, p.y).
-			NeededRoundsToBuild(m_vBuildlist[i], false, true);
+			NeededRoundsToBuild(m_vBuildlist[i], false, pDoc->GetSystem(p.x, p.y).Manager().Active());
 		BOOLEAN bCanAddToAssemblyList = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->MakeEntry(m_vBuildlist[i], p, pDoc->m_Systems, true);
 		if (!bCanAddToAssemblyList)
 		{
