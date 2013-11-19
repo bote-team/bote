@@ -189,7 +189,7 @@ void CWorker::CheckWorkers()
 				current->second--;
 				diff--;
 				if(diff == 0)
-					return;
+					break;
 			}
 		}
 		workers = Workers();
