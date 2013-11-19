@@ -5258,14 +5258,18 @@ void CBotEDoc::CalcAlienShipEffects()
 						if (pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 							continue;
 
+						CRace* race = m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip());
+						if(race->IsMinor())
+							continue;
+						CMajor* pShipOwner = dynamic_cast<CMajor*>(race);
+						AssertBotE(pShipOwner);
+
 						pShip->SetShipType(SHIP_TYPE::ALIEN);
 						pShip->SetTargetKO(CPoint(-1, -1));
 						pShip->UnsetCurrentOrder();
 						pShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 						pShip->SetIsShipFlagShip(FALSE);
 
-						CMajor* pShipOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip()));
-						AssertBotE(pShipOwner);
 						// für jedes Schiff eine Meldung über den Verlust machen
 						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 						pShipOwner->AddToLostShipHistory(*pShip, CLoc::GetString("COMBAT"), CLoc::GetString("MISSED"), m_iRound);
