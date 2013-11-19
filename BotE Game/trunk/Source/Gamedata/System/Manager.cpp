@@ -667,9 +667,9 @@ public:
 
 	bool CheckStoreFull(RESOURCES::TYPE type, const CBuildingInfo& info, const CBuilding& building) const
 	{
-		const unsigned max_store = m_pSystem->GetXStoreMax(type);
-		const unsigned store = m_pSystem->GetResourceStore(type);
-		const unsigned prod = info.GetXProd(type);
+		const int max_store = m_pSystem->GetXStoreMax(type);
+		const int store = m_pSystem->GetResourceStore(type);
+		const int prod = info.GetXProd(type);
 		if(building.GetIsBuildingOnline())
 			return store + prod <= max_store;
 		return store + m_pSystem->GetProduction()->GetResourceProd(type) + prod <= max_store;
