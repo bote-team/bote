@@ -70,8 +70,8 @@ void CMenuChooseView::OnNewRound()
 
 	m_bKnowOtherMajors = false;
 	m_bKnowOtherRaces = false;
-	map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
-	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
+	const CRaceController& race_ctrl = *pDoc->GetRaceCtrl();
+	for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
 	{
 		if (it->second->IsMajor() && it->first != pMajor->GetRaceID() && pMajor->IsRaceContacted(it->first))
 		{

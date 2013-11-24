@@ -16,6 +16,7 @@ using namespace std;
 class CShips;
 class CRace;
 class CAnomaly;
+class CRaceController;
 
 class CCombatAI
 {
@@ -32,7 +33,7 @@ public:
 	/// @param mCombatOrders allgemeiner Kampfbefehl aller beteiligten Rassen
 	/// @param pAnomaly eventuell vorhandene Anomalie im Kampfsektor
 	/// @return <code>true</code> wenn ein Kampf nach der Taktikberechnung noch stattfinden kann, sonst <code>false</code>
-	static bool CalcCombatTactics(const CArray<CShips*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, COMBAT_ORDER::Typ>& mCombatOrders, const CAnomaly* pAnomaly);
+	static bool CalcCombatTactics(const CArray<CShips*>& vInvolvedShips, const CRaceController* pmRaces, map<CString, COMBAT_ORDER::Typ>& mCombatOrders, const CAnomaly* pAnomaly);
 
 private:
 	/// Funktion legt die allgemeine Taktik der Rasse für den bevorstehenden Kampf fest.
@@ -40,7 +41,7 @@ private:
 	/// @param pmRaces alle Rassen des Spiels
 	/// @param mCombatOrders allgemeiner Kampfbefehl aller beteiligten Rassen
 	/// @param pAnomaly eventuell vorhandene Anomalie im Kampfsektor
-	static void ApplyCombatOrders(const CArray<CShips*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, COMBAT_ORDER::Typ>& mCombatOrders, const CAnomaly* pAnomaly);
+	static void ApplyCombatOrders(const CArray<CShips*>& vInvolvedShips, const CRaceController* pmRaces, map<CString, COMBAT_ORDER::Typ>& mCombatOrders, const CAnomaly* pAnomaly);
 
 	/// Funktion erteilt allen im Kampf beteiligten Schiffen ihre zuvor ausgewählte Taktik.
 	/// @param vInvolvedShips Vektor mit allen beteiligten Schiffen

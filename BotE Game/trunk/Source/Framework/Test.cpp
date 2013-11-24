@@ -32,14 +32,14 @@ void CTest::TestGenShipname() const {
 	CGenShipName gsn(m_Doc.m_GenShipName);
 
 	//check uniqueness of generated shipnames
-	const std::map<CString, CRace*>& races = *m_Doc.m_pRaceCtrl->GetRaces();
+	const CRaceController& race_ctrl = *m_Doc.m_pRaceCtrl;
 	CString sRaceID = "";
 	CString sRaceName = "";
 	for(int j = 0; j < 10; ++j)
 	{
-		const unsigned at = rand()%races.size();
+		const unsigned at = rand()%race_ctrl.size();
 		unsigned index = 0;
-		for(std::map<CString, CRace*>::const_iterator i = races.begin(); i != races.end(); ++i)
+		for(CRaceController::const_iterator i = race_ctrl.begin(); i != race_ctrl.end(); ++i)
 		{
 			if(at != index) {
 				++index;

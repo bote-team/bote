@@ -29,15 +29,28 @@ public:
 	/// Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
 
+
+	typedef std::map<CString, CRace*>::const_iterator const_iterator;
+	typedef std::map<CString, CRace*>::iterator iterator;
+
+	const_iterator begin() const { return m_mRaces.begin(); }
+	iterator begin() { return m_mRaces.begin(); }
+
+	const_iterator end() const { return m_mRaces.end(); }
+	iterator end() { return m_mRaces.end(); }
+
+	unsigned size() const { return m_mRaces.size(); }
+
+	const_iterator find(const CString& id) const { return m_mRaces.find(id); }
+	iterator find(const CString& id) { return m_mRaces.find(id); }
+
+	CRace*& operator[](CString const& id) { return m_mRaces[id]; }
+
 	// Funktionen
 	/// Funktion zum Einlesen und Initialisieren aller am Spiel beteiligten Rassen
 	/// @param nSource Datenquelle der Rasseninformationen
 	/// @return <code>true</code> wenn Initalisierung erfolgreich war, sonst <code>false</code>
 	bool Init(int nSource = RACESOURCE_DATAFILE);
-
-	/// Funktion gibt die Map mit allen Rassen des Spiels zurück.
-	/// @return Map mit allen Rassen des Spiels
-	map<CString, CRace*>* GetRaces(void) {return &m_mRaces;}
 
 	/// Funktion gibt eine bestimmte Rasse zurück.
 	/// @param sID ID der gewünschten Rassen

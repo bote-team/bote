@@ -829,9 +829,9 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			CPoint modulo(pt.x%STARMAP_SECTOR_WIDTH, pt.y%STARMAP_SECTOR_HEIGHT);
 			if (modulo.x > STARMAP_SECTOR_WIDTH * 0.66 && modulo.y < STARMAP_SECTOR_HEIGHT * 0.33)
 			{
-				const std::map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
+				const CRaceController& race_ctrl = *pDoc->GetRaceCtrl();
 				const CSector& s = pDoc->GetSystem(sector.x, sector.y);
-				for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
+				for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
 					if (s.ShouldDrawShip(*pMajor, it->first))
 					{
 						if (it->first == pMajor->GetRaceID())
@@ -860,8 +860,8 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			{
 				bool bShowStation = false;
 				const CSector& s = pDoc->GetSystem(sector.x, sector.y);
-				const std::map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
-				for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
+				const CRaceController& race_ctrl = *pDoc->GetRaceCtrl();
+				for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
 					if (s.ShouldDrawOutpost(*pMajor, it->first))
 					{
 						bShowStation = true;

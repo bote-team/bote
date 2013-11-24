@@ -403,8 +403,7 @@ void CMapTile::DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlay
 	AssertBotE(pPlayer);
 
 	// alle Rassen holen
-	map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
-	AssertBotE(pmRaces);
+	const CRaceController& race_ctrl = *pDoc->GetRaceCtrl();
 
 	CString sFilePath;
 	short nCount = 0;
@@ -415,7 +414,7 @@ void CMapTile::DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlay
 
 	// durch alle Rassen iterieren und Schiffsymbole zeichnen
 	CString sAppPath = CIOData::GetInstance()->GetAppPath();
-	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
+	for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
 	{
 		if (ShouldDrawShip(*pPlayer, it->first))
 		{

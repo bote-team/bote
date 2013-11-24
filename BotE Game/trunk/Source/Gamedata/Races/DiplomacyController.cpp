@@ -30,11 +30,10 @@ void CDiplomacyController::Send(void)
 	CBotEDoc* pDoc = resources::pDoc;
 	AssertBotE(pDoc);
 
-	std::map<CString, CRace*>* races = pDoc->GetRaceCtrl()->GetRaces();
-	AssertBotE(races);
+	CRaceController& race_ctrl = *pDoc->GetRaceCtrl();
 
 	// KI Angebote erstellen lassen
-	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
+	for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
 	{
 		CRace* pRace = it->second;
 		AssertBotE(pRace);
@@ -43,7 +42,7 @@ void CDiplomacyController::Send(void)
 	}
 
 	// durch alle Rassen iterieren und Angebote versenden
-	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
+	for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
 	{
 		CRace* pRace = it->second;
 		AssertBotE(pRace);
@@ -61,9 +60,9 @@ void CDiplomacyController::Send(void)
 		{
 			CDiplomacyInfo* pInfo = &(pRace->GetOutgoingDiplomacyNews()->at(i));
 			// exisitiert die Zielrasse?
-			if (races->find(pInfo->m_sToRace) != races->end())
+			if (race_ctrl.find(pInfo->m_sToRace) != race_ctrl.end())
 			{
-				CRace* pToRace = (*races)[pInfo->m_sToRace];
+				CRace* pToRace = race_ctrl[pInfo->m_sToRace];
 				// Angebote senden
 				if (pToRace->IsMajor())
 				{
@@ -87,11 +86,10 @@ void CDiplomacyController::Receive(void)
 	CBotEDoc* pDoc = resources::pDoc;
 	AssertBotE(pDoc);
 
-	std::map<CString, CRace*>* races = pDoc->GetRaceCtrl()->GetRaces();
-	AssertBotE(races);
+	CRaceController& race_ctrl = *pDoc->GetRaceCtrl();
 
 	// durch alle Rassen iterieren und Nachrichten empfangen sowie darauf reagieren
-	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
+	for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
 	{
 		CRace* pRace = it->second;
 		AssertBotE(pRace);
@@ -101,9 +99,9 @@ void CDiplomacyController::Receive(void)
 		{
 			CDiplomacyInfo* pInfo = &(pRace->GetIncomingDiplomacyNews()->at(i));
 			// exisitiert die Rasse welche die Nachricht gesendet hat?
-			if (races->find(pInfo->m_sFromRace) != races->end())
+			if (race_ctrl.find(pInfo->m_sFromRace) != race_ctrl.end())
 			{
-				CRace* pToRace = (*races)[pInfo->m_sToRace];
+				CRace* pToRace = race_ctrl[pInfo->m_sToRace];
 				if (pToRace->IsMajor())
 				{
 					ReceiveToMajor(pDoc, dynamic_cast<CMajor*>(pToRace), pInfo);
@@ -1157,8 +1155,8 @@ std::vector<CString> CDiplomacyController::GetEnemiesFromContract(CBotEDoc* pDoc
 	// Verteidigungspakt mit einer anderen Majorrace hat, so erklären wir der anderen Majorrace
 	// auch den Krieg. Außerdem erklären wir auch jeder Minorrace den Krieg, mit der der Jemand
 	// mindst. ein Bündnis hatte.
-	map<CString, CRace*>* mRaces = pDoc->GetRaceCtrl()->GetRaces();
-	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
+	const CRaceController& race_ctrl = *pDoc->GetRaceCtrl();
+	for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
 	{
 		// nicht wir selbst
 		if (it->first != pToRace->GetRaceID())

@@ -815,9 +815,8 @@ void CBotEDoc::PrepareData()
 		// ALPHA6 DEBUG alle Rassen untereinander bekanntgeben
 		const CCommandLineParameters* const clp = resources::pClp;
 		if(clp->SeeAllOfMap()) {
-			map<CString, CRace*>* pmRaces = m_pRaceCtrl->GetRaces();
-			for (map<CString, CRace*>::iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
-				for (map<CString, CRace*>::const_iterator jt = pmRaces->begin(); jt != pmRaces->end(); ++jt)
+			for (CRaceController::const_iterator it = m_pRaceCtrl->begin(); it != m_pRaceCtrl->end(); ++it)
+				for (CRaceController::const_iterator jt = m_pRaceCtrl->begin(); jt != m_pRaceCtrl->end(); ++jt)
 					if (it->first != jt->first && it->second->IsMajor() && jt->second->IsMajor())
 						it->second->SetIsRaceContacted(jt->first, true);
 		}
@@ -4203,13 +4202,13 @@ void CBotEDoc::CalcShipCombat()
 
 	// Kampf-KI
 	CCombatAI AI;
-	bool bCombat = AI.CalcCombatTactics(vInvolvedShips, m_pRaceCtrl->GetRaces(), m_mCombatOrders, GetSystem(p.x, p.y).GetAnomaly());
+	bool bCombat = AI.CalcCombatTactics(vInvolvedShips, m_pRaceCtrl, m_mCombatOrders, GetSystem(p.x, p.y).GetAnomaly());
 	if (!bCombat)
 		return;
 
 	// Jetzt können wir einen Kampf stattfinden lassen
 	CCombat Combat;
-	Combat.SetInvolvedShips(&vInvolvedShips, m_pRaceCtrl->GetRaces(), GetSystem(p.x, p.y).GetAnomaly());
+	Combat.SetInvolvedShips(&vInvolvedShips, m_pRaceCtrl, GetSystem(p.x, p.y).GetAnomaly());
 	if (!Combat.GetReadyForCombat())
 		return;
 
@@ -4242,10 +4241,9 @@ void CBotEDoc::CalcShipCombat()
 		}
 	}
 
-	map<CString, CRace*>* pmRaces = m_pRaceCtrl->GetRaces();
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 
-	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
+	for (CRaceController::const_iterator it = m_pRaceCtrl->begin(); it != m_pRaceCtrl->end(); ++it)
 	{
 		CString sSectorName;
 		// ist der Sektor bekannt?
@@ -4712,8 +4710,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 			m_pClientWorker->ClearSoundMessages(*pMajor);
 
 			// alle anderen Rassen durchgehen und die vernichtete Rasse aus deren Maps entfernen
-			map<CString, CRace*>* mRaces = m_pRaceCtrl->GetRaces();
-			for (map<CString, CRace*>::const_iterator itt = mRaces->begin(); itt != mRaces->end(); ++itt)
+			for (CRaceController::const_iterator itt = m_pRaceCtrl->begin(); itt != m_pRaceCtrl->end(); ++itt)
 			{
 				if (pMajor->GetRaceID() == itt->first)
 					continue;

@@ -265,7 +265,7 @@ int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 
 	case VICTORYTYPE_DIPLOMACY:
 		// über 50% der Rassen auf Mitgliedschaft bzw. Bündnis (mindestens 10)
-		nValue = pDoc->GetRaceCtrl()->GetRaces()->size();
+		nValue = pDoc->GetRaceCtrl()->size();
 		// eigene Rasse nicht mitzählen
 		nValue--;
 		MYTRACE("general")(MT::LEVEL_INFO, "VICTORYTYPE_DIPLOMACY - needed value: %i", nValue/2);
@@ -343,14 +343,14 @@ void CVictoryObserver::Observe(void)
 	if (m_bConditionStatus[VICTORYTYPE_DIPLOMACY])
 	{
 		m_mDiplomacy.clear();
-		map<CString, CRace*>* pmRaces	= pDoc->GetRaceCtrl()->GetRaces();
+		const CRaceController& race_ctrl = *pDoc->GetRaceCtrl();
 		map<CString, CMajor*>* pmMajors	= pDoc->GetRaceCtrl()->GetMajors();
 
 		// Anzahl an Bündnissen und Mitgliedschaften zu allen anderen Rassen holen
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			int nHighAgreements = 0;
-			for (map<CString, CRace*>::const_iterator it2 = pmRaces->begin(); it2 != pmRaces->end(); ++it2)
+			for (CRaceController::const_iterator it2 = race_ctrl.begin(); it2 != race_ctrl.end(); ++it2)
 				if (it->first != it2->first)
 				{
 					int nAgreement = it->second->GetAgreement(it2->first);

@@ -232,10 +232,9 @@ void CRace::MakeOffersAI(void)
 	}
 
 	// Angebote machen
-	std::map<CString, CRace*>* races = pDoc->GetRaceCtrl()->GetRaces();
-	AssertBotE(races);
+	const CRaceController& race_ctrl = *pDoc->GetRaceCtrl();
 
-	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
+	for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
 		if (m_sID != it->first)
 		{
 			// Minorangebot zu anderer Minor geht nicht!

@@ -43,7 +43,7 @@ CCombat::~CCombat(void)
 // Diese Funktion verlangt beim Aufruf einen Zeiger auf ein Feld, welches Zeiger auf Schiffe beinhaltet
 // <code>ships<code>. Diese Schiffe werden dann am Kampf teilnehmen. Kommt es zu einem Kampf, so muß
 // diese Funktion zu allererst aufgerufen werden.
-void CCombat::SetInvolvedShips(const CArray<CShips*>* pShips, std::map<CString, CRace*>* pmRaces, const CAnomaly* pAnomaly)
+void CCombat::SetInvolvedShips(const CArray<CShips*>* pShips, CRaceController* pmRaces, const CAnomaly* pAnomaly)
 {
 	Reset();
 	AssertBotE(pmRaces);
@@ -55,10 +55,10 @@ void CCombat::SetInvolvedShips(const CArray<CShips*>* pShips, std::map<CString, 
 		m_mInvolvedRaces.insert(pShips->GetAt(i)->GetOwnerOfShip());
 
 	// Check machen, dass die Rassen wegen ihrer diplomatischen Beziehung auch angreifen können
-	for (std::map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
+	for (CRaceController::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
 		if (!m_bReady)
 		{
-			for (std::map<CString, CRace*>::const_iterator itt = pmRaces->begin(); itt != pmRaces->end(); ++itt)
+			for (CRaceController::const_iterator itt = pmRaces->begin(); itt != pmRaces->end(); ++itt)
 				if (it->first != itt->first && m_mInvolvedRaces.find(it->first) != m_mInvolvedRaces.end() && m_mInvolvedRaces.find(itt->first) != m_mInvolvedRaces.end())
 					if (CCombat::CheckDiplomacyStatus(it->second, itt->second))
 					{
@@ -582,7 +582,7 @@ bool CCombat::CheckShipStayInCombat(int i)
 }
 
 // Funktion zum Berechnen der groben prozentualen Siegchance einer Rasse. Die Siegchance liegt zwischen 0 und 1.
-double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& vInvolvedShips, const std::map<CString, CRace*>* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies, const CAnomaly* pAnomaly)
+double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& vInvolvedShips, const CRaceController* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies, const CAnomaly* pAnomaly)
 {
 	AssertBotE(pOurRace);
 	AssertBotE(pmRaces);

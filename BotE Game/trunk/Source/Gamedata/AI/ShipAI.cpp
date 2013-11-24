@@ -15,8 +15,7 @@ CShipAI::CShipAI(CBotEDoc* pDoc) : m_pSectorAI()
 	AssertBotE(pDoc);
 	m_pDoc = pDoc;
 
-	map<CString, CRace*>* mRaces = m_pDoc->GetRaceCtrl()->GetRaces();
-	AssertBotE(mRaces);
+	const CRaceController& race_ctrl = *m_pDoc->GetRaceCtrl();
 
 	// Durchschnittsmoral berechnen
 	map<CString, int> moralAll;
@@ -30,7 +29,7 @@ CShipAI::CShipAI(CBotEDoc* pDoc) : m_pSectorAI()
 			}
 
 	// alles initial initialisieren
-	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
+	for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
 	{
 		m_AttackSector[it->first] = CPoint(-1,-1);
 		m_BombardSector[it->first] = CPoint(-1,-1);

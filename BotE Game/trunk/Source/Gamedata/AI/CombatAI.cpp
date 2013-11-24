@@ -19,7 +19,7 @@ CCombatAI::~CCombatAI(void)
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
-bool CCombatAI::CalcCombatTactics(const CArray<CShips*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, COMBAT_ORDER::Typ>& mCombatOrders, const CAnomaly* pAnomaly)
+bool CCombatAI::CalcCombatTactics(const CArray<CShips*>& vInvolvedShips, const CRaceController* pmRaces, map<CString, COMBAT_ORDER::Typ>& mCombatOrders, const CAnomaly* pAnomaly)
 {
 	// allgemeinen Kampfbefehl für alle beteiligten KI Rassen einstellen
 	ApplyCombatOrders(vInvolvedShips, pmRaces, mCombatOrders, pAnomaly);
@@ -46,7 +46,7 @@ bool CCombatAI::CalcCombatTactics(const CArray<CShips*>& vInvolvedShips, const m
 //////////////////////////////////////////////////////////////////////
 // private Funktionen
 //////////////////////////////////////////////////////////////////////
-void CCombatAI::ApplyCombatOrders(const CArray<CShips*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, COMBAT_ORDER::Typ>& mCombatOrders, const CAnomaly* pAnomaly)
+void CCombatAI::ApplyCombatOrders(const CArray<CShips*>& vInvolvedShips, const CRaceController* pmRaces, map<CString, COMBAT_ORDER::Typ>& mCombatOrders, const CAnomaly* pAnomaly)
 {
 	// beteiligte Rassen
 	set<CString> sInvolvedRaces;
@@ -62,7 +62,7 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShips*>& vInvolvedShips, const m
 			continue;
 
 		// Beziehung zu anderen Rassen beachten, dafür Rassen aus Map holen
-		map<CString, CRace*>::const_iterator iter = pmRaces->find(*it);
+		CRaceController::const_iterator iter = pmRaces->find(*it);
 		if (iter == pmRaces->end())
 			continue;
 

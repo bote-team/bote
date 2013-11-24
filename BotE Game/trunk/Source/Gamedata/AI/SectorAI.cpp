@@ -57,7 +57,7 @@ void CSectorAI::CalculateDangers()
 /// </code> aufgerufen werden.
 void CSectorAI::CalcualteSectorPriorities()
 {
-	map<CString, CRace*>* mRaces = m_pDoc->GetRaceCtrl()->GetRaces();
+	const CRaceController& race_ctrl = *m_pDoc->GetRaceCtrl();
 	map<CString, UINT> highestCombatShipDanger;
 
 	for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
@@ -75,7 +75,7 @@ void CSectorAI::CalcualteSectorPriorities()
 			if (m_pDoc->GetSystem(x, y).GetAnomaly() == false || m_pDoc->GetSystem(x, y).GetAnomaly()->GetWaySearchWeight() < 10.0)
 				CalculateOffensiveTargets(x,y);
 
-			for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
+			for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
 				if (GetDangerOnlyFromCombatShips(it->first, CPoint(x,y)) > highestCombatShipDanger[it->first])
 				{
 					highestCombatShipDanger[it->first] = GetDangerOnlyFromCombatShips(it->first, CPoint(x,y));
@@ -83,7 +83,7 @@ void CSectorAI::CalcualteSectorPriorities()
 				}
 		}
 
-	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
+	for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
 		if (it->second->IsMajor())
 		{
 			// Feld der am ehesten zu terraformenden Systeme der Größe nach Sortieren. Der höchste Eintrag steht an erster Stelle.
@@ -301,9 +301,9 @@ void CSectorAI::CalculateStationTargets(const CString& sRaceID)
 /// Funktion löscht alle vorher berechneten Prioritäten.
 void CSectorAI::Clear(void)
 {
-	map<CString, CRace*>* mRaces = m_pDoc->GetRaceCtrl()->GetRaces();
+	const CRaceController& race_ctrl = *m_pDoc->GetRaceCtrl();
 
-	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
+	for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
 		m_HighestShipDanger[it->first] = CPoint(-1,-1);
 
 	m_iDangers.clear();

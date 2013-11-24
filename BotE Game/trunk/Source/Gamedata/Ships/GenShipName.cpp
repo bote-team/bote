@@ -135,10 +135,9 @@ void CGenShipName::Init(CBotEDoc* pDoc)
 	m_mCounter.clear();
 
 	// nun alle Rassen durchgehen
-	map<CString, CRace*>* mRaces = pDoc->GetRaceCtrl()->GetRaces();
-	AssertBotE(mRaces);
+	const CRaceController& race_ctrl = *pDoc->GetRaceCtrl();
 
-	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
+	for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
 	{
 		CString sID = it->first;
 		// für jede Rasse dem Counter festlegen
