@@ -3247,12 +3247,12 @@ void CSystem::ChangeOwner(const CString& new_one, OWNING_STATUS status)
 
 	m_OwningStatus = status;
 
-	// neuen Besitzer festlegen
-	m_sOwner = new_one;
-
 	// ändert sich nichts, dann aus der Funktion springen
 	if (m_sOwner == new_one)
 		return;
+
+	// neuen Besitzer festlegen
+	m_sOwner = new_one;
 
 	// alle alten Ressourcen- und Handelsrouten löschen
 	m_TradeRoutes.RemoveAll();
