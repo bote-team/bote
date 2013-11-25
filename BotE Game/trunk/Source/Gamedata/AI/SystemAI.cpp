@@ -1112,7 +1112,7 @@ void CSystemAI::ApplyTradeRoutes()
 		{
 			CMinor* pMinor = it->second;
 			// nicht zu Aliens bzw. Minors ohne Heimatsystem
-			if (pMinor->IsAlienRace() || pMinor->GetRaceKO() == CPoint(-1, -1))
+			if (pMinor->IsAlien() || pMinor->GetRaceKO() == CPoint(-1, -1))
 				continue;
 
 			if (pMinor->GetAgreement(race) >= DIPLOMATIC_AGREEMENT::TRADE && pMinor->GetAgreement(race) < DIPLOMATIC_AGREEMENT::MEMBERSHIP)

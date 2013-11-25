@@ -13,9 +13,9 @@
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CRace::CRace(void) :
+CRace::CRace(RACE_TYPE type) :
 	m_ptKO(-1, -1),
-	m_RaceType(RACE_TYPE_MINOR),
+	m_RaceType(type),
 	m_nProperty(0),
 	m_byShipNumber(0),
 	m_byBuildingNumber(0),
@@ -56,7 +56,6 @@ void CRace::Serialize(CArchive &ar)
 		ar << m_sName;			// Rassenname
 		ar << m_sNameArticle;	// Artikel für Rassenname
 		ar << m_sDesc;			// Rassenbeschreibung
-		ar << static_cast<BYTE>(m_RaceType);			// Rassentyp (Major, Medior, Minor)
 		ar << m_nProperty;		// Rasseneigenschaften
 		ar << m_byShipNumber;	// zugewiesene Nummer welche Schiffe verwendet werden sollen
 		ar << m_byBuildingNumber;	// zugewiesene Nummer welche Gebäude verwendet werden sollen
@@ -83,9 +82,6 @@ void CRace::Serialize(CArchive &ar)
 		ar >> m_sName;			// Rassenname
 		ar >> m_sNameArticle;	// Artikel für Rassenname
 		ar >> m_sDesc;			// Rassenbeschreibung
-		BYTE type;
-		ar >> type;				// Rassentyp (Major, Medior, Minor)
-		m_RaceType = static_cast<RACE_TYPE>(type);
 		ar >> m_nProperty;		// Rasseneigenschaften
 		ar >> m_byShipNumber;	// zugewiesene Nummer welche Schiffe verwendet werden sollen
 		ar >> m_byBuildingNumber;	// zugewiesene Nummer welche Gebäude verwendet werden sollen
@@ -239,7 +235,7 @@ void CRace::MakeOffersAI(void)
 		if (m_sID != it->first)
 		{
 			// Minorangebot zu anderer Minor geht nicht!
-			if (m_RaceType == RACE_TYPE_MINOR && it->second->m_RaceType == RACE_TYPE_MINOR)
+			if (IsMinor() && it->second->IsMinor())
 				continue;
 
 			// Wenn an die Rasse in den letzen zwei Runden schon ein Angebot
@@ -301,7 +297,6 @@ void CRace::Reset(void)
 	m_sName				= "";		// Rassenname
 	m_sNameArticle		= "";		// Artikel für Rassenname
 	m_sDesc				= "";		// Rassenbeschreibung
-	m_RaceType				= RACE_TYPE_MINOR;	// Rassentyp (Major, Medior, Minor)
 	m_nProperty			= 0;		// Rasseneigenschaften
 	m_nSpecialAbility	= 0;		// Spezialfähigkeiten der Rasse
 	m_byShipNumber		= 0;		// zugewiesene Nummer welche Schiffe verwendet werden sollen

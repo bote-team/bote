@@ -742,6 +742,10 @@
 					Name="Races"
 					>
 					<File
+						RelativePath=".\Source\Gamedata\Races\Alien.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Source\Gamedata\Races\DiplomacyController.cpp"
 						>
 					</File>
@@ -1498,6 +1502,10 @@
 				<Filter
 					Name="Races"
 					>
+					<File
+						RelativePath=".\Source\Gamedata\Races\Alien.h"
+						>
+					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Races\DiplomacyController.h"
 						>

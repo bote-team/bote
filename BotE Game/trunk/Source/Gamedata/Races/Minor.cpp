@@ -11,7 +11,14 @@
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CMinor::CMinor(void)
+CMinor::CMinor(void) :
+	CRace(RACE_TYPE_MINOR)
+{
+	this->Reset();
+}
+
+CMinor::CMinor(RACE_TYPE type) :
+	CRace(type)
 {
 	this->Reset();
 }
@@ -616,7 +623,6 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 	nPos = nPos + 6;
 
 	m_iTechnologicalProgress = atoi(saInfo[nPos++]);
-	m_RaceType			= RACE_TYPE_MINOR;						// Rassentyp (Major, Medior, Minor)
 
 	// mehrere Rasseneigenschaften sind durch Komma getrennt
 	CString sRaceProperties = saInfo[nPos++];
@@ -631,48 +637,6 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 	m_bSpaceflight		= atoi(saInfo[nPos++]) == 0 ? false : true;
 	m_iCorruptibility	= atoi(saInfo[nPos++]);
 
-
-	// Schiffsnummer vergeben
-	m_byShipNumber = PLAYER_RACES::MINORNUMBER;
-
-	// Minorrace - KI anlegen
-	m_pDiplomacyAI = new CMinorAI(this);
-}
-
-/// Funktion zum erstellen von Weltraummonstern
-/// Die Funktion liest einen entsprechenden Eintrag aus einer data Datei.
-/// @param saInfo Referenz auf Rasseninformationen
-/// @param nPos Referenz auf Position im Array, ab wann die Informationen gelten
-void CMinor::CreateAlienEntities(const CStringArray& saInfo, int& nPos)
-{
-	AssertBotE(nPos >= 0);
-
-	Reset();
-
-	// Minorrace nun anlegen
-	m_sID				= saInfo[nPos++];				// Rassen-ID
-	m_sID.Remove(':');
-	m_sName				= saInfo[nPos++];				// Rassenname
-	m_sDesc				= saInfo[nPos++];				// Rassenbeschreibung
-
-	// grafische Attribute
-	m_sGraphicFile		= saInfo[nPos++];				// Name der zugehörigen Grafikdatei
-	m_iTechnologicalProgress = atoi(saInfo[nPos++]);
-	m_RaceType			= RACE_TYPE_MINOR;				// Rassentyp (Major, Medior, Minor)
-
-	// mehrere Rasseneigenschaften sind durch Komma getrennt
-	CString sRaceProperties = saInfo[nPos++];
-	int nStart = 0;
-	while (nStart < sRaceProperties.GetLength())
-	{
-		RACE_PROPERTY::Typ nProperty = (RACE_PROPERTY::Typ)atoi(sRaceProperties.Tokenize(",", nStart));
-		AssertBotE(nProperty >= RACE_PROPERTY::NOTHING_SPECIAL && nProperty <= RACE_PROPERTY::HOSTILE);
-		SetRaceProperty(nProperty, true);				// Rasseneigenschaften
-	}
-	m_nSpecialAbility	= atoi(saInfo[nPos++]);
-
-	m_bSpaceflight		= atoi(saInfo[nPos++]) == 0 ? false : true;
-	m_iCorruptibility	= atoi(saInfo[nPos++]);
 
 	// Schiffsnummer vergeben
 	m_byShipNumber = PLAYER_RACES::MINORNUMBER;

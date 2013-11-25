@@ -109,7 +109,7 @@ void CIntelInfo::CalcIntelInfo(CBotEDoc* pDoc, CMajor* pOurRace)
 	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 	{
 		CMinor* pMinor = it->second;
-		if(pMinor->IsAlienRace())
+		if(pMinor->IsAlien())
 			continue;
 		// Wenn wir die Minorrace kennen und mit ihr mindst. eine Freundschaft haben, so können wir bestimmen,
 		// ob eine andere Rasse diese Minorrace ebenfalls kennt.

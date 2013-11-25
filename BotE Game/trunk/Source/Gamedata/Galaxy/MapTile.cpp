@@ -420,7 +420,7 @@ void CMapTile::DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlay
 		if (ShouldDrawShip(*pPlayer, it->first))
 		{
 			// handelt es sich um ein Alienschiff?
-			if (pPlayer != it->second.get() && it->second->IsAlienRace())
+			if (pPlayer != it->second.get() && it->second->IsAlien())
 				sFilePath = sAppPath + "Graphics\\Symbols\\Entity.bop";
 			// ist der Besitzer des Schiffes unbekannt, dann Fragezeichen zeichnen
 			else if (pPlayer != it->second.get() && pPlayer->IsRaceContacted(it->first) == false)
@@ -445,7 +445,7 @@ void CMapTile::DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlay
 		if (ShouldDrawOutpost(*pPlayer, it->first))
 		{
 			// kann keine Diplomatie aufgenommen werden, dann das Alien Symbol zeichnen
-			if (pPlayer != it->second.get() && it->second->IsAlienRace())
+			if (pPlayer != it->second.get() && it->second->IsAlien())
 				sFilePath = sAppPath + "Graphics\\Symbols\\Entity.bop";
 			// ist der besitzer des Schiffes unbekannt, dann Fragezeichen zeichnen
 			else if (pPlayer != it->second.get() && pPlayer->IsRaceContacted(it->first) == false)

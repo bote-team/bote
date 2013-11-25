@@ -160,7 +160,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	if (pContactedRace->IsMinor())
 	{
 		CMinor* pMinor = dynamic_cast<CMinor*>(pContactedRace);
-		if (!pMinor->IsAlienRace())
+		if (!pMinor->IsAlien())
 		{
 			switch (pMinor->GetTechnologicalProgress())
 			{

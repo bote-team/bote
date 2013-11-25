@@ -2,6 +2,7 @@
 #include "RaceController.h"
 #include "Major.h"
 #include "Minor.h"
+#include "Alien.h"
 #include "AI\MinorAI.h"
 #include "IOData.h"
 
@@ -53,15 +54,25 @@ void CRaceController::Serialize(CArchive &ar)
 			ar >> key;
 			int type = 0;
 			ar >> type;
-			CRace* value = NULL;
-			if(type == CRace::RACE_TYPE_MAJOR)
-				value = new CMajor();
-			else
-				value = new CMinor();
+			RacePtr race;
+			switch(type)
+			{
+				case CRace::RACE_TYPE_MAJOR:
+					race = RacePtr(new CMajor());
+				break;
+				case CRace::RACE_TYPE_MINOR:
+					race = RacePtr(new CMinor());
+				break;
+				case CRace::RACE_TYPE_ALIEN:
+					race = RacePtr(new CAlien());
+				break;
+				default:
+					AssertBotE(false);
+			}
 
-			AssertBotE(value);
-			value->Serialize(ar);
-			m_mRaces[key] = boost::shared_ptr<CRace>(value);
+			AssertBotE(race);
+			race->Serialize(ar);
+			m_mRaces[key] = race;
 		}
 
 		GenerateMajorsAndMinors();
@@ -424,8 +435,8 @@ bool CRaceController::InitAlienEntities(int nSource/* = RACESOURCE_DATAFILE*/)
 		int nPos = 0;
 		while (nPos < saInfo.GetSize())
 		{
-			boost::shared_ptr<CRace> pAlien(new CMinor());
-			pAlien->CreateAlienEntities(saInfo, nPos);
+			boost::shared_ptr<CRace> pAlien(new CAlien());
+			pAlien->Create(saInfo, nPos);
 			// überprüfen das auch soviele Informationen ins Objekt geschrieben wurden
 			// wir auch Informationen in der Datei standen
 			if (nPos%nInfoCount != 0)

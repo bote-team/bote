@@ -21,6 +21,7 @@ class CMinor : public CRace
 public:
 	/// Standardkonstruktur
 	CMinor(void);
+	CMinor(RACE_TYPE type);
 	/// Standarddestruktor
 	virtual ~CMinor(void);
 	/// Serialisierungsfunktion
@@ -121,12 +122,6 @@ public:
 	/// @param saInfo Referenz auf Rasseninformationen
 	/// @param nPos Referenz auf Position im Array, ab wann die Informationen gelten
 	virtual void Create(const CStringArray& saInfo, int& nPos);
-
-	/// Funktion zum erstellen von Weltraummonstern
-	/// Die Funktion liest einen entsprechenden Eintrag aus einer data Datei.
-	/// @param saInfo Referenz auf Rasseninformationen
-	/// @param nPos Referenz auf Position im Array, ab wann die Informationen gelten
-	void CreateAlienEntities(const CStringArray& saInfo, int& nPos);
 
 	// Is this minor race member to the major race with given ID, or to any major in case of an empty ID ?
 	bool IsMemberTo(const CString& MajorID = "") const;

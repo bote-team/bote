@@ -31,10 +31,10 @@ bool CompareRaceName(const CRace* pRace1, const CRace* pRace2)
 	if (!pRace1->IsMajor() && pRace2->IsMajor())
 		return false;
 
-	if (!pRace1->IsAlienRace() && pRace2->IsAlienRace())
+	if (!pRace1->IsAlien() && pRace2->IsAlien())
 		return true;
 
-	if (!pRace2->IsAlienRace() && pRace1->IsAlienRace())
+	if (!pRace2->IsAlien() && pRace1->IsAlien())
 		return false;
 
 	return pRace1->GetRaceName() < pRace2->GetRaceName();
@@ -755,9 +755,9 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 				vector<CRace*>::iterator itPrev = it;
 				--itPrev;
 
-				if (pRace->IsAlienRace())
+				if (pRace->IsAlien())
 				{
-					if (it != m_vRaceList.begin() && !(*itPrev)->IsAlienRace())
+					if (it != m_vRaceList.begin() && !(*itPrev)->IsAlien())
 						g->DrawLine(&Gdiplus::Pen(penColor), 8, 100+count*25, 150, 100+count*25);
 				}
 				else if (pRace->IsMinor())

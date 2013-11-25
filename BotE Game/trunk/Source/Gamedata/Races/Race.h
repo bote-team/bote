@@ -47,11 +47,12 @@ public:
 
 	enum RACE_TYPE {
 		RACE_TYPE_MAJOR				=	0,	// Hauptrasse
-		RACE_TYPE_MINOR				=	1	// kleine Rasse (keine Ausbreitung)
+		RACE_TYPE_MINOR				=	1,	// kleine Rasse (keine Ausbreitung)
+		RACE_TYPE_ALIEN				=	2
 	};
 
 	/// Standardkonstruktor
-	CRace(void);
+	CRace(RACE_TYPE type);
 	/// Standarddestruktor
 	virtual ~CRace(void);
 	/// Serialisierungsfunktion
@@ -97,16 +98,22 @@ public:
 	/// Funktion gibt den Rassentyp zurück (MAJOR, MINOR).
 	/// @return Rassentyp
 	RACE_TYPE GetType(void) const {return m_RaceType;}
+
 	bool IsMajor() const {
 		return m_RaceType == RACE_TYPE_MAJOR;
 	}
 	bool IsMinor() const {
-		return m_RaceType == RACE_TYPE_MINOR;
+		return m_RaceType == RACE_TYPE_MINOR || m_RaceType == RACE_TYPE_ALIEN;
 	}
 
 	/// Funktion gibt zurück, ob es sich um eine Alienrasse (kein Heimatsystem) handelt
 	/// @return <code>true</code> wenn es eine Alienrasse ist, sonst <code>false</code>
-	bool IsAlienRace() const { return m_sHomeSystem == ""; }
+	bool IsAlien() const
+	{
+		const bool is = m_RaceType == RACE_TYPE_ALIEN;
+		AssertBotE(m_sHomeSystem.IsEmpty() == is);
+		return is;
+	}
 
 	/// Funktion gibt die Nummer zurück, welche auf bestimmte Schiffe gemappt werden kann.
 	/// @return Rassennummer
@@ -225,8 +232,6 @@ public:
 	/// @param nPos Referenz auf Position im Array, ab wann die Informationen gelten
 	virtual void Create(const CStringArray&, int&) = 0;
 
-	virtual void CreateAlienEntities(const CStringArray&, int&) {};
-
 	/// Funktion lässt die Diplomatie-KI der Rasse Angebote an andere Rassen erstellen.
 	void MakeOffersAI(void);
 
@@ -244,7 +249,7 @@ public:
 	/// @return Koordinate des Heimatsystems
 	const CPoint& GetRaceKO(void) const
 	{
-		AssertBotE(IsAlienRace() || PT_IN_RECT(m_ptKO, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT));
+		AssertBotE(IsAlien() || PT_IN_RECT(m_ptKO, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT));
 		return m_ptKO;
 	}
 
@@ -267,7 +272,7 @@ protected:
 	CString				m_sName;		///<!!! Rassenname
 	CString				m_sNameArticle;	///<!!! Artikel für Rassenname
 	CString				m_sDesc;		///<!!! Rassenbeschreibung
-	RACE_TYPE			m_RaceType;		///<!!! Rassentyp (Major, Medior, Minor)
+	const RACE_TYPE		m_RaceType;		///<!!! Rassentyp (Major, Minor, Alien)
 	int					m_nProperty;	///<!!! Rasseneigenschaften
 	BYTE				m_byShipNumber;	///<!!! zugewiesene Nummer, welche Schiffe verwendet werden sollen
 	BYTE				m_byBuildingNumber;	///<!!! zugewiesene Nummer, welche Gebäude verwendet werden sollen

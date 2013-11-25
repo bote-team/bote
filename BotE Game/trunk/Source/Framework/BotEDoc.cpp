@@ -967,7 +967,7 @@ void CBotEDoc::GenerateGalaxy()
 		}
 
 		// keine Minors ohne Heimatsystem ins Spiel bringen (Aliens haben kein Heimatsystem)
-		if (!pMinor->IsAlienRace())
+		if (!pMinor->IsAlien())
 			vMinorRaceSystemNames.Add(pMinor->GetHomesystemName());
 	}
 
@@ -1140,7 +1140,7 @@ void CBotEDoc::GenerateGalaxy()
 		if (sUsedMinors.find(it->first) == sUsedMinors.end())
 		{
 			// keine Aliens ohne Heimatsystem rauslöschen
-			if (!it->second->IsAlienRace())
+			if (!it->second->IsAlien())
 				vDelMinors.push_back(it->first);
 		}
 	}
@@ -4544,7 +4544,7 @@ void CBotEDoc::CalcEffectsMinorEleminated(CMinor* pMinor)
 		return;
 	}
 
-	if (!pMinor->IsAlienRace())
+	if (!pMinor->IsAlien())
 		GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetMinorRace(false);
 
 	// Diplomatie/Nachrichten entfernen
@@ -4579,7 +4579,7 @@ void CBotEDoc::CalcEffectsMinorEleminated(CMinor* pMinor)
 		{
 			CString news = CLoc::GetString("ELIMINATE_MINOR", FALSE, pMinor->GetRaceName());
 			CEmpireNews message;
-			if (pMinor->IsAlienRace())
+			if (pMinor->IsAlien())
 				message.CreateNews(news, EMPIRE_NEWS_TYPE::SOMETHING);
 			else
 				message.CreateNews(news, EMPIRE_NEWS_TYPE::SOMETHING, GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(), pMinor->GetRaceKO());
@@ -4951,9 +4951,9 @@ void CBotEDoc::CalcRandomAlienEntities()
 		// zugehörige Minorrace finden
 		if (CMinor* pAlien = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(pShipInfo->GetOnlyInSystem())))
 		{
-			if (!pAlien->IsAlienRace())
+			if (!pAlien->IsAlien())
 			{
-				AssertBotE(pAlien->IsAlienRace());
+				AssertBotE(false);
 				continue;
 			}
 
@@ -5113,7 +5113,7 @@ void CBotEDoc::CalcAlienShipEffects()
 			continue;
 
 		CMinor* pAlien = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(ship->second->GetOwnerOfShip()));
-		if (!pAlien || !pAlien->IsAlienRace())
+		if (!pAlien || !pAlien->IsAlien())
 		{
 			AssertBotE(FALSE);
 			continue;

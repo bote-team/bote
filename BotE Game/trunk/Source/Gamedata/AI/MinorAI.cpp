@@ -700,7 +700,7 @@ int CMinorAI::CalcResInCredits(const CDiplomacyInfo& info)
 		return 0;
 
 	// An Alienrassen können keine Ressourcen übergeben werden
-	if (pMinor->IsAlienRace())
+	if (pMinor->IsAlien())
 		return 0;
 
 	// zuerst muss berechnet werden, wie viel die übergebenen Ressourcen als Credits wert sind
