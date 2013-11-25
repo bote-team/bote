@@ -33,7 +33,11 @@ void CRaceController::Serialize(CArchive &ar)
 		// Rassen speichern
 		ar << m_mRaces.size();
 		for (const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
-			ar << it->first << it->second.get();
+		{
+			ar << it->first;
+			ar << static_cast<int>(it->second->GetType());
+			it->second->Serialize(ar);
+		}
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
@@ -46,10 +50,17 @@ void CRaceController::Serialize(CArchive &ar)
 		for (size_t i = 0; i < mapSize; i++)
 		{
 			CString key;
-			CRace* value = NULL;
 			ar >> key;
-			ar >> value;
+			int type = 0;
+			ar >> type;
+			CRace* value = NULL;
+			if(type == CRace::RACE_TYPE_MAJOR)
+				value = new CMajor();
+			else
+				value = new CMinor();
+
 			AssertBotE(value);
+			value->Serialize(ar);
 			m_mRaces[key] = boost::shared_ptr<CRace>(value);
 		}
 

@@ -41,11 +41,9 @@ enum RaceSpecialAbilities
 };
 
 /// Basisklasse für alle Rassen.
-class CRace : public CObject
+class CRace
 {
 public:
-
-	DECLARE_SERIAL(CRace)
 
 	enum RACE_TYPE {
 		RACE_TYPE_MAJOR				=	0,	// Hauptrasse
@@ -225,7 +223,7 @@ public:
 	/// Die Funktion liest einen entsprechenden Eintrag aus einer data Datei.
 	/// @param saInfo Referenz auf Rasseninformationen
 	/// @param nPos Referenz auf Position im Array, ab wann die Informationen gelten
-	virtual void Create(const CStringArray&, int&) {};
+	virtual void Create(const CStringArray&, int&) = 0;
 
 	virtual void CreateAlienEntities(const CStringArray&, int&) {};
 

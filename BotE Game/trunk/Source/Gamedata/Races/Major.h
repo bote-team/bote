@@ -20,7 +20,6 @@ class CMajor : public CRace
 {
 	friend class CMajorAI;
 
-	DECLARE_SERIAL(CMajor)
 public:
 	/// Standardkonstruktur
 	CMajor(void);

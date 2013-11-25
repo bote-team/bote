@@ -18,7 +18,6 @@ class CMinor : public CRace
 	friend class CMinorAI;
 	friend class CRaceController;
 
-	DECLARE_SERIAL(CMinor)
 public:
 	/// Standardkonstruktur
 	CMinor(void);
