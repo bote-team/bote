@@ -34,17 +34,12 @@ void CDiplomacyController::Send(void)
 
 	// KI Angebote erstellen lassen
 	for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
-	{
-		CRace* pRace = it->second;
-		AssertBotE(pRace);
-
-		pRace->MakeOffersAI();
-	}
+		it->second->MakeOffersAI();
 
 	// durch alle Rassen iterieren und Angebote versenden
 	for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
 	{
-		CRace* pRace = it->second;
+		boost::shared_ptr<CRace> pRace = it->second;
 		AssertBotE(pRace);
 
 		// alle eingegangenen Antworten aus der letzten Runde löschen
@@ -91,7 +86,7 @@ void CDiplomacyController::Receive(void)
 	// durch alle Rassen iterieren und Nachrichten empfangen sowie darauf reagieren
 	for (CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
 	{
-		CRace* pRace = it->second;
+		boost::shared_ptr<CRace> pRace = it->second;
 		AssertBotE(pRace);
 
 		// nun durch alle eingegangen Nachrichten iterieren und darauf reagieren

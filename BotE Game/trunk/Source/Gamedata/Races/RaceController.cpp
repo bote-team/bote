@@ -32,8 +32,8 @@ void CRaceController::Serialize(CArchive &ar)
 	{
 		// Rassen speichern
 		ar << m_mRaces.size();
-		for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
-			ar << it->first << it->second;
+		for (const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
+			ar << it->first << it->second.get();
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
@@ -50,17 +50,10 @@ void CRaceController::Serialize(CArchive &ar)
 			ar >> key;
 			ar >> value;
 			AssertBotE(value);
-			m_mRaces[key] = value;
+			m_mRaces[key] = boost::shared_ptr<CRace>(value);
 		}
 
-		// Array aller Majors und Minors anlegen
-		for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
-		{
-			if (it->second->IsMajor())
-				m_mMajors[it->first] = dynamic_cast<CMajor*>(it->second);
-			else if (it->second->IsMinor())
-				m_mMinors[it->first] = dynamic_cast<CMinor*>(it->second);
-		}
+		GenerateMajorsAndMinors();
 	}
 }
 
@@ -79,14 +72,7 @@ bool CRaceController::Init(int nSource/* = RACESOURCE_DATAFILE*/)
 	if ((InitMajors(nSource) & InitMinors(nSource) & InitAlienEntities(nSource)) == false)
 		return false;
 
-	// Array aller Majors und Minors anlegen
-	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
-	{
-		if (it->second->IsMajor())
-			m_mMajors[it->first] = dynamic_cast<CMajor*>(it->second);
-		else if (it->second->IsMinor())
-			m_mMinors[it->first] = dynamic_cast<CMinor*>(it->second);
-	}
+	GenerateMajorsAndMinors();
 
 	// Startbeziehungen initialisieren
 	InitRelations();
@@ -99,10 +85,10 @@ bool CRaceController::Init(int nSource/* = RACESOURCE_DATAFILE*/)
 /// @return Zeiger auf gewünschte Rasse
 CRace* CRaceController::GetRace(const CString& sID) const
 {
-	map<CString, CRace*>::const_iterator it = m_mRaces.find(sID);
+	const const_iterator it = m_mRaces.find(sID);
 
 	if (it != m_mRaces.end())
-		return it->second;
+		return it->second.get();
 	else
 		return NULL;
 }
@@ -113,9 +99,9 @@ CRace* CRaceController::GetRace(const CString& sID) const
 map<CString, CRace*> CRaceController::GetRaces(CRace::RACE_TYPE type) const
 {
 	map<CString, CRace*> mMap;
-	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
+	for (const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 		if (it->second->GetType() == type)
-			mMap[it->first] = it->second;
+			mMap[it->first] = it->second.get();
 	return mMap;
 }
 
@@ -124,9 +110,9 @@ map<CString, CRace*> CRaceController::GetRaces(CRace::RACE_TYPE type) const
 /// @return Zeiger auf Minorrace (<code>NULL</code> wenn die Rasse nicht gefunden werden konnte)
 CMinor* CRaceController::GetMinorRace(const CString& sMinorsHome) const
 {
-	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
+	for (const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 		if (it->second->IsMinor() && it->second->GetHomesystemName() == sMinorsHome)
-			return dynamic_cast<CMinor*>(it->second);
+			return dynamic_cast<CMinor*>(it->second.get());
 
 	return NULL;
 }
@@ -135,12 +121,12 @@ CMinor* CRaceController::GetMinorRace(const CString& sMinorsHome) const
 /// @param sRaceID Rassen-ID
 void CRaceController::RemoveRace(const CString& sRaceID)
 {
-	for (map<CString, CRace*>::iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
+	for (iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 	{
 		if (it->first == sRaceID)
 		{
-			delete it->second;
-			it->second = NULL;
+			AssertBotE(it->second);
+			it->second.reset();
 			m_mRaces.erase(it);
 			break;
 		}
@@ -148,26 +134,18 @@ void CRaceController::RemoveRace(const CString& sRaceID)
 
 	m_mMajors.clear();
 	m_mMinors.clear();
-	// Array aller Majors und Minors neu anlegen
-	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
-	{
-		if (it->second->IsMajor())
-			m_mMajors[it->first] = dynamic_cast<CMajor*>(it->second);
-		else if (it->second->IsMinor())
-			m_mMinors[it->first] = dynamic_cast<CMinor*>(it->second);
-	}
+	GenerateMajorsAndMinors();
 }
 
 /// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
 void CRaceController::Reset(void)
 {
 	// Objekte in der Map löschen
-	for (map<CString, CRace*>::iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
-		if (it->second)
-		{
-			delete it->second;
-			it->second = NULL;
-		}
+	for (iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
+	{
+		AssertBotE(it->second);
+		it->second.reset();
+	}
 	// Map löschen
 	m_mRaces.clear();
 
@@ -242,7 +220,7 @@ bool CRaceController::InitMajors(int nSource/* = RACESOURCE_DATAFILE*/)
 		int nPos = 0;
 		while (nPos < saInfo.GetSize())
 		{
-			CMajor* pNewMajor = new CMajor();
+			boost::shared_ptr<CRace> pNewMajor(new CMajor());
 			pNewMajor->Create(saInfo, nPos);
 			// überprüfen das auch soviele Informationen ins Objekt geschrieben wurden
 			// wir auch Informationen in der Datei standen
@@ -331,7 +309,7 @@ bool CRaceController::InitMinors(int nSource/* = RACESOURCE_DATAFILE*/)
 		int nPos = 0;
 		while (nPos < saInfo.GetSize())
 		{
-			CMinor* pNewMinor = new CMinor();
+			boost::shared_ptr<CRace> pNewMinor(new CMinor());
 			pNewMinor->Create(saInfo, nPos);
 			// überprüfen das auch soviele Informationen ins Objekt geschrieben wurden
 			// wir auch Informationen in der Datei standen
@@ -419,7 +397,7 @@ bool CRaceController::InitAlienEntities(int nSource/* = RACESOURCE_DATAFILE*/)
 		int nPos = 0;
 		while (nPos < saInfo.GetSize())
 		{
-			CMinor* pAlien = new CMinor();
+			boost::shared_ptr<CRace> pAlien(new CMinor());
 			pAlien->CreateAlienEntities(saInfo, nPos);
 			// überprüfen das auch soviele Informationen ins Objekt geschrieben wurden
 			// wir auch Informationen in der Datei standen
@@ -448,8 +426,8 @@ bool CRaceController::InitAlienEntities(int nSource/* = RACESOURCE_DATAFILE*/)
 /// von Minor zu Majors erstellt.
 void CRaceController::InitRelations(void)
 {
-	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
-		for (map<CString, CRace*>::const_iterator jt = m_mRaces.begin(); jt != m_mRaces.end(); ++jt)
+	for (const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
+		for (const_iterator jt = m_mRaces.begin(); jt != m_mRaces.end(); ++jt)
 			// handelt es sich nicht um die Rasse selbst und nicht um die Bezeihung Major -> Minor
 			if (it->first != jt->first && jt->second->IsMajor())
 			{
@@ -751,4 +729,16 @@ void CRaceController::InitRelations(void)
 
 				it->second->SetRelation(jt->first, nValue);
 			}
+}
+
+void CRaceController::GenerateMajorsAndMinors()
+{
+	// Array aller Majors und Minors neu anlegen
+	for (const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
+	{
+		if (it->second->IsMajor())
+			m_mMajors[it->first] = dynamic_cast<CMajor*>(it->second.get());
+		else if (it->second->IsMinor())
+			m_mMinors[it->first] = dynamic_cast<CMinor*>(it->second.get());
+	}
 }

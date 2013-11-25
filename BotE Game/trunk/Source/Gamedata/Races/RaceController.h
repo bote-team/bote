@@ -11,6 +11,7 @@
 #include "Race.h"
 #include "Major.h"
 #include "Minor.h"
+#include "boost/exception/all.hpp"
 
 #define	RACESOURCE_DATAFILE		0		///< Rassendaten werden aus *.data Dateien gelesen
 #define RACESOURCE_CONST		1		///< Rassendaten kommen hart aus dem Quellcode
@@ -30,8 +31,8 @@ public:
 	virtual void Serialize(CArchive &ar);
 
 
-	typedef std::map<CString, CRace*>::const_iterator const_iterator;
-	typedef std::map<CString, CRace*>::iterator iterator;
+	typedef std::map<CString, boost::shared_ptr<CRace>>::const_iterator const_iterator;
+	typedef std::map<CString, boost::shared_ptr<CRace>>::iterator iterator;
 
 	const_iterator begin() const { return m_mRaces.begin(); }
 	iterator begin() { return m_mRaces.begin(); }
@@ -44,7 +45,7 @@ public:
 	const_iterator find(const CString& id) const { return m_mRaces.find(id); }
 	iterator find(const CString& id) { return m_mRaces.find(id); }
 
-	CRace*& operator[](CString const& id) { return m_mRaces[id]; }
+	CRace* operator[](CString const& id) { return m_mRaces[id].get(); }
 
 	// Funktionen
 	/// Funktion zum Einlesen und Initialisieren aller am Spiel beteiligten Rassen
@@ -104,8 +105,10 @@ private:
 	/// von Minor zu Majors erstellt.
 	void InitRelations(void);
 
+	void GenerateMajorsAndMinors();
+
 	// Attribute
-	map<CString, CRace*>		m_mRaces;			///< Map mit allen Rassen des Spiels
+	std::map<CString, boost::shared_ptr<CRace>> m_mRaces; ///< Map mit allen Rassen des Spiels
 
 	map<CString, CMajor*>		m_mMajors;			///< Map mit allen Majors des Spiels (muss nicht serialisiert werden)
 

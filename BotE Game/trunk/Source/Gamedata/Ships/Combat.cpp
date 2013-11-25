@@ -60,7 +60,7 @@ void CCombat::SetInvolvedShips(const CArray<CShips*>* pShips, CRaceController* p
 		{
 			for (CRaceController::const_iterator itt = pmRaces->begin(); itt != pmRaces->end(); ++itt)
 				if (it->first != itt->first && m_mInvolvedRaces.find(it->first) != m_mInvolvedRaces.end() && m_mInvolvedRaces.find(itt->first) != m_mInvolvedRaces.end())
-					if (CCombat::CheckDiplomacyStatus(it->second, itt->second))
+					if (CCombat::CheckDiplomacyStatus(it->second.get(), itt->second.get()))
 					{
 						m_bReady = TRUE;
 						break;
@@ -626,7 +626,7 @@ double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& v
 			if (pmRaces->find(pShip->GetOwnerOfShip()) == pmRaces->end())
 				continue;
 
-			const CRace* pOtherRace  = pmRaces->find(pShip->GetOwnerOfShip())->second;
+			const CRace* pOtherRace  = pmRaces->find(pShip->GetOwnerOfShip())->second.get();
 			AssertBotE(pOtherRace);
 
 			if (CheckDiplomacyStatus(pOurRace, pOtherRace))

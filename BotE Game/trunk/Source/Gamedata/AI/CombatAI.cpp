@@ -66,7 +66,7 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShips*>& vInvolvedShips, const C
 		if (iter == pmRaces->end())
 			continue;
 
-		CRace* pRace1 = iter->second;
+		boost::shared_ptr<CRace> pRace1(iter->second);
 		int nMinRelation = 100;
 		for (set<CString>::const_iterator it2 = sInvolvedRaces.begin(); it2 != sInvolvedRaces.end(); ++it2)
 		{
@@ -76,11 +76,11 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShips*>& vInvolvedShips, const C
 				if (iter == pmRaces->end())
 					continue;
 
-				CRace* pRace2 = iter->second;
+				boost::shared_ptr<CRace> pRace2(iter->second);
 				// Beziehung der anderes Rasse zu uns
-				if (!pRace2->IsMajor() || (pRace2->IsMajor() && ((CMajor*)pRace2)->AHumanPlays() == false))
+				if (!pRace2->IsMajor() || (pRace2->IsMajor() && ((CMajor*)pRace2.get())->AHumanPlays() == false))
 					nMinRelation = min(nMinRelation, pRace2->GetRelation(pRace1->GetRaceID()));
-				else if (!pRace1->IsMajor() || (pRace1->IsMajor() && ((CMajor*)pRace1)->AHumanPlays() == false))
+				else if (!pRace1->IsMajor() || (pRace1->IsMajor() && ((CMajor*)pRace1.get())->AHumanPlays() == false))
 					nMinRelation = min(nMinRelation, pRace1->GetRelation(pRace2->GetRaceID()));
 			}
 		}
@@ -113,7 +113,7 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShips*>& vInvolvedShips, const C
 		// Ist die Beziehung nicht ausreichend, dann die Schiffstärken im Sektor beachten und Gewinnchance ermitteln
 		set<const CRace*> sFriends;
 		set<const CRace*> sEnemies;
-		double dWinningChance = CCombat::GetWinningChance(pRace1, vInvolvedShips, pmRaces, sFriends, sEnemies, pAnomaly);
+		double dWinningChance = CCombat::GetWinningChance(pRace1.get(), vInvolvedShips, pmRaces, sFriends, sEnemies, pAnomaly);
 
 		if (dWinningChance > 0.75)
 			mCombatOrders[*it] = COMBAT_ORDER::AUTOCOMBAT;

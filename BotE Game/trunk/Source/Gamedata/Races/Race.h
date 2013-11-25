@@ -224,6 +224,8 @@ public:
 	/// @param nPos Referenz auf Position im Array, ab wann die Informationen gelten
 	virtual void Create(const CStringArray&, int&) {};
 
+	virtual void CreateAlienEntities(const CStringArray&, int&) {};
+
 	/// Funktion lässt die Diplomatie-KI der Rasse Angebote an andere Rassen erstellen.
 	void MakeOffersAI(void);
 

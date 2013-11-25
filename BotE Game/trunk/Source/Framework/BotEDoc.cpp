@@ -4258,7 +4258,7 @@ void CBotEDoc::CalcShipCombat()
 			// dem Siegbedingungsüberwacher den Sieg mitteilen
 			m_VictoryObserver.AddCombatWin(it->first);
 
-			CMajor* pMajor = dynamic_cast<CMajor*>(it->second);
+			CMajor* pMajor = dynamic_cast<CMajor*>(it->second.get());
 			AssertBotE(pMajor);
 
 			CEmpireNews message;
@@ -4275,7 +4275,7 @@ void CBotEDoc::CalcShipCombat()
 		{
 			if (it->second->IsMajor())
 			{
-				CMajor* pMajor = dynamic_cast<CMajor*>(it->second);
+				CMajor* pMajor = dynamic_cast<CMajor*>(it->second.get());
 				AssertBotE(pMajor);
 
 				CEmpireNews message;
@@ -4304,7 +4304,7 @@ void CBotEDoc::CalcShipCombat()
 		// unentschieden
 		else if (winner[it->first] == 3 && it->second->IsMajor())
 		{
-			CMajor* pMajor = dynamic_cast<CMajor*>(it->second);
+			CMajor* pMajor = dynamic_cast<CMajor*>(it->second.get());
 			AssertBotE(pMajor);
 
 			CEmpireNews message;
@@ -4715,7 +4715,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 				if (pMajor->GetRaceID() == itt->first)
 					continue;
 
-				CRace* pLivingRace = itt->second;
+				CRace* pLivingRace = itt->second.get();
 
 				pLivingRace->SetIsRaceContacted(pMajor->GetRaceID(), false);
 				pLivingRace->SetAgreement(pMajor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
