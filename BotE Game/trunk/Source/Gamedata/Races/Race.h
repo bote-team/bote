@@ -240,14 +240,22 @@ public:
 	void Delete() { m_bDeleted = true; }
 	bool Deleted() { return m_bDeleted; }
 
-	/// Funktion gibt die Koordinate des Heimatsystems der Minorrace zurück.
+	/// Funktion gibt die Koordinate des Heimatsystems der Race zurück.
 	/// @return Koordinate des Heimatsystems
-	const CPoint& GetRaceKO(void) const {return m_ptKO;}
+	const CPoint& GetRaceKO(void) const
+	{
+		AssertBotE(IsAlienRace() || PT_IN_RECT(m_ptKO, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT));
+		return m_ptKO;
+	}
 
 	// zum Schreiben der Membervariablen
 	/// Funktion schreibt die Koordinate des Heimatsystems der Minorrace.
 	/// @param Koordinate des Heimatsystems
-	void SetRaceKO(const CPoint& ko) {m_ptKO = ko;}
+	void SetRaceKO(const CPoint& ko)
+	{
+		AssertBotE(PT_IN_RECT(ko, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT));
+		m_ptKO = ko;
+	}
 
 
 protected:

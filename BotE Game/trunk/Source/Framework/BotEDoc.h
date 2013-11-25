@@ -134,11 +134,6 @@ public:
 	const CPoint& GetKO(void) const {return m_ptKO;}
 	void SetKO(int x, int y);
 
-	/// Funktion gibt die Koordinate des Hauptsystems einer Majorrace zurück.
-	/// @param sMajor Rassen-ID
-	/// @return Koordinate auf der Galaxiemap
-	CPoint GetRaceKO(const CString& sMajorID) const;
-
 	CSystem& GetSystem(int x, int y) {
 		return m_Systems.at(x+y*STARMAP_SECTORS_HCOUNT);
 	}
@@ -218,9 +213,6 @@ public:
 
 	/// Funktion gibt einen Zeiger auf die Sektoren-KI zurück.
 	CSectorAI* GetSectorAI(void) const {return m_pSectorAI;}
-
-	/// Startkoordinaten der Hauptsysteme aller Majorraces.
-	map<CString, pair<int, int> > m_mRaceKO;
 
 	/// Funktion gibt das Feld mit den Schiffsinformationen zurück.
 	/// @return Zeiger auf das Schiffsinformationsfeld

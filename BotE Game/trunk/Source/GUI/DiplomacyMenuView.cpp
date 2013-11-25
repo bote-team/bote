@@ -121,11 +121,11 @@ void CDiplomacyMenuView::OnNewRound()
 	m_byWhichResourceIsChosen = RESOURCES::TITAN;
 
 
-	CString race = pPlayer->GetRaceID();
+	const CString& race = pPlayer->GetRaceID();
 
-	CPoint ko = pDoc->GetRaceKO(race);
+	const CPoint& ko = pPlayer->GetRaceKO();
 	if (ko != CPoint(-1,-1) && pDoc->GetSystem(ko.x, ko.y).OwnerID() == race)
-		m_ptResourceFromSystem = pDoc->GetRaceKO(race);
+		m_ptResourceFromSystem = pPlayer->GetRaceKO();
 	// Systeme nochmal durchgehen um ein System zu finden, aus dem wir Rohstoffe verschenken könnten
 	else if (pPlayer->GetEmpire()->GetSystemList()->GetSize() > 0)
 		m_ptResourceFromSystem = pPlayer->GetEmpire()->GetSystemList()->GetAt(0).ko;

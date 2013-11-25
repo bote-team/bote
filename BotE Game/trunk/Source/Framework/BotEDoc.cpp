@@ -226,11 +226,6 @@ void CBotEDoc::Serialize(CArchive& ar)
 		MYTRACE("logging")(MT::LEVEL_INFO, _T("Time: %s"), CTime(time(NULL)).Format("%c"));
 
 
-		// Hauptrassen-Koordinaten speichern
-		ar << m_mRaceKO.size();
-		for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); ++it)
-			ar << it->first << it->second.first << it->second.second;
-
 		ar << m_ShipInfoArray.GetSize();
 		for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
 			m_ShipInfoArray.GetAt(i).Serialize(ar);
@@ -263,20 +258,6 @@ void CBotEDoc::Serialize(CArchive& ar)
 		ar >> STARMAP_SECTORS_VCOUNT;
 		AllocateSystems();
 
-		// Hauptrassen-Koordinaten laden
-		m_mRaceKO.clear();
-		size_t mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			pair<int, int> value;
-			ar >> key;
-			ar >> value.first;
-			ar >> value.second;
-			m_mRaceKO[key] = value;
-		}
-
 		ar >> number;
 		m_ShipInfoArray.RemoveAll();
 		m_ShipInfoArray.SetSize(number);
@@ -305,6 +286,7 @@ void CBotEDoc::Serialize(CArchive& ar)
 		ar >> CResearchInfo::m_dResearchSpeedFactor;
 
 		CSystemProd::GetMoralProdEmpireWide()->clear();
+		size_t mapSize = 0;
 		ar >> mapSize;
 		for (size_t i = 0; i < mapSize; i++)
 		{
@@ -355,10 +337,6 @@ void CBotEDoc::SerializeBeginGameData(CArchive& ar)
 		//Kartengröße
 		ar << STARMAP_SECTORS_HCOUNT;
 		ar << STARMAP_SECTORS_VCOUNT;
-		// Hauptrassen-Koordinaten senden
-		ar << m_mRaceKO.size();
-		for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); ++it)
-			ar << it->first << it->second.first << it->second.second;
 
 		// Gebäudeinformationen
 		ar << BuildingInfo.GetSize();
@@ -380,19 +358,6 @@ void CBotEDoc::SerializeBeginGameData(CArchive& ar)
 		ar >> STARMAP_SECTORS_HCOUNT;
 		ar >> STARMAP_SECTORS_VCOUNT;
 		AllocateSystems();
-		// Hauptrassen-Koordinaten empfangen
-		m_mRaceKO.clear();
-		size_t mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString key;
-			pair<int, int> value;
-			ar >> key;
-			ar >> value.first;
-			ar >> value.second;
-			m_mRaceKO[key] = value;
-		}
 
 		int number;
 		ar >> number;
@@ -676,17 +641,6 @@ void CBotEDoc::ResetIniSettings(void)
 	RandomSeed();
 }
 
-/// Funktion gibt die Koordinate des Hauptsystems einer Majorrace zurück.
-/// @param sMajor Rassen-ID
-/// @return Koordinate auf der Galaxiemap
-CPoint CBotEDoc::GetRaceKO(const CString& sMajorID) const
-{
-	const std::map<CString, std::pair<int, int>>::const_iterator race = m_mRaceKO.find(sMajorID);
-	if (race == m_mRaceKO.end())
-		return CPoint(-1,-1);
-	return CPoint(race->second.first, race->second.second);
-}
-
 void CBotEDoc::SetKO(int x, int y)
 {
 	m_ptKO = CPoint(x, y);
@@ -911,8 +865,6 @@ void CBotEDoc::GenerateGalaxy()
 	// Vektoren für Sektoren und Systeme anlegen
 	AllocateSystems();
 
-	m_mRaceKO.clear();
-
 	///////////////////////////////////////////////////////////////////////
 	// Galaxieform anpassen
 	int nGenerationMode = 0; // 0 == Standard  sonst Pattern verwenden
@@ -966,6 +918,7 @@ void CBotEDoc::GenerateGalaxy()
 	// minimal 4 Felder abstand
 	nMinDiff = max(nMinDiff, 4);
 
+	std::map<CString, CPoint> RaceKO;
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); )
 	{
 		// Zufällig einen Sektor ermitteln. Dies wird solange getan, solange der ermittelte Sektor noch nicht die
@@ -975,19 +928,19 @@ void CBotEDoc::GenerateGalaxy()
 
 		do
 		{
-			m_mRaceKO[it->first].first = rand()%(STARMAP_SECTORS_HCOUNT);
-			m_mRaceKO[it->first].second= rand()%(STARMAP_SECTORS_VCOUNT);
+			const CPoint co(rand()%STARMAP_SECTORS_HCOUNT, rand()%STARMAP_SECTORS_VCOUNT);
+			RaceKO[it->first] = co;
 
 			for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)
 			{
-				if (it->first != jt->first && GetRaceKO(jt->first) != CPoint(-1,-1) && abs(GetRaceKO(it->first).x - GetRaceKO(jt->first).x) < nMinDiff && abs(GetRaceKO(it->first).y - GetRaceKO(jt->first).y) < nMinDiff||GetRaceKO(it->first) != CPoint(-1,-1)&&nGenField[GetRaceKO(it->first).x][GetRaceKO(it->first).y]==false)
-					m_mRaceKO[it->first] = pair<int,int>(-1,-1);
+				if (it->first != jt->first && RaceKO[jt->first] != CPoint(-1,-1) && abs(RaceKO[it->first].x - RaceKO[jt->first].x) < nMinDiff && abs(RaceKO[it->first].y - RaceKO[jt->first].y) < nMinDiff||RaceKO[it->first] != CPoint(-1,-1)&&nGenField[RaceKO[it->first].x][RaceKO[it->first].y]==false)
+					RaceKO[it->first] = CPoint(-1,-1);
 			}
 			// Abbruchbedingung
 			if (++nCount > max((STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT) / 4, 20))
 				bRestart = true;
 		}
-		while (GetRaceKO(it->first) == CPoint(-1,-1) && bRestart == false);
+		while (RaceKO[it->first] == CPoint(-1,-1) && bRestart == false);
 
 		// nächsten Major auswählen
 		++it;
@@ -996,7 +949,7 @@ void CBotEDoc::GenerateGalaxy()
 		// wird die for Schleife nochmal neu gestartet.
 		if (bRestart)
 		{
-			m_mRaceKO.clear();
+			RaceKO.clear();
 			it = pmMajors->begin();
 		}
 	}
@@ -1038,7 +991,7 @@ void CBotEDoc::GenerateGalaxy()
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor const* const pMajor = it->second;
-		const CPoint& raceKO = GetRaceKO(it->first);
+		const CPoint& raceKO = RaceKO[it->first];
 		CSystem& system = GetSystem(raceKO.x, raceKO.y);
 
 		system.SetSectorsName(pMajor->GetHomesystemName());
@@ -1120,9 +1073,9 @@ void CBotEDoc::GenerateGalaxy()
 						nAnomalys++;
 					}
 
-					for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); ++it)
+					for (map<CString, CPoint >::const_iterator it = RaceKO.begin(); it != RaceKO.end(); ++it)
 					{
-						if (it->second.first == x + i && it->second.second == y + j)
+						if (it->second.x == x + i && it->second.y == y + j)
 						{
 							sunSystems	+= 100;
 							nAnomalys	+= 100;

@@ -290,7 +290,7 @@ void CDiplomacyController::SendToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDiplom
 				// Deritium kommt nicht ins globale Lager sondern ins Heimatsystem
 				if (pInfo->m_nResources[RESOURCES::DERITIUM] > 0)
 				{
-					CPoint p = pDoc->GetRaceKO(pToMajor->GetRaceID());
+					const CPoint& p = pToMajor->GetRaceKO();
 					// gehört das System auch noch dem Major
 					if (p != CPoint(-1,-1) && pDoc->GetSystem(p.x, p.y).OwnerID() == pToMajor->GetRaceID())
 						pDoc->GetSystem(p.x, p.y).SetDeritiumStore(pInfo->m_nResources[RESOURCES::DERITIUM]);
@@ -530,7 +530,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						// Deritium kommt nicht ins globale Lager sondern ins Heimatsystem
 						if (pInfo->m_nResources[RESOURCES::DERITIUM] > 0)
 						{
-							CPoint p = pDoc->GetRaceKO(pToMajor->GetRaceID());
+							const CPoint& p = pToMajor->GetRaceKO();
 							// gehört das System auch noch dem Major
 							if (p != CPoint(-1,-1) && pDoc->GetSystem(p.x, p.y).OwnerID() == pToMajor->GetRaceID())
 								pDoc->GetSystem(p.x, p.y).SetDeritiumStore(pInfo->m_nResources[RESOURCES::DERITIUM]);
@@ -617,7 +617,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						// Deritium kommt nicht ins globale Lager sondern ins Heimatsystem
 						if (pInfo->m_nResources[RESOURCES::DERITIUM] > 0)
 						{
-							CPoint p = pDoc->GetRaceKO(pFromRace->GetRaceID());
+							const CPoint& p = pFromRace->GetRaceKO();
 							// gehört das System auch noch dem Major
 							if (p != CPoint(-1,-1) && pDoc->GetSystem(p.x, p.y).OwnerID() == pFromRace->GetRaceID())
 								pDoc->GetSystem(p.x, p.y).SetDeritiumStore(pInfo->m_nResources[RESOURCES::DERITIUM]);
@@ -688,7 +688,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						// Deritium kommt nicht ins globale Lager sondern ins Heimatsystem
 						if (pInfo->m_nResources[RESOURCES::DERITIUM] > 0)
 						{
-							CPoint p = pDoc->GetRaceKO(pToMajor->GetRaceID());
+							const CPoint& p = pToMajor->GetRaceKO();
 							// gehört das System auch noch dem Major
 							if (p != CPoint(-1,-1) && pDoc->GetSystem(p.x, p.y).OwnerID() == pToMajor->GetRaceID())
 								pDoc->GetSystem(p.x, p.y).SetDeritiumStore(pInfo->m_nResources[RESOURCES::DERITIUM]);
