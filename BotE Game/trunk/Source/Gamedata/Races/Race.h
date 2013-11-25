@@ -236,6 +236,9 @@ public:
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
 	virtual void Reset(void);
 
+	void Delete() { m_bDeleted = true; }
+	bool Deleted() { return m_bDeleted; }
+
 protected:
 	// Attribute
 	// Beschreibende Attribute
@@ -265,4 +268,8 @@ protected:
 
 	// Rassen Diplomatie-KI
 	CDiplomacyAI*		m_pDiplomacyAI;			///< Diplomatie-KI (muss nicht serialisiert werden)
+
+private:
+	bool m_bDeleted;
+
 };

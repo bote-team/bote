@@ -12,12 +12,12 @@ IMPLEMENT_SERIAL (CRaceController, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 CRaceController::CRaceController(void)
 {
-	this->Reset();
+	Reset();
 }
 
 CRaceController::~CRaceController(void)
 {
-	this->Reset();
+	Reset();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -140,6 +140,7 @@ void CRaceController::RemoveRace(const CString& sRaceID)
 		if (it->first == sRaceID)
 		{
 			AssertBotE(it->second);
+			it->second->Delete();
 			it->second.reset();
 			m_mRaces.erase(it);
 			break;
@@ -158,6 +159,7 @@ void CRaceController::Reset(void)
 	for (iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 	{
 		AssertBotE(it->second);
+		it->second->Delete();
 		it->second.reset();
 	}
 	// Map löschen

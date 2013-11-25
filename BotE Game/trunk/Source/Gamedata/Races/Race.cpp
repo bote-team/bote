@@ -21,7 +21,8 @@ CRace::CRace(void) :
 	m_byShipNumber(0),
 	m_byBuildingNumber(0),
 	m_byMoralNumber(0),
-	m_nSpecialAbility(0)
+	m_nSpecialAbility(0),
+	m_bDeleted(false)
 {
 	m_pDiplomacyAI = NULL;
 }

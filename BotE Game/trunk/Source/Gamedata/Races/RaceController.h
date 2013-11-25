@@ -84,9 +84,9 @@ public:
 	void RemoveRace(const CString& sRaceID);
 
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
+private:
 	void Reset(void);
 
-private:
 	// private Funktionen
 	/// Funktion zum Einlesen und Initialisieren der beteiligten Majors
 	/// @param nSource Datenquelle der Rasseninformationen
