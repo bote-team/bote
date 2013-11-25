@@ -162,7 +162,7 @@ void CSectorAI::CalculateTerraformSectors(int x, int y)
 		map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			if (it->second->GetStarmap()->GetRange(CPoint(x,y)) != 3)
-				if (m_pDoc->GetSystem(x, y).Free() || m_pDoc->GetSystem(x, y).Owner() == it->first)
+				if (m_pDoc->GetSystem(x, y).Free() || m_pDoc->GetSystem(x, y).OwnerID() == it->first)
 				{
 					SectorToTerraform stt(pop,CPoint(x,y));
 					m_vSectorsToTerraform[it->first].push_back(stt);
@@ -177,24 +177,17 @@ void CSectorAI::CalculateMinorraceSectors(int x, int y)
 	// Gehört der Sektor aktuell auch einer Minorrace
 		// Wenn die Minorrace einem anderen Imperium beigetreten ist, so tritt folgende Bediengnung nicht ein!.
 		// Dann fliegt die KI diesen Sektor nicht bevorzugt an, was so auch realistischer ist.
-	const CString& sOwner	= m_pDoc->GetSystem(x, y).Owner();
-	if (sOwner.IsEmpty())
-		return;
-
-	CRace* pOwner	= m_pDoc->GetRaceCtrl()->GetRace(sOwner);
+	const RacePtr& pOwner = m_pDoc->GetSystem(x, y).Owner();
 	if (!pOwner || !pOwner->IsMinor())
 		return;
-
-	CMinor* pMinor = dynamic_cast<CMinor*>(pOwner);
-	AssertBotE(pMinor);
 
 	// Eintrag für die jeweilige Rasse machen.
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			if (it->second->GetStarmap()->GetRange(CPoint(x,y)) != 3)
-				if (it->second->IsRaceContacted(sOwner) == false)
-					if (pMinor->GetRaceKO() != CPoint(-1,-1))
-						m_vMinorraceSectors[it->first].push_back(pMinor->GetRaceKO());
+				if (it->second->IsRaceContacted(pOwner->GetRaceID()) == false)
+					if (pOwner->GetRaceKO() != CPoint(-1,-1))
+						m_vMinorraceSectors[it->first].push_back(pOwner->GetRaceKO());
 }
 
 /// Diese Funktion berechnet alle möglichen offensiven Ziele für eine bestimmte Rasse. Das Ergebnis wird im Array
@@ -228,7 +221,7 @@ void CSectorAI::CalculateOffensiveTargets(int x, int y)
 				if (it->second->IsRaceContacted(sEnemy))
 				{
 					// prüfen ob es auf unserem eigenen Gebiet ist
-					if (m_pDoc->GetSystem(x, y).Owner() == it->first)
+					if (m_pDoc->GetSystem(x, y).OwnerID() == it->first)
 					{
 						// jetzt wird überprüft, ob obige Bedingungen gelten
 						if (it->second->GetRelation(sEnemy) < 50 || it->second->GetAgreement(sEnemy) == DIPLOMATIC_AGREEMENT::WAR)
@@ -253,22 +246,21 @@ void CSectorAI::CalculateOffensiveTargets(int x, int y)
 /// im Array <code>m_vBombardTargets</code> gespeichert.
 void CSectorAI::CalculateBombardTargets(const CString& sRaceID, int x, int y)
 {
-	const CString& sOwner	= m_pDoc->GetSystem(x, y).Owner();
 	if (!m_pDoc->GetSystem(x, y).Majorized())
 		return;
-	CRace* pOwner	= m_pDoc->GetRaceCtrl()->GetRace(sOwner);
+	const RacePtr& pOwner = m_pDoc->GetSystem(x, y).Owner();
 	// wenn das System nicht einem anderen Major gehört
 	if (!pOwner || !pOwner->IsMajor())
 		return;
 
 	// gehört das System einer anderen Majorrace, außer uns selbst?
-	if (m_pDoc->GetSystem(x, y).Owner() != sRaceID)
+	if (pOwner->GetRaceID() != sRaceID)
 	{
 		CRace* pOurRace = m_pDoc->GetRaceCtrl()->GetRace(sRaceID);
 		if (!pOurRace)
 			return;
 		// haben wir mit dieser anderen Majorrace Krieg?
-		if (pOurRace->GetAgreement(sOwner) == DIPLOMATIC_AGREEMENT::WAR)
+		if (pOurRace->GetAgreement(pOwner->GetRaceID()) == DIPLOMATIC_AGREEMENT::WAR)
 			// dann wäre dies ein lohnendes Ziel, welches angegriffen werden könnte
 			m_vBombardTargets[sRaceID].push_back(CPoint(x,y));
 	}

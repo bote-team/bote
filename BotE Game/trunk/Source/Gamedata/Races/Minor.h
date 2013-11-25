@@ -30,10 +30,6 @@ public:
 	// Zugriffsfunktionen
 	// zum Lesen der Membervariablen
 
-	/// Funktion gibt die Koordinate des Heimatsystems der Minorrace zurück.
-	/// @return Koordinate des Heimatsystems
-	const CPoint& GetRaceKO(void) const {return m_ptKO;}
-
 	/// Funktion gibt technologische Fortschrittlichkeit der Rasse zurück.
 	/// @return technologische Fortschrittlichkeit
 	BYTE GetTechnologicalProgress(void) const {return m_iTechnologicalProgress;}
@@ -60,11 +56,6 @@ public:
 	/// Funktion erstellt eine Tooltipinfo der Rasse.
 	/// @return	der erstellte Tooltip-Text
 	virtual CString GetTooltip(void) const;
-
-	// zum Schreiben der Membervariablen
-	/// Funktion schreibt die Koordinate des Heimatsystems der Minorrace.
-	/// @param Koordinate des Heimatsystems
-	void SetRaceKO(const CPoint& ko) {m_ptKO = ko;}
 
 	/// Funktion zum Setzen der technischen Fortschrittlichkeit der Rasse.
 	/// @param byProgress Fortschrittlichkeit
@@ -147,7 +138,6 @@ public:
 protected:
 	// Attribute
 	// feste Attribute aus der Data-Datei
-	CPoint m_ptKO;							///< Koordinaten der Rasse
 	BYTE m_iTechnologicalProgress;			///< wie fortschrittlich ist die Minorrace?
 	BYTE m_iCorruptibility;					///< wie stark ändert sich die Beziehung beim Geschenke geben?
 	bool m_bSpaceflight;					///< Spaceflightnation (hat Schiffe)

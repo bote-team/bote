@@ -82,7 +82,7 @@ void CEmpire::GenerateSystemList(const std::vector<CSystem>& systems)
 {
 	m_SystemList.RemoveAll();
 	for(std::vector<CSystem>::const_iterator it = systems.begin(); it != systems.end(); ++it)
-		if(it->Majorized() && it->Owner() == m_sEmpireID)
+		if(it->Majorized() && it->OwnerID() == m_sEmpireID)
 			m_SystemList.Add(EMPIRE_SYSTEMS(it->GetName(), it->GetKO()));
 }
 

@@ -1617,7 +1617,7 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	for (int i = m_iSTPage * NOTRIL; i < pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetSize(); i++)
 	{
 		CPoint dest = pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetAt(i).GetDestKO();
-		if (pDoc->GetSystem(dest.x, dest.y).GetKnown(pDoc->GetSystem(p.x, p.y).Owner()) == TRUE)
+		if (pDoc->GetSystem(dest.x, dest.y).GetKnown(pDoc->GetSystem(p.x, p.y).OwnerID()) == TRUE)
 			s = pDoc->GetSystem(dest.x, dest.y).GetName();
 		else
 			s.Format("%s %c%i",CLoc::GetString("SECTOR"),(char)(dest.y+97),dest.x+1);
@@ -3196,7 +3196,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// durchführen
 				for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 					for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-						if (pDoc->GetSystem(x,y).Owner() == pMajor->GetRaceID())
+						if (pDoc->GetSystem(x,y).OwnerID() == pMajor->GetRaceID())
 							pDoc->GetSystem(x,y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 			}
 			// sonst den Baulistencheck nur in dem aktuellen System durchführen
@@ -3624,7 +3624,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 						// durchführen
 						for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 							for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-								if (pDoc->GetSystem(x,y).Owner() == pMajor->GetRaceID())
+								if (pDoc->GetSystem(x,y).OwnerID() == pMajor->GetRaceID())
 									pDoc->GetSystem(x,y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 					}
 					// sonst den Baulistencheck nur in dem aktuellen System durchführen
@@ -3734,7 +3734,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 					// durchführen
 					for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 						for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-							if (pDoc->GetSystem(x,y).Owner() == pMajor->GetRaceID())
+							if (pDoc->GetSystem(x,y).OwnerID() == pMajor->GetRaceID())
 								pDoc->GetSystem(x,y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 				}
 				// Baulistencheck im aktuellen System machen, wenn ein Update oder ein Gebäude mit MaxInSystem entfernt wurde
@@ -3902,7 +3902,7 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					// durchführen
 					for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 						for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-							if (pDoc->GetSystem(x,y).Owner() == pMajor->GetRaceID())
+							if (pDoc->GetSystem(x,y).OwnerID() == pMajor->GetRaceID())
 								pDoc->GetSystem(x,y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 				}
 				// sonst den Baulistencheck nur in dem aktuellen System durchführen

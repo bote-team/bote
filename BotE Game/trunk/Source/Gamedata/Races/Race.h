@@ -14,6 +14,7 @@
 
 class CShips;
 class CShip;
+class CEmpire;
 
 using namespace std;
 
@@ -76,6 +77,8 @@ public:
 	/// Funktion gibt die ID der Rasse zurück
 	/// @return Rassen-ID
 	const CString& GetRaceID(void) const {return m_sID;}
+
+	virtual const CEmpire* GetEmpire(void) const { return NULL; }
 
 	/// Funktion gibt den Namen des Heimatsystems zurück
 	/// @return Name des Heimatsystems
@@ -239,11 +242,22 @@ public:
 	void Delete() { m_bDeleted = true; }
 	bool Deleted() { return m_bDeleted; }
 
+	/// Funktion gibt die Koordinate des Heimatsystems der Minorrace zurück.
+	/// @return Koordinate des Heimatsystems
+	const CPoint& GetRaceKO(void) const {return m_ptKO;}
+
+	// zum Schreiben der Membervariablen
+	/// Funktion schreibt die Koordinate des Heimatsystems der Minorrace.
+	/// @param Koordinate des Heimatsystems
+	void SetRaceKO(const CPoint& ko) {m_ptKO = ko;}
+
+
 protected:
 	// Attribute
 	// Beschreibende Attribute
 	CString				m_sID;			///<!!! Rassen-ID
 	CString				m_sHomeSystem;	///<!!! Name des Heimatsystems
+	CPoint m_ptKO;							///< Koordinaten der Rasse
 	CString				m_sName;		///<!!! Rassenname
 	CString				m_sNameArticle;	///<!!! Artikel für Rassenname
 	CString				m_sDesc;		///<!!! Rassenbeschreibung

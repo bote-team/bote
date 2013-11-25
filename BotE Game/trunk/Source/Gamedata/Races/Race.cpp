@@ -16,6 +16,7 @@ IMPLEMENT_SERIAL (CRace, CObject, 1)
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CRace::CRace(void) :
+	m_ptKO(-1, -1),
 	m_RaceType(RACE_TYPE_MINOR),
 	m_nProperty(0),
 	m_byShipNumber(0),
@@ -54,6 +55,7 @@ void CRace::Serialize(CArchive &ar)
 	{
 		ar << m_sID;			// Rassen-ID
 		ar << m_sHomeSystem;	// Name des Heimatsystems
+		ar << m_ptKO;						// Koordinaten der Rasse
 		ar << m_sName;			// Rassenname
 		ar << m_sNameArticle;	// Artikel für Rassenname
 		ar << m_sDesc;			// Rassenbeschreibung
@@ -80,6 +82,7 @@ void CRace::Serialize(CArchive &ar)
 	{
 		ar >> m_sID;			// Rassen-ID
 		ar >> m_sHomeSystem;	// Name des Heimatsystems
+		ar >> m_ptKO;						// Koordinaten der Rasse
 		ar >> m_sName;			// Rassenname
 		ar >> m_sNameArticle;	// Artikel für Rassenname
 		ar >> m_sDesc;			// Rassenbeschreibung
@@ -297,6 +300,7 @@ void CRace::Reset(void)
 {
 	m_sID				= "";		// Rassen-ID
 	m_sHomeSystem		= "";		// Name des Heimatsystems
+	m_ptKO = CPoint(-1,-1);					// Koordinaten der Rasse
 	m_sName				= "";		// Rassenname
 	m_sNameArticle		= "";		// Artikel für Rassenname
 	m_sDesc				= "";		// Rassenbeschreibung

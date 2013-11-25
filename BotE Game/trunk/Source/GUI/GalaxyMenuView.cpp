@@ -529,7 +529,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 			pDoc->GetSystem(x,y).DrawSectorsName(pDC ,pDoc, m_pPlayersRace);
 			// eigene Handelsrouten zeichnen
 			if (bShowTraderoutes)
-				if (pDoc->GetSystem(x, y).Owner() == pMajor->GetRaceID())
+				if (pDoc->GetSystem(x, y).OwnerID() == pMajor->GetRaceID())
 				{
 					for (int i = 0; i < pDoc->GetSystem(x, y).GetTradeRoutes()->GetSize(); i++)
 						pDoc->GetSystem(x, y).GetTradeRoutes()->GetAt(i).DrawTradeRoute(pDC, CPoint(x,y), pMajor);
@@ -542,9 +542,9 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 
 	if (bShowTraderoutes)
 	{
-		if (m_bDrawTradeRoute && (pDoc->CurrentSystem().Owner() == pMajor->GetRaceID()))
+		if (m_bDrawTradeRoute && (pDoc->CurrentSystem().OwnerID() == pMajor->GetRaceID()))
 			m_TradeRoute.DrawTradeRoute(pDC, pDoc->GetKO(), pMajor);
-		if (m_bDrawResourceRoute && (pDoc->CurrentSystem().Owner() == pMajor->GetRaceID()))
+		if (m_bDrawResourceRoute && (pDoc->CurrentSystem().OwnerID() == pMajor->GetRaceID()))
 			m_ResourceRoute.DrawResourceRoute(pDC, pDoc->GetKO(), pMajor);
 	}
 
@@ -1089,7 +1089,7 @@ void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		struct::Sector sector = pMajor->GetStarmap()->GetClickedSector(pt);
 		const CCommandLineParameters* const clp = resources::pClp;
 		if (sector.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT) &&
-			(clp->SeeAllOfMap() || pDoc->GetSystem(sector.x, sector.y).Owner() == pMajor->GetRaceID()) &&
+			(clp->SeeAllOfMap() || pDoc->GetSystem(sector.x, sector.y).OwnerID() == pMajor->GetRaceID()) &&
 			pDoc->GetSystem(sector.x, sector.y).GetSunSystem() == TRUE)
 			{
 				// falls ein Schiff markiert war wird dieses abgewählt
@@ -1550,9 +1550,9 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 		{
 			CPoint pt = pMajor->GetStarmap()->GetSectorCoords(struct::Sector(x, y));
 			if (!pDoc->GetSystem(x,y).Free() && !pDoc->GetSystem(x,y).IndependentMinor() && pDoc->GetSystem(x,y).GetScanned(pMajor->GetRaceID())
-				&& pMajor->IsRaceContacted(pDoc->GetSystem(x,y).Owner()) || pDoc->GetSystem(x,y).Owner() == pMajor->GetRaceID())
+				&& pMajor->IsRaceContacted(pDoc->GetSystem(x,y).OwnerID()) || pDoc->GetSystem(x,y).OwnerID() == pMajor->GetRaceID())
 			{
-				g->DrawImage(m_mOwnerMark[pDoc->GetSystem(x,y).Owner()], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
+				g->DrawImage(m_mOwnerMark[pDoc->GetSystem(x,y).OwnerID()], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
 			}
 			// Wurde der Sektor noch nicht gescannt, sprich ist noch Nebel des Krieges da?
 			else if (!pDoc->GetSystem(x,y).GetScanned(pMajor->GetRaceID()) && !pDoc->GetSystem(x,y).GetKnown(pMajor->GetRaceID()))
@@ -1686,7 +1686,7 @@ CString CGalaxyMenuView::CreateTooltip(void)
 
 		// wenn der Sektor irgendwem gehört, dann Verteidigungsgebäude anzeigen
 		if (pSector->GetSunSystem() && !pSector->Free() &&
-			(pSector->GetScanPower(pMajor->GetRaceID()) > 50 || pSector->Owner() == pMajor->GetRaceID()))
+			(pSector->GetScanPower(pMajor->GetRaceID()) > 50 || pSector->OwnerID() == pMajor->GetRaceID()))
 		{
 			map<CString, int> mOnlineDefenceBuildings;
 			map<CString, int> mAllDefenceBuildings;

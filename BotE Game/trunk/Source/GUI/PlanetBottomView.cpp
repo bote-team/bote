@@ -249,7 +249,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	}
 	// Symbole zu Truppen zeichnen
 	if (pDoc->GetSystem(KO.x, KO.y).Majorized() &&
-		(pDoc->GetSystem(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) > 50 || pDoc->GetSystem(KO.x, KO.y).Owner() == pMajor->GetRaceID()))
+		(pDoc->GetSystem(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) > 50 || pDoc->GetSystem(KO.x, KO.y).OwnerID() == pMajor->GetRaceID()))
 	{
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\troopSmall.bop");
 		int nTroopNumber = pDoc->GetSystem(KO.x, KO.y).GetTroops()->GetSize();
@@ -287,17 +287,17 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(711,0), &fontFormat, &fontBrush);
 	}
 	// Namen des Besitzers des Sector unten rechts zeichnen
-	if (pDoc->GetSystem(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->GetSystem(KO.x, KO.y).Owner())
-		|| pDoc->GetSystem(KO.x, KO.y).Owner() == pMajor->GetRaceID())
+	if (pDoc->GetSystem(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->GetSystem(KO.x, KO.y).OwnerID())
+		|| pDoc->GetSystem(KO.x, KO.y).OwnerID() == pMajor->GetRaceID())
 	{
-		CRace* pOwner = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSystem(KO.x, KO.y).Owner());
+		const RacePtr& pOwner = pDoc->GetSystem(KO.x, KO.y).Owner();
 		if (pOwner)
 		{
 			s = pOwner->GetRaceName();
 			if (pOwner->IsMajor())
 			{
 				Color color;
-				color.SetFromCOLORREF(((CMajor*)pOwner)->GetDesign()->m_clrSector);
+				color.SetFromCOLORREF((dynamic_cast<CMajor*>(pOwner.get()))->GetDesign()->m_clrSector);
 				fontBrush.SetColor(color);
 			}
 			else
@@ -458,9 +458,9 @@ CString CPlanetBottomView::CreateTooltip(void)
 			if (!pMajor)
 				return "";
 
-			if (pDoc->GetSystem(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->GetSystem(KO.x, KO.y).Owner()) || pDoc->GetSystem(KO.x, KO.y).Owner() == pMajor->GetRaceID())
+			if (pDoc->GetSystem(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->GetSystem(KO.x, KO.y).OwnerID()) || pDoc->GetSystem(KO.x, KO.y).OwnerID() == pMajor->GetRaceID())
 			{
-				CRace* pOwner = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSystem(KO.x, KO.y).Owner());
+				const RacePtr& pOwner = pDoc->GetSystem(KO.x, KO.y).Owner();
 				if (!pOwner)
 					return "";
 

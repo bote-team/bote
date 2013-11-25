@@ -17,6 +17,7 @@
 
 #include "resources.h"
 #include "CommandLineParameters.h"
+#include "boost/exception/all.hpp"
 
 using namespace std;
 
@@ -89,11 +90,6 @@ public:
 //// SectorAttributes ////
 	/// Diese Funktion gibt zurück, ob sich in diesem Sektor ein Sonnensystem befindet.
 	BOOLEAN GetSunSystem(void) const {return m_bSunSystem;}
-
-	/// Diese Funktion gibt zurück, wer im Besitz dieses Sektors ist.
-	CString Owner(void) const {return m_sOwner;}
-
-	bool Free() const { return m_sOwner.IsEmpty(); }
 
 //// DISCOVER_STATUS ////
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob dieser Sektor von der Majorrace
@@ -381,7 +377,7 @@ public:
 	/// @param patrolship: is this a patrolship (implies the scan power affecting object is a ship or base)
 	/// @param anomaly: is the scan power affecting object a scanning deteriorating anomaly
 	void PutScannedSquare(unsigned range, const int power,
-		const CRace& race, bool bBetterScanner = false, bool patrolship = false, bool anomaly = false);
+		const CRace& race, bool bBetterScanner = false, bool patrolship = false, bool anomaly = false) const;
 
 	/// Funktion legt die Scanpower <code>scanpower</code> fest, welche benötigt wird, um ein Schiff der
 	/// Majorrace <code>Race</code> in diesem Sektor zu erkennen.
@@ -418,10 +414,18 @@ public:
 	/// dazu.
 	void AddOwnerPoints(BYTE ownerPoints, const CString& sOwner) {m_byOwnerPoints[sOwner] += ownerPoints;}
 
+	/// Diese Funktion gibt zurück, wer im Besitz dieses Sektors ist.
+	const boost::shared_ptr<CRace>& Owner() const;
+	CString OwnerID() const;
+
+	bool Free() const { return !m_Owner; }
+
 protected:
 	/// Diese Funktion berechnet anhand der Besitzerpunkte und anderen Enflüssen, wem dieser Sektor schlussendlich
 	/// gehört. Übergeben wird dafür auch der mögliche Besitzer des Systems in diesem Sektor.
 	void CalculateOwner();
+
+	void SetOwner(const CString& id);
 public:
 
 //////////////////////////////////////////////////////////////////////
@@ -447,7 +451,7 @@ protected:
 	CPoint m_KO;
 
 	/// Wem gehört der Sektor?
-	CString m_sOwner;
+	boost::shared_ptr<CRace> m_Owner;
 
 	/// Der Name des Sectors
 	CString m_strSectorName;

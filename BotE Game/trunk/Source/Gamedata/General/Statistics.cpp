@@ -94,7 +94,7 @@ void CStatistics::GetDemographicsBSP(const CString& sRaceID, int& nPlace, float&
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			if (pDoc->GetSystem(x,y).Majorized())
-				mMap[pDoc->GetSystem(x,y).Owner()] += pDoc->GetSystem(x,y).GetProduction()->GetCreditsProd();
+				mMap[pDoc->GetSystem(x,y).OwnerID()] += pDoc->GetSystem(x,y).GetProduction()->GetCreditsProd();
 
 			MYTRACE("general")(MT::LEVEL_INFO, "Demographics - BSP: multiply with 5 ");
 	CalcDemoValues(sRaceID, &mMap, nPlace, fValue, fAverage, fFirst, fLast);
@@ -122,7 +122,7 @@ void CStatistics::GetDemographicsProductivity(const CString& sRaceID, int& nPlac
 				for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 					fResProd += pDoc->GetSystem(x,y).GetProduction()->GetResourceProd(i);
 				fResProd /= 2.5;
-				mMap[pDoc->GetSystem(x,y).Owner()] += pDoc->GetSystem(x,y).GetProduction()->GetIndustryProd() + fResProd;
+				mMap[pDoc->GetSystem(x,y).OwnerID()] += pDoc->GetSystem(x,y).GetProduction()->GetIndustryProd() + fResProd;
 			}
 
 			MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Productivity: 1:1");
@@ -181,7 +181,7 @@ void CStatistics::GetDemographicsResearch(const CString& sRaceID, int& nPlace, f
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			if (pDoc->GetSystem(x,y).Majorized())
-				mMap[pDoc->GetSystem(x,y).Owner()] += pDoc->GetSystem(x,y).GetProduction()->GetResearchProd();
+				mMap[pDoc->GetSystem(x,y).OwnerID()] += pDoc->GetSystem(x,y).GetProduction()->GetResearchProd();
 
 	MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Research: multiply with 5");
 	CalcDemoValues(sRaceID, &mMap, nPlace, fValue, fAverage, fFirst, fLast);
@@ -206,8 +206,8 @@ void CStatistics::GetDemographicsMoral(const CString& sRaceID, int& nPlace, floa
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			if (pDoc->GetSystem(x,y).Majorized())
 			{
-				mMap[pDoc->GetSystem(x,y).Owner()] += pDoc->GetSystem(x,y).GetMoral();
-				mCount[pDoc->GetSystem(x,y).Owner()] += 1;
+				mMap[pDoc->GetSystem(x,y).OwnerID()] += pDoc->GetSystem(x,y).GetMoral();
+				mCount[pDoc->GetSystem(x,y).OwnerID()] += 1;
 			}
 
 	for (std::map<CString, float>::iterator it = mMap.begin(); it != mMap.end(); ++it)

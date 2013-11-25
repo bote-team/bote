@@ -860,7 +860,7 @@ CString CShipDesignMenuView::CheckIfShipIsBuilding(const CShipInfo* pShipInfo) c
 	// alle eigenen Systeme durchgehen und schauen, ob an erster Stelle in der Bauliste so ein Schiff steht
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (pDoc->GetSystem(x,y).Owner() == pMajor->GetRaceID())
+			if (pDoc->GetSystem(x,y).OwnerID() == pMajor->GetRaceID())
 				for (int i = 0; i < ALE; i++)
 					if (pDoc->GetSystem(x,y).GetAssemblyList()->GetAssemblyListEntry(i) == ID)
 						return pDoc->GetSystem(x,y).GetName();

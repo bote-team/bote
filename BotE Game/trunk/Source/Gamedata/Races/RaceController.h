@@ -16,6 +16,8 @@
 #define	RACESOURCE_DATAFILE		0		///< Rassendaten werden aus *.data Dateien gelesen
 #define RACESOURCE_CONST		1		///< Rassendaten kommen hart aus dem Quellcode
 
+typedef boost::shared_ptr<CRace> RacePtr;
+
 /// Klasse zum Verwalten aller Rassen im Spiel.
 class CRaceController :	public CObject
 {

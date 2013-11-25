@@ -427,7 +427,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 	else if (button == 1)
 	{
 		// System suchen, welches dem Spieler auch gehört
-		if (pDoc->CurrentSystem().Owner() != pMajor->GetRaceID())
+		if (pDoc->CurrentSystem().OwnerID() != pMajor->GetRaceID())
 		{
 			 if (m_LastSystem != CPoint(-1,-1))
 				 pDoc->SetKO(m_LastSystem.x, m_LastSystem.y);
@@ -436,14 +436,14 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 				 for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 					 for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 						 if (pDoc->GetSystem(x, y).GetSunSystem() == TRUE
-							 && pDoc->GetSystem(x, y).Owner() == pMajor->GetRaceID())
+							 && pDoc->GetSystem(x, y).OwnerID() == pMajor->GetRaceID())
 							{
 								pDoc->SetKO(x,y);
 								break;
 							}
 			 }
 		}
-		if (pDoc->CurrentSystem().Owner() == pMajor->GetRaceID() &&
+		if (pDoc->CurrentSystem().OwnerID() == pMajor->GetRaceID() &&
 			pDoc->CurrentSystem().GetSunSystem() == TRUE)
 		{
 			resources::pMainFrame->SelectMainView(VIEWS::SYSTEM_VIEW, pMajor->GetRaceID());

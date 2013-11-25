@@ -30,8 +30,8 @@ CSystemAI::~CSystemAI(void)
 /// des Systems übergeben.
 void CSystemAI::ExecuteSystemAI(CPoint ko)
 {
-	const CString& sRace = m_pDoc->GetSystem(ko.x, ko.y).Owner();
-	if (sRace.IsEmpty())
+	const RacePtr& race = m_pDoc->GetSystem(ko.x, ko.y).Owner();
+	if (!race)
 	{
 		CString s;
 		s.Format("Error in CSystemAI::ExecuteSystemAI(): no race controls system %d,%d!", ko.x, ko.y);
@@ -40,7 +40,7 @@ void CSystemAI::ExecuteSystemAI(CPoint ko)
 	}
 
 	// Besitzer des Systems holen
-	m_pMajor = dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sRace));
+	m_pMajor = dynamic_cast<CMajor*>(race.get());
 	AssertBotE(m_pMajor);
 	if (!m_pMajor)
 		return;
@@ -499,16 +499,14 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 {
 	int min = prio;
 	const CPoint& ko = m_KO;
-	const CString& sRace = m_pDoc->GetSystem(ko.x, ko.y).Owner();
-	if (sRace.IsEmpty())
+	const RacePtr& pRace = m_pDoc->GetSystem(ko.x, ko.y).Owner();
+	if (!pRace)
 		return 0;
 
-	CRace* pRace = m_pDoc->GetRaceCtrl()->GetRace(sRace);
-	AssertBotE(pRace);
 	if (!pRace->IsMajor())
 		return 0;
 
-	const CResearch& research = *dynamic_cast<CMajor*>(pRace)->GetEmpire()->GetResearch();
+	const CResearch& research = *pRace->GetEmpire()->GetResearch();
 	const BYTE researchLevels[6] =
 	{
 
@@ -526,7 +524,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 		// ID des Schiffes suchen
 		for (int j = 0; j < m_pDoc->m_ShipInfoArray.GetSize(); j++)
 			// passt die Schiffsnummer zur Rassennummer
-			if(dynamic_cast<CMajor*>(pRace)->CanBuildShip(SHIP_TYPE::COLONYSHIP,
+			if(dynamic_cast<CMajor*>(pRace.get())->CanBuildShip(SHIP_TYPE::COLONYSHIP,
 				researchLevels, m_pDoc->m_ShipInfoArray.GetAt(j)))
 			{
 				int id = m_pDoc->m_ShipInfoArray.GetAt(j).GetID();
@@ -534,7 +532,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 					if (m_pDoc->GetSystem(ko.x, ko.y).GetBuildableShips()->GetAt(i) == id)
 						if (MakeEntryInAssemblyList(id))
 						{
-							m_pDoc->m_pAIPrios->ChoosedColoShipPrio(sRace);
+							m_pDoc->m_pAIPrios->ChoosedColoShipPrio(pRace->GetRaceID());
 							MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build colonyship in system: %s\n", m_pDoc->GetSystem(m_KO.x, m_KO.y).GetName());
 							return id;
 						}
@@ -546,7 +544,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 		// ID des Schiffes suchen
 		for (int j = 0; j < m_pDoc->m_ShipInfoArray.GetSize(); j++)
 			// passt die Schiffsnummer zur Rassennummer
-			if(dynamic_cast<CMajor*>(pRace)->CanBuildShip(SHIP_TYPE::TRANSPORTER,
+			if(dynamic_cast<CMajor*>(pRace.get())->CanBuildShip(SHIP_TYPE::TRANSPORTER,
 				researchLevels, m_pDoc->m_ShipInfoArray.GetAt(j)))
 			{
 				int id = m_pDoc->m_ShipInfoArray.GetAt(j).GetID();
@@ -554,7 +552,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 					if (m_pDoc->GetSystem(ko.x, ko.y).GetBuildableShips()->GetAt(i) == id)
 						if (MakeEntryInAssemblyList(id))
 						{
-							m_pDoc->m_pAIPrios->ChoosedTransportShipPrio(sRace);
+							m_pDoc->m_pAIPrios->ChoosedTransportShipPrio(pRace->GetRaceID());
 							MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build transportship in system: %s\n", m_pDoc->GetSystem(m_KO.x, m_KO.y).GetName());
 							return id;
 						}
@@ -911,11 +909,12 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 	chooseCombatship = chooseColoship = chooseTransport = FALSE;
 	int min = 0;
 	const CPoint& ko = m_KO;
-	const CString& sRace = m_pDoc->GetSystem(ko.x, ko.y).Owner();
-	if (sRace.IsEmpty())
+	const RacePtr& pRace = m_pDoc->GetSystem(ko.x, ko.y).Owner();
+	const CString& sRace = pRace->GetRaceID();
+	if (!pRace)
 		return min;
 
-	CMajor* pMajor = dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sRace));
+	CMajor* pMajor = dynamic_cast<CMajor*>(pRace.get());
 	AssertBotE(pMajor);
 
 	if (m_pDoc->GetSystem(ko.x, ko.y).GetProduction()->GetShipYard() == TRUE
@@ -1104,7 +1103,7 @@ void CSystemAI::CalcProd()
 void CSystemAI::ApplyTradeRoutes()
 {
 	const CPoint& ko = m_KO;
-	const CString& race = m_pDoc->GetSystem(ko.x, ko.y).Owner();
+	const CString& race = m_pDoc->GetSystem(ko.x, ko.y).OwnerID();
 	if (m_pDoc->GetSystem(ko.x, ko.y).CanAddTradeRoute(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()) == TRUE)
 	{
 		// primär zu Minorraces
@@ -1126,8 +1125,8 @@ void CSystemAI::ApplyTradeRoutes()
 		// sekundär zu den anderen Majorraces
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				if (m_pDoc->GetSystem(x, y).Majorized() && m_pDoc->GetSystem(x, y).Owner() != race)
-					if (m_pMajor->GetAgreement(m_pDoc->GetSystem(x, y).Owner()) >= DIPLOMATIC_AGREEMENT::TRADE)
+				if (m_pDoc->GetSystem(x, y).Majorized() && m_pDoc->GetSystem(x, y).OwnerID() != race)
+					if (m_pMajor->GetAgreement(m_pDoc->GetSystem(x, y).OwnerID()) >= DIPLOMATIC_AGREEMENT::TRADE)
 						m_pDoc->GetSystem(ko.x, ko.y).AddTradeRoute(CPoint(x,y), m_pDoc->m_Systems, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 	}
 }
@@ -1347,7 +1346,7 @@ int CSystemAI::GetIntelPrio(double dMaxHab) const
 	if (!CheckBuilding(WORKER::SECURITY_WORKER))
 		return 0;
 
-	const CString& sRace = m_pDoc->GetSystem(m_KO.x, m_KO.y).Owner();
+	const CString& sRace = m_pDoc->GetSystem(m_KO.x, m_KO.y).OwnerID();
 	int nPrio = m_pDoc->m_pAIPrios->GetIntelAI()->GetIntelPrio(sRace);
 
 	return min(nPrio, 255);

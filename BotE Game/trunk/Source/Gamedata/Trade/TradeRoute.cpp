@@ -89,7 +89,7 @@ bool CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBot
 	AssertBotE(pDoc);
 
 	const CSystem* pDestSystem = &(pDoc->GetSystem(pDest.x, pDest.y));
-	const CString&  sOwner = pDoc->GetSystem(pFrom.x, pFrom.y).Owner();
+	const CString&  sOwner = pDoc->GetSystem(pFrom.x, pFrom.y).OwnerID();
 
 	// wurde der Zielsektor durch uns gescannt
 	if (!pDestSystem->GetScanned(sOwner))
@@ -110,24 +110,19 @@ bool CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBot
 	m_iCredits = max(m_iCredits, 1);
 
 	// gehört der Zielsektor einer Majorrace und nicht uns?
-	if (pDestSystem->Majorized() && pDestSystem->Owner() != sOwner)
+	if (pDestSystem->Majorized() && pDestSystem->OwnerID() != sOwner)
 	{
-		CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pDestSystem->Owner()));
-		AssertBotE(pMajor);
-		if (pMajor->GetAgreement(sOwner) >= DIPLOMATIC_AGREEMENT::TRADE)
+		if (pDestSystem->Owner()->GetAgreement(sOwner) >= DIPLOMATIC_AGREEMENT::TRADE)
 			return true;
 	}
 	// gehört der Zielsektor einer Minorrace
-	else if (!pDestSystem->Free() && pDestSystem->GetMinorRace())
+	else if (!pDestSystem->Free() && pDestSystem->Owner()->IsMinor())
 	{
-		CMinor* pMinor = dynamic_cast<CMinor*>(pDoc->GetRaceCtrl()->GetRace(pDestSystem->Owner()));
-		if (pMinor)
-		{
-			if (pMinor->GetAgreement(sOwner) >= DIPLOMATIC_AGREEMENT::TRADE && pMinor->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP)
-				return true;
-			else
-				return false;
-		}
+		const RacePtr& race = pDestSystem->Owner();
+		if (race->GetAgreement(sOwner) >= DIPLOMATIC_AGREEMENT::TRADE && race->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP)
+			return true;
+		else
+			return false;
 	}
 
 	return false;
@@ -143,22 +138,20 @@ void CTradeRoute::PerhapsChangeRelationship(const CPoint& pFrom, const CPoint& p
 	CSystem* pDestSector = &(pDoc->GetSystem(pDest.x, pDest.y));
 	AssertBotE(pDestSector);
 
-	const CString&  sOwner = pDoc->GetSystem(pFrom.x, pFrom.y).Owner();
+	const CString&  sOwner = pDoc->GetSystem(pFrom.x, pFrom.y).OwnerID();
 	AssertBotE(!sOwner.IsEmpty());
 
 	if (pDestSector->IndependentMinor())
 	{
 		AssertBotE(!pDestSector->Free());
 		// Minorrace holen
-		CMinor* pMinor = dynamic_cast<CMinor*>(pDoc->GetRaceCtrl()->GetRace(pDestSector->Owner()));
-		if (pMinor)
-		{
-			short relAdd = rand()%(pMinor->GetCorruptibility()+1);
-			/*CString s;
-			s.Format("Verbesserung um %d Punkte",relAdd);
-			AfxMessageBox(s);*/
-			pMinor->SetRelation(sOwner, relAdd);
-		}
+		CMinor* pMinor = dynamic_cast<CMinor*>(pDestSector->Owner().get());
+		AssertBotE(pMinor);
+		short relAdd = rand()%(pMinor->GetCorruptibility()+1);
+		/*CString s;
+		s.Format("Verbesserung um %d Punkte",relAdd);
+		AfxMessageBox(s);*/
+		pMinor->SetRelation(sOwner, relAdd);
 	}
 }
 

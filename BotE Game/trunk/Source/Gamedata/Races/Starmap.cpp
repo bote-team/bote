@@ -203,7 +203,7 @@ void CStarmap::SynchronizeWithMap(const std::vector<CSystem>& systems, const std
 		if(!it->Free())
 		{
 			const CPoint& co = it->GetKO();
-			if (m_Range[co.x][co.y] > 0 && races->find(it->Owner())!= races->end())
+			if (m_Range[co.x][co.y] > 0 && races->find(it->OwnerID())!= races->end())
 				m_Range[co.x][co.y] = 0;
 		}
 }
@@ -865,7 +865,7 @@ void CStarmap::SetBadAIBaseSectors(const std::vector<CSystem>& systems, const CS
 	for(std::vector<CSystem>::const_iterator it = systems.begin(); it != systems.end(); ++it)
 	{
 		const CPoint& co = it->GetKO();
-		const CString& owner = it->Owner();
+		const CString& owner = it->OwnerID();
 		if (m_Range[co.x][co.y] >= m_nAIRange)
 		{
 			double dValue = 0.0;
@@ -876,7 +876,7 @@ void CStarmap::SetBadAIBaseSectors(const std::vector<CSystem>& systems, const CS
 				for (int j = -1; j <= 1; j++)
 					for (int i = -1; i <= 1; i++)
 						if (co.y + j > -1 && co.y + j < STARMAP_SECTORS_VCOUNT && co.x + i > -1 && co.x + i < STARMAP_SECTORS_HCOUNT)
-							if (systems.at(co.x+i+(co.y+j)*STARMAP_SECTORS_HCOUNT).Owner() != race && !systems.at(co.x+i+(co.y+j)*STARMAP_SECTORS_HCOUNT).Free())
+							if (systems.at(co.x+i+(co.y+j)*STARMAP_SECTORS_HCOUNT).OwnerID() != race && !systems.at(co.x+i+(co.y+j)*STARMAP_SECTORS_HCOUNT).Free())
 								number++;
 				dValue += (50.0 * number);
 			}

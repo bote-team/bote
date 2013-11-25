@@ -1537,7 +1537,7 @@ void CShip::Scrap(CMajor& major, CSystem& sy, bool disassembly) {
 	major.GetShipHistory()->ModifyShip(&CShips(*this), sy.GetName(TRUE),
 		resources::pDoc->GetCurrentRound(), CLoc::GetString(disassembly ?
 		"DISASSEMBLY" : "UPGRADE"), CLoc::GetString("DESTROYED"));
-	if(sy.Owner() != m_sOwnerOfShip)
+	if(sy.OwnerID() != m_sOwnerOfShip)
 		return;
 	// wenn wir in dem Sector wo wir das Schiff demoniteren ein uns gehörendes System haben,
 	// dann bekommen wir teilweise Rohstoffe aus der Demontage zurück (vlt. auch ein paar Credits)

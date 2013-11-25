@@ -41,7 +41,7 @@ CMapTile::CMapTile(int x, int y) :
 
 CMapTile::CMapTile(const CMapTile& other) :
 	m_KO(other.m_KO),
-	m_sOwner(other.m_sOwner),
+	m_Owner(other.m_Owner),
 	m_strSectorName(other.m_strSectorName),
 	m_bSunSystem(other.m_bSunSystem),
 	m_Status(other.m_Status),
@@ -66,7 +66,7 @@ CMapTile& CMapTile::operator=(const CMapTile& other){
 	if(this != &other )
 	{
 		m_KO = other.m_KO;
-		m_sOwner = other.m_sOwner;
+		m_Owner = other.m_Owner;
 		m_strSectorName = other.m_strSectorName;
 		m_bSunSystem = other.m_bSunSystem;
 		m_Status = other.m_Status;
@@ -104,7 +104,7 @@ void CMapTile::Reset()
 	m_iStartStationPoints.clear();
 	m_iNeededStationPoints.clear();
 
-	m_sOwner.Empty();
+	m_Owner.reset();
 	m_strSectorName.Empty();
 
 	delete m_pAnomaly;
@@ -139,7 +139,7 @@ void CMapTile::Serialize(CArchive &ar)
 		ar << m_KO;
 		ar << m_Outpost;
 		ar << m_Starbase;
-		ar << m_sOwner;
+		ar << OwnerID();
 
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen gespeichert werden
 		if (m_bSunSystem)
@@ -156,7 +156,9 @@ void CMapTile::Serialize(CArchive &ar)
 		ar >> m_Outpost;
 		m_Starbase.Empty();
 		ar >> m_Starbase;
-		ar >> m_sOwner;
+		CString owner;
+		ar >> owner;
+		SetOwner(owner);
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen geladen werden
 		if (m_bSunSystem)
 			ar >> m_strSectorName;
@@ -220,7 +222,7 @@ short CMapTile::GetScanPower(const CString& sRace, bool bWith_ships) const
 //////////////////////////////////////////////////////////////////////
 
 static bool StationBuildContinuable(const CString& race, const CMapTile& sector) {
-	const CString& owner = sector.Owner();
+	const CString& owner = sector.OwnerID();
 	return owner.IsEmpty() || owner == race || sector.GetIsStationBuilding(race);
 }
 
@@ -291,13 +293,13 @@ void CMapTile::SetScanPower(short scanpower, const CString& Race)
 }
 
 void CMapTile::PutScannedSquare(unsigned range, const int power,
-		const CRace& race, bool bBetterScanner, bool patrolship, bool anomaly) {
+		const CRace& race, bool bBetterScanner, bool patrolship, bool anomaly) const {
 	const CString& race_id = race.GetRaceID();
 	float boni = 1.0f;
 	// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor befindet,
 	// dann wird die Scanleistung um 20% erhöht.
 	if(patrolship) {
-		if(race_id == m_sOwner || race.GetAgreement(m_sOwner) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
+		if(race_id == OwnerID() || race.GetAgreement(OwnerID()) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
 			boni = 1.2f;
 	}
 	if(bBetterScanner) {
@@ -354,11 +356,10 @@ void CMapTile::DrawSectorsName(CDC *pDC, CBotEDoc* pDoc, CMajor* pPlayer)
 	{
 		COLORREF clrTextColor = CFontLoader::GetFontColor(pPlayer, 0);
 		pDC->SetTextColor(clrTextColor);
-		CMajor* pOwner = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sOwner));
-		if (pOwner)
+		if (m_Owner && m_Owner->IsMajor())
 		{
-			if (pPlayer->IsRaceContacted(pOwner->GetRaceID()) == true || pPlayer->GetRaceID() == pOwner->GetRaceID())
-				pDC->SetTextColor(pOwner->GetDesign()->m_clrGalaxySectorText);
+			if (pPlayer->IsRaceContacted(OwnerID()) == true || pPlayer->GetRaceID() == OwnerID())
+				pDC->SetTextColor(dynamic_cast<CMajor*>(m_Owner.get())->GetDesign()->m_clrGalaxySectorText);
 		}
 		// Systemnamen zeichnen
 		if (m_pAnomaly == NULL)
@@ -476,12 +477,12 @@ void CMapTile::CalculateOwner()
 {
 	if(!m_Outpost.IsEmpty())
 	{
-		m_sOwner = m_Outpost;
+		SetOwner(m_Outpost);
 		return;
 	}
 	if(!m_Starbase.IsEmpty())
 	{
-		m_sOwner = m_Starbase;
+		SetOwner(m_Starbase);
 		return;
 	}
 
@@ -503,7 +504,31 @@ void CMapTile::CalculateOwner()
 	}
 	if (!newOwner.IsEmpty())
 		SetScanned(newOwner);
-	m_sOwner = newOwner;
+	SetOwner(newOwner);
+}
+
+const boost::shared_ptr<CRace>& CMapTile::Owner() const
+{
+	return m_Owner;
+}
+
+CString CMapTile::OwnerID() const
+{
+	if(!m_Owner)
+		return CString();
+	AssertBotE(!m_Owner->Deleted());
+	return m_Owner->GetRaceID();
+}
+
+void CMapTile::SetOwner(const CString& id)
+{
+	if(id.IsEmpty())
+	{
+		m_Owner.reset();
+		return;
+	}
+	m_Owner = resources::pDoc->GetRaceCtrl()->GetRaceSafe(id);
+	AssertBotE(m_Owner);
 }
 
 //////////////////////////////////////////////////////////////////////

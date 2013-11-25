@@ -36,7 +36,6 @@ void CMinor::Serialize(CArchive &ar)
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
-		ar << m_ptKO;						// Koordinaten der Rasse
 		ar << m_iTechnologicalProgress;		// wie fortschrittlich ist die Minorrace?
 		ar << m_iCorruptibility;			// wie stark ändert sich die Beziehung beim Geschenke geben?
 		ar << m_bSpaceflight;				// Spaceflightnation (hat Schiffe)
@@ -46,7 +45,6 @@ void CMinor::Serialize(CArchive &ar)
 	// wenn geladen wird
 	else if (ar.IsLoading())
 	{
-		ar >> m_ptKO;						// Koordinaten der Rasse
 		ar >> m_iTechnologicalProgress;		// wie fortschrittlich ist die Minorrace?
 		ar >> m_iCorruptibility;			// wie stark ändert sich die Beziehung beim Geschenke geben?
 		ar >> m_bSpaceflight;				// Spaceflightnation (hat Schiffe)
@@ -117,7 +115,7 @@ bool CMinor::PerhapsExtend(CBotEDoc* pDoc)
 
 	// Wenn der dazugehörige Sektor nicht der kleinen Rasse gehört, also eine andere Rasse diese vereinnahmt hat,
 	// dann wächst das System auch nicht mehr automatisch
-	if (pDoc->GetSystem(m_ptKO.x, m_ptKO.y).Owner() != m_sID)
+	if (pDoc->GetSystem(m_ptKO.x, m_ptKO.y).OwnerID() != m_sID)
 		return false;
 
 	bool bColonized = pDoc->GetSystem(m_ptKO.x, m_ptKO.y).PerhapsMinorExtends(m_iTechnologicalProgress);
@@ -144,7 +142,7 @@ void CMinor::PerhapsBuildShip(CBotEDoc* pDoc)
 
 	// Wenn der dazugehörige Sektor nicht der kleinen Rasse gehört, also eine andere Rasse diese vereinnahmt hat,
 	// dann wächst das System auch nicht mehr automatisch
-	if (pDoc->GetSystem(m_ptKO.x, m_ptKO.y).Owner() != m_sID)
+	if (pDoc->GetSystem(m_ptKO.x, m_ptKO.y).OwnerID() != m_sID)
 		return;
 
 	// Vielleicht baut die Minorrace ein Schiff in dieser Runde
@@ -690,7 +688,6 @@ void CMinor::Reset(void)
 {
 	CRace::Reset();
 
-	m_ptKO = CPoint(-1,-1);					// Koordinaten der Rasse
 	m_iTechnologicalProgress = 0;			// wie fortschrittlich ist die Minorrace?
 	m_iCorruptibility = 0;					// wie stark ändert sich die Beziehung beim Geschenke geben?
 	m_bSpaceflight = false;					// Spaceflightnation (hat Schiffe)

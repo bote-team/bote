@@ -322,7 +322,7 @@ public:
 
 private:
 	// private Hilfsfunktionen (mal schauen ob wir die direkt in die cpp-Datei schreiben können)
-	BOOLEAN CheckGeneralConditions(const CBuildingInfo* building, CGlobalBuildings* globals, CMajor* pMajor);
+	BOOLEAN CheckGeneralConditions(const CBuildingInfo* building, CGlobalBuildings* globals);
 	BOOLEAN CheckFollower(const BuildingInfoArray* buildings, USHORT ID, BOOLEAN flag = 0, BOOLEAN equivalence = 0);
 public:
 

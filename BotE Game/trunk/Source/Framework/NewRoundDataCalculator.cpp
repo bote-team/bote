@@ -119,8 +119,8 @@ void CNewRoundDataCalculator::CalcPreLoop() {
 				sy->CalculateEmpireWideMoralProd(&m_pDoc->BuildingInfo);
 			}
 			if(system_owner_exists || sy->GetMinorRace()) {
-				const CString& sector_owner = sy->Owner();
-				AssertBotE(!sector_owner.IsEmpty());
+				const RacePtr& sector_owner = sy->Owner();
+				AssertBotE(sector_owner);
 				//Building scan power and range in a system isn't influenced by other systems, is it...?
 				//This needs to be here in the first loop, since when calculating the scan power that
 				//other majors get due to affiliation, the scan powers in all sectors are not yet calculated correctly.
@@ -131,7 +131,7 @@ void CNewRoundDataCalculator::CalcPreLoop() {
 				const int scan_power = production.GetScanPower();
 				if(scan_power > 0)
 					sy->PutScannedSquare(production.GetScanRange(), scan_power,
-						*m_pDoc->m_pRaceCtrl->GetRace(sector_owner));
+					*sector_owner);
 			}
 		}
 	}
@@ -198,7 +198,7 @@ namespace {
 			if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
 				settings.scanned = true;
 
-		if (sector.Owner() == from) {
+		if (sector.OwnerID() == from) {
 			if (agreement >= DIPLOMATIC_AGREEMENT::TRADE)
 				settings.scanned = true;
 			if (agreement >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
