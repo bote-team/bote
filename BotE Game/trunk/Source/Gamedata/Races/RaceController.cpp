@@ -93,6 +93,20 @@ CRace* CRaceController::GetRace(const CString& sID) const
 		return NULL;
 }
 
+const boost::shared_ptr<CRace> CRaceController::GetRaceSafe(const CString& sID) const
+{
+	const const_iterator it = m_mRaces.find(sID);
+	AssertBotE(it != end());
+	return it->second;
+}
+
+boost::shared_ptr<CRace> CRaceController::GetRaceSafe(const CString& sID)
+{
+	iterator it = m_mRaces.find(sID);
+	AssertBotE(it != end());
+	return it->second;
+}
+
 /// Funktion gibt alle Rassen eines bestimmten Types zurück.
 /// @param type Typ der Rasse (MAJOR, MINOR)
 /// @return Map aller Rassen eines bestimmten Types

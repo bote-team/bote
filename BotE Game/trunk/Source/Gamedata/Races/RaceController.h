@@ -58,6 +58,9 @@ public:
 	/// @return Zeiger auf gewünschte Rasse
 	CRace* GetRace(const CString& sID) const;
 
+	const boost::shared_ptr<CRace> GetRaceSafe(const CString& sID) const;
+	boost::shared_ptr<CRace> GetRaceSafe(const CString& sID);
+
 	/// Funktion gibt alle Hauptrassen des Spiels zurück.
 	/// @return Map mit allen Hauptrassen des Spiels
 	map<CString, CMajor*>* GetMajors(void) {return &m_mMajors;}
