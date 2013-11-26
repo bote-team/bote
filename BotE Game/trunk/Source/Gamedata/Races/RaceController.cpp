@@ -129,18 +129,6 @@ boost::shared_ptr<CRace> CRaceController::GetRaceSafe(const CString& sID)
 	return it->second;
 }
 
-/// Funktion gibt alle Rassen eines bestimmten Types zurück.
-/// @param type Typ der Rasse (MAJOR, MINOR)
-/// @return Map aller Rassen eines bestimmten Types
-map<CString, CRace*> CRaceController::GetRaces(CRace::RACE_TYPE type) const
-{
-	map<CString, CRace*> mMap;
-	for (const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
-		if (it->second->GetType() == type)
-			mMap[it->first] = it->second.get();
-	return mMap;
-}
-
 /// Funktion liefert die Minorrace, welche in einem bestimmten Sektor beheimatet ist.
 /// @param sMinorsHome Heimatsystem
 /// @return Zeiger auf Minorrace (<code>NULL</code> wenn die Rasse nicht gefunden werden konnte)
