@@ -243,7 +243,7 @@ public:
 	virtual void Reset(void);
 
 	void Delete() { m_bDeleted = true; }
-	bool Deleted() { return m_bDeleted; }
+	bool Deleted() const { return m_bDeleted; }
 
 	/// Funktion gibt die Koordinate des Heimatsystems der Race zurück.
 	/// @return Koordinate des Heimatsystems

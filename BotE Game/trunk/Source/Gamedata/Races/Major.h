@@ -96,7 +96,7 @@ public:
 
 	/// Funktion gibt den Diplomatiebonus der Rasse zurück.
 	/// @return Diplomatiebonus
-	short GetDiplomacyBonus(void) {return m_nDiplomacyBonus;}
+	short GetDiplomacyBonus(void) const {return m_nDiplomacyBonus;}
 
 	/// Funktion gibt die noch verbleibenden Runden des diplomatischen Vertrages zurück.
 	/// @param sRaceID Rassen-ID der anderen Rasse
