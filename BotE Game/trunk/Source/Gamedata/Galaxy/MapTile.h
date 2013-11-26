@@ -17,7 +17,7 @@
 
 #include "resources.h"
 #include "CommandLineParameters.h"
-#include "boost/exception/all.hpp"
+#include "boost/shared_ptr.hpp"
 
 using namespace std;
 
