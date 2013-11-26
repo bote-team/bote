@@ -56,7 +56,8 @@ public:
 	/// Funktion gibt eine bestimmte Rasse zurück.
 	/// @param sID ID der gewünschten Rassen
 	/// @return Zeiger auf gewünschte Rasse
-	CRace* GetRace(const CString& sID) const;
+	const CRace* GetRace(const CString& sID) const;
+	CRace* GetRace(const CString& sID);
 
 	const boost::shared_ptr<CRace> GetRaceSafe(const CString& sID) const;
 	boost::shared_ptr<CRace> GetRaceSafe(const CString& sID);

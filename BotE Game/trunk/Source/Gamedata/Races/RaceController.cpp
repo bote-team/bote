@@ -105,7 +105,16 @@ bool CRaceController::Init(int nSource/* = RACESOURCE_DATAFILE*/)
 /// Funktion gibt eine bestimmte Rasse zurück.
 /// @param sID ID der gewünschten Rassen
 /// @return Zeiger auf gewünschte Rasse
-CRace* CRaceController::GetRace(const CString& sID) const
+const CRace* CRaceController::GetRace(const CString& sID) const
+{
+	const const_iterator it = m_mRaces.find(sID);
+
+	if (it != m_mRaces.end())
+		return it->second.get();
+	else
+		return NULL;
+}
+CRace* CRaceController::GetRace(const CString& sID)
 {
 	const const_iterator it = m_mRaces.find(sID);
 
