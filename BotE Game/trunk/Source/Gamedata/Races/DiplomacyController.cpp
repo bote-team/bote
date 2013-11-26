@@ -57,7 +57,7 @@ void CDiplomacyController::Send(void)
 			// exisitiert die Zielrasse?
 			if (race_ctrl.find(pInfo->m_sToRace) != race_ctrl.end())
 			{
-				CRace* pToRace = race_ctrl[pInfo->m_sToRace];
+				CRace* pToRace = race_ctrl.GetRaceSafe(pInfo->m_sToRace).get();
 				// Angebote senden
 				if (pToRace->IsMajor())
 				{
@@ -96,7 +96,7 @@ void CDiplomacyController::Receive(void)
 			// exisitiert die Rasse welche die Nachricht gesendet hat?
 			if (race_ctrl.find(pInfo->m_sFromRace) != race_ctrl.end())
 			{
-				CRace* pToRace = race_ctrl[pInfo->m_sToRace];
+				CRace* pToRace = race_ctrl.GetRaceSafe(pInfo->m_sToRace).get();
 				if (pToRace->IsMajor())
 				{
 					ReceiveToMajor(pDoc, dynamic_cast<CMajor*>(pToRace), pInfo);

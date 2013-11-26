@@ -229,7 +229,7 @@ void CCombat::PreCombatCalculation()
 			else
 			{
 				// Feld mit allen möglichen gegnerischen Schiffen füllen
-				if (CCombat::CheckDiplomacyStatus((*m_mRaces)[*it], (*m_mRaces)[m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()]))
+				if (CCombat::CheckDiplomacyStatus(m_mRaces->GetRaceSafe(*it).get(), m_mRaces->GetRaceSafe(m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()).get()))
 					m_mEnemies[*it].push_back(m_CS.GetAt(i));
 			}
 		}
@@ -442,7 +442,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 		for (std::set<CString>::const_iterator it = m_mInvolvedRaces.begin(); it != m_mInvolvedRaces.end(); ++it)
 			for (std::set<CString>::const_iterator itt = m_mInvolvedRaces.begin(); itt != m_mInvolvedRaces.end(); ++itt)
 				if (*it != *itt && winner[*it] == 1 && winner[*itt] == 1)
-					if (CCombat::CheckDiplomacyStatus((*m_mRaces)[*it], (*m_mRaces)[*itt]))
+					if (CCombat::CheckDiplomacyStatus(m_mRaces->GetRaceSafe(*it).get(), m_mRaces->GetRaceSafe(*itt).get()))
 					{
 						winner[*it]  = 3;
 						winner[*itt] = 3;

@@ -47,8 +47,6 @@ public:
 	const_iterator find(const CString& id) const { return m_mRaces.find(id); }
 	iterator find(const CString& id) { return m_mRaces.find(id); }
 
-	CRace* operator[](CString const& id) { return m_mRaces[id].get(); }
-
 	// Funktionen
 	/// Funktion zum Einlesen und Initialisieren aller am Spiel beteiligten Rassen
 	/// @param nSource Datenquelle der Rasseninformationen
