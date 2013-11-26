@@ -1157,9 +1157,8 @@ void CSystem::CalculateBuildableShips()
 		int nMinorShipNumber = -1;
 		if (m_bMinor)
 		{
-			CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(GetName());
-			if (pMinor)
-				nMinorShipNumber = pMinor->GetRaceShipNumber();
+			if(m_Owner->IsMinor())
+				nMinorShipNumber = m_Owner->GetRaceShipNumber();
 		}
 
 		const CResearch* pResearch = m_Owner->GetEmpire()->GetResearch();
@@ -3299,7 +3298,6 @@ void CSystem::ExecuteManager(CMajor& owner, bool turn_change, bool energy)
 
 bool CSystem::CheckSanity() const
 {
-	const CRaceController& RaceCtrl = *resources::pDoc->GetRaceCtrl();
 	AssertBotE(!HasOutpost() || !HasStarbase());
 
 	if(m_bMinor)
@@ -3310,8 +3308,7 @@ bool CSystem::CheckSanity() const
 		case OWNING_STATUS_EMPTY:
 			return GetCurrentHabitants() == 0;
 		case OWNING_STATUS_INDEPENDENT_MINOR:
-			return RaceCtrl.GetMinorRace(GetName())->GetRaceID() == OwnerID()
-				&& GetCurrentHabitants() > 0;
+			return m_Owner->GetHomesystemName() == GetName() && GetCurrentHabitants() > 0;
 		case OWNING_STATUS_REBELLED:
 			return !m_Owner && GetCurrentHabitants() > 0;
 		case OWNING_STATUS_TAKEN:

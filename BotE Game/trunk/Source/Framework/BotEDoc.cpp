@@ -3659,11 +3659,7 @@ void CBotEDoc::CalcShipOrders()
 					m_pClientWorker->SetToEmpireViewFor(*pMajor);
 					// Wenn wir einer Rasse beim Terraformen helfen, so gibt es einen Beziehungsboost
 					if (pSystem->GetMinorRace() && !pSystem->Majorized())
-					{
-						CMinor* pMinor = m_pRaceCtrl->GetMinorRace(pSystem->GetName());
-						if (pMinor)
-							pMinor->SetRelation(pMajor->GetRaceID(), +rand()%11);
-					}
+						pSystem->Owner()->SetRelation(pMajor->GetRaceID(), +rand()%11);
 				}
 			}
 			else	// wenn der Plani aus irgendeinen Grund schon geterraformed ist
@@ -3698,11 +3694,8 @@ void CBotEDoc::CalcShipOrders()
 							m_pClientWorker->SetToEmpireViewFor(*pMajor);
 							// Wenn wir einer Rasse beim Terraformen helfen, so gibt es einen Beziehungsboost
 							if (pSystem->GetMinorRace() && !pSystem->Majorized())
-							{
-								CMinor* pMinor = m_pRaceCtrl->GetMinorRace(pSystem->GetName());
-								if (pMinor)
-									pMinor->SetRelation(pMajor->GetRaceID(), +rand()%11);
-							}
+								pSystem->Owner()->SetRelation(pMajor->GetRaceID(), +rand()%11);
+
 							break;
 						}
 					}
