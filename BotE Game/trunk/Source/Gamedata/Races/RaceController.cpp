@@ -73,9 +73,11 @@ void CRaceController::Serialize(CArchive &ar)
 			AssertBotE(race);
 			race->Serialize(ar);
 			m_mRaces[key] = race;
+			if(race->IsMajor())
+				m_mMajors[key] = dynamic_cast<CMajor*>(race.get());
+			else
+				m_mMinors[key] = dynamic_cast<CMinor*>(race.get());
 		}
-
-		GenerateMajorsAndMinors();
 	}
 }
 
@@ -93,8 +95,6 @@ bool CRaceController::Init(int nSource/* = RACESOURCE_DATAFILE*/)
 
 	if ((InitMajors(nSource) & InitMinors(nSource) & InitAlienEntities(nSource)) == false)
 		return false;
-
-	GenerateMajorsAndMinors();
 
 	// Startbeziehungen initialisieren
 	InitRelations();
@@ -159,16 +159,13 @@ void CRaceController::RemoveRace(const CString& sRaceID)
 		if (it->first == sRaceID)
 		{
 			AssertBotE(it->second);
+			it->second->IsMajor() ? m_mMajors.erase(it->first) : m_mMinors.erase(it->first);
 			it->second->Delete();
 			it->second.reset();
 			m_mRaces.erase(it);
 			break;
 		}
 	}
-
-	m_mMajors.clear();
-	m_mMinors.clear();
-	GenerateMajorsAndMinors();
 }
 
 /// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
@@ -272,7 +269,10 @@ bool CRaceController::InitMajors(int nSource/* = RACESOURCE_DATAFILE*/)
 				AfxMessageBox(s);
 			}
 			else
+			{
 				m_mRaces[pNewMajor->GetRaceID()] = pNewMajor;
+				m_mMajors[pNewMajor->GetRaceID()] = dynamic_cast<CMajor*>(pNewMajor.get());
+			}
 		}
 	}
 	return true;
@@ -361,7 +361,10 @@ bool CRaceController::InitMinors(int nSource/* = RACESOURCE_DATAFILE*/)
 				AfxMessageBox(s);
 			}
 			else
+			{
 				m_mRaces[pNewMinor->GetRaceID()] = pNewMinor;
+				m_mMinors[pNewMinor->GetRaceID()] = dynamic_cast<CMinor*>(pNewMinor.get());
+			}
 		}
 	}
 	return true;
@@ -449,7 +452,10 @@ bool CRaceController::InitAlienEntities(int nSource/* = RACESOURCE_DATAFILE*/)
 				AfxMessageBox(s);
 			}
 			else
+			{
 				m_mRaces[pAlien->GetRaceID()] = pAlien;
+				m_mMinors[pAlien->GetRaceID()] = dynamic_cast<CMinor*>(pAlien.get());
+			}
 		}
 	}
 
@@ -764,16 +770,4 @@ void CRaceController::InitRelations(void)
 
 				it->second->SetRelation(jt->first, nValue);
 			}
-}
-
-void CRaceController::GenerateMajorsAndMinors()
-{
-	// Array aller Majors und Minors neu anlegen
-	for (const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
-	{
-		if (it->second->IsMajor())
-			m_mMajors[it->first] = dynamic_cast<CMajor*>(it->second.get());
-		else if (it->second->IsMinor())
-			m_mMinors[it->first] = dynamic_cast<CMinor*>(it->second.get());
-	}
 }

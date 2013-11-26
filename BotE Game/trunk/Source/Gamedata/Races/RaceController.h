@@ -104,8 +104,6 @@ private:
 	/// von Minor zu Majors erstellt.
 	void InitRelations(void);
 
-	void GenerateMajorsAndMinors();
-
 	// Attribute
 	std::map<CString, boost::shared_ptr<CRace>> m_mRaces; ///< Map mit allen Rassen des Spiels
 
