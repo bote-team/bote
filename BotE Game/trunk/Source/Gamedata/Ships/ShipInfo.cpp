@@ -13,12 +13,12 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-IMPLEMENT_SERIAL (CShipInfo, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 
 CShipInfo::CShipInfo() :
+	CShip(),
 	m_iRace(0),
 	m_iBioTech(0),
 	m_iEnergyTech(0),
@@ -92,7 +92,7 @@ CShipInfo & CShipInfo::operator=(const CShipInfo & rhs)
 		return *this;
 
 	// Basisklasse
-	__super::operator=(rhs);
+	CShip::operator=(rhs);
 
 	m_iRace = rhs.m_iRace;
 	// nötige Forschung
@@ -133,7 +133,7 @@ CShipInfo & CShipInfo::operator=(const CShipInfo & rhs)
 ///////////////////////////////////////////////////////////////////////
 void CShipInfo::Serialize(CArchive &ar)
 {
-	__super::Serialize(ar);
+	CShip::Serialize(ar);
 
 	// wenn gespeichert wird
 	if (ar.IsStoring())

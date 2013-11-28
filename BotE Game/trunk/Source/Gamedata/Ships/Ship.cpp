@@ -23,7 +23,6 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-IMPLEMENT_SERIAL (CShip, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
@@ -171,7 +170,6 @@ CShip & CShip::operator=(const CShip & rhs)
 //////////////////////////////////////////////////////////////////////
 void CShip::Serialize(CArchive &ar)
 {
-	__super::Serialize(ar);
 
 	m_Hull.Serialize(ar);
 	m_Shield.Serialize(ar);

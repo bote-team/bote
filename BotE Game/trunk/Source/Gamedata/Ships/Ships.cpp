@@ -16,14 +16,13 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-//IMPLEMENT_SERIAL (CShips, CObject, 1)
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 
 CShips::CShips() :
-	m_Leader(),
+	CShip(),
 	m_Fleet(),
 	m_Key(0),
 	m_bLeaderIsCurrent(true)
@@ -31,7 +30,7 @@ CShips::CShips() :
 }
 
 CShips::CShips(const CShip& ship) :
-	m_Leader(ship),
+	CShip(ship),
 	m_Fleet(),
 	m_Key(0),
 	m_bLeaderIsCurrent(true)
@@ -43,7 +42,7 @@ CShips::CShips(const CShip& ship) :
 //////////////////////////////////////////////////////////////////////
 
 CShips::CShips(const CShips& o) :
-	m_Leader(o.m_Leader),
+	CShip(o),
 	m_Fleet(o.m_Fleet),
 	m_Key(o.m_Key),
 	m_bLeaderIsCurrent(o.m_bLeaderIsCurrent)
@@ -58,7 +57,9 @@ CShips& CShips::operator=(const CShips& o)
 {
 	if(this == &o)
 		return *this;
-	m_Leader = o.m_Leader;
+
+	CShip::operator =(o);
+
 	m_Fleet = o.m_Fleet;
 	m_Key = o.m_Key;
 	m_bLeaderIsCurrent = o.m_bLeaderIsCurrent;
@@ -75,9 +76,8 @@ CShips::~CShips()
 ///////////////////////////////////////////////////////////////////////
 void CShips::Serialize(CArchive &ar)
 {
-	/*CObject::Serialize(ar);*/
 
-	m_Leader.Serialize(ar);
+	CShip::Serialize(ar);
 	m_Fleet.Serialize(ar);
 }
 
@@ -143,7 +143,7 @@ CString CShips::GetRangeAsString() const {
 //////////////////////////////////////////////////////////////////////
 
 void CShips::SetKO(int x, int y) {
-	m_Leader.SetKO(x, y);
+	CShip::SetKO(x, y);
 	for(CShips::iterator i = begin(); i != end(); ++i)
 		i->second->SetKO(x, y);
 }
@@ -152,12 +152,6 @@ void CShips::SetKO(int x, int y) {
 //@param index: will be updated and point to the new position of the element which followed the erased one
 void CShips::RemoveShipFromFleet(CShips::iterator& ship, bool destroy)
 {
-	//if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
-	//	CString s;
-	//	s.Format("CShips: removing ship %s from fleet of %s", ship->m_Leader.GetShipName(),
-	//		m_Leader.GetShipName());
-	//	MYTRACE("ships")(MT::LEVEL_INFO, s);
-	//}
 	m_Fleet.EraseAt(ship, destroy);
 	if(!HasFleet())
 		Reset(destroy);
@@ -180,7 +174,7 @@ bool CShips::RemoveDestroyed(CRace& owner, unsigned short round, const CString& 
 
 	// Wenn das Schiff selbst zerstört wurde
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-	return m_Leader.RemoveDestroyed(owner, round, sEvent, sStatus, destroyedShips, anomaly);
+	return CShip::RemoveDestroyed(owner, round, sEvent, sStatus, destroyedShips, anomaly);
 }
 
 void CShips::Reset(bool destroy) {
@@ -191,7 +185,7 @@ void CShips::Reset(bool destroy) {
 // Funktion übernimmt die Befehle des hier als Zeiger übergebenen Schiffsobjektes an alle Mitglieder der Flotte
 void CShips::AdoptOrdersFrom(const CShips& ship)
 {
-	m_Leader.AdoptOrdersFrom(ship.m_Leader);
+	CShip::AdoptOrdersFrom(ship);
 	for(CShips::iterator i = begin(); i != end(); ++i) {
 		i->second->AdoptOrdersFrom(ship);
 	}
@@ -200,8 +194,8 @@ void CShips::AdoptOrdersFrom(const CShips& ship)
 void CShips::AddShipToFleet(CShips* fleet) {
 	CString s;
 	if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
-		s.Format("CShips: adding ship with leader %s to fleet of %s", fleet->m_Leader.GetShipName(),
-			m_Leader.GetShipName());
+		s.Format("CShips: adding ship with leader %s to fleet of %s", fleet->GetShipName(),
+			CShip::GetShipName());
 		MYTRACE("ships")(MT::LEVEL_INFO, s);
 	}
 	AssertBotE(fleet->GetOwnerOfShip() == GetOwnerOfShip());
@@ -213,8 +207,8 @@ void CShips::AddShipToFleet(CShips* fleet) {
 	i->second->AdoptOrdersFrom(*this);
 	if(fleet->HasFleet()) {
 		if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
-			s.Format("CShips: adding the fleet of leader %s to fleet of %s", fleet->m_Leader.GetShipName(),
-				m_Leader.GetShipName());
+			s.Format("CShips: adding the fleet of leader %s to fleet of %s", fleet->GetShipName(),
+				CShip::GetShipName());
 			MYTRACE("ships")(MT::LEVEL_INFO, s);
 		}
 		m_Fleet.Append(i->second->m_Fleet);
@@ -235,10 +229,13 @@ void CShips::SetCurrentShip(const CShips::iterator& position)
 
 void CShips::ApplyTraining(int XP) {
 	const bool veteran = HasVeteran();
-	m_Leader.ApplyTraining(XP, veteran);
+	CShip::ApplyTraining(XP, veteran);
 	// Wenn das Schiff eine Flotte anführt, Schiffstraining auf alle Schiffe in der Flotte anwenden
 	for(CShips::iterator i = begin(); i != end(); ++i)
-		i->second->m_Leader.ApplyTraining(XP, veteran);
+	{
+		CShip* leader = static_cast<CShip*>(i->second);
+		leader->ApplyTraining(XP, veteran);
+	}
 }
 
 bool CShips::ApplyIonstormEffects() {
@@ -246,7 +243,7 @@ bool CShips::ApplyIonstormEffects() {
 	//doesn't work for fleets however, since that would require removing the finished ships from the fleet
 	//to keep orders consistent, so unset the order for all once the first ship can no longer improve
 	bool improvement_finished = false;
-	if(m_Leader.ApplyIonstormEffects() && GetCurrentOrder() == SHIP_ORDER::IMPROVE_SHIELDS) {
+	if(CShip::ApplyIonstormEffects() && GetCurrentOrder() == SHIP_ORDER::IMPROVE_SHIELDS) {
 		UnsetCurrentOrder();
 		improvement_finished = true;
 	}
@@ -263,23 +260,23 @@ bool CShips::UnassignFlagship() {
 		if(i->second->UnassignFlagship())
 			return true;
 	}
-	return m_Leader.UnassignFlagship();
+	return CShip::UnassignFlagship();
 }
 
 void CShips::SetCloak(bool bCloakOn) {
-	m_Leader.SetCloak(bCloakOn);
+	CShip::SetCloak(bCloakOn);
 	for(CShips::iterator i = begin(); i != end(); ++i)
 		i->second->SetCloak(bCloakOn);
 }
 
 void CShips::SetTargetKO(const CPoint& TargetKO, const bool simple_setter) {
-	m_Leader.SetTargetKO(TargetKO, simple_setter);
+	CShip::SetTargetKO(TargetKO, simple_setter);
 	for(CShips::iterator i = begin(); i != end(); ++i)
 		i->second->SetTargetKO(TargetKO, simple_setter);
 }
 
 void CShips::SetCombatTactic(COMBAT_TACTIC::Typ nTactic, bool bPropagateToFleet) {
-	m_Leader.SetCombatTactic(nTactic);
+	CShip::SetCombatTactic(nTactic);
 	if(bPropagateToFleet)
 	{
 		for(CShips::iterator i = begin(); i != end(); ++i)
@@ -288,31 +285,31 @@ void CShips::SetCombatTactic(COMBAT_TACTIC::Typ nTactic, bool bPropagateToFleet)
 }
 
 void CShips::SetTerraform(short planetNumber) {
-	m_Leader.SetTerraform(planetNumber);
+	CShip::SetTerraform(planetNumber);
 	for(CShips::iterator i = begin(); i != end(); ++i)
 		i->second->SetTerraform(planetNumber);
 }
 
 void CShips::SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder) {
-	m_Leader.SetCurrentOrder(nCurrentOrder);
+	CShip::SetCurrentOrder(nCurrentOrder);
 	for(CShips::iterator i = begin(); i != end(); ++i)
 		i->second->SetCurrentOrder(nCurrentOrder);
 }
 
 void CShips::SetCurrentOrderAccordingToType() {
-	m_Leader.SetCurrentOrderAccordingToType();
+	CShip::SetCurrentOrderAccordingToType();
 	for(CShips::iterator i = begin(); i != end(); ++i)
 		i->second->SetCurrentOrderAccordingToType();
 }
 
 void CShips::SetCombatTacticAccordingToType() {
-	m_Leader.SetCombatTacticAccordingToType();
+	CShip::SetCombatTacticAccordingToType();
 	for(CShips::iterator i = begin(); i != end(); ++i)
 		i->second->SetCombatTacticAccordingToType();
 }
 
 void CShips::UnsetCurrentOrder() {
-	m_Leader.UnsetCurrentOrder();
+	CShip::UnsetCurrentOrder();
 	for(CShips::iterator i = begin(); i != end(); ++i)
 		i->second->UnsetCurrentOrder();
 }
@@ -324,7 +321,7 @@ void CShips::UnsetCurrentOrder() {
 // Funktion berechnet die Geschwindigkeit der Flotte.
 unsigned CShips::GetSpeed(bool consider_fleet) const
 {
-	unsigned speed = m_Leader.GetSpeed();
+	unsigned speed = CShip::GetSpeed();
 	//The bool parameter is probably not needed, but can't check the logic of all the calls atm.
 	if(!consider_fleet)
 		return speed;
@@ -338,7 +335,7 @@ unsigned CShips::GetSpeed(bool consider_fleet) const
 // Funktion berechnet die Reichweite der Flotte.
 SHIP_RANGE::Typ CShips::GetRange(bool consider_fleet) const
 {
-	SHIP_RANGE::Typ nRange = min(m_Leader.GetRange(), SHIP_RANGE::LONG);
+	SHIP_RANGE::Typ nRange = min(CShip::GetRange(), SHIP_RANGE::LONG);
 	//The bool parameter is probably not needed, but can't check the logic of all the calls atm.
 	if(!consider_fleet)
 		return nRange;
@@ -352,10 +349,10 @@ CShips::RETREAT_MODE CShips::CalcRetreatMode() const
 {
 	//check the leader's order; if it retreats, try a complete retreat, if it stays, try a complete stay
 	//otherwise the fleet is disassembled into its single ships
-	RETREAT_MODE result = m_Leader.GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT ?
+	RETREAT_MODE result = CShip::GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT ?
 		RETREAT_MODE_COMPLETE : RETREAT_MODE_STAY;
 	for(CShips::const_iterator i = begin(); i != end(); ++i) {
-		const COMBAT_TACTIC::Typ tactic = i->second->m_Leader.GetCombatTactic();
+		const COMBAT_TACTIC::Typ tactic = i->second->GetCombatTactic();
 		if(result == RETREAT_MODE_COMPLETE)
 		{
 			if(tactic != COMBAT_TACTIC::CT_RETREAT)
@@ -376,7 +373,7 @@ CShips::RETREAT_MODE CShips::CalcRetreatMode() const
 // des Schiffsobjektes, welches die Flotte besitzt
 short CShips::GetFleetShipType() const
 {
-	short type = m_Leader.GetShipType();
+	short type = CShip::GetShipType();
 	for(CShips::const_iterator i = begin(); i != end(); ++i)
 		if (i->second->GetShipType() != type)
 			return -1;
@@ -387,7 +384,7 @@ short CShips::GetFleetShipType() const
 // ist der this-Zeiger bzw. die Adresse des Schiffsobjektes, welches die Flotte besitzt
 unsigned CShips::GetStealthPower() const
 {
-	unsigned stealthPower = m_Leader.GetStealthPower();
+	unsigned stealthPower = CShip::GetStealthPower();
 	for(CShips::const_iterator i = begin(); i != end(); ++i)
 	{
 		if (stealthPower == 0)
@@ -418,7 +415,7 @@ bool CShips::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new, bool require_
 				if(i->second->CanHaveOrder(order, require_new, false))
 					return true;
 	}
-	return m_Leader.CanHaveOrder(order, require_new);
+	return CShip::CanHaveOrder(order, require_new);
 }
 
 bool CShips::HasFleet() const {
@@ -430,26 +427,26 @@ bool CShips::NeedsRepair() const {
 		if(i->second->NeedsRepair())
 			return true;
 	}
-	return m_Leader.NeedsRepair();
+	return CShip::NeedsRepair();
 }
 
 bool CShips::FleetHasTroops() const {
 	for(CShips::const_iterator j = begin(); j != end(); ++j)
 		if(j->second->FleetHasTroops())
 			return true;
-	return m_Leader.HasTroops();
+	return CShip::HasTroops();
 }
 
 bool CShips::HasVeteran() const {
 	for(CShips::const_iterator j = begin(); j != end(); ++j)
 		if(j->second->HasVeteran())
 			return true;
-	return m_Leader.IsVeteran();
+	return CShip::IsVeteran();
 }
 
 bool CShips::HasTarget() const {
 	//targets should always be the same among the leader and fleet of a Chips
-	return m_Leader.HasTarget();
+	return CShip::HasTarget();
 }
 
 bool CShips::CanCloak(bool consider_fleet) const {
@@ -458,7 +455,7 @@ bool CShips::CanCloak(bool consider_fleet) const {
 			if(!j->second->CanCloak(consider_fleet))
 				return false;
 	}
-	return m_Leader.CanCloak();
+	return CShip::CanCloak();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -485,23 +482,23 @@ CShips* CShips::GiveFleetToFleetsFirstShip() {
 CString CShips::GetTooltip(bool bShowFleet)
 {
 	if(bShowFleet && HasFleet())
-		return m_Leader.GetTooltip(&CShip::FleetInfoForGetTooltip(
+		return CShip::GetTooltip(&CShip::FleetInfoForGetTooltip(
 			GetFleetShipType(), GetRange(true), GetSpeed(true))
 		);
-	return m_Leader.GetTooltip();
+	return CShip::GetTooltip();
 }
 
 void CShips::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt, bool bIsMarked,
 	bool bOwnerUnknown, bool bDrawFleet, const Gdiplus::Color& clrNormal,
 	const Gdiplus::Color& clrMark, const Gdiplus::Font& font) const {
 
-	const bool draw_troop_symbol = bDrawFleet ? FleetHasTroops() : m_Leader.HasTroops();
-	m_Leader.DrawShip(g, pGraphicPool, pt, bIsMarked, bOwnerUnknown, bDrawFleet && HasFleet(),
+	const bool draw_troop_symbol = bDrawFleet ? FleetHasTroops() : CShip::HasTroops();
+	CShip::DrawShip(g, pGraphicPool, pt, bIsMarked, bOwnerUnknown, bDrawFleet && HasFleet(),
 		clrNormal,clrMark, font, draw_troop_symbol, GetFleetShipType(), GetFleetSize());
 }
 
 void CShips::TraditionalRepair(BOOL bAtShipPort, bool bFasterShieldRecharge) {
-	m_Leader.Repair(bAtShipPort, bFasterShieldRecharge);
+	CShip::Repair(bAtShipPort, bFasterShieldRecharge);
 	for(CShips::iterator i = begin(); i != end(); ++i)
 		i->second->TraditionalRepair(bAtShipPort, bFasterShieldRecharge);
 }
@@ -521,17 +518,12 @@ void CShips::RepairCommand(BOOL bAtShipPort, bool bFasterShieldRecharge, CShipMa
 		}
 		++i;
 	}
-	m_Leader.Repair(bAtShipPort, bFasterShieldRecharge);
-	if(!m_Leader.NeedsRepair()) {
-		m_Leader.UnsetCurrentOrder();
+	CShip::Repair(bAtShipPort, bFasterShieldRecharge);
+	if(!CShip::NeedsRepair()) {
+		CShip::UnsetCurrentOrder();
 		if(HasFleet())
 			ships.Add(GiveFleetToFleetsFirstShip());
 	}
-}
-
-void CShips::Retreat(const CPoint& ptRetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic)
-{
-	m_Leader.Retreat(ptRetreatSector, NewCombatTactic);
 }
 
 void CShips::RetreatFleet(const CPoint& RetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic) {
@@ -542,10 +534,13 @@ void CShips::RetreatFleet(const CPoint& RetreatSector, COMBAT_TACTIC::Typ const*
 void CShips::CalcEffects(CSector& sector, CRace* pRace,
 			bool bDeactivatedShipScanner, bool bBetterScanner) {
 
-		m_Leader.CalcEffectsForSingleShip(sector, pRace, bDeactivatedShipScanner, bBetterScanner, false);
+		CShip::CalcEffectsForSingleShip(sector, pRace, bDeactivatedShipScanner, bBetterScanner, false);
 		// wenn das Schiff eine Flotte besitzt, dann die Schiffe in der Flotte auch beachten
 		for(CShips::iterator j = begin(); j != end(); ++j)
-			j->second->m_Leader.CalcEffectsForSingleShip(sector, pRace, bDeactivatedShipScanner, bBetterScanner, true);
+		{
+			CShip* leader = static_cast<CShip*>(j->second);
+			leader->CalcEffectsForSingleShip(sector, pRace, bDeactivatedShipScanner, bBetterScanner, true);
+		}
 }
 
 CShips::StationWorkResult CShips::BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major, short id) {
@@ -563,7 +558,7 @@ CShips::StationWorkResult CShips::BuildStation(SHIP_ORDER::Typ order, CSector& s
 			return result;
 		}
 	}
-	if(m_Leader.BuildStation(order, sector, major, id))
+	if(CShip::BuildStation(order, sector, major, id))
 	{
 		result.finished = true;
 		result.remove_leader = true;
@@ -576,7 +571,7 @@ void CShips::Scrap(CMajor& major, CSystem& sy, bool disassembly)
 {
 	for(CShips::const_iterator x = begin(); x != end(); ++x)
 		x->second->Scrap(major, sy, disassembly);
-	m_Leader.Scrap(major, sy, disassembly);
+	CShip::Scrap(major, sy, disassembly);
 
 	// Wenn es ein Au?enposten oder eine Sternbasis ist,
 	// dann dem Sektor bekanntgeben, dass in ihm keine Station mehr ist
@@ -593,12 +588,15 @@ CString CShips::SanityCheckUniqueness(std::set<CString>& already_encountered) co
 		if(!duplicate.IsEmpty())
 			return duplicate;
 	}
-	return m_Leader.SanityCheckUniqueness(already_encountered);
+	return CShip::SanityCheckUniqueness(already_encountered);
 }
 
 bool CShips::SanityCheckOrdersConsistency() const {
 	for(CShips::const_iterator i = begin(); i != end(); ++i)
-		if(!i->second->m_Leader.SanityCheckOrdersConsistency(m_Leader))
+	{
+		CShip* leader = static_cast<CShip*>(i->second);
+		if(!leader->SanityCheckOrdersConsistency(*this))
 			return false;
-	return m_Leader.SanityCheckOrdersConsistency(m_Leader);
+	}
+	return CShip::SanityCheckOrdersConsistency(*this);
 }

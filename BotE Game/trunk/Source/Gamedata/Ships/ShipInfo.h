@@ -25,7 +25,7 @@ class CResearch;
 class CShipInfo : public CShip
 {
 public:
-	DECLARE_SERIAL (CShipInfo)
+
 // Konstruktion & Destruktion
 	CShipInfo();
 	virtual ~CShipInfo();
@@ -35,7 +35,7 @@ public:
 	// Zuweisungsoperatur
 	CShipInfo & operator=(const CShipInfo &);
 	// Serialisierungsfunktion
-	virtual void Serialize(CArchive &ar);
+	void Serialize(CArchive &ar);
 
 	/// Funktion gibt eine Rassennummer zurück. Jede Rasse besitzt eine Nummer, welche Schiffe und Gebäude diese
 	/// bauen kann.

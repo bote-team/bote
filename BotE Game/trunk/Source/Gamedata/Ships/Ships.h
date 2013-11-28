@@ -37,7 +37,7 @@
 class CBotEDoc;
 class CMajor;
 
-class CShips/* : public CObject*/
+class CShips : public CShip
 {
 public:
 	enum RETREAT_MODE
@@ -46,8 +46,6 @@ public:
 		RETREAT_MODE_SPLITTED, //some do, some don't
 		RETREAT_MODE_COMPLETE //all, including the leader, retreat
 	};
-
-	//DECLARE_SERIAL (CShips)
 
 	//////////////////////////////////////////////////////////////////////
 	// Konstruktion/Destruktion
@@ -104,56 +102,12 @@ public:
 	const CShipMap& Fleet() const { return m_Fleet; }
 	unsigned Key() const { return m_Key; }
 
+	// zum Lesen der Membervariablen
+	bool LeaderIsCurrent() const { return m_bLeaderIsCurrent; }
 
-		//////////////////////////////////////////////////////////////////////
-		// LEADER ACCESS
-		//////////////////////////////////////////////////////////////////////
-		// zum Lesen der Membervariablen
-		bool LeaderIsCurrent() const { return m_bLeaderIsCurrent; }
-		CHull* GetHull(void) {return m_Leader.GetHull();}
-		const CHull* GetHull(void) const {return m_Leader.GetHull();}
-		bool IsAlive() const {return m_Leader.IsAlive();}
-		bool IsDoingStationWork(SHIP_ORDER::Typ ignore = SHIP_ORDER::NONE) const {
-			return m_Leader.IsDoingStationWork(ignore);
-		}
-		CShield* GetShield(void) {return m_Leader.GetShield();}
-		const CShield* GetShield(void) const {return m_Leader.GetShield();}
-		CArray<CTorpedoWeapons, CTorpedoWeapons>* GetTorpedoWeapons(void) {return m_Leader.GetTorpedoWeapons();}
-		CArray<CBeamWeapons, CBeamWeapons>* GetBeamWeapons(void) {return m_Leader.GetBeamWeapons();}
-		CArray<CTroop>* GetTransportedTroops(void) {return m_Leader.GetTransportedTroops();}
-		const CArray<CTroop>* GetTransportedTroops(void) const {return m_Leader.GetTransportedTroops();}
-		USHORT GetID() const {return m_Leader.GetID();}
-		CPoint GetKO() const {return m_Leader.GetKO();}
-		CPoint GetTargetKO() const {return m_Leader.GetTargetKO();}
-		CArray<Sector>* GetPath() {return m_Leader.GetPath();}
-		const CArray<Sector>* GetPath() const {return m_Leader.GetPath();}
-		const CString& GetOwnerOfShip(void) const {return m_Leader.GetOwnerOfShip();}
-		USHORT GetMaintenanceCosts() const {return m_Leader.GetMaintenanceCosts();}
-		BYTE GetStealthGrade() const {return m_Leader.GetStealthGrade(); }
-		bool GetCloak() const {return m_Leader.GetCloak(); }
-		SHIP_TYPE::Typ GetShipType() const {return m_Leader.GetShipType(); }
-		SHIP_SIZE::Typ GetShipSize() const {return m_Leader.GetShipSize(); }
-		BYTE GetManeuverability() const {return m_Leader.GetManeuverability(); }
-		USHORT GetScanPower() const {return m_Leader.GetScanPower(); }
-		BYTE GetScanRange() const {return m_Leader.GetScanRange(); }
-		BYTE GetColonizePoints() const {return m_Leader.GetColonizePoints(); }
-		float GetStartHabitants() const { return GetColonizePoints() * 4; }
-		BYTE GetStationBuildPoints() const {return m_Leader.GetStationBuildPoints(); }
-		SHIP_ORDER::Typ GetCurrentOrder() const {return m_Leader.GetCurrentOrder(); }
-		short GetTerraform() const {return m_Leader.GetTerraform(); }
-		const CString& GetShipName() const {return m_Leader.GetShipName(); }
-		const CString& GetShipClass() const {return m_Leader.GetShipClass(); }
-		const CString& GetShipDescription() const {return m_Leader.GetShipDescription(); }
-		CString GetShipTypeAsString(BOOL plural = FALSE) const { return m_Leader.GetShipTypeAsString(plural); }
-		CString GetCurrentOrderAsString() const { return m_Leader.GetCurrentOrderAsString(); }
-		CString GetCombatTacticAsString() const { return m_Leader.GetCombatTacticAsString(); }
-		CString GetCurrentTargetAsString() const { return m_Leader.GetCurrentTargetAsString(); }
-		CString GetRangeAsString() const;
-		bool GetIsShipFlagShip() const {return m_Leader.GetIsShipFlagShip(); }
-		USHORT GetCrewExperience() const {return m_Leader.GetCrewExperience(); }
-		USHORT GetStorageRoom() const {return m_Leader.GetStorageRoom(); }
-		USHORT GetLoadedResources(BYTE res) const {return m_Leader.GetLoadedResources(res); }
-		COMBAT_TACTIC::Typ GetCombatTactic() const {return m_Leader.GetCombatTactic(); }
+	float GetStartHabitants() const { return GetColonizePoints() * 4; }
+	CString GetRangeAsString() const;
+
 	//////////////////////////////////////////////////////////////////////
 	// setting
 	//////////////////////////////////////////////////////////////////////
@@ -189,46 +143,23 @@ public:
 
 	void SetKey(unsigned key) { m_Key = key; }
 
-		//////////////////////////////////////////////////////////////////////
-		// LEADER ACCESS
-		//////////////////////////////////////////////////////////////////////
-		// zum Schreiben der Membervariablen
-		//simple setting
-		void SetID(USHORT ID) { m_Leader.SetID(ID);}
-		void SetKO(int x, int y);
-		void SetOwnerOfShip(const CString& sOwnerOfShip) { m_Leader.SetOwnerOfShip(sOwnerOfShip); }
-		void SetMaintenanceCosts(USHORT MaintenanceCosts) { m_Leader.SetMaintenanceCosts(MaintenanceCosts); }
-		void SetShipType(SHIP_TYPE::Typ nShipType) { m_Leader.SetShipType(nShipType); }
-		void SetShipSize(SHIP_SIZE::Typ nSize) { m_Leader.SetShipSize(nSize); }
-		void SetManeuverability(BYTE value) { m_Leader.SetManeuverability(value); }
-		void SetSpeed(unsigned Speed) { m_Leader.SetSpeed(Speed); }
-		void SetRange(SHIP_RANGE::Typ Range) { m_Leader.SetRange(Range); }
-		void SetScanPower(USHORT ScanPower) { m_Leader.SetScanPower(ScanPower); }
-		void SetScanRange(BYTE ScanRange) { m_Leader.SetScanRange(ScanRange); }
-		void SetCrewExperiance(int nAdd) { m_Leader.SetCrewExperiance(nAdd); }
-		void SetStealthGrade(unsigned StealthGrade) { m_Leader.SetStealthGrade(StealthGrade); }
-		void SetCloak(bool bCloakOn);
-		void SetStorageRoom(USHORT StorageRoom) { m_Leader.SetStorageRoom(StorageRoom); }
-		void SetLoadedResources(USHORT add, BYTE res) { m_Leader.SetLoadedResources(add, res); }
-		void SetColonizePoints(BYTE ColonizePoints) { m_Leader.SetColonizePoints(ColonizePoints); }
-		void SetStationBuildPoints(BYTE StationBuildPoints) { m_Leader.SetStationBuildPoints(StationBuildPoints); }
-		void SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder);
-		void SetSpecial(int n, SHIP_SPECIAL::Typ nAbility) { m_Leader.SetSpecial(n, nAbility); }
-		void SetTerraform(short planetNumber = -1);
-		void SetShipName(const CString& ShipName) { m_Leader.SetShipName(ShipName); }
-		void SetShipDescription(const CString& ShipDescription) { m_Leader.SetShipDescription(ShipDescription); }
-		void SetShipClass(const CString& ShipClass) { m_Leader.SetShipClass(ShipClass); }
-		void SetIsShipFlagShip(bool bIs) { m_Leader.SetIsShipFlagShip(bIs); }
-		void SetCombatTactic(COMBAT_TACTIC::Typ nTactic, bool bPropagateToFleet = true);
+	// zum Schreiben der Membervariablen
+	//simple setting
+	void SetKO(int x, int y);
+	void SetCloak(bool bCloakOn);
+	void SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder);
+	void SetTerraform(short planetNumber = -1);
 
-		//more complex setting
-		void SetTargetKO(const CPoint& TargetKO, const bool simple_setter = false);
-		//Sets this ship's m_iCurrentOrder to AVOID if it's a civil ship and to ATTACK otherwise.
-		void SetCurrentOrderAccordingToType();
-		//Sets this ship's m_nCombatTactic to AVOID if it's a civil ship and to ATTACK otherwise.
-		void SetCombatTacticAccordingToType();
-		//Sets the current order according to m_nCombatTactic
-		void UnsetCurrentOrder();
+	void SetCombatTactic(COMBAT_TACTIC::Typ nTactic, bool bPropagateToFleet = true);
+
+	//more complex setting
+	void SetTargetKO(const CPoint& TargetKO, const bool simple_setter = false);
+	//Sets this ship's m_iCurrentOrder to AVOID if it's a civil ship and to ATTACK otherwise.
+	void SetCurrentOrderAccordingToType();
+	//Sets this ship's m_nCombatTactic to AVOID if it's a civil ship and to ATTACK otherwise.
+	void SetCombatTacticAccordingToType();
+	//Sets the current order according to m_nCombatTactic
+	void UnsetCurrentOrder();
 
 	//////////////////////////////////////////////////////////////////////
 	// calculated stements about this fleet (should be const functions, non-bool returning)
@@ -250,38 +181,6 @@ public:
 
 	//// Funktion berechnet die minimale Stealthpower der Flotte.
 	unsigned GetStealthPower() const;
-
-		//////////////////////////////////////////////////////////////////////
-		// LEADER ACCESS
-		//////////////////////////////////////////////////////////////////////
-
-		/// Funktion gibt die gesamte Offensivpower des Schiffes zurück, welches es in 100s anrichten würde. Dieser
-		/// Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum Vergleich heranzuziehen.
-		/// @param bBeams <code>true</code> wenn Beamwaffen beachtet werden sollen
-		/// @param bTorpedos <code>true</code> wenn Torpedowaffen beachtet werden sollen
-		/// @return Wert welcher die Offensivstärke des Schiffes angibt
-		UINT GetCompleteOffensivePower(bool bBeams = true, bool bTorpedos = true) const {
-			return m_Leader.GetCompleteOffensivePower(bBeams, bTorpedos);
-		}
-
-		/// Funktion gibt die gesamte Defensivstärke des Schiffes zurück. Dabei wird die maximale Hülle, die maximalen
-		/// Schilde und die Schildaufladezeit beachtet. Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum
-		/// Vergleich heranzuziehen.
-		/// @param bShields <code>true</code> wenn Schildstärken beachtet werden sollen
-		/// @param bHull <code>true</code> wenn Hüllenstärke beachtet werden sollen
-		/// @return Wert welcher die Defensivstärke des Schiffes angibt
-		UINT GetCompleteDefensivePower(bool bShields = true, bool bHull = true) const {
-			return m_Leader.GetCompleteDefensivePower(bShields, bHull);
-		}
-
-		/// Funktion gibt das Erfahrungslevel des Schiffes zurück. Damit sind nicht die genauen Erfahrungspunkte gemeint, sondern das erreichte
-		/// Level aufgrund der Erfahrungspunkte.
-		/// @return Erfahrungstufe
-		BYTE GetExpLevel() const { return m_Leader.GetExpLevel(); }
-
-		USHORT GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo) const {
-			return m_Leader.GetUsedStorageRoom(troopInfo);
-		}
 
 	//////////////////////////////////////////////////////////////////////
 	// bool statements about this fleet or the ship leading it
@@ -306,25 +205,6 @@ public:
 
 	bool CanCloak(bool consider_fleet) const;
 
-		//////////////////////////////////////////////////////////////////////
-		// LEADER ACCESS
-		//////////////////////////////////////////////////////////////////////
-
-		bool IsNonCombat() const { return m_Leader.IsNonCombat(); }
-		//Is this ship an outpost or a starbase ?
-		bool IsStation() const { return m_Leader.IsStation(); }
-		bool IsAlien() const {	return m_Leader.IsAlien(); }
-		//Is this ship in need for a player command input in this round ?
-		//Does not cover "self-renewing" orders without a turn limit
-		//such as ATTACK_SYSTEM; player is expected to look after such
-		//fleets manually.
-		//@return true if yes
-		bool HasNothingToDo() const { return m_Leader.HasNothingToDo(); };
-		/// Funktion gibt einen Wahrheitswert zurück, ob das Schiffsobjekt eine bestimmte Spezialfähigkeit besitzt.
-		/// @param ability Spezialfähigkeit
-		/// @return <code>true</code> wenn es diese Fähigkeit besitzt, ansonsten <code>false</code>
-		bool HasSpecial(SHIP_SPECIAL::Typ nAbility) const { return m_Leader.HasSpecial(nAbility); }
-
 	//////////////////////////////////////////////////////////////////////
 	// other functions
 	//////////////////////////////////////////////////////////////////////
@@ -340,7 +220,6 @@ public:
 
 
 	//Perform actions to retreat this ship to the given sector.
-	void Retreat(const CPoint& ptRetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic = NULL);
 	void RetreatFleet(const CPoint& RetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic = NULL);
 
 	void CalcEffects(CSector& sector, CRace* pRace,
@@ -361,9 +240,6 @@ public:
 
 	void Scrap(CMajor& major, CSystem& sy, bool disassembly);
 
-	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Außer Erfahrung im Kampf, diese werden nach einem
-	/// Kampf direkt verteilt.
-	void CalcExp() { m_Leader.CalcExp(); };
 
 	CString SanityCheckUniqueness(std::set<CString>& already_encountered) const;
 	bool SanityCheckOrdersConsistency() const;
@@ -393,7 +269,6 @@ public:
 //////////////////////////////////////////////////////////////////////
 private:
 	// Wenn wir eine Gruppe bilden und dieses Schiff hier Gruppenleader ist, dann werden die anderen Schiffe in die Fleet genommen
-	CShip m_Leader;//the ship leading this fleet
 	CShipMap m_Fleet;//other ships in this fleet
 	unsigned m_Key; //index of this CShip in the shipmap
 	bool m_bLeaderIsCurrent;

@@ -38,10 +38,9 @@ class CMajor;
 class CSystem;
 
 /// Klasse beschreibt ein Schiff in BotE
-class CShip : public CObject
+class CShip
 {
 public:
-	DECLARE_SERIAL (CShip)
 // Konstruktion & Destruktion
 	CShip();
 	virtual ~CShip();
@@ -50,7 +49,9 @@ public:
 // Zuweisungsoperatur
 	CShip & operator=(const CShip &);
 // Serialisierungsfunktion
-	virtual void Serialize(CArchive &ar);
+protected:
+	void Serialize(CArchive &ar);
+public:
 
 	struct FleetInfoForGetTooltip {
 		FleetInfoForGetTooltip() :
@@ -250,8 +251,6 @@ public:
 
 	bool CanCloak() const;
 
-public:
-
 	bool IsAlive() const {
 		return m_Hull.GetCurrentHull() >= 1;
 	}
@@ -266,7 +265,7 @@ public:
 	void Repair(BOOL bAtShipPort, bool bFasterShieldRecharge);
 
 	//Perform actions to retreat this ship to the given sector.
-	void Retreat(const CPoint& ptRetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic);
+	void Retreat(const CPoint& ptRetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic = NULL);
 
 	//calculate effects this ship has onto its sector
 	void CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
