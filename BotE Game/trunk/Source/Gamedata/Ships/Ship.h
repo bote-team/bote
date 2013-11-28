@@ -301,7 +301,7 @@ public:
 
 private:
 	void DrawOrderTerraform(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt) const;
-	void DrawOrderColonize(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt) const;
+	static void DrawOrderColonize(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt);
 
 protected:
 	CHull	m_Hull;												// die Hülle des Schiffes

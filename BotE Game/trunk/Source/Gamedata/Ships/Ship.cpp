@@ -1261,7 +1261,7 @@ void CShip::DrawOrderTerraform(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool,
 	}
 }
 
-void CShip::DrawOrderColonize(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt) const {
+void CShip::DrawOrderColonize(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt) {
 	Bitmap* graphic = pGraphicPool->GetGDIGraphic("Other\\populationSmall.bop");
 
 	// Planeten zeichnen, der gerade terraformt wird
