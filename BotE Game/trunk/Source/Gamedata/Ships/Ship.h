@@ -342,6 +342,7 @@ private:
 	CArray<CTroop> m_Troops;				// Die Truppen, welche auf dem Schiff transportiert werden.
 	USHORT m_iLoadedResources[RESOURCES::DERITIUM+1];	// Die geladenen Ressourcen auf dem Schiff
 	// Kampftaktik
+protected:
 	COMBAT_TACTIC::Typ m_nCombatTactic;///< Taktik des Schiffes im Kampf
 };
 

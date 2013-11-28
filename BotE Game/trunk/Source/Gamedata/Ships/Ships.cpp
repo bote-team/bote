@@ -321,7 +321,7 @@ void CShips::UnsetCurrentOrder() {
 // Funktion berechnet die Geschwindigkeit der Flotte.
 unsigned CShips::GetSpeed(bool consider_fleet) const
 {
-	unsigned speed = CShip::GetSpeed();
+	unsigned speed = m_iSpeed;
 	//The bool parameter is probably not needed, but can't check the logic of all the calls atm.
 	if(!consider_fleet)
 		return speed;
@@ -335,7 +335,7 @@ unsigned CShips::GetSpeed(bool consider_fleet) const
 // Funktion berechnet die Reichweite der Flotte.
 SHIP_RANGE::Typ CShips::GetRange(bool consider_fleet) const
 {
-	SHIP_RANGE::Typ nRange = min(CShip::GetRange(), SHIP_RANGE::LONG);
+	SHIP_RANGE::Typ nRange = min(m_iRange, SHIP_RANGE::LONG);
 	//The bool parameter is probably not needed, but can't check the logic of all the calls atm.
 	if(!consider_fleet)
 		return nRange;
@@ -349,7 +349,7 @@ CShips::RETREAT_MODE CShips::CalcRetreatMode() const
 {
 	//check the leader's order; if it retreats, try a complete retreat, if it stays, try a complete stay
 	//otherwise the fleet is disassembled into its single ships
-	RETREAT_MODE result = CShip::GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT ?
+	const RETREAT_MODE result = m_nCombatTactic == COMBAT_TACTIC::CT_RETREAT ?
 		RETREAT_MODE_COMPLETE : RETREAT_MODE_STAY;
 	for(CShips::const_iterator i = begin(); i != end(); ++i) {
 		const COMBAT_TACTIC::Typ tactic = i->second->GetCombatTactic();
@@ -369,15 +369,13 @@ CShips::RETREAT_MODE CShips::CalcRetreatMode() const
 
 // Funktion berechnet den Schiffstyp der Flotte. Wenn hier nur der selbe Schiffstyp in der Flotte vorkommt,
 // dann gibt die Funktion diesen Schiffstyp zurück. Wenn verschiedene Schiffstypen in der Flotte vorkommen,
-// dann liefert und die Funktion ein -1. Der Parameter der hier übergeben werden sollte ist der this-Zeiger
-// des Schiffsobjektes, welches die Flotte besitzt
+// dann liefert und die Funktion ein -1.
 short CShips::GetFleetShipType() const
 {
-	short type = CShip::GetShipType();
 	for(CShips::const_iterator i = begin(); i != end(); ++i)
-		if (i->second->GetShipType() != type)
+		if (i->second->GetShipType() != m_iShipType)
 			return -1;
-	return type;
+	return m_iShipType;
 }
 
 // Funktion berechnet die minimale Stealthpower der Flotte. Der Parameter der hier übergeben werden sollte
