@@ -79,7 +79,9 @@ public:
 	const CHull* GetHull(void) const {return &m_Hull;}
 	CShield* GetShield(void) {return &m_Shield;}
 	const CShield* GetShield(void) const {return &m_Shield;}
+	const CArray<CTorpedoWeapons, CTorpedoWeapons>* GetTorpedoWeapons(void) const {return &m_TorpedoWeapons;}
 	CArray<CTorpedoWeapons, CTorpedoWeapons>* GetTorpedoWeapons(void) {return &m_TorpedoWeapons;}
+	const CArray<CBeamWeapons, CBeamWeapons>* GetBeamWeapons(void) const {return &m_BeamWeapons;}
 	CArray<CBeamWeapons, CBeamWeapons>* GetBeamWeapons(void) {return &m_BeamWeapons;}
 	CArray<CTroop>* GetTransportedTroops(void) {return &m_Troops;}
 	const CArray<CTroop>* GetTransportedTroops(void) const {return &m_Troops;}
@@ -282,7 +284,7 @@ public:
 	/// Funktion erstellt eine Tooltipinfo vom Schiff
 	/// @param info wenn dieser Parameter nicht NULL ist dann werden Informationen über die angeführte Flotte angezeigt, sonst nur über das Schiff
 	/// @return	der erstellte Tooltip-Text
-	CString GetTooltip(const FleetInfoForGetTooltip* const info = NULL);
+	CString GetTooltip(const FleetInfoForGetTooltip* const info = NULL) const;
 
 	/// Funktion zum Zeichnen des Schiffes in der Schiffsansicht.
 	/// @param g Zeiger auf Zeichenkontext

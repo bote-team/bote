@@ -168,7 +168,7 @@ void CShipBottomView::DrawSmallButton( const CString& resString, const CPoint& c
 	}
 }
 
-bool CShipBottomView::CheckDisplayShip(CShips *pShip, const CSystem *system ) {
+bool CShipBottomView::CheckDisplayShip(const CShips *pShip, const CSystem *system ) {
 	if (m_LastKO != pShip->GetKO())
 		return false;
 
@@ -199,7 +199,7 @@ void CShipBottomView::DrawShipContent()
 	Gdiplus::Color markColor;
 	Gdiplus::Font font(CComBSTR(m_dc.fontName), m_dc.fontSize);
 	USHORT counter = 0;
-	CShips* pShip;
+	boost::shared_ptr<const CShips> pShip;
 
 	m_vShipRects.clear();
 
@@ -209,7 +209,7 @@ void CShipBottomView::DrawShipContent()
 	for (CShipMap::iterator i = m_dc.pDoc->m_ShipMap.begin(); i != m_dc.pDoc->m_ShipMap.end(); ++i)
 	{
 		pShip = i->second;
-		if (!CheckDisplayShip( pShip, &system ) )
+		if (!CheckDisplayShip( pShip.get(), &system ) )
 			continue;
 
 		// mehrere Spalten anlegen, falls mehr als 3 Schiffe in dem System sind
@@ -225,7 +225,7 @@ void CShipBottomView::DrawShipContent()
 		if (counter < m_iPage*9 && counter >= (m_iPage-1)*9)
 		{
 			CPoint pt(250 * column, 65 * row);
-			m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip));
+			m_vShipRects.push_back(pair<CRect, boost::shared_ptr<const CShips>>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip));
 		}
 
 		// großes Bild der Station zeichnen
@@ -294,7 +294,7 @@ void CShipBottomView::DrawShipContent()
 	}
 
 	// Schiffe jetzt auch zeichnen
-	for(std::vector<std::pair<CRect, CShips*>>::const_iterator itdraw = m_vShipRects.begin(); itdraw != m_vShipRects.end(); ++itdraw)
+	for(std::vector<std::pair<CRect, boost::shared_ptr<const CShips>>>::const_iterator itdraw = m_vShipRects.begin(); itdraw != m_vShipRects.end(); ++itdraw)
 	{
 		pShip = itdraw->second;
 
@@ -834,7 +834,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Klick auf Schiff prüfen
 
 	// wurde die Maus über ein Schiff gehalten
-	for (std::vector<std::pair<CRect, CShips*>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i)
+	for (std::vector<std::pair<CRect, boost::shared_ptr<const CShips>>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i)
 	{
 		if (!i->first.PtInRect(point))
 			continue;
@@ -901,7 +901,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 
 				const bool was_terraform = to_erase->second->GetCurrentOrder() == SHIP_ORDER::TERRAFORM;
 				AssertBotE(next_current_ship != to_erase);
-				pDoc->m_ShipMap.EraseAt(to_erase, false);
+				pDoc->m_ShipMap.EraseAt(to_erase);
 				pDoc->SetCurrentShip(next_current_ship);
 				const CPoint& co = next_current_ship->second->GetKO();
 				if (was_terraform)
@@ -1081,7 +1081,7 @@ void CShipBottomView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	CalcLogicalPoint(point);
 
 	// wurde die Maus über ein Schiff gehalten
-	for (std::vector<std::pair<CRect, CShips*>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i)
+	for (std::vector<std::pair<CRect, boost::shared_ptr<const CShips>>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i)
 	{
 		if (!i->first.PtInRect(point))
 			continue;
@@ -1117,7 +1117,7 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 	CalcLogicalPoint(point);
 
 	// wurde die Maus über ein Schiff gehalten
-	for (std::vector<std::pair<CRect, CShips*>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i)
+	for (std::vector<std::pair<CRect, boost::shared_ptr<const CShips>>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i)
 	{
 		if (!i->first.PtInRect(point))
 			continue;
@@ -1232,7 +1232,7 @@ CString CShipBottomView::CreateTooltip(void)
 	if (!pMajor)
 		return "";
 
-	CShips* pShip = NULL;
+	boost::shared_ptr<const CShips> pShip;
 	for (UINT i = 0; i < m_vShipRects.size(); i++)
 		if (m_vShipRects[i].first.PtInRect(pt))
 		{

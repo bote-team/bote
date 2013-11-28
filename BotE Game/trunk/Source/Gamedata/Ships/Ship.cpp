@@ -927,7 +927,7 @@ bool CShip::IsDoingStationWork(SHIP_ORDER::Typ ignore) const
 /// Funktion erstellt eine Tooltipinfo vom Schiff
 /// @param info wenn dieser Parameter nicht NULL ist dann werden Informationen über die angeführte Flotte angezeigt, sonst nur über das Schiff
 /// @return	der erstellte Tooltip-Text
-CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
+CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info) const
 {
 	CString sName = GetShipName();
 	if (sName.IsEmpty() == false)
@@ -1030,7 +1030,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	std::map<CString, int> mBeamWeapons;
 	for (int i = 0; i < GetBeamWeapons()->GetSize(); i++)
 	{
-		CBeamWeapons* pBeam = &(GetBeamWeapons()->GetAt(i));
+		const CBeamWeapons* pBeam = &(GetBeamWeapons()->GetAt(i));
 		CString s;
 		s.Format("%s %d %s", CLoc::GetString("TYPE"), pBeam->GetBeamType(), pBeam->GetBeamName());
 		// Waffen typenrein sammeln
@@ -1076,7 +1076,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	std::map<CString, int> mTorpedoWeapons;
 	for (int i = 0; i < GetTorpedoWeapons()->GetSize(); i++)
 	{
-		CTorpedoWeapons* pTorp = &(GetTorpedoWeapons()->GetAt(i));
+		const CTorpedoWeapons* pTorp = &(GetTorpedoWeapons()->GetAt(i));
 		CString s;
 		s.Format("%s (%s)", pTorp->GetTupeName(), pTorp->GetTorpedoName());
 		mTorpedoWeapons[s] += m_TorpedoWeapons.GetAt(i).GetNumberOfTupes();
@@ -1114,7 +1114,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	sDefensiveHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
 	sDefensiveHead += CHTMLStringBuilder::GetHTMLStringNewLine();
 
-	CShield* pShield = GetShield();
+	const CShield* pShield = GetShield();
 	CString sShield;
 	sShield.Format("%s %d %s: %s %d/%d", CLoc::GetString("TYPE"), pShield->GetShieldType(), CLoc::GetString("SHIELDS"), CLoc::GetString("CAPACITY"), (UINT)pShield->GetCurrentShield(), (UINT)pShield->GetMaxShield());
 	sShield = CHTMLStringBuilder::GetHTMLColor(sShield);
@@ -1122,7 +1122,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	sShield = CHTMLStringBuilder::GetHTMLCenter(sShield);
 	sShield += CHTMLStringBuilder::GetHTMLStringNewLine();
 
-	CHull* pHull = GetHull();
+	const CHull* pHull = GetHull();
 	CString sMaterial;
 	switch (pHull->GetHullMaterial())
 	{
@@ -1496,7 +1496,8 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 		// Schiffunterstützungkosten dem jeweiligen Imperium hinzufügen.
 		pMajor->GetEmpire()->AddShipCosts(GetMaintenanceCosts());
 		// die Schiffe in der Flotte beim modifizieren der Schiffslisten der einzelnen Imperien beachten
-		pMajor->GetShipHistory()->ModifyShip(&CShips(*this), sector.GetName(TRUE));
+		const boost::shared_ptr<const CShips> s(new CShips(*this));
+		pMajor->GetShipHistory()->ModifyShip(s, sector.GetName(TRUE));
 	}
 	// Erfahrungspunkte der Schiffe anpassen
 	CalcExp();
@@ -1532,7 +1533,8 @@ bool CShip::BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major, 
 
 void CShip::Scrap(CMajor& major, CSystem& sy, bool disassembly) {
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-	major.GetShipHistory()->ModifyShip(&CShips(*this), sy.GetName(TRUE),
+	const boost::shared_ptr<const CShips> s(new CShips(*this));
+	major.GetShipHistory()->ModifyShip(s, sy.GetName(TRUE),
 		resources::pDoc->GetCurrentRound(), CLoc::GetString(disassembly ?
 		"DISASSEMBLY" : "UPGRADE"), CLoc::GetString("DESTROYED"));
 	if(sy.OwnerID() != m_sOwnerOfShip)

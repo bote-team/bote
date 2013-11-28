@@ -80,9 +80,9 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 		DoMakeFleet(i);
 
 		// Vielleicht haben unsere Schiffe ein Ziel, welches sie angreifen müssen/können
-		if (DoAttackMove(i->second, pOwner))
+		if (DoAttackMove(i->second.get(), pOwner))
 		{
-			DoCamouflage(i->second);
+			DoCamouflage(i->second.get());
 			continue;
 		}
 
@@ -144,7 +144,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 
 				if (bSet)
 				{
-					DoCamouflage(i->second);
+					DoCamouflage(i->second.get());
 					continue;
 				}
 			}
@@ -197,18 +197,18 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 				}
 			}
 
-			DoCamouflage(i->second);
+			DoCamouflage(i->second.get());
 			if (m_pDoc->GetSystem(i->second->GetKO().x, i->second->GetKO().y).GetSunSystem())
 			{
-				if (!DoTerraform(i->second))
-					DoColonize(i->second);
+				if (!DoTerraform(i->second.get()))
+					DoColonize(i->second.get());
 			}
 
-			DoStationBuild(i->second);
+			DoStationBuild(i->second.get());
 		}
 		else
 		{
-			DoCamouflage(i->second);
+			DoCamouflage(i->second.get());
 		}
 	}
 }
@@ -576,7 +576,7 @@ void CShipAI::DoMakeFleet(const CShipMap::iterator& pShip)
 			||(pShip->second->GetShipType() == SHIP_TYPE::COLONYSHIP && i->second->GetShipType() == SHIP_TYPE::COLONYSHIP && i->second->GetCurrentOrder() < SHIP_ORDER::COLONIZE))
 		{
 			pShip->second->AddShipToFleet(i->second);
-			m_pDoc->m_ShipMap.EraseAt(i, false);
+			m_pDoc->m_ShipMap.EraseAt(i);
 			increment = false;
 		}
 	}

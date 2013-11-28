@@ -9,10 +9,9 @@
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 
-CShipMap::CShipMap(bool bDestroyWhenDestructed) :
+CShipMap::CShipMap() :
 	m_Ships(),
-	m_NextKey(0),
-	m_bDestroyWhenDestructed(bDestroyWhenDestructed)
+	m_NextKey(0)
 {
 	m_CurrentShip = begin();
 	m_FleetShip = begin();
@@ -20,14 +19,32 @@ CShipMap::CShipMap(bool bDestroyWhenDestructed) :
 
 CShipMap::~CShipMap(void)
 {
-	Reset(m_bDestroyWhenDestructed);
+	Reset();
 }
 
 CShipMap::CShipMap(const CShipMap& o) :
 	m_NextKey(o.m_NextKey)
 {
-	for(CShipMap::const_iterator i = o.begin(); i != o.end(); ++i) {
-		CShips* s = new CShips(*i->second);
+	Copy(o);
+}
+
+CShipMap& CShipMap::operator=(const CShipMap& o)
+{
+	if(this == &o)
+		return *this;
+
+	Reset();
+	m_NextKey = o.m_NextKey;
+	Copy(o);
+
+	return *this;
+}
+
+void CShipMap::Copy(const CShipMap& o)
+{
+	for(CShipMap::const_iterator i = o.begin(); i != o.end(); ++i)
+	{
+		const boost::shared_ptr<CShips> s(new CShips(*i->second));
 		m_Ships.insert(end(), std::make_pair(i->first, s));
 	}
 	m_CurrentShip = begin();
@@ -36,26 +53,6 @@ CShipMap::CShipMap(const CShipMap& o) :
 		m_CurrentShip = find(o.CurrentShip()->second->Key());
 		m_FleetShip = find(o.FleetShip()->second->Key());
 	}
-}
-
-CShipMap& CShipMap::operator=(const CShipMap& o)
-{
-	if(this == &o)
-		return *this;
-
-	Reset(true);
-	m_NextKey = o.m_NextKey;
-	for(CShipMap::const_iterator i = o.begin(); i != o.end(); ++i) {
-		CShips* s = new CShips(*i->second);
-		m_Ships.insert(end(), std::make_pair(i->first, s));
-	}
-	m_CurrentShip = begin();
-	m_FleetShip = begin();
-	if(!o.empty()) {
-		m_CurrentShip = find(o.CurrentShip()->first);
-		m_FleetShip = find(o.FleetShip()->first);
-	}
-	return *this;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -111,7 +108,7 @@ CShipMap::iterator CShipMap::iterator_at(int index) {
 // adding elements
 //////////////////////////////////////////////////////////////////////
 
-CShipMap::iterator CShipMap::Add(CShips* ship) {
+CShipMap::iterator CShipMap::Add(const boost::shared_ptr<CShips>& ship) {
 	//if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
 	//	CString s;
 	//	s.Format("CShipMap: adding ship %s", ship.GetShipName());
@@ -146,19 +143,18 @@ void CShipMap::Append(const CShipMap& other) {
 // removing elements
 //////////////////////////////////////////////////////////////////////
 
-void CShipMap::Reset(bool destroy) {
-	if(destroy)
-		for(CShipMap::iterator i = begin(); i != end(); ++i) {
-			AssertBotE(i->second);
-			delete i->second;
-			i->second = NULL;
-		}
+void CShipMap::Reset() {
+	for(CShipMap::iterator i = begin(); i != end(); ++i)
+	{
+		AssertBotE(i->second);
+		i->second.reset();
+	}
 	m_Ships.clear();
 	m_NextKey = 0;
 	m_CurrentShip = begin();
 	m_FleetShip = begin();
 }
-void CShipMap::EraseAt(CShipMap::iterator& index, bool destroy) {
+void CShipMap::EraseAt(CShipMap::iterator& index) {
 	//if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
 	//	CString s;
 	//	s.Format("CShipMap: removing ship %s", index->second->GetShipName());
@@ -174,29 +170,29 @@ void CShipMap::EraseAt(CShipMap::iterator& index, bool destroy) {
 	//if the above two calls didn't already update it
 	if(to_erase == index)
 		++index;
-	if(destroy) {
-		AssertBotE(to_erase->second);
-		delete to_erase->second;
-		to_erase->second = NULL;
-	}
+	AssertBotE(to_erase->second);
+	to_erase->second.reset();
 	m_Ships.erase(to_erase);
 	if(empty())
-		Reset(true);
+		Reset();
 }
 
 //////////////////////////////////////////////////////////////////////
 // getting elements
 //////////////////////////////////////////////////////////////////////
 
-const CShips& CShipMap::at(unsigned key) const {
-	const CShipMap::const_iterator i = find(key);
+boost::shared_ptr<const CShips> CShipMap::at(unsigned key) const
+{
+	CShipMap::const_iterator i = find(key);
 	AssertBotE(i != end());
-	return *i->second;
+	return i->second;
 }
-CShips& CShipMap::at(unsigned key) {
+
+boost::shared_ptr<CShips> CShipMap::at(unsigned key)
+{
 	CShipMap::iterator i = find(key);
 	AssertBotE(i != end());
-	return *i->second;
+	return i->second;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -248,10 +244,10 @@ void CShipMap::Serialize(CArchive& ar) {
 		//with the CString members of the ship class in their Serialize functions above.
 		//Thus, call the destructors of all the current elements explicitely and manually.
 		//(This comment was appropriate for std::vector)
-		Reset(true);
+		Reset();
 		for(int i = 0; i < size; ++i)
 		{
-			CShips* ship = new CShips();
+			const boost::shared_ptr<CShips> ship(new CShips());
 			ship->Serialize(ar);
 			Add(ship);
 		}
@@ -262,12 +258,12 @@ void CShipMap::Serialize(CArchive& ar) {
 
 void CShipMap::SerializeEndOfRoundData(CArchive& ar, const CString& sMajorID) {
 	if(ar.IsStoring()) {
-		std::vector<CShips*> ships;
+		std::vector<boost::shared_ptr<CShips>> ships;
 		for(CShipMap::const_iterator i = begin(); i != end(); ++i)
 			if (i->second->GetOwnerOfShip() == sMajorID)
 				ships.push_back(i->second);
 		ar << ships.size();
-		for(std::vector<CShips*>::iterator i = ships.begin(); i != ships.end(); ++i)
+		for(std::vector<boost::shared_ptr<CShips>>::iterator i = ships.begin(); i != ships.end(); ++i)
 			(*i)->Serialize(ar);
 	}
 	else if(ar.IsLoading()) {
@@ -275,14 +271,14 @@ void CShipMap::SerializeEndOfRoundData(CArchive& ar, const CString& sMajorID) {
 		ar >> count;
 		for(CShipMap::iterator i = begin(); i != end();) {
 			if (i->second->GetOwnerOfShip() == sMajorID) {
-				EraseAt(i, true);
+				EraseAt(i);
 				continue;
 			}
 			++i;
 		}
 		const int newsize = GetSize() + count;
 		for (int i = GetSize(); i < newsize; ++i) {
-			CShips* ship = new CShips();
+			const boost::shared_ptr<CShips> ship(new CShips());
 			ship->Serialize(ar);
 			const CShipMap::iterator j = Add(ship);
 			AssertBotE(j->second->GetOwnerOfShip() == sMajorID);
@@ -311,7 +307,7 @@ void CShipMap::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentComba
 		// alle Schiffe aus dem Kampfsektor entfernen
 		for(CShipMap::iterator i = begin(); i != end();) {
 			if (i->second->GetKO() == ptCurrentCombatSector) {
-				EraseAt(i, true);
+				EraseAt(i);
 				continue;
 			}
 			++i;
@@ -319,7 +315,7 @@ void CShipMap::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentComba
 		// empfangene Schiffe wieder hinzufügen
 		const int newsize = GetSize() + count;
 		for (int i = GetSize(); i < newsize; ++i) {
-			CShips* ship = new CShips();
+			const boost::shared_ptr<CShips> ship(new CShips());
 			ship->Serialize(ar);
 			const CShipMap::iterator j = Add(ship);
 			AssertBotE(j->second->GetKO() == ptCurrentCombatSector);
@@ -374,8 +370,8 @@ CShips* CShipMap::GetLeader(const CShips* pShip) const
 	for (CShipMap::const_iterator i = begin(); i != end(); ++i)
 	{
 		// Schiff ist selbst Führer einer Flotte oder hat keine Flotte
-		if (i->second == pShip)
-			return i->second;
+		if (i->second.get() == pShip)
+			return i->second.get();
 
 		// Schiff ist in einer Flotte (nur prüfen wenn der Flottenführer auch von der gleichen Rasse ist)
 		if (i->second->GetOwnerOfShip() != pShip->GetOwnerOfShip())
@@ -383,8 +379,8 @@ CShips* CShipMap::GetLeader(const CShips* pShip) const
 
 		for (CShips::const_iterator j = i->second->begin(); j != i->second->end(); ++j)
 		{
-			if (j->second == pShip)
-				return i->second;
+			if (j->second.get() == pShip)
+				return i->second.get();
 		}
 	}
 

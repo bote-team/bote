@@ -68,7 +68,7 @@ CShips& CShips::operator=(const CShips& o)
 
 CShips::~CShips()
 {
-	Reset(true);
+	Reset();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -120,10 +120,13 @@ const CShips::const_iterator& CShips::CurrentShip() const {
 	return m_Fleet.CurrentShip();
 }
 
-const CShips& CShips::at(unsigned key) const {
+boost::shared_ptr<const CShips> CShips::at(unsigned key) const
+{
 	return m_Fleet.at(key);
 }
-CShips& CShips::at(unsigned key) {
+
+boost::shared_ptr<CShips> CShips::at(unsigned key)
+{
 	return m_Fleet.at(key);
 }
 
@@ -150,11 +153,11 @@ void CShips::SetKO(int x, int y) {
 
 //removes the element pointed to by the passed iterator from this fleet
 //@param index: will be updated and point to the new position of the element which followed the erased one
-void CShips::RemoveShipFromFleet(CShips::iterator& ship, bool destroy)
+void CShips::RemoveShipFromFleet(CShips::iterator& ship)
 {
-	m_Fleet.EraseAt(ship, destroy);
+	m_Fleet.EraseAt(ship);
 	if(!HasFleet())
-		Reset(destroy);
+		Reset();
 }
 
 bool CShips::RemoveDestroyed(CRace& owner, unsigned short round, const CString& sEvent, const CString& sStatus, CStringArray* destroyedShips, const CString& anomaly)
@@ -169,7 +172,7 @@ bool CShips::RemoveDestroyed(CRace& owner, unsigned short round, const CString& 
 			continue;
 		}
 
-		RemoveShipFromFleet(i, true);
+		RemoveShipFromFleet(i);
 	}
 
 	// Wenn das Schiff selbst zerstört wurde
@@ -177,8 +180,8 @@ bool CShips::RemoveDestroyed(CRace& owner, unsigned short round, const CString& 
 	return CShip::RemoveDestroyed(owner, round, sEvent, sStatus, destroyedShips, anomaly);
 }
 
-void CShips::Reset(bool destroy) {
-	m_Fleet.Reset(destroy);
+void CShips::Reset() {
+	m_Fleet.Reset();
 	m_bLeaderIsCurrent = true;
 }
 
@@ -191,7 +194,7 @@ void CShips::AdoptOrdersFrom(const CShips& ship)
 	}
 }
 
-void CShips::AddShipToFleet(CShips* fleet) {
+void CShips::AddShipToFleet(const boost::shared_ptr<CShips>& fleet) {
 	CString s;
 	if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
 		s.Format("CShips: adding ship with leader %s to fleet of %s", fleet->GetShipName(),
@@ -212,7 +215,7 @@ void CShips::AddShipToFleet(CShips* fleet) {
 			MYTRACE("ships")(MT::LEVEL_INFO, s);
 		}
 		m_Fleet.Append(i->second->m_Fleet);
-		i->second->Reset(false);
+		i->second->Reset();
 	}
 }
 
@@ -233,7 +236,7 @@ void CShips::ApplyTraining(int XP) {
 	// Wenn das Schiff eine Flotte anführt, Schiffstraining auf alle Schiffe in der Flotte anwenden
 	for(CShips::iterator i = begin(); i != end(); ++i)
 	{
-		CShip* leader = static_cast<CShip*>(i->second);
+		const boost::shared_ptr<CShip>& leader = boost::static_pointer_cast<CShip>(i->second);
 		leader->ApplyTraining(XP, veteran);
 	}
 }
@@ -460,11 +463,11 @@ bool CShips::CanCloak(bool consider_fleet) const {
 // other functions
 //////////////////////////////////////////////////////////////////////
 
-CShips* CShips::GiveFleetToFleetsFirstShip() {
+boost::shared_ptr<CShips> CShips::GiveFleetToFleetsFirstShip() {
 	AssertBotE(HasFleet());
 	// erstes Schiff aus der Flotte holen
 	CShips::iterator i = begin();
-	CShips* new_fleet_ship = i->second;
+	const boost::shared_ptr<CShips> new_fleet_ship(i->second);
 
 	while(true)
 	{
@@ -473,11 +476,11 @@ CShips* CShips::GiveFleetToFleetsFirstShip() {
 			break;
 		new_fleet_ship->AddShipToFleet(i->second);
 	}
-	Reset(false);
+	Reset();
 	return new_fleet_ship;
 }
 
-CString CShips::GetTooltip(bool bShowFleet)
+CString CShips::GetTooltip(bool bShowFleet) const
 {
 	if(bShowFleet && HasFleet())
 		return CShip::GetTooltip(&CShip::FleetInfoForGetTooltip(
@@ -511,7 +514,7 @@ void CShips::RepairCommand(BOOL bAtShipPort, bool bFasterShieldRecharge, CShipMa
 		i->second->RepairCommand(bAtShipPort, bFasterShieldRecharge, ships);
 		if(!i->second->NeedsRepair()) {
 			ships.Add(i->second);
-			RemoveShipFromFleet(i, false);
+			RemoveShipFromFleet(i);
 			continue;
 		}
 		++i;
@@ -536,7 +539,7 @@ void CShips::CalcEffects(CSector& sector, CRace* pRace,
 		// wenn das Schiff eine Flotte besitzt, dann die Schiffe in der Flotte auch beachten
 		for(CShips::iterator j = begin(); j != end(); ++j)
 		{
-			CShip* leader = static_cast<CShip*>(j->second);
+			const boost::shared_ptr<CShip>& leader = boost::static_pointer_cast<CShip>(j->second);
 			leader->CalcEffectsForSingleShip(sector, pRace, bDeactivatedShipScanner, bBetterScanner, true);
 		}
 }
@@ -551,7 +554,7 @@ CShips::StationWorkResult CShips::BuildStation(SHIP_ORDER::Typ order, CSector& s
 		{
 			result.finished = true;
 			// Das Schiff, welches die Station fertiggestellt hat aus der Flotte entfernen
-			RemoveShipFromFleet(j, true);
+			RemoveShipFromFleet(j);
 			UnsetCurrentOrder();
 			return result;
 		}
@@ -592,7 +595,7 @@ CString CShips::SanityCheckUniqueness(std::set<CString>& already_encountered) co
 bool CShips::SanityCheckOrdersConsistency() const {
 	for(CShips::const_iterator i = begin(); i != end(); ++i)
 	{
-		CShip* leader = static_cast<CShip*>(i->second);
+		const boost::shared_ptr<CShip>& leader = boost::static_pointer_cast<CShip>(i->second);
 		if(!leader->SanityCheckOrdersConsistency(*this))
 			return false;
 	}

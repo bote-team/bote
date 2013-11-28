@@ -821,11 +821,11 @@ void CTransportMenuView::CreateTransportedTroopsVector()
 
 	m_vShipTroops.clear();
 	for (int i = 0; i < ship->second->GetTransportedTroops()->GetSize(); i++)
-		m_vShipTroops.push_back(make_pair(ship->second, &(ship->second->GetTransportedTroops()->GetAt(i))));
+		m_vShipTroops.push_back(make_pair(ship->second.get(), &(ship->second->GetTransportedTroops()->GetAt(i))));
 
 	for (CShips::const_iterator it = ship->second->begin(); it != ship->second->end(); ++it)
 		for (int i = 0; i < it->second->GetTransportedTroops()->GetSize(); i++)
-			m_vShipTroops.push_back(make_pair(it->second, &(it->second->GetTransportedTroops()->GetAt(i))));
+			m_vShipTroops.push_back(make_pair(it->second.get(), &(it->second->GetTransportedTroops()->GetAt(i))));
 }
 
 ///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip

@@ -11,6 +11,7 @@
 #pragma once
 
 #include <map>
+#include "boost/shared_ptr.hpp"
 
 class CShips;
 
@@ -21,20 +22,24 @@ public:
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 
-	CShipMap(bool bDestroyWhenDestructed = true);
+	CShipMap();
 	virtual ~CShipMap(void);
 	CShipMap(const CShipMap& o);
 	CShipMap& operator=(const CShipMap& o);
+
+private:
+	void Copy(const CShipMap& o);
+public:
 
 //////////////////////////////////////////////////////////////////////
 // iterators
 //////////////////////////////////////////////////////////////////////
 
-	typedef std::map<unsigned, CShips*>::const_iterator const_iterator;
+	typedef std::map<unsigned, boost::shared_ptr<CShips>>::const_iterator const_iterator;
 	const_iterator begin() const;
 	const_iterator end() const;
 
-	typedef std::map<unsigned, CShips*>::iterator iterator;
+	typedef std::map<unsigned, boost::shared_ptr<CShips>>::iterator iterator;
 	iterator begin();
 	iterator end();
 
@@ -68,7 +73,7 @@ public:
 	//@param ship: the ship to add
 	//@return an iterator to the newly inserted element
 	//complexity: constant
-	iterator Add(CShips* ship);
+	iterator Add(const boost::shared_ptr<CShips>& ship);
 
 	//appends the passed CShipMap at the end of this shiparray
 	//@param other: the CShipMap to append
@@ -78,22 +83,12 @@ public:
 // removing elements
 //////////////////////////////////////////////////////////////////////
 
-	//@param destroy: Needs to be true in case the erased ships are removed from the game at all.
-	//On the other hand, needs to be false in case these ships are just moved into or out of
-	//a fleet and thus the memory where they are allocated must not be deleted.
-	//If in doubt, better take false. Wrong false should cause a memory leak, wrong true dangling pointers.
-	void Reset(bool destroy);
+	void Reset();
 
 	//removes the element pointed to by the passed iterator from this shipmap
 	//@param index: will be updated and point to the new position of the element which followed the erased one
-	//@param destroy: Needs to be true in case the erased ship is removed from the game at all because it is
-	//destroyed. On the other hand, needs to be false in case the removed ship is just moved into or out of
-	//a fleet and thus the memory where it's allocated must not be deleted.
-	//If in doubt, better take false. Wrong false should cause a memory leak, wrong true a dangling ship pointer.
-	//The shipmap must not be empty before erasing.
-	//In case it is afterwards, it is reset as if it was freshly constructed.
 	//complexity: constant
-	void EraseAt(CShipMap::iterator& index, bool destroy);
+	void EraseAt(CShipMap::iterator& index);
 
 //////////////////////////////////////////////////////////////////////
 // getting elements
@@ -107,11 +102,11 @@ public:
 
 	//get the CShips with the given key
 	//complexity: logarithmic
-	const CShips& at(unsigned key) const;
+	boost::shared_ptr<const CShips> at(unsigned key) const;
 
 	//get the CShips with the given key
 	//complexity: logarithmic
-	CShips& at(unsigned key);
+	boost::shared_ptr<CShips> at(unsigned key);
 
 //////////////////////////////////////////////////////////////////////
 // getting info
@@ -183,12 +178,11 @@ private:
 
 	unsigned NextKey();
 
-	std::map<unsigned, CShips*> m_Ships;// internal container with the CShips
+	std::map<unsigned, boost::shared_ptr<CShips>> m_Ships;// internal container with the CShips
 	unsigned m_NextKey;// used to give newly added CShips their keys
 	//This counter is incremented each time a ships is added, and only resetted when the shipmap is completely
 	//empty, when loading a savegame and at turn change.
-	bool m_bDestroyWhenDestructed;// Once that this shipmap is destructed, should it delete the memory allocated
-	//to the ships it (still) contains ?
+
 	//Set this to false in case this shipmap is a local variable and you want to reuse the ships it contains
 	//later on.
 

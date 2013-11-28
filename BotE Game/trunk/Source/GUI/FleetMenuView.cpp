@@ -252,7 +252,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 		bool bMarked = pShip->second->LeaderIsCurrent();
 		CPoint pt(250 * column, 65 * row + 60);
 		pShip->second->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, FALSE, normalColor, markColor, font);
-		m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip->second));
+		m_vShipRects.push_back(pair<CRect, const boost::shared_ptr<const CShips>>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip->second));
 	}
 	counter++;
 	row++;
@@ -274,7 +274,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 			bool bMarked = !pShip->second->LeaderIsCurrent() && pShip->second->CurrentShip() == i;
 			CPoint pt(250 * column, 65 * row + 60);
 			i->second->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, FALSE, normalColor, markColor, font);
-			m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), i->second));
+			m_vShipRects.push_back(pair<CRect, const boost::shared_ptr<const CShips>>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), i->second));
 		}
 		row++;
 		counter++;
@@ -396,7 +396,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				fleetship->second->AddShipToFleet(i->second);
 				// Wenn wir das Schiff da hinzugefügt haben, dann müssen wir das aus der normalen Schiffsliste
 				// rausnehmen, damit es nicht zweimal im Spiel vorkommt
-				pDoc->m_ShipMap.EraseAt(i, false);
+				pDoc->m_ShipMap.EraseAt(i);
 				// Wenn wir so Schiffe hinzufügen Ansicht auf Seite 1 stellen und markiertes Schiff ist
 				// das Anführerschiff
 				pDoc->SetShipInFleet(fleetship->second->end());
@@ -423,7 +423,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			{
 				// Das Schiff welches wir aus der Flotte nehmen stecken wir wieder in das normale Schiffsarray
 				pDoc->m_ShipMap.Add(i->second);
-				fleetship->second->RemoveShipFromFleet(i, false);
+				fleetship->second->RemoveShipFromFleet(i);
 				pDoc->SetShipInFleet(fleetship->second->end());
 				continue;
 			}
@@ -461,7 +461,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			CShips::iterator j = fleetship->second->iterator_at(i-1);
 			// Das Schiff welches wir aus der Flotte nehmen stecken wir wieder in das normale Schiffsarray
 			pDoc->m_ShipMap.Add(j->second);
-			fleetship->second->RemoveShipFromFleet(j, false);
+			fleetship->second->RemoveShipFromFleet(j);
 			//we set the marked ship to the ship which was following the removed one,
 			//or to the leading ship in case there's none left (in which case j comes back
 			//as the end iterator)
@@ -478,7 +478,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// Wenn es das Schiff ist, welches die Flotte besitzt
 		else if (i == 0 && m_iFleetPage == 1)
 		{
-			CShips* new_fleetship = fleetship->second->GiveFleetToFleetsFirstShip();
+			const boost::shared_ptr<CShips>& new_fleetship = fleetship->second->GiveFleetToFleetsFirstShip();
 			const CShipMap::iterator it = pDoc->m_ShipMap.Add(new_fleetship);
 
 			pDoc->SetCurrentShip(it);
@@ -504,7 +504,7 @@ void CFleetMenuView::OnMouseMove(UINT nFlags, CPoint point)
 		return;
 	CalcLogicalPoint(point);
 	// wurde die Maus über ein Schiff gehalten
-	for(std::vector<std::pair<CRect, CShips*>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i) {
+	for(std::vector<std::pair<CRect, boost::shared_ptr<const CShips>>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i) {
 		if (!i->first.PtInRect(point))
 			continue;
 		if(i->second == pDoc->FleetShip()->second) {
@@ -581,7 +581,7 @@ CString CFleetMenuView::CreateTooltip(void)
 	ScreenToClient(&pt);
 	CalcLogicalPoint(pt);
 
-	CShips* pShip = NULL;
+	boost::shared_ptr<const CShips> pShip;
 	for (UINT i = 0; i < m_vShipRects.size(); i++)
 		if (m_vShipRects[i].first.PtInRect(pt))
 		{

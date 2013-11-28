@@ -12,6 +12,7 @@
 #include <map>
 #include <vector>
 #include <utility>
+#include "boost/shared_ptr.hpp"
 
 using namespace std;
 
@@ -102,7 +103,7 @@ public:
 private:
 	/// Diese Funktion addiert die Offensiv- und Defensivstärke eines Schiffes einer Rasse zum jeweiligen
 	/// Sektor.
-	void AddDanger(const CShips* ship);
+	void AddDanger(const boost::shared_ptr<const CShips>& ship);
 
 	/// Diese Funktion ermittelt die Sektoren, welche sich am ehesten zum Terraformen für eine bestimmte Rasse eignen.
 	/// Die Einträge werden dann im Array <code>m_SectorsToTerraform</code> gemacht.

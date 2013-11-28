@@ -255,7 +255,7 @@ void CAnomaly::CalcShipEffects(CShips* pShip) const
 
 		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i)
 		{
-			MakeShieldDmg(500, 75, i->second);
+			MakeShieldDmg(500, 75, i->second.get());
 			// sind die Schilde runter, so wird das Schiff zerstört
 			if (i->second->GetShield()->GetCurrentShield() == 0)
 				i->second->GetHull()->SetCurrentHull(i->second->GetHull()->GetCurrentHull() * (-1));
@@ -264,7 +264,7 @@ void CAnomaly::CalcShipEffects(CShips* pShip) const
 			if (m_byType == XRAYPULSAR || m_byType == MAGNETAR)
 				i->second->SetCrewExperiance(i->second->GetCrewExperience() * (-1));
 			if (m_byType == MAGNETAR)
-				PerhabsStrand(i->second);
+				PerhabsStrand(i->second.get());
 		}
 
 		// Schiff selbst
@@ -312,7 +312,7 @@ void CAnomaly::CalcShipEffects(CShips* pShip) const
 		// teilweise Hüllenschaden machen (unabhängig von Schilden)
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
 		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i)
-				MakeHullDmg(50, 50, i->second);
+				MakeHullDmg(50, 50, i->second.get());
 		// Schiff selbst
 		MakeHullDmg(50, 50, pShip);
 	}

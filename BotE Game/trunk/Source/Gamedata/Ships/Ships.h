@@ -84,13 +84,8 @@ public:
 	const_iterator iterator_at(int index) const;
 	iterator iterator_at(int index);
 
-	//get the CShips from the fleet of this CShips with the given key
-	//complexity: logarithmic
-	const CShips& at(unsigned key) const;
-
-	//get the CShips from the fleet of this CShips with the given key
-	//complexity: logarithmic
-	CShips& at(unsigned key);
+	boost::shared_ptr<const CShips> at(unsigned key) const;
+	boost::shared_ptr<CShips> at(unsigned key);
 
 	//////////////////////////////////////////////////////////////////////
 	// getting
@@ -119,10 +114,10 @@ public:
 	 * Adds the given CShips to this CShips' fleet and propagates this CShips' leader's orders to the given
 	 * CShips' leader and fleet (both are in this CShips' fleet now).
 	**/
-	void AddShipToFleet(CShips* fleet);
+	void AddShipToFleet(const boost::shared_ptr<CShips>& fleet);
 	void SetCurrentShip(const CShips::iterator& position);
 	// Funktion um ein Schiff aus der Flotte zu entfernen.
-	void RemoveShipFromFleet(CShips::iterator& ship, bool destroy);
+	void RemoveShipFromFleet(CShips::iterator& ship);
 
 	//strip this CShips from destroyed ships
 	//@ return true in case the leading ship is still alive, false in case the leader is dead and
@@ -130,7 +125,7 @@ public:
 	bool RemoveDestroyed(CRace& owner, unsigned short round, const CString& sEvent,	const CString& sStatus, CStringArray* destroyedShips = NULL, const CString& anomaly = "");
 
 	//// Funktion löscht die gesamte Flotte
-	void Reset(bool destroy);
+	void Reset();
 
 	//Affects leader and fleet
 	void ApplyTraining(int XP);
@@ -212,7 +207,7 @@ public:
 	/// Funktion erstellt eine Tooltipinfo vom Schiff
 	/// @param bShowFleet wenn dieser Parameter <code>true</code> dann werden Informationen über die angeführte Flotte angezeigt, sonst nur über das Schiff
 	/// @return	der erstellte Tooltip-Text
-	CString GetTooltip(bool bShowFleet = true);
+	CString GetTooltip(bool bShowFleet = true) const;
 
 	//Execute a 1-turn shield (always) and hull (if bAtShipPort == TRUE) repairing step
 	void TraditionalRepair(BOOL bAtShipPort, bool bFasterShieldRecharge);
@@ -246,7 +241,7 @@ public:
 
 	////uses this CShips's fleet's first ship to make a leading ship, which has the remaining ships of this CShips's
 	////fleet as its fleet, and returns the new CShips
-	CShips* GiveFleetToFleetsFirstShip();
+	boost::shared_ptr<CShips> GiveFleetToFleetsFirstShip();
 
 	/// Funktion zum Zeichnen des Schiffes in der Schiffsansicht.
 	/// @param g Zeiger auf Zeichenkontext

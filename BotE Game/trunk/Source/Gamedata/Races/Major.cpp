@@ -8,6 +8,7 @@
 #include "RaceController.h"
 #include "Ships/Ships.h"
 #include "ClientWorker.h"
+#include "boost/make_shared.hpp"
 
 
 
@@ -477,7 +478,8 @@ void CMajor::AddToLostShipHistory(const CShips& Ship, const CString& sEvent,
 {
 	const CPoint& co = Ship.GetKO();
 	const CBotEDoc& doc = *resources::pDoc;
-	m_ShipHistory.ModifyShip(&Ship, doc.GetSystem(co.x, co.y).GetName(TRUE), round, sEvent, sStatus);
+	const boost::shared_ptr<const CShips> s(boost::make_shared<CShips>(Ship));
+	m_ShipHistory.ModifyShip(s, doc.GetSystem(co.x, co.y).GetName(TRUE), round, sEvent, sStatus);
 }
 
 void CMajor::LostFlagShip(const CShip& ship)

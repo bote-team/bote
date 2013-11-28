@@ -781,7 +781,7 @@ void CBotEDoc::PrepareData()
 		m_iRound = 1;
 
 		// Generierungssektornamenklasse wieder neu starten
-		m_ShipMap.Reset(true);
+		m_ShipMap.Reset();
 		m_ShipInfoArray.RemoveAll();
 
 		ReadBuildingInfosFromFile();	// Gebäude einlesen aus data-Datei
@@ -2079,7 +2079,8 @@ CShipMap::iterator CBotEDoc::BuildShip(int nID, const CPoint& KO, const CString&
 	AssertBotE(nID >= 10000);
 	nID -= 10000;
 
-	const CShipMap::iterator it = m_ShipMap.Add(new CShips(m_ShipInfoArray.GetAt(nID)));
+	const boost::shared_ptr<CShips> ship(new CShips(m_ShipInfoArray.GetAt(nID)));
+	const CShipMap::iterator it = m_ShipMap.Add(ship);
 	it->second->SetOwnerOfShip(pOwner->GetRaceID());
 	it->second->SetKO(KO.x, KO.y);
 
@@ -2095,7 +2096,7 @@ CShipMap::iterator CBotEDoc::BuildShip(int nID, const CPoint& KO, const CString&
 	MYTRACE("general")(MT::LEVEL_DEBUG, "New Ship for Major %d\n", pMajor);
 
 	// Spezialforschungsboni dem Schiff hinzufügen
-	AddSpecialResearchBoniToShip(it->second, pMajor);
+	AddSpecialResearchBoniToShip(it->second.get(), pMajor);
 
 	pMajor->GetShipHistory()->AddShip(it->second, GetSystem(KO.x, KO.y).GetName(), m_iRound);
 	return it;
@@ -2108,10 +2109,10 @@ void CBotEDoc::RemoveShip(CShipMap::iterator& ship)
 {
 	if (ship->second->HasFleet())
 	{
-		CShips* new_fleetship = ship->second->GiveFleetToFleetsFirstShip();
+		const boost::shared_ptr<CShips>& new_fleetship = ship->second->GiveFleetToFleetsFirstShip();
 		m_ShipMap.Add(new_fleetship);
 	}
-	m_ShipMap.EraseAt(ship, true);
+	m_ShipMap.EraseAt(ship);
 }
 
 /// Funktion beachtet die erforschten Spezialforschungen einer Rasse und verbessert die
@@ -3543,7 +3544,7 @@ bool CBotEDoc::BuildStation(CShips& ship, SHIP_ORDER::Typ order, CSystem& system
 			{
 				AssertBotE(k->second->Key() != ship.Key());
 				k->second->Scrap(*pMajor, system, false);
-				m_ShipMap.EraseAt(k, true);
+				m_ShipMap.EraseAt(k);
 				break;
 			}
 	}
@@ -3736,7 +3737,7 @@ void CBotEDoc::CalcShipOrders()
 		else if (current_order == SHIP_ORDER::DESTROY_SHIP)	// das Schiff wird demontiert
 		{
 			y->second->Scrap(*pMajor, *pSystem, true);
-			m_ShipMap.EraseAt(y, true);//no memory leak for fleet ships due to Reset() call in CShips::~CShips()
+			m_ShipMap.EraseAt(y);
 			increment = false;
 			continue;
 		}
@@ -3881,7 +3882,7 @@ void CBotEDoc::CalcShipMovement()
 #ifdef CONSISTENCY_CHECKS
 	std::set<CString> already_encountered_ships_for_sanity_check;
 #endif
-	CShipMap repaired_ships(false);
+	CShipMap repaired_ships;
 	// Hier kommt die Schiffsbewegung (also keine anderen Befehle werden hier noch ausgewertet, lediglich wird überprüft,
 	// dass manche Befehle noch ihre Gültigkeit haben
 	for(CShipMap::iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
@@ -4041,7 +4042,7 @@ void CBotEDoc::CalcShipMovement()
 		// wenn eine Anomalie vorhanden, deren m?gliche Auswirkungen auf das Schiff berechnen
 		if (GetSystem(y->second->GetKO().x, y->second->GetKO().y).GetAnomaly())
 		{
-			GetSystem(y->second->GetKO().x, y->second->GetKO().y).GetAnomaly()->CalcShipEffects(y->second);
+			GetSystem(y->second->GetKO().x, y->second->GetKO().y).GetAnomaly()->CalcShipEffects(y->second.get());
 			bAnomaly = true;
 		}
 	}
@@ -4137,11 +4138,11 @@ void CBotEDoc::CalcShipCombat()
 		if (i->second->GetKO() != m_ptCurrentCombatSector)
 			continue;
 
-		vInvolvedShips.Add(i->second);
+		vInvolvedShips.Add(i->second.get());
 
 		// Wenn das Schiff eine Flotte anführt, dann auch die Zeiger auf die Schiffe in der Flotte reingeben
 		for (CShips::iterator j = i->second->begin(); j != i->second->end(); ++j)
-			vInvolvedShips.Add(j->second);
+			vInvolvedShips.Add(j->second.get());
 	}
 
 	// es sollten immer Schiffe im Array sein, sonst hätte in diesem Sektor kein Kampf stattfinden dürfen
@@ -4297,7 +4298,7 @@ void CBotEDoc::CalcShipCombat()
 
 				// neuen Boseaner in Gruppe stecken und Befehle gleich mit übernehmen
 				pLeader->AddShipToFleet(pNewShip->second);
-				m_ShipMap.EraseAt(pNewShip, false);
+				m_ShipMap.EraseAt(pNewShip);
 			}
 		}
 	}
@@ -4395,7 +4396,7 @@ void CBotEDoc::CalcShipRetreat() {
 		{
 			const CShipMap& fleet = ship->second->Fleet();
 			m_ShipMap.Append(fleet);
-			ship->second->Reset(false);
+			ship->second->Reset();
 		}
 	}//	for (int i = 0; i < m_ShipMap.GetSize(); i++)
 	m_mShipRetreatSectors.clear();
@@ -4598,7 +4599,7 @@ void CBotEDoc::CalcEffectsMinorEleminated(CMinor* pMinor)
 	{
 		if (i->second->GetOwnerOfShip() == pMinor->GetRaceID())
 		{
-			m_ShipMap.EraseAt(i, true);
+			m_ShipMap.EraseAt(i);
 			continue;
 		}
 
@@ -4713,7 +4714,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 					pMajor->GetShipHistory()->ModifyShip(j->second,
 								GetSystem(j->second->GetKO().x, j->second->GetKO().y).GetName(TRUE), m_iRound,
 								CLoc::GetString("UNKNOWN"), CLoc::GetString("DESTROYED"));
-					m_ShipMap.EraseAt(j, true);
+					m_ShipMap.EraseAt(j);
 				}
 				else
 					++j;
@@ -5031,7 +5032,7 @@ void CBotEDoc::CalcRandomAlienEntities()
 
 								// Raider in Gruppe stecken und Befehle gleich mit übernehmen
 								pShip->second->AddShipToFleet(pFleetShip->second);
-								m_ShipMap.EraseAt(pFleetShip, false);
+								m_ShipMap.EraseAt(pFleetShip);
 
 								nCount--;
 							}
@@ -5072,7 +5073,7 @@ void CBotEDoc::CalcRandomAlienEntities()
 
 								// Anaerobe Makroben in Gruppe stecken und Befehle gleich mit übernehmen
 								pShip->second->AddShipToFleet(pFleetShip->second);
-								m_ShipMap.EraseAt(pFleetShip, false);
+								m_ShipMap.EraseAt(pFleetShip);
 
 								nCount--;
 							}
@@ -5189,15 +5190,15 @@ void CBotEDoc::CalcAlienShipEffects()
 					// keine Außenposten und Sternenbasen
 					if (y->second->GetKO() != co || y->second->IsAlien() || y->second->IsStation())
 						continue;
-					std::vector<CShips*> vShips;
+					std::vector<boost::shared_ptr<CShips>> vShips;
 					vShips.push_back(y->second);
 					vShips.reserve(y->second->GetFleetSize());
 					for(CShips::iterator i = y->second->begin(); i != y->second->end(); ++i)
 						vShips.push_back(i->second);
 
-					for(unsigned i = 0; i < vShips.size(); ++i)
+					for(std::vector<boost::shared_ptr<CShips>>::iterator i = vShips.begin(); i != vShips.end(); ++i)
 					{
-						CShips* pShip = vShips.at(i);
+						const boost::shared_ptr<CShips>& pShip = *i;
 						// Schiffe mit Rückzugsbefehl werden nie vom Virus befallen
 						if (pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 							continue;

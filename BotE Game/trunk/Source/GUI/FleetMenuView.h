@@ -60,7 +60,7 @@ private:
 	BOOLEAN m_bShowNextButton;					///< soll der next-Button angezeigt werden, falls wir nicht alles auf eine Seite bekommen
 	BOOLEAN m_bShowBackButton;					///< wenn wir nicht mehr auf der ersten Seite sind kommt der back-Button
 
-	vector<pair<CRect, CShips*> > m_vShipRects;	///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken
+	vector<pair<CRect, boost::shared_ptr<const CShips>> > m_vShipRects;	///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken
 	CRect m_rLastMarkedRect;					///< zuletzt markiertes Rechteck
 
 protected:

@@ -160,12 +160,12 @@ private:
 	short m_iTimeCounter;
 	MAIN_BUTTON m_iWhichMainShipOrderButton;				///< welchen Hauptschiffsbefehlsbutton haben wir gedrückt
 	static BOOLEAN m_bShowStation;
-	vector<pair<CRect, CShips*> > m_vShipRects;				///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken
+	vector<pair<CRect, boost::shared_ptr<const CShips>> > m_vShipRects;				///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken
 
 	// OnDraw Helper Functions
 	stDrawingContext m_dc;
 
-	bool CheckDisplayShip(CShips *pShip, const CSystem *csec );
+	bool CheckDisplayShip(const CShips *pShip, const CSystem *csec );
 	void DrawShipContent();
 	bool TimeDoDraw(short counter) const;
 	void DrawMaincommandMenu();
