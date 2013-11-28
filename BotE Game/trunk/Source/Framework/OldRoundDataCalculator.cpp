@@ -119,7 +119,7 @@ void COldRoundDataCalculator::ExecuteFamine(CSystem& system, CMajor* pMajor)
 	resources::pClientWorker->SetToEmpireViewFor(*pMajor);
 }
 
-void COldRoundDataCalculator::SystemMessage(const CSector& sector, CMajor* pMajor, const CString& key,
+void COldRoundDataCalculator::SystemMessage(const CSystem& sector, CMajor* pMajor, const CString& key,
 		EMPIRE_NEWS_TYPE::Typ message_typ, BYTE byFlag) {
 	const CString& news = CLoc::GetString(key, FALSE, sector.GetName());
 	CEmpireNews message;

@@ -55,6 +55,7 @@ CSector::CSector(const CSector& other) :
 CSector& CSector::operator=(const CSector& other){
 	if(this != &other )
 	{
+		CMapTile::operator =(other);
 		m_Planets = other.m_Planets;
 		m_sColonyOwner = other.m_sColonyOwner;
 		m_bySunColor = other.m_bySunColor;
@@ -73,7 +74,7 @@ CSector::~CSector(void)
 void CSector::Reset(bool call_up)
 {
 	if(call_up)
-		CMapTile::Reset();
+		CMapTile::Reset(call_up);
 
 	m_sColonyOwner.Empty();
 	m_bMinor = false;
@@ -653,5 +654,5 @@ void CSector::ClearAllPoints(bool call_up)
 		it->SetIsTerraforming(FALSE);
 
 	if(call_up)
-		CMapTile::ClearAllPoints();
+		CMapTile::ClearAllPoints(call_up);
 }

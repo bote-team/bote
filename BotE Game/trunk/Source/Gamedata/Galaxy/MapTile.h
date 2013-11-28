@@ -60,7 +60,7 @@ public:
 
 protected:
 	/// Resetfunktion für die Klasse CMapTile
-	void Reset();
+	void Reset(bool call_up);
 public:
 
 //////////////////////////////////////////////////////////////////////
@@ -439,7 +439,7 @@ protected:
 	/// In jeder neuen Runde die IsTerraforming und IsStationBuilding Variablen auf FALSE setzen, wenn Schiffe eine Aktion
 	/// machen, werden diese Variablen später ja wieder korrekt gesetzt. Außerdem werden auch die Besitzerpunkte wieder
 	/// gelöscht.
-	void ClearAllPoints();
+	void ClearAllPoints(bool call_up);
 public:
 
 //////////////////////////////////////////////////////////////////////

@@ -18,7 +18,7 @@ public:
 	void ExecuteRebellion(CSystem& system, CMajor* pMajor) const;
 	static void ExecuteFamine(CSystem& system, CMajor* pMajor);
 	static void HandlePopulationEffects(CSystem& system, CMajor* pMajor);
-	static void SystemMessage(const CSector& sector, CMajor* pMajor, const CString& key,
+	static void SystemMessage(const CSystem& sector, CMajor* pMajor, const CString& key,
 		EMPIRE_NEWS_TYPE::Typ message_typ, BYTE byFlag);
 	void Build(CSystem& system, CMajor* pMajor, const CArray<CBuildingInfo,CBuildingInfo>& BuildingInfo) const;
 

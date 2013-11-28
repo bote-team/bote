@@ -1253,7 +1253,7 @@ void CShip::DrawOrderTerraform(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool,
 	AssertBotE(pDoc);
 
 	if (pDoc->m_bDataReceived) {
-		CSector sec = pDoc->GetSystem(GetKO().x, GetKO().y);
+		const CSystem& sec = pDoc->GetSystem(m_KO.x, m_KO.y);
 		CString s = sec.GetPlanet(GetTerraform())->GetPlanetGraphicFile();
 		Bitmap* graphic = pGraphicPool->GetGDIGraphic(s);
 

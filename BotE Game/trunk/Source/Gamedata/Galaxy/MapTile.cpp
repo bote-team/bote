@@ -29,14 +29,14 @@ CMapTile::CMapTile(void) :
 	m_KO(-1, -1),
 	m_pAnomaly(NULL)
 {
-	Reset();
+	Reset(false);
 }
 
 CMapTile::CMapTile(int x, int y) :
 	m_KO(x, y),
 	m_pAnomaly(NULL)
 {
-	Reset();
+	Reset(false);
 }
 
 CMapTile::CMapTile(const CMapTile& other) :
@@ -91,11 +91,11 @@ CMapTile& CMapTile::operator=(const CMapTile& other){
 
 CMapTile::~CMapTile(void)
 {
-	Reset();
+	Reset(false);
 }
 
 /// Resetfunktion für die Klasse CMapTile
-void CMapTile::Reset()
+void CMapTile::Reset(bool /*call_up*/)
 {
 	m_bSunSystem = false;
 
@@ -110,7 +110,7 @@ void CMapTile::Reset()
 	delete m_pAnomaly;
 	m_pAnomaly = NULL;
 
-	ClearAllPoints();
+	ClearAllPoints(false);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -550,7 +550,7 @@ void CMapTile::CreateAnomaly(void)
 /// In jeder neuen Runde die IsTerraforming und IsStationBuilding Variablen auf FALSE setzen, wenn Schiffe eine Aktion
 /// machen, werden diese Variablen später ja wieder korrekt gesetzt. Außerdem werden auch die Besitzerpunkte wieder
 /// gelöscht.
-void CMapTile::ClearAllPoints()
+void CMapTile::ClearAllPoints(bool /*call_up*/)
 {
 	// Funktion bei jeder neuen Runde anfangs aufrufen!!! Wenn nämlich in diesem Sektor gerade keine Station einer
 	// Rasse gebaut wird, dann setzen wir auch die noch gebrauchten Punkte und die anfänglich gebrauchten Punkte

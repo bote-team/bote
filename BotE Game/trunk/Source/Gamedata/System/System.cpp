@@ -27,13 +27,13 @@ static char THIS_FILE[]=__FILE__;
 CSystem::CSystem() :
 	CSector()
 {
-	ResetSystem(false);
+	Reset(false);
 }
 
 CSystem::CSystem(int x, int y) :
 	CSector(x, y)
 {
-	ResetSystem(false);
+	Reset(false);
 }
 
 CSystem::CSystem(const CSystem &other) :
@@ -80,11 +80,16 @@ CSystem::CSystem(const CSystem &other) :
 
 CSystem::~CSystem()
 {
-	ResetSystem(false);
+	Reset(false);
 }
 
 CSystem& CSystem::operator=(const CSystem& other)
 {
+	if(this == &other)
+		return *this;
+
+	CSector::operator =(other);
+
 	m_OwningStatus = other.m_OwningStatus;
 	m_dHabitants = other.m_dHabitants;
 	m_AssemblyList = other.m_AssemblyList;
@@ -127,7 +132,7 @@ CSystem& CSystem::operator=(const CSystem& other)
 };
 
 // Funktion setzt alle Werte wieder zurück auf standard.
-void CSystem::ResetSystem(bool call_up)
+void CSystem::Reset(bool call_up)
 {
 	if(call_up)
 		CSector::Reset(call_up);

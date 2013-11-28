@@ -3296,7 +3296,7 @@ void CBotEDoc::CalcOldRoundData()
 			// hier könnte die Energie durch Weltraummonster weggenommen werden!
 			// Gebäude die Energie benötigen checken
 			if (it->CheckEnergyBuildings())
-				calc.SystemMessage(static_cast<CSector>(*it), pMajor, "BUILDING_TURN_OFF", EMPIRE_NEWS_TYPE::SOMETHING, 2);
+				calc.SystemMessage(*it, pMajor, "BUILDING_TURN_OFF", EMPIRE_NEWS_TYPE::SOMETHING, 2);
 
 			// Die Bauaufträge in dem System berechnen. Außerdem wird hier auch die System-KI ausgeführt.
 			if (!pMajor->AHumanPlays() || it->GetAutoBuild())
@@ -5616,7 +5616,7 @@ void CBotEDoc::AllocateSystems()
 	if(m_Systems.size() == size)
 	{
 		for(std::vector<CSystem>::iterator it = m_Systems.begin(); it != m_Systems.end(); ++it)
-			it->ResetSystem(true);
+			it->Reset(true);
 		return;
 	}
 	m_Systems.clear();

@@ -65,7 +65,7 @@ public:
 	CSystem& operator=(const CSystem&);
 
 	// Resetfunktion für die Klasse CSystem.
-	void ResetSystem(bool call_up);
+	void Reset(bool call_up);
 
 
 //////////////////////////////////////////////////////////////////////
