@@ -18,12 +18,12 @@ CMajor::CMajor(void) :
 	CRace(RACE_TYPE_MAJOR)
 {
 	m_pStarmap = NULL;
-	this->Reset();
+	Reset(false);
 }
 
 CMajor::~CMajor(void)
 {
-	Reset();
+	Reset(false);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -312,7 +312,7 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 {
 	AssertBotE(nPos >= 0);
 
-	Reset();
+	Reset(true);
 
 	// Majorrace nun anlegen
 	m_sID			= saInfo[nPos++];				// Rassen-ID
@@ -395,9 +395,10 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 }
 
 /// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
-void CMajor::Reset(void)
+void CMajor::Reset(bool call_up)
 {
-	CRace::Reset();
+	if(call_up)
+		CRace::Reset(call_up);
 
 	m_bPlayer					= false;	// wird die Rasse von einem menschlichen Spieler gespielt?
 

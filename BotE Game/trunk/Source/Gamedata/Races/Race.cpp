@@ -24,10 +24,12 @@ CRace::CRace(RACE_TYPE type) :
 	m_bDeleted(false)
 {
 	m_pDiplomacyAI = NULL;
+	Reset(false);
 }
 
 CRace::~CRace(void)
 {
+	Reset(false);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -289,7 +291,7 @@ void CRace::ReactOnOfferAI(CDiplomacyInfo* pOffer)
 }
 
 /// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
-void CRace::Reset(void)
+void CRace::Reset(bool /*call_up*/)
 {
 	m_sID				= "";		// Rassen-ID
 	m_sHomeSystem		= "";		// Name des Heimatsystems
@@ -425,18 +427,6 @@ void CRace::Contact(const CRace& Race, const CPoint& /*p*/) {
 	SetIsRaceContacted(sContactedRaceID, true);
 }
 
-void CRace::AddToLostShipHistory(const CShips& /*Ship*/, const CString& /*sEvent*/, const CString& /*sStatus*/,
-	unsigned short /*round*/)
-{
-}
-
-void CRace::LostFlagShip(const CShip& /*ship*/)
-{
-}
-
-void CRace::LostStation(SHIP_TYPE::Typ /*type*/)
-{
-}
 void CRace::LostShipToAnomaly(const CShips& /*ship*/, const CString& /*anomaly*/)
 {
 	//TODO: If a minor is forced to retreat, and happens to retreat to an anomaly,

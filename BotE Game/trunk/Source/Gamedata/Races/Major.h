@@ -172,8 +172,10 @@ public:
 	/// @param nPos Referenz auf Position im Array, ab wann die Informationen gelten
 	virtual void Create(const CStringArray& saInfo, int& nPos);
 
+private:
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
-	virtual void Reset(void);
+	void Reset(bool call_up);
+public:
 
 	float CreditsMulti() const;
 

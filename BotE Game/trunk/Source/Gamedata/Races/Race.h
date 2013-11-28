@@ -213,11 +213,11 @@ public:
 	bool CanBeContactedBy(const CString& sRaceID) const;
 	virtual void Contact(const CRace& Race, const CPoint& p);
 
-	virtual void AddToLostShipHistory(const CShips& Ship, const CString& sEvent,
-		const CString& sStatus, unsigned short round);
+	virtual void AddToLostShipHistory(const CShips&, const CString&,
+		const CString&, unsigned short) {};
 
-	virtual void LostFlagShip(const CShip& ship);
-	virtual void LostStation(SHIP_TYPE::Typ type);
+	virtual void LostFlagShip(const CShip&) {};
+	virtual void LostStation(SHIP_TYPE::Typ) {};
 	virtual void LostShipToAnomaly(const CShips& ship, const CString& anomaly);
 
 	/// Funktion zum Setzen von Spezialeigenschaften der Rasse.
@@ -239,8 +239,10 @@ public:
 	/// @param pOffer diplomatisches Angebot
 	void ReactOnOfferAI(CDiplomacyInfo* pOffer);
 
+protected:
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
-	virtual void Reset(void);
+	void Reset(bool call_up);
+public:
 
 	void Delete() { m_bDeleted = true; }
 	bool Deleted() const { return m_bDeleted; }

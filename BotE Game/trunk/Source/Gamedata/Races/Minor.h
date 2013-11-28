@@ -46,8 +46,6 @@ public:
 	/// @return <code>true</code> wenn unterworfen, sonst <code>false</code>
 	bool GetSubjugated(void) const {return m_bSubjugated;}
 
-	virtual void Contact(const CRace& Race, const CPoint& p);
-
 	/// Funktion gibt die Akzeptanzpunkte zu einer gewünschten Majorrace zurück.
 	/// @param sRaceID Rassen-ID der gewünschten Majorrace
 	/// @return Akzeptanzpunkte
@@ -126,10 +124,10 @@ public:
 	// Is this minor race member to the major race with given ID, or to any major in case of an empty ID ?
 	bool IsMemberTo(const CString& MajorID = "") const;
 
-	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
-	virtual void Reset(void);
-
 protected:
+	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
+	void Reset(bool call_up);
+
 	// Attribute
 	// feste Attribute aus der Data-Datei
 	BYTE m_iTechnologicalProgress;			///< wie fortschrittlich ist die Minorrace?

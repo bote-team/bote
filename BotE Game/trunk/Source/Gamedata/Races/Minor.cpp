@@ -14,18 +14,18 @@
 CMinor::CMinor(void) :
 	CRace(RACE_TYPE_MINOR)
 {
-	this->Reset();
+	Reset(false);
 }
 
 CMinor::CMinor(RACE_TYPE type) :
 	CRace(type)
 {
-	this->Reset();
+	Reset(false);
 }
 
 CMinor::~CMinor(void)
 {
-	this->Reset();
+	Reset(false);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -596,7 +596,7 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 {
 	AssertBotE(nPos >= 0);
 
-	Reset();
+	Reset(true);
 
 	// Minorrace nun anlegen
 	m_sID				= saInfo[nPos++];				// Rassen-ID
@@ -646,19 +646,16 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 }
 
 /// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
-void CMinor::Reset(void)
+void CMinor::Reset(bool call_up)
 {
-	CRace::Reset();
+	if(call_up)
+		CRace::Reset(call_up);
 
 	m_iTechnologicalProgress = 0;			// wie fortschrittlich ist die Minorrace?
 	m_iCorruptibility = 0;					// wie stark ändert sich die Beziehung beim Geschenke geben?
 	m_bSpaceflight = false;					// Spaceflightnation (hat Schiffe)
 	m_bSubjugated = false;					// wurde die Rasse unterworfen
 	m_mAcceptance.clear();					// Punkte die eine MajorRace durch längere Beziehung mit der Rasse ansammelt, wird schwerer diese Rasse wegzukaufen
-}
-
-void CMinor::Contact(const CRace& Race, const CPoint& p) {
-	CRace::Contact(Race, p);
 }
 
 bool CMinor::IsMemberTo(const CString& MajorID) const {
