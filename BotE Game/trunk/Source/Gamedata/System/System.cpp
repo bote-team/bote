@@ -3268,7 +3268,7 @@ void CSystem::CalculateOwner()
 	// steht, dann ändert sich nichts am Besitzer
 	if(m_OwningStatus != OWNING_STATUS_EMPTY)
 	{
-		AssertBotE(m_Owner);
+		AssertBotE(m_Owner || m_OwningStatus == OWNING_STATUS_REBELLED);
 		return;
 	}
 
