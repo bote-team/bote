@@ -342,7 +342,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			}
 			Range = pShip->second->GetRangeAsString();
 
-			s.Format("%s (%s: %d)",pShip->second->GetShipName(), CLoc::GetString("EXPERIANCE"), pShip->second->GetCrewExperience());
+			s.Format("%s (%s: %d)",pShip->second->GetName(), CLoc::GetString("EXPERIANCE"), pShip->second->GetCrewExperience());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,45), &fontFormat, &fontBrush);
 
 			fontBrush.SetColor(color);
@@ -407,7 +407,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			short range = 3-pShip->second->GetRange(true);
 			short speed = pShip->second->GetSpeed(true);
 			CArray<Sector> path;
-			Sector position(pShip->second->GetKO().x, pShip->second->GetKO().y);
+			Sector position(pShip->second->GetCo().x, pShip->second->GetCo().y);
 			Sector target(pShip->second->GetTargetKO().x, pShip->second->GetTargetKO().y);
 			pMajor->GetStarmap()->CalcPath(position, target, range, speed, path);
 			short rounds = 0;
@@ -422,8 +422,8 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			s = CLoc::GetString("NO_TARGET");
 		if (TargetKO.x != -1 && pShip->second->GetOwnerOfShip() != pMajor->GetRaceID())
 			s = CLoc::GetString("UNKNOWN_TARGET");
-		if (TargetKO.x == pShip->second->GetKO().x &&
-			TargetKO.y == pShip->second->GetKO().y &&
+		if (TargetKO.x == pShip->second->GetCo().x &&
+			TargetKO.y == pShip->second->GetCo().y &&
 			pShip->second->GetOwnerOfShip() == pMajor->GetRaceID())
 			s = CLoc::GetString("NO_TARGET");
 		if (CGalaxyMenuView::IsMoveShip() == TRUE)
@@ -447,8 +447,8 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			if (pShip->second->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 			{
 				const short terraform = pShip->second->GetTerraform();
-				AssertBotE(-1 < terraform && terraform < static_cast<int>(pDoc->GetSystem(pShip->second->GetKO().x, pShip->second->GetKO().y).GetNumberOfPlanets()));
-				s.Format("%s: %s\n%s",CLoc::GetString("ORDER"), pShip->second->GetCurrentOrderAsString(), pDoc->GetSystem(pShip->second->GetKO().x, pShip->second->GetKO().y).GetPlanet(pShip->second->GetTerraform())->GetPlanetName());
+				AssertBotE(-1 < terraform && terraform < static_cast<int>(pDoc->GetSystem(pShip->second->GetCo().x, pShip->second->GetCo().y).GetNumberOfPlanets()));
+				s.Format("%s: %s\n%s",CLoc::GetString("ORDER"), pShip->second->GetCurrentOrderAsString(), pDoc->GetSystem(pShip->second->GetCo().x, pShip->second->GetCo().y).GetPlanet(pShip->second->GetTerraform())->GetPlanetName());
 			}
 			else
 				s.Format("%s: %s",CLoc::GetString("ORDER"), pShip->second->GetCurrentOrderAsString());

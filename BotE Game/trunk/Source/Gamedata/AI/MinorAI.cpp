@@ -714,7 +714,7 @@ int CMinorAI::CalcResInCredits(const CDiplomacyInfo& info)
 
 	float fValue = 0.0f;
 	float fDiv = 0.0f;
-	CSystem* pSystem = &(m_pDoc->GetSystem(pMinor->m_ptKO.x, pMinor->m_ptKO.y));
+	CSystem* pSystem = &(m_pDoc->GetSystem(pMinor->m_Co.x, pMinor->m_Co.y));
 
 	if (info.m_nResources[RESOURCES::TITAN] != 0)			// Titan übergeben?
 	{

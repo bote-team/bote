@@ -123,9 +123,9 @@ void CShipBottomView::SetupDrawing() {
 	m_dc.r.SetRect(0, 0, m_TotalSize.cx, m_TotalSize.cy);
 
 	// Angezeigten Sektor, aktuelle Seite und dergleichen initialisieren
-	if (m_LastKO != m_dc.pDoc->GetKO())
+	if (m_LastKO != m_dc.pDoc->GetCo())
 	{
-		m_LastKO = m_dc.pDoc->GetKO();
+		m_LastKO = m_dc.pDoc->GetCo();
 		m_iPage = 1;
 		m_vShipRects.clear();
 
@@ -169,7 +169,7 @@ void CShipBottomView::DrawSmallButton( const CString& resString, const CPoint& c
 }
 
 bool CShipBottomView::CheckDisplayShip(const CShips *pShip, const CSystem *system ) {
-	if (m_LastKO != pShip->GetKO())
+	if (m_LastKO != pShip->GetCo())
 		return false;
 
 	const BOOL is_base = pShip->IsStation();
@@ -469,7 +469,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 	// Starbase gebaut werden soll) übergeben, weil wenn das eine geht, geht auch das andere
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::BUILD_OUTPOST))
 	{
-		CPoint ShipKO = m_dc.pDoc->GetKO();
+		CPoint ShipKO = m_dc.pDoc->GetCo();
 		// hier schauen, ob ich in der Schiffsinfoliste schon einen Außenposten habe den ich bauen kann, wenn in dem
 		// Sector noch kein Außenposten steht und ob ich diesen in dem Sector überhaupt bauen kann. Das geht nur
 		// wenn der Sektor mir oder niemanden gehört
@@ -512,7 +512,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 	// shield improvement
 	// Only possible if we are at an ionstorm and we haven't yet reached the max max shields
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::IMPROVE_SHIELDS,
-			&m_dc.pDoc->GetSystem(pShip.GetKO().x, pShip.GetKO().y)))
+			&m_dc.pDoc->GetSystem(pShip.GetCo().x, pShip.GetCo().y)))
 	{
 		DrawSmallButton("IMPROVE_SHIELDS_SHIP_ORDER",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::IMPROVE_SHIELDS);
 		counter++;
@@ -523,8 +523,8 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 	// 2) we (or an allied race) have a ship port in this sector.
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::REPAIR,
 			&m_dc.pDoc->GetSystem(
-				pShip.GetKO().x,
-				pShip.GetKO().y
+				pShip.GetCo().x,
+				pShip.GetCo().y
 			)
 		)
 	)
@@ -630,7 +630,7 @@ void CShipBottomView::DrawStationData() {
 
 			CString sRaceName;
 			if (pMajor == it->second || pMajor->IsRaceContacted(it->first))
-				sRaceName = it->second->GetRaceName();
+				sRaceName = it->second->GetName();
 			else
 				sRaceName = CLoc::GetString("UNKNOWN");
 
@@ -790,7 +790,7 @@ void CShipBottomView::OnInitialUpdate()
 	CBotEDoc* pDoc = resources::pDoc;
 	AssertBotE(pDoc);
 
-	m_LastKO = pDoc->GetKO();
+	m_LastKO = pDoc->GetCo();
 	m_iPage = 1;
 	m_iTimeCounter = 0;
 	m_bShowNextButton = FALSE;
@@ -868,7 +868,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (fleetship == current_ship)
 				return;
 
-			AssertBotE(fleetship->second->GetKO() == current_ship->second->GetKO());
+			AssertBotE(fleetship->second->GetCo() == current_ship->second->GetCo());
 			// sicherheitshalber wird hier nochmal überprüft, dass keine Station hinzugefügt werden kann und
 			// das sich das Schiff auch im gleichen Sektor befindet
 			if (!current_ship->second->IsStation())
@@ -887,7 +887,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				++it;
 				while(it != pDoc->m_ShipMap.end())
 				{
-					if(fleetship->second->GetKO() != it->second->GetKO()
+					if(fleetship->second->GetCo() != it->second->GetCo()
 							|| fleetship->second->GetOwnerOfShip() != it->second->GetOwnerOfShip()
 							|| it->second->IsStation())
 					{
@@ -903,7 +903,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				AssertBotE(next_current_ship != to_erase);
 				pDoc->m_ShipMap.EraseAt(to_erase);
 				pDoc->SetCurrentShip(next_current_ship);
-				const CPoint& co = next_current_ship->second->GetKO();
+				const CPoint& co = next_current_ship->second->GetCo();
 				if (was_terraform)
 					pDoc->GetSystem(co.x, co.y).RecalcPlanetsTerraformingStatus();
 
@@ -1289,8 +1289,8 @@ CString CShipBottomView::CreateTooltip(void)
 //		USHORT column = 0;
 //		for (int i = 0; i < pDoc->m_ShipMap.GetSize(); i++) {
 //			const CShip* const pShip = &pDoc->m_ShipMap.GetAt(i);
-//			const CPoint& active_sector = pDoc->GetKO();
-//			if(active_sector != pShip->GetKO())
+//			const CPoint& active_sector = pDoc->GetCo();
+//			if(active_sector != pShip->GetCo())
 //				continue;
 //			const BOOL is_base = pShip->IsStation();
 //			if (m_bShowStation != is_base)

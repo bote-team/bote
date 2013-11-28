@@ -111,7 +111,7 @@ CShipMap::iterator CShipMap::iterator_at(int index) {
 CShipMap::iterator CShipMap::Add(const boost::shared_ptr<CShips>& ship) {
 	//if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
 	//	CString s;
-	//	s.Format("CShipMap: adding ship %s", ship.GetShipName());
+	//	s.Format("CShipMap: adding ship %s", ship.GetName());
 	//	MYTRACE("ships")(MT::LEVEL_INFO, s);
 	//}
 
@@ -157,7 +157,7 @@ void CShipMap::Reset() {
 void CShipMap::EraseAt(CShipMap::iterator& index) {
 	//if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
 	//	CString s;
-	//	s.Format("CShipMap: removing ship %s", index->second->GetShipName());
+	//	s.Format("CShipMap: removing ship %s", index->second->GetName());
 	//	MYTRACE("ships")(MT::LEVEL_INFO, s);
 	//}
 	AssertBotE(!empty() && index != end());
@@ -292,12 +292,12 @@ void CShipMap::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentComba
 	if(ar.IsStoring()) {
 		int nCount = 0;
 		for(CShipMap::const_iterator i = begin(); i != end(); ++i)
-			if (i->second->GetKO() == ptCurrentCombatSector)
+			if (i->second->GetCo() == ptCurrentCombatSector)
 				nCount++;
 		ar << nCount;
 		// nur Schiffe aus diesem Sektor senden
 		for(CShipMap::iterator i = begin(); i != end(); ++i)
-			if (i->second->GetKO() == ptCurrentCombatSector)
+			if (i->second->GetCo() == ptCurrentCombatSector)
 				i->second->Serialize(ar);
 	}
 	else if(ar.IsLoading()) {
@@ -306,7 +306,7 @@ void CShipMap::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentComba
 		ar >> count;
 		// alle Schiffe aus dem Kampfsektor entfernen
 		for(CShipMap::iterator i = begin(); i != end();) {
-			if (i->second->GetKO() == ptCurrentCombatSector) {
+			if (i->second->GetCo() == ptCurrentCombatSector) {
 				EraseAt(i);
 				continue;
 			}
@@ -318,7 +318,7 @@ void CShipMap::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentComba
 			const boost::shared_ptr<CShips> ship(new CShips());
 			ship->Serialize(ar);
 			const CShipMap::iterator j = Add(ship);
-			AssertBotE(j->second->GetKO() == ptCurrentCombatSector);
+			AssertBotE(j->second->GetCo() == ptCurrentCombatSector);
 		}
 	}
 	else
@@ -407,7 +407,7 @@ void CShipMap::UpdateSpecialShip(CShipMap::iterator& ship, const CShipMap::const
 //	CString s("SHIPARRAY BEGINN\n");
 //	unsigned index = 0;
 //	for(CShipMap::const_iterator i = begin(); i != end(); ++i)
-//		s.Format("%s%u: %s at (%u,%u)\n", s, index, i->GetShipName(), i->GetKO().x, i->GetKO().y);
+//		s.Format("%s%u: %s at (%u,%u)\n", s, index, i->GetName(), i->GetCo().x, i->GetCo().y);
 //	s.Format("%s%s", s, "SHIPARRAY END");
 //	return s;
 //}

@@ -65,7 +65,7 @@ public:
 	UINT GetFP() const {return m_iFP;}
 
 	/// Funktion gibt die Koordinaten des Sektors zurück, auf welchen sich die Geheimdienstaktion auswirkt.
-	const CPoint& GetKO() const {return m_KO;}
+	const CPoint& GetCo() const {return m_KO;}
 
 	/// Funktion gibt die ID des Gebäudes zurück, auf welches sich die Geheimdienstaktion auswirkt.
 	USHORT GetID() const {return m_nID;}

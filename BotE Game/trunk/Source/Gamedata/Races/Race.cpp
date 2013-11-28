@@ -14,7 +14,7 @@
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CRace::CRace(RACE_TYPE type) :
-	m_ptKO(-1, -1),
+	CInGameEntity(),
 	m_RaceType(type),
 	m_nProperty(0),
 	m_byShipNumber(0),
@@ -37,6 +37,7 @@ CRace::~CRace(void)
 ///////////////////////////////////////////////////////////////////////
 void CRace::Serialize(CArchive &ar)
 {
+	CInGameEntity::Serialize(ar);
 
 	// Ingame-Attribute (Rassenwechselwirkung)
 	// Beziehungsmap (Rassen-ID, Beziehungswert)
@@ -54,8 +55,6 @@ void CRace::Serialize(CArchive &ar)
 	{
 		ar << m_sID;			// Rassen-ID
 		ar << m_sHomeSystem;	// Name des Heimatsystems
-		ar << m_ptKO;						// Koordinaten der Rasse
-		ar << m_sName;			// Rassenname
 		ar << m_sNameArticle;	// Artikel für Rassenname
 		ar << m_sDesc;			// Rassenbeschreibung
 		ar << m_nProperty;		// Rasseneigenschaften
@@ -80,8 +79,6 @@ void CRace::Serialize(CArchive &ar)
 	{
 		ar >> m_sID;			// Rassen-ID
 		ar >> m_sHomeSystem;	// Name des Heimatsystems
-		ar >> m_ptKO;						// Koordinaten der Rasse
-		ar >> m_sName;			// Rassenname
 		ar >> m_sNameArticle;	// Artikel für Rassenname
 		ar >> m_sDesc;			// Rassenbeschreibung
 		ar >> m_nProperty;		// Rasseneigenschaften
@@ -291,12 +288,14 @@ void CRace::ReactOnOfferAI(CDiplomacyInfo* pOffer)
 }
 
 /// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
-void CRace::Reset(bool /*call_up*/)
+void CRace::Reset(bool call_up)
 {
+	if(call_up)
+		CInGameEntity::Reset();
+	m_Co = CPoint(-1,-1);			// Koordinaten der Rasse
+
 	m_sID				= "";		// Rassen-ID
 	m_sHomeSystem		= "";		// Name des Heimatsystems
-	m_ptKO = CPoint(-1,-1);					// Koordinaten der Rasse
-	m_sName				= "";		// Rassenname
 	m_sNameArticle		= "";		// Artikel für Rassenname
 	m_sDesc				= "";		// Rassenbeschreibung
 	m_nProperty			= 0;		// Rasseneigenschaften
@@ -364,7 +363,7 @@ void CRace::SetIsRaceContacted(const CString& sRace, bool bKnown)
 /// @return	der erstellte Tooltip-Text
 CString CRace::GetTooltip(void) const
 {
-	CString sName = GetRaceName();
+	CString sName = m_sName;
 	sName = CHTMLStringBuilder::GetHTMLColor(sName);
 	sName = CHTMLStringBuilder::GetHTMLHeader(sName, _T("h3"));
 	sName += CHTMLStringBuilder::GetHTMLStringNewLine();

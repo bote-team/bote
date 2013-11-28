@@ -26,23 +26,22 @@ static char THIS_FILE[]=__FILE__;
 // construction/destruction
 //////////////////////////////////////////////////////////////////////
 CMapTile::CMapTile(void) :
-	m_KO(-1, -1),
+	CInGameEntity(),
 	m_pAnomaly(NULL)
 {
 	Reset(false);
 }
 
 CMapTile::CMapTile(int x, int y) :
-	m_KO(x, y),
+	CInGameEntity(x, y),
 	m_pAnomaly(NULL)
 {
 	Reset(false);
 }
 
 CMapTile::CMapTile(const CMapTile& other) :
-	m_KO(other.m_KO),
+	CInGameEntity(other),
 	m_Owner(other.m_Owner),
-	m_strSectorName(other.m_strSectorName),
 	m_bSunSystem(other.m_bSunSystem),
 	m_Status(other.m_Status),
 	m_bShipPort(other.m_bShipPort),
@@ -65,9 +64,9 @@ CMapTile::CMapTile(const CMapTile& other) :
 CMapTile& CMapTile::operator=(const CMapTile& other){
 	if(this != &other )
 	{
-		m_KO = other.m_KO;
+		CInGameEntity::operator=(other);
+
 		m_Owner = other.m_Owner;
-		m_strSectorName = other.m_strSectorName;
 		m_bSunSystem = other.m_bSunSystem;
 		m_Status = other.m_Status;
 		m_bShipPort = other.m_bShipPort;
@@ -95,8 +94,11 @@ CMapTile::~CMapTile(void)
 }
 
 /// Resetfunktion für die Klasse CMapTile
-void CMapTile::Reset(bool /*call_up*/)
+void CMapTile::Reset(bool call_up)
 {
+	if(call_up)
+		CInGameEntity::Reset();
+
 	m_bSunSystem = false;
 
 	// Maps löschen
@@ -105,7 +107,6 @@ void CMapTile::Reset(bool /*call_up*/)
 	m_iNeededStationPoints.clear();
 
 	m_Owner.reset();
-	m_strSectorName.Empty();
 
 	delete m_pAnomaly;
 	m_pAnomaly = NULL;
@@ -118,6 +119,7 @@ void CMapTile::Reset(bool /*call_up*/)
 //////////////////////////////////////////////////////////////////////
 void CMapTile::Serialize(CArchive &ar)
 {
+	CInGameEntity::Serialize(ar);
 	// alle Maps speichern
 	// Maps laden
 	m_Status.Serialize(ar);
@@ -136,22 +138,15 @@ void CMapTile::Serialize(CArchive &ar)
 	// Alle Variablen in der richtigen Reihenfolge schreiben
 	{
 		ar << m_bSunSystem;
-		ar << m_KO;
 		ar << m_Outpost;
 		ar << m_Starbase;
 		ar << OwnerID();
-
-		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen gespeichert werden
-		if (m_bSunSystem)
-			ar << m_strSectorName;
-
 		ar << m_pAnomaly;
 	}
 	else
 	// Alle Variablen in der richtigen Reihenfolge lesen
 	{
 		ar >> m_bSunSystem;
-		ar >> m_KO;
 		m_Outpost.Empty();
 		ar >> m_Outpost;
 		m_Starbase.Empty();
@@ -159,12 +154,6 @@ void CMapTile::Serialize(CArchive &ar)
 		CString owner;
 		ar >> owner;
 		SetOwner(owner);
-		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen geladen werden
-		if (m_bSunSystem)
-			ar >> m_strSectorName;
-		else
-			m_strSectorName = "";
-
 		delete m_pAnomaly;
 		ar >> m_pAnomaly;
 	}
@@ -177,21 +166,13 @@ void CMapTile::Serialize(CArchive &ar)
 /// Funktion gibt den Namen des Sektors zurück. Wenn in ihm kein Sonnensystem ist, dann wird "" zurückgegeben.
 /// Wenn man aber den Parameter <code>longName<code> beim Aufruf der Funktion auf <code>TRUE<code> setzt, wird
 /// versucht ein genauerer Sektorname zu generieren.
-CString CMapTile::GetName(BOOLEAN longName) const
+CString CMapTile::GetLongName() const
 {
-	if (!longName)
-		return m_strSectorName;
-	else
-	{
-		if (m_bSunSystem)
-			return m_strSectorName;
-		else
-		{
-			CString s;
-			s.Format("%s %c%i", CLoc::GetString("SECTOR"), (char)(m_KO.y+97), m_KO.x + 1);
-			return s;
-		}
-	}
+	if (m_bSunSystem)
+		return m_sName;
+	CString s;
+	s.Format("%s %c%i", CLoc::GetString("SECTOR"), (char)(m_Co.y+97), m_Co.x + 1);
+	return s;
 }
 
 /// Diese Funktion gibt die Scanpower zurück, die die Majorrace <code>Race</code> in diesem Sektor hat.
@@ -240,7 +221,7 @@ bool CMapTile::IsStationBuildable(SHIP_ORDER::Typ order, const CString& race) co
 		USHORT bestbuildableID = pMajor->BestBuildableVariant(type, pDoc->m_ShipInfoArray);
 		USHORT industry = pDoc->m_ShipInfoArray.GetAt(bestbuildableID-10000).GetBaseIndustry();
 		for(CShipMap::const_iterator k = pDoc->m_ShipMap.begin(); k != pDoc->m_ShipMap.end(); ++k)
-			if (k->second->GetShipType() == type && k->second->GetKO() == m_KO) {
+			if (k->second->GetShipType() == type && k->second->GetCo() == m_Co) {
 				if (pDoc->m_ShipInfoArray.GetAt(k->second->GetID()-10000).GetBaseIndustry() 
 					< industry) {
 					return StationBuildContinuable(race, *this);
@@ -308,10 +289,10 @@ void CMapTile::PutScannedSquare(unsigned range, const int power,
 	}
 	const int intrange = static_cast<int>(range);
 	for (int i = -intrange; i <= intrange; ++i) {
-		const int x = m_KO.x + i;
+		const int x = m_Co.x + i;
 		if(0 <= x && x < STARMAP_SECTORS_HCOUNT) {
 			for (int j = -intrange; j <= intrange; ++j) {
-				const int y = m_KO.y + j;
+				const int y = m_Co.y + j;
 				if(0 <= y && y < STARMAP_SECTORS_VCOUNT) {
 					CBotEDoc* pDoc = resources::pDoc;
 					CMapTile& scanned_sector = static_cast<CMapTile&>(pDoc->GetSystem(x, y));
@@ -363,11 +344,11 @@ void CMapTile::DrawSectorsName(CDC *pDC, CBotEDoc* pDoc, CMajor* pPlayer)
 		}
 		// Systemnamen zeichnen
 		if (m_pAnomaly == NULL)
-			pDC->DrawText(m_strSectorName, CRect(m_KO.x*STARMAP_SECTOR_WIDTH, m_KO.y*STARMAP_SECTOR_HEIGHT, m_KO.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH,m_KO.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT), DT_CENTER | DT_BOTTOM | DT_SINGLELINE);
+			pDC->DrawText(m_sName, CRect(m_Co.x*STARMAP_SECTOR_WIDTH, m_Co.y*STARMAP_SECTOR_HEIGHT, m_Co.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH,m_Co.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT), DT_CENTER | DT_BOTTOM | DT_SINGLELINE);
 		else
 		{
-			//CRect(m_KO.x*STARMAP_SECTOR_WIDTH-50,m_KO.y*STARMAP_SECTOR_HEIGHT,m_KO.x*STARMAP_SECTOR_WIDTH+90,m_KO.y*STARMAP_SECTOR_HEIGHT+40)
-			pDC->DrawText(m_pAnomaly->GetMapName(m_KO), CRect(m_KO.x*STARMAP_SECTOR_WIDTH, m_KO.y*STARMAP_SECTOR_HEIGHT,m_KO.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH,m_KO.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT), DT_CENTER | DT_BOTTOM | DT_SINGLELINE | DT_WORD_ELLIPSIS);
+			//CRect(m_Co.x*STARMAP_SECTOR_WIDTH-50,m_Co.y*STARMAP_SECTOR_HEIGHT,m_Co.x*STARMAP_SECTOR_WIDTH+90,m_Co.y*STARMAP_SECTOR_HEIGHT+40)
+			pDC->DrawText(m_pAnomaly->GetMapName(m_Co), CRect(m_Co.x*STARMAP_SECTOR_WIDTH, m_Co.y*STARMAP_SECTOR_HEIGHT,m_Co.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH,m_Co.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT), DT_CENTER | DT_BOTTOM | DT_SINGLELINE | DT_WORD_ELLIPSIS);
 		}
 	}
 }
@@ -410,8 +391,8 @@ void CMapTile::DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlay
 	short nCount = 0;
 
 	CPoint pt;
-	pt.x = m_KO.x * STARMAP_SECTOR_WIDTH;
-	pt.y = m_KO.y * STARMAP_SECTOR_HEIGHT;
+	pt.x = m_Co.x * STARMAP_SECTOR_WIDTH;
+	pt.y = m_Co.y * STARMAP_SECTOR_HEIGHT;
 
 	// durch alle Rassen iterieren und Schiffsymbole zeichnen
 	CString sAppPath = CIOData::GetInstance()->GetAppPath();

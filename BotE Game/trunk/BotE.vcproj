@@ -690,6 +690,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Source\Gamedata\General\InGameEntity.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Source\Gamedata\General\Statistics.cpp"
 						>
 					</File>
@@ -1448,6 +1452,10 @@
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\General\GlobalTypes.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\General\InGameEntity.h"
 						>
 					</File>
 					<File

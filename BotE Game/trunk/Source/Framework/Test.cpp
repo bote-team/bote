@@ -46,7 +46,7 @@ void CTest::TestGenShipname() const {
 				continue;
 			}
 			sRaceID = i->second->GetRaceID();
-			sRaceName = i->second->GetRaceName();
+			sRaceName = i->second->GetName();
 			break;
 		}
 
@@ -86,11 +86,11 @@ void CTest::TestShipMap() const {
 	//directly after creation, keys are the same as indices
 	//check iterator_at(index) against at(key)
 	const CShipMap::const_iterator& ci = shipmap.iterator_at(0);
-	if(shipmap.at(0)->GetShipName() != ci->second->GetShipName())
+	if(shipmap.at(0)->GetName() != ci->second->GetName())
 		MYTRACE("shipmap")(MT::LEVEL_ERROR, "iterator at index 0 should point to ship with key 0");
 
 	const CShipMap::const_iterator& ci2 = shipmap.iterator_at(m_Doc.m_ShipMap.GetUpperBound());
-	if(shipmap.at(m_Doc.m_ShipMap.GetUpperBound())->GetShipName() != ci2->second->GetShipName())
+	if(shipmap.at(m_Doc.m_ShipMap.GetUpperBound())->GetName() != ci2->second->GetName())
 		MYTRACE("shipmap")(MT::LEVEL_ERROR, "iterator at max index should point to ship with key max index");
 
 	//check iterator_at(index) against index_of()

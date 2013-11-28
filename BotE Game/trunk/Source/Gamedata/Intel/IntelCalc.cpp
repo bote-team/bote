@@ -792,7 +792,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 		if (stations.GetSize() > NULL && rand()%3 == NULL)
 		{
 			short t = rand()%stations.GetSize();
-			report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(stations.GetAt(t)->GetKO()),
+			report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(stations.GetAt(t)->GetCo()),
 				stations.GetAt(t)->GetID(), 1, FALSE, TRUE, FALSE);
 		}
 		// ansonsten werden Schiffe ausspioniert
@@ -802,12 +802,12 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 			USHORT number = 0;
 			// Anzahl der Schiffe in dem Sektor ermitteln
 			for (int i = 0; i < ships.GetSize(); i++)
-				if (ships.GetAt(i)->GetKO() == ships.GetAt(t)->GetKO())
+				if (ships.GetAt(i)->GetCo() == ships.GetAt(t)->GetCo())
 				{
 					number++;
 					number += ships.GetAt(i)->GetFleetSize();
 				}
-			report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(ships.GetAt(t)->GetKO()),
+			report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(ships.GetAt(t)->GetCo()),
 				ships.GetAt(t)->GetID(), number, FALSE, TRUE, FALSE);
 		}
 		// Intelreport dem Akteur hinzufügen
@@ -1156,7 +1156,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 			// in einem System vergiftet, wodruch die Bevölkerung stirbt
 			if (rand()%6 == NULL)
 			{
-				CPoint ko = report->GetKO();
+				CPoint ko = report->GetCo();
 				BYTE currentHabs = (BYTE)m_pDoc->GetSystem(ko.x, ko.y).GetCurrentHabitants();
 				// maximal die Hälfte der Bevölkerung kann getötet werden
 				currentHabs /= 2;
@@ -1187,7 +1187,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 			if (buildings == NULL)
 				buildings++;
 			buildings = rand()%buildings + 1;
-			CPoint ko = report->GetKO();
+			CPoint ko = report->GetCo();
 			int id = report->GetID();
 			// jetzt die Gebäude auf dem jeweiligen System zerstören
 			int destroyed = 0;
@@ -1335,7 +1335,7 @@ BOOLEAN CIntelCalc::ExecuteScienceSabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 			if (buildings == NULL)
 				buildings++;
 			buildings = rand()%buildings + 1;
-			CPoint ko = report->GetKO();
+			CPoint ko = report->GetCo();
 			int id = report->GetID();
 			int destroyed = 0;
 			// jetzt die Gebäude auf dem jeweiligen System zerstören
@@ -1401,7 +1401,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 			std::vector<CPoint> allShips;//x: ship key in global shipmap; y: ship key within another ship's fleet
 			for(CShipMap::const_iterator i = m_pDoc->m_ShipMap.begin(); i != m_pDoc->m_ShipMap.end(); ++i)
 			{
-				if (i->second->GetKO() == report->GetKO() && i->second->GetOwnerOfShip() != report->GetOwner())
+				if (i->second->GetCo() == report->GetCo() && i->second->GetOwnerOfShip() != report->GetOwner())
 				{
 					// besitzt dieses Schiff eine Flotte, so könnte sich unser Schiff auch in der Flotte befinden
 					for(CShips::const_iterator j = i->second->begin(); j != i->second->end(); ++j)
@@ -1442,9 +1442,9 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 			if (rand()%2 == 0 && !ship->IsStation())
 			{
 				pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
-				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetKO(), ship->GetID(), 1, FALSE, TRUE, FALSE);
+				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetCo(), ship->GetID(), 1, FALSE, TRUE, FALSE);
 				// die Station aus der ShipHistory der aktuellen Schiffe entfernen und den zerstörten Schiffen hinzufügen
-				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSystem(ship->GetKO().x, ship->GetKO().y).GetName(TRUE),
+				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSystem(ship->GetCo().x, ship->GetCo().y).GetLongName(),
 					m_pDoc->GetCurrentRound(), CLoc::GetString("SABOTAGE"), CLoc::GetString("MISSED"));
 
 				// neuen Besitzer hinzufügen
@@ -1453,8 +1453,8 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				ship->UnsetCurrentOrder();
 				ship->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 				// gestohlenes Schiff zum nächsten eigenen System verschieben
-				CPoint oldKO = ship->GetKO();
-				CPoint newKO = ship->GetKO();
+				CPoint oldKO = ship->GetCo();
+				CPoint newKO = ship->GetCo();
 				short minDist = MAXSHORT;
 				for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 					for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
@@ -1468,9 +1468,9 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				ship->SetTargetKO(CPoint(-1, -1));
 				// wurde dieses Schiff jedoch schonmal gestohlen, dann ist es in der Missed Shiphistory. Ist dies der Fall kann das Schiff
 				// wieder als aktives Schiff betrachtet werden.
-				if (pRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSystem(ship->GetKO().x, ship->GetKO().y).GetName(TRUE), 0) == false)
+				if (pRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSystem(ship->GetCo().x, ship->GetCo().y).GetLongName(), 0) == false)
 					// dem neuen Besitzer das Schiff als aktives Schiff hinzufügen
-					pRace->GetShipHistory()->AddShip(ship, m_pDoc->GetSystem(ship->GetKO().x, ship->GetKO().y).GetName(TRUE), m_pDoc->GetCurrentRound());
+					pRace->GetShipHistory()->AddShip(ship, m_pDoc->GetSystem(ship->GetCo().x, ship->GetCo().y).GetLongName(), m_pDoc->GetCurrentRound());
 
 				// jetzt Dinge wegen einer möglichen Flotte beachten
 				if (n.y == -1)		// Schiff nicht in Flotte
@@ -1513,9 +1513,9 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				|| (rand()%2 == NULL && !ship->IsStation()))
 			{
 				pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
-				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetKO(), ship->GetID(), 1, FALSE, TRUE, FALSE);
+				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetCo(), ship->GetID(), 1, FALSE, TRUE, FALSE);
 				// die Station aus der ShipHistory der aktuellen Schiffe entfernen und den zerstörten Schiffen hinzufügen
-				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSystem(ship->GetKO().x, ship->GetKO().y).GetName(TRUE),
+				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSystem(ship->GetCo().x, ship->GetCo().y).GetLongName(),
 					m_pDoc->GetCurrentRound(), CLoc::GetString("SABOTAGE"), CLoc::GetString("DESTROYED"));
 				if (n.y == -1)		// nicht in Flotte
 				{
@@ -1553,7 +1553,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					UINT newhull = rand()%hull + 1;
 					ship->GetHull()->SetCurrentHull(newhull - hull);
 					pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
-					report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetKO(), ship->GetID(), 1, FALSE, TRUE, FALSE);
+					report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetCo(), ship->GetID(), 1, FALSE, TRUE, FALSE);
 					if (report)
 					{
 						report->CreateText(m_pDoc, 4, pResponsibleRace->GetRaceID());
@@ -1581,7 +1581,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 			if (troopNumber == NULL)
 				troopNumber++;
 			troopNumber = rand()%troopNumber + 1;
-			CPoint ko = report->GetKO();
+			CPoint ko = report->GetCo();
 			int id = report->GetID();
 			int destroyed = 0;
 			// jetzt die Truppe/Truppen auf dem jeweiligen System zerstören
@@ -1623,7 +1623,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 			if (buildings == NULL)
 				buildings++;
 			buildings = rand()%buildings + 1;
-			CPoint ko = report->GetKO();
+			CPoint ko = report->GetCo();
 			int id = report->GetID();
 			int destroyed = 0;
 			// jetzt die Gebäude auf dem jeweiligen System zerstören

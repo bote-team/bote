@@ -453,7 +453,7 @@ void CMajor::Contact(const CRace& Race, const CPoint& p)
 
 	//message to the involved major
 	CString sKey = Race.IsMajor() ? "GET_CONTACT_TO_MAJOR" : "GET_CONTACT_TO_MINOR";
-	CString sMsg = CLoc::GetString(sKey,FALSE, Race.GetRaceName(),sSectorKO);
+	CString sMsg = CLoc::GetString(sKey,FALSE, Race.GetName(),sSectorKO);
 
 	CEmpireNews message;
 	message.CreateNews(sMsg, EMPIRE_NEWS_TYPE::DIPLOMACY, "", p);
@@ -476,17 +476,17 @@ bool CMajor::AHumanPlays() const {
 void CMajor::AddToLostShipHistory(const CShips& Ship, const CString& sEvent,
 	const CString& sStatus, unsigned short round)
 {
-	const CPoint& co = Ship.GetKO();
+	const CPoint& co = Ship.GetCo();
 	const CBotEDoc& doc = *resources::pDoc;
 	const boost::shared_ptr<const CShips> s(boost::make_shared<CShips>(Ship));
-	m_ShipHistory.ModifyShip(s, doc.GetSystem(co.x, co.y).GetName(TRUE), round, sEvent, sStatus);
+	m_ShipHistory.ModifyShip(s, doc.GetSystem(co.x, co.y).GetLongName(), round, sEvent, sStatus);
 }
 
 void CMajor::LostFlagShip(const CShip& ship)
 {
-	const CString& eventText = m_MoralObserver.AddEvent(7, GetRaceMoralNumber(), ship.GetShipName());
+	const CString& eventText = m_MoralObserver.AddEvent(7, GetRaceMoralNumber(), ship.GetName());
 	CEmpireNews message;
-	message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, "", ship.GetKO());
+	message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, "", ship.GetCo());
 	m_Empire.AddMsg(message);
 }
 
@@ -503,10 +503,10 @@ void CMajor::LostStation(SHIP_TYPE::Typ type)
 void CMajor::LostShipToAnomaly(const CShips& ship, const CString& anomaly)
 {
 	CString sShip;
-	sShip.Format("%s (%s, %s)", ship.GetShipName(), ship.GetShipTypeAsString(), ship.GetShipClass());
+	sShip.Format("%s (%s, %s)", ship.GetName(), ship.GetShipTypeAsString(), ship.GetShipClass());
 	const CString& s = CLoc::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, anomaly);
 	CEmpireNews message;
-	message.CreateNews(s, EMPIRE_NEWS_TYPE::MILITARY, "", ship.GetKO());
+	message.CreateNews(s, EMPIRE_NEWS_TYPE::MILITARY, "", ship.GetCo());
 	m_Empire.AddMsg(message);
 	resources::pClientWorker->SetToEmpireViewFor(*this);
 }

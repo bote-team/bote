@@ -1134,7 +1134,7 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 
 	CMajor* pResponsibleRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pIntel->GetResponsibleRace()));
 	if (pResponsibleRace)
-		s = pResponsibleRace->GetRaceName();
+		s = pResponsibleRace->GetName();
 	else
 		s = "ID_ERROR";
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(715,400,120,30), &fontFormat, &btnBrush);

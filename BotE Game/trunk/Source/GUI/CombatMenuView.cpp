@@ -176,7 +176,7 @@ void CCombatMenuView::OnDraw(CDC* dc)
 	m_vInvolvedShips.RemoveAll();
 	for(CShipMap::iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end(); ++i)
 	{
-		if (i->second->GetKO() != pDoc->m_ptCurrentCombatSector)
+		if (i->second->GetCo() != pDoc->m_ptCurrentCombatSector)
 			continue;
 
 		m_vInvolvedShips.Add(i->second.get());
@@ -319,7 +319,7 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 
 		g->DrawRectangle(&Pen(Color(200,200,200), 2), nPosX, 125, 200, 200);
 		// Rassenname über das Bild zeichnen
-		g->DrawString(CComBSTR(pRace->GetRaceName()), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(nPosX,100,200,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(pRace->GetName()), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(nPosX,100,200,25), &fontFormat, &fontBrush);
 
 		// Rassensymbol noch in die Ecke zeichnen
 		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + pRace->GetRaceID() + ".bop");
@@ -343,7 +343,7 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 
 		g->DrawRectangle(&Pen(Color(200,200,200), 2), nPosX, 450, 200, 200);
 		// Rassenname über das Bild zeichnen
-		g->DrawString(CComBSTR(pRace->GetRaceName()), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(nPosX,425,200,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(pRace->GetName()), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(nPosX,425,200,25), &fontFormat, &fontBrush);
 
 		// Rassensymbol noch in die Ecke zeichnen
 		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + pRace->GetRaceID() + ".bop");
@@ -422,7 +422,7 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 	fontBrush.SetColor(normalColor);
 
 	if (pDoc->GetSystem(p.x, p.y).GetKnown(pMajor->GetRaceID()))
-		s.Format("%s %s", CLoc::GetString("COMBAT_IN_SECTOR"), pDoc->GetSystem(p.x, p.y).GetName(TRUE));
+		s.Format("%s %s", CLoc::GetString("COMBAT_IN_SECTOR"), pDoc->GetSystem(p.x, p.y).GetLongName());
 	else
 		s.Format("%s %c%i", CLoc::GetString("COMBAT_IN_SECTOR"), (char)(p.y+97), p.x + 1);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
@@ -681,7 +681,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	fontBrush.SetColor(normalColor);
 
 	if (pDoc->GetSystem(p.x, p.y).GetKnown(pMajor->GetRaceID()))
-		s.Format("%s %s", CLoc::GetString("COMBAT_IN_SECTOR"), pDoc->GetSystem(p.x, p.y).GetName(TRUE));
+		s.Format("%s %s", CLoc::GetString("COMBAT_IN_SECTOR"), pDoc->GetSystem(p.x, p.y).GetLongName());
 	else
 		s.Format("%s %c%i", CLoc::GetString("COMBAT_IN_SECTOR"), (char)(p.y+97), p.x + 1);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
@@ -873,7 +873,7 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				if (m_nShipType != -1 && pShip->GetShipType() != m_nShipType)
 					continue;
 
-				if (pShip->GetOwnerOfShip() != pMajor->GetRaceID() || pShip->GetKO() != pDoc->m_ptCurrentCombatSector)
+				if (pShip->GetOwnerOfShip() != pMajor->GetRaceID() || pShip->GetCo() != pDoc->m_ptCurrentCombatSector)
 					continue;
 
 				switch (i)
@@ -907,7 +907,7 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 			{
 				CShips* pShip2 = m_vInvolvedShips[j];
 
-				if (pShip2->GetOwnerOfShip() != pMajor->GetRaceID() || pShip2->GetKO() != pDoc->m_ptCurrentCombatSector || pShip2->GetShipClass() != pShip->GetShipClass())
+				if (pShip2->GetOwnerOfShip() != pMajor->GetRaceID() || pShip2->GetCo() != pDoc->m_ptCurrentCombatSector || pShip2->GetShipClass() != pShip->GetShipClass())
 					continue;
 
 				// aktuell eingestellt Befehl an das Schiff übergeben

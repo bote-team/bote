@@ -90,7 +90,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 		// anderen Rasse weggeschnappt wurde, so wird ihr Kurs gelöscht
 		if (i->second->GetShipType() == SHIP_TYPE::COLONYSHIP)
 		{
-			CPoint ptKO = i->second->GetKO();
+			CPoint ptKO = i->second->GetCo();
 			// hat das Kolonieschiff den Befehl zum Terraformen, so wird dieser rückgängig gemacht, wenn der Sektor
 			// schon einer anderen Rasse gehört
 			if (i->second->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
@@ -130,12 +130,12 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 					CPoint ko = vMinorraceSectors->at(j);
 					// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist
 					if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == NULL ||
-						(m_pSectorAI->GetCompleteDanger(sOwner, ko) <= m_pSectorAI->GetDangerOnlyFromCombatShips(sOwner, i->second->GetKO())))
+						(m_pSectorAI->GetCompleteDanger(sOwner, ko) <= m_pSectorAI->GetDangerOnlyFromCombatShips(sOwner, i->second->GetCo())))
 						if (pOwner->GetStarmap()->GetRange(ko) <= i->second->GetRange(false))
 						{
 							// Zielkoordinate für das Schiff setzen
 							i->second->SetTargetKO(ko);
-							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship to Minor: %s (%s) - Target: %d,%d\n",sOwner, i->second->GetShipName(), i->second->GetShipTypeAsString(), ko.x,ko.y);
+							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship to Minor: %s (%s) - Target: %d,%d\n",sOwner, i->second->GetName(), i->second->GetShipTypeAsString(), ko.x,ko.y);
 							vMinorraceSectors->erase(vMinorraceSectors->begin() + j--);
 							bSet = true;
 							break;
@@ -160,17 +160,17 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 				{
 					CPoint ko = vSectorsToTerrform->at(j).p;
 					// Wenn das Kolonieschiff schon auf einem Sektor für unser Terraforming steht, so fliegt es nicht weiter
-					if (i->second->GetShipType() == SHIP_TYPE::COLONYSHIP && i->second->GetKO() == ko)
+					if (i->second->GetShipType() == SHIP_TYPE::COLONYSHIP && i->second->GetCo() == ko)
 						break;
 
 					// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist
-					if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == NULL || (m_pSectorAI->GetCompleteDanger(sOwner, ko) < m_pSectorAI->GetDanger(sOwner, i->second->GetKO())))
+					if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == NULL || (m_pSectorAI->GetCompleteDanger(sOwner, ko) < m_pSectorAI->GetDanger(sOwner, i->second->GetCo())))
 					{
 						if (pOwner->GetStarmap()->GetRange(ko) <= i->second->GetRange(false))
 						{
 							// Zielkoordinate für das Schiff setzen
-							i->second->SetTargetKO(ko == i->second->GetKO() ? CPoint(-1, -1) : ko);
-							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) has terraforming target: %d,%d\n",sOwner, i->second->GetShipName(), i->second->GetShipTypeAsString(), ko.x,ko.y);
+							i->second->SetTargetKO(ko == i->second->GetCo() ? CPoint(-1, -1) : ko);
+							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) has terraforming target: %d,%d\n",sOwner, i->second->GetName(), i->second->GetShipTypeAsString(), ko.x,ko.y);
 							break;
 						}
 					}
@@ -185,20 +185,20 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 				{
 					CPoint ko(m_pSectorAI->GetStationBuildSector(sOwner).position.x, m_pSectorAI->GetStationBuildSector(sOwner).position.y);
 					// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist
-					if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == 0 || (m_pSectorAI->GetCompleteDanger(sOwner, ko) < m_pSectorAI->GetDanger(sOwner, i->second->GetKO())))
+					if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == 0 || (m_pSectorAI->GetCompleteDanger(sOwner, ko) < m_pSectorAI->GetDanger(sOwner, i->second->GetCo())))
 					{
 						if (pOwner->GetStarmap()->GetRange(ko) <= i->second->GetRange(false))
 						{
 							// Zielkoordinate für das Schiff setzen
-							i->second->SetTargetKO(ko == i->second->GetKO() ? CPoint(-1, -1) : ko);
-							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) has stationbuild target: %d,%d\n",sOwner, i->second->GetShipName(), i->second->GetShipTypeAsString(), ko.x,ko.y);
+							i->second->SetTargetKO(ko == i->second->GetCo() ? CPoint(-1, -1) : ko);
+							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) has stationbuild target: %d,%d\n",sOwner, i->second->GetName(), i->second->GetShipTypeAsString(), ko.x,ko.y);
 						}
 					}
 				}
 			}
 
 			DoCamouflage(i->second.get());
-			if (m_pDoc->GetSystem(i->second->GetKO().x, i->second->GetKO().y).GetSunSystem())
+			if (m_pDoc->GetSystem(i->second->GetCo().x, i->second->GetCo().y).GetSunSystem())
 			{
 				if (!DoTerraform(i->second.get()))
 					DoColonize(i->second.get());
@@ -220,7 +220,7 @@ void CShipAI::CalculateAlienShipOrders(CShips& ship)
 {
 	if (ship.GetOwnerOfShip() == StrToCStr(MIDWAY_ZEITREISENDE))
 	{
-		const CPoint& co = ship.GetKO();
+		const CPoint& co = ship.GetCo();
 		const CSystem& system = m_pDoc->GetSystem(co.x, co.y);
 		if (system.GetSunSystem())
 		{
@@ -265,7 +265,7 @@ bool CShipAI::DoTerraform(CShips* pShip)
 	if (nTerraPoints <= 0)
 		return false;
 
-	CSector* pSector = &m_pDoc->GetSystem(pShip->GetKO().x, pShip->GetKO().y);
+	CSector* pSector = &m_pDoc->GetSystem(pShip->GetCo().x, pShip->GetCo().y);
 	// nur wenn der Sektor noch niemandem gehört bzw. uns selbst ist, sollen Planeten terraformt werden
 	if (!pSector->Free() && pSector->OwnerID() != pShip->GetOwnerOfShip())
 		return false;
@@ -325,7 +325,7 @@ bool CShipAI::DoColonize(CShips* pShip)
 	if (pShip->GetShipType() != SHIP_TYPE::COLONYSHIP)
 		return false;
 
-	CSector* pSector = &m_pDoc->GetSystem(pShip->GetKO().x, pShip->GetKO().y);
+	CSector* pSector = &m_pDoc->GetSystem(pShip->GetCo().x, pShip->GetCo().y);
 	// Gehört der Sektor aktuell auch keiner Minorrace (also niemanden oder uns selbst)
 	if (!pSector->Free() && pSector->OwnerID() != pShip->GetOwnerOfShip())
 		return false;
@@ -372,7 +372,7 @@ bool CShipAI::DoAttackMove(CShips* pShip, const CMajor* pMajor)
 		return true;
 
 	CString sRace = pMajor->GetRaceID();
-	UINT nOurDanger = m_pSectorAI->GetDangerOnlyFromCombatShips(sRace, pShip->GetKO());
+	UINT nOurDanger = m_pSectorAI->GetDangerOnlyFromCombatShips(sRace, pShip->GetCo());
 
 	// Gibt es ein Bombardierungsziel, so wird dieses mit der höchsten Priorität angeflogen
 	if (m_BombardSector[sRace] != CPoint(-1,-1))
@@ -383,7 +383,7 @@ bool CShipAI::DoAttackMove(CShips* pShip, const CMajor* pMajor)
 			// hier überprüfen, ob der Sektor erreicht werden kann
 			if (pMajor->GetStarmap()->GetRange(m_BombardSector[sRace]) <= pShip->GetRange(false))
 			{
-				pShip->SetTargetKO(m_BombardSector[sRace] == pShip->GetKO() ? CPoint(-1, -1) : m_BombardSector[sRace]);
+				pShip->SetTargetKO(m_BombardSector[sRace] == pShip->GetCo() ? CPoint(-1, -1) : m_BombardSector[sRace]);
 				MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: BOMBARDTARGET in sector: %d/%d\n",sRace,m_BombardSector[sRace].x,m_BombardSector[sRace].y);
 				return true;
 			}
@@ -410,12 +410,12 @@ bool CShipAI::DoAttackMove(CShips* pShip, const CMajor* pMajor)
 			// hier noch überprüfen, ob der Sektor erreicht werden kann
 			if (pMajor->GetStarmap()->GetRange(m_AttackSector[sRace]) <= pShip->GetRange(false))
 			{
-				pShip->SetTargetKO(m_AttackSector[sRace] == pShip->GetKO() ? CPoint(-1, -1) : m_AttackSector[sRace]);
+				pShip->SetTargetKO(m_AttackSector[sRace] == pShip->GetCo() ? CPoint(-1, -1) : m_AttackSector[sRace]);
 				if(MT::CMyTrace::IsLoggingEnabledFor("shipai"))
 				{
 					MYTRACE_CHECKED("shipai")(MT::LEVEL_INFO, "Race %s: GLOBAL ATTACK in sector: %d/%d\n",sRace,m_AttackSector[sRace].x,m_AttackSector[sRace].y);
-					MYTRACE_CHECKED("shipai")(MT::LEVEL_INFO, "Ship: %s\n",pShip->GetShipName());
-					MYTRACE_CHECKED("shipai")(MT::LEVEL_INFO, "OnlyDangerFromShips: %d in Sector: %d/%d\n",nOurDanger,pShip->GetKO().x,pShip->GetKO().y);
+					MYTRACE_CHECKED("shipai")(MT::LEVEL_INFO, "Ship: %s\n",pShip->GetName());
+					MYTRACE_CHECKED("shipai")(MT::LEVEL_INFO, "OnlyDangerFromShips: %d in Sector: %d/%d\n",nOurDanger,pShip->GetCo().x,pShip->GetCo().y);
 					MYTRACE_CHECKED("shipai")(MT::LEVEL_INFO, "CompleteDangerInTargetSector: %d\n",nEnemyDanger);
 					MYTRACE_CHECKED("shipai")(MT::LEVEL_INFO, "Our Complete Danger overall: %d\n",(m_pSectorAI->GetCompleteDanger(sRace) * 100 / (rand()%16+75)));
 				}
@@ -429,7 +429,7 @@ bool CShipAI::DoAttackMove(CShips* pShip, const CMajor* pMajor)
 			// hier noch überprüfen, ob der Sektor erreicht werden kann
 			if (pMajor->GetStarmap()->GetRange(p) <= pShip->GetRange(false))
 			{
-				pShip->SetTargetKO(p == pShip->GetKO() ? CPoint(-1, -1) : p);
+				pShip->SetTargetKO(p == pShip->GetCo() ? CPoint(-1, -1) : p);
 				MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: COLLECT ships in sector: %d/%d\n", sRace,p.x,p.y);
 				return true;
 			}
@@ -449,7 +449,7 @@ bool CShipAI::DoBombardSystem(CShips* pShip)
 		return false;
 	}
 
-	if (pShip->GetKO() == m_BombardSector[pShip->GetOwnerOfShip()])
+	if (pShip->GetCo() == m_BombardSector[pShip->GetOwnerOfShip()])
 	{
 		// Hier muss als erstes ein möglicher neuer Kurs gelöscht werden und ein alter Systemangriffsbefehl aufgehoben werden
 		pShip->SetTargetKO(CPoint(-1, -1));
@@ -464,7 +464,7 @@ bool CShipAI::DoBombardSystem(CShips* pShip)
 
 		// Wenn die defensive Schiffsstärke im System des Angreifers ungefähr doppelt so groß als der Systemverteidigungswert
 		// des Verteidigers ist, wird bombardiert!
-		int nShipDefend = m_pDoc->GetSystem(pShip->GetKO().x, pShip->GetKO().y).GetProduction()->GetShipDefend();
+		int nShipDefend = m_pDoc->GetSystem(pShip->GetCo().x, pShip->GetCo().y).GetProduction()->GetShipDefend();
 		nShipDefend *= 1.25;
 
 		int nShipValue = 0;
@@ -474,7 +474,7 @@ bool CShipAI::DoBombardSystem(CShips* pShip)
 			if (i->second->GetOwnerOfShip() != pShip->GetOwnerOfShip())
 				continue;
 
-			if (i->second->GetKO() != pShip->GetKO())
+			if (i->second->GetCo() != pShip->GetCo())
 				continue;
 
 			nShipValue += i->second->GetHull()->GetCurrentHull();
@@ -486,11 +486,11 @@ bool CShipAI::DoBombardSystem(CShips* pShip)
 		}
 
 		//CString s;
-		//s.Format("shipValue = %d\nshipDefend = %d\nSektor = %s", shipValue, shipDefend, m_pDoc->GetSystem(pShip->GetKO().x, pShip->GetKO().y).GetName(true));
+		//s.Format("shipValue = %d\nshipDefend = %d\nSektor = %s", shipValue, shipDefend, m_pDoc->GetSystem(pShip->GetCo().x, pShip->GetCo().y).GetName(true));
 		//AfxMessageBox(s);
 		if (nShipValue > nShipDefend)
 		{
-			MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) is bombarding system: %d,%d\n",pShip->GetOwnerOfShip(), pShip->GetShipName(), pShip->GetShipTypeAsString(), pShip->GetKO().x,pShip->GetKO().y);
+			MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) is bombarding system: %d,%d\n",pShip->GetOwnerOfShip(), pShip->GetName(), pShip->GetShipTypeAsString(), pShip->GetCo().x,pShip->GetCo().y);
 			pShip->SetCurrentOrder(SHIP_ORDER::ATTACK_SYSTEM);
 			return true;
 		}
@@ -547,7 +547,7 @@ void CShipAI::DoMakeFleet(const CShipMap::iterator& pShip)
 			continue;
 
 		// Schiffe müssen sich im selben Sektor befinden
-		if (pShip->second->GetKO() != i->second->GetKO())
+		if (pShip->second->GetCo() != i->second->GetCo())
 			continue;
 
 		// beide Schiffe müssen die selbe Reichweite haben
@@ -601,7 +601,7 @@ bool CShipAI::DoStationBuild(CShips* pShip)
 		return false;
 
 	CPoint ptKO(m_pSectorAI->GetStationBuildSector(sRace).position.x, m_pSectorAI->GetStationBuildSector(sRace).position.y);
-	if (pShip->GetKO() != ptKO)
+	if (pShip->GetCo() != ptKO)
 		return false;
 
 	// Nur wenn der Sektor uns bzw. niemanden gehört

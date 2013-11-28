@@ -164,7 +164,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	if (!pMajor)
 		return;
 
-	CPoint p = pDoc->GetKO();
+	CPoint p = pDoc->GetCo();
 	if (p != m_ptLastSector)
 	{
 		m_ptLastSector = p;
@@ -464,7 +464,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	CalcLogicalPoint(point);
 
-	CPoint p = pDoc->GetKO();
+	CPoint p = pDoc->GetCo();
 	const CString& systemOwner = pDoc->GetSystem(p.x, p.y).OwnerID();
 	const CString& shipOwner   = ship->second->GetOwnerOfShip();
 
@@ -799,7 +799,7 @@ void CTransportMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	if (ship->second->GetOwnerOfShip() != pMajor->GetRaceID())
 		return;
 
-	CPoint p = pDoc->GetKO();
+	CPoint p = pDoc->GetCo();
 	const CString& systemOwner = pDoc->GetSystem(p.x, p.y).OwnerID();
 	const CString& shipOwner   = ship->second->GetOwnerOfShip();
 
@@ -846,7 +846,7 @@ CString CTransportMenuView::CreateTooltip(void)
 
 	if (m_nActiveTroopInSystem != -1 && CRect(25, 95, 225, 245).PtInRect(pt))
 	{
-		CPoint p = pDoc->GetKO();
+		CPoint p = pDoc->GetCo();
 		BYTE id = pDoc->GetSystem(p.x, p.y).GetTroops()->GetAt(m_nActiveTroopInSystem).GetID();
 		return pDoc->m_TroopInfo.GetAt(id).GetTooltip();
 	}

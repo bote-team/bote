@@ -202,7 +202,7 @@ void CStarmap::SynchronizeWithMap(const std::vector<CSystem>& systems, const std
 	for(std::vector<CSystem>::const_iterator it = systems.begin(); it != systems.end(); ++it)
 		if(!it->Free())
 		{
-			const CPoint& co = it->GetKO();
+			const CPoint& co = it->GetCo();
 			if (m_Range[co.x][co.y] > 0 && races->find(it->OwnerID())!= races->end())
 				m_Range[co.x][co.y] = 0;
 		}
@@ -864,7 +864,7 @@ void CStarmap::SetBadAIBaseSectors(const std::vector<CSystem>& systems, const CS
 
 	for(std::vector<CSystem>::const_iterator it = systems.begin(); it != systems.end(); ++it)
 	{
-		const CPoint& co = it->GetKO();
+		const CPoint& co = it->GetCo();
 		const CString& owner = it->OwnerID();
 		if (m_Range[co.x][co.y] >= m_nAIRange)
 		{

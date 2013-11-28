@@ -34,7 +34,7 @@ public:
 
 	// Zugriffsfunktionen
 	/// Funktion gibt die Koordinate des Zielsystems der Ressourcenroute zurück.
-	CPoint GetKO() const {return m_KO;}
+	CPoint GetCo() const {return m_KO;}
 
 	/// Funktion gibt den prozentualen Anteil der Ressource für den Bauauftrag zurück, der aus dem
 	/// Startsystem genommen werden musste.

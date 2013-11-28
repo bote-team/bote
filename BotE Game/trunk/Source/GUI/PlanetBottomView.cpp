@@ -83,7 +83,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	if (background)
 		g.DrawImage(background, 0, 0, 1075, 249);
 
-	CPoint KO = pDoc->GetKO();
+	CPoint KO = pDoc->GetCo();
 	float maxHabitants = 0.0f;
 	int nPosX = m_TotalSize.cx - 175;
 	int nVertCenter = m_TotalSize.cy / 2;
@@ -293,7 +293,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		const RacePtr& pOwner = pDoc->GetSystem(KO.x, KO.y).Owner();
 		if (pOwner)
 		{
-			s = pOwner->GetRaceName();
+			s = pOwner->GetName();
 			if (pOwner->IsMajor())
 			{
 				Color color;
@@ -365,7 +365,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	CalcLogicalPoint(point);
 
-	CPoint KO = pDoc->GetKO();
+	CPoint KO = pDoc->GetCo();
 	for (UINT i = 0; i < m_vPlanetRects.size(); i++)
 		if (m_vPlanetRects[i].PtInRect(point))
 		{
@@ -391,7 +391,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					CShipBottomView::SetShowStation(false);
 					CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-					AssertBotE(pDoc->CurrentShip()->second->GetKO() == pDoc->GetKO());
+					AssertBotE(pDoc->CurrentShip()->second->GetCo() == pDoc->GetCo());
 					pDoc->CurrentShip()->second->SetTerraform(i);
 
 					Invalidate();
@@ -415,7 +415,7 @@ void CPlanetBottomView::OnMouseMove(UINT nFlags, CPoint point)
 
 	CalcLogicalPoint(point);
 
-	CPoint KO = pDoc->GetKO();
+	CPoint KO = pDoc->GetCo();
 	for (UINT i = 0; i < m_vPlanetRects.size(); i++)
 		if (m_vPlanetRects[i].PtInRect(point))
 		{
@@ -437,7 +437,7 @@ void CPlanetBottomView::OnMouseMove(UINT nFlags, CPoint point)
 CString CPlanetBottomView::CreateTooltip(void)
 {
 	CBotEDoc* pDoc = resources::pDoc;
-	CPoint KO = pDoc->GetKO();
+	CPoint KO = pDoc->GetCo();
 
 	if (!pDoc->m_bDataReceived)
 		return "";

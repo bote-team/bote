@@ -12,12 +12,12 @@
 
 #pragma once
 
+#include "boost/shared_ptr.hpp"
+
 #include "BoteStandardTypes.h"
-
-
 #include "resources.h"
 #include "CommandLineParameters.h"
-#include "boost/shared_ptr.hpp"
+#include "General/InGameEntity.h"
 
 using namespace std;
 
@@ -29,7 +29,7 @@ class CRace;
 class CShips;
 class CShip;
 
-class CMapTile
+class CMapTile : public CInGameEntity
 {
 
 public:
@@ -79,15 +79,13 @@ public:
 //////////////////////////////////////////////////////////////////////
 
 // Zugriffsfunktionen zum Lesen der Membervariablen
-	/// Diese Funktion gibt die Koordinaten des Sektors zurück.
-	CPoint GetKO() const {return m_KO;}
 
 	/**
 	 * Funktion gibt den Namen des Sektors zurück. Wenn in ihm kein Sonnensystem ist, dann wird "" zurückgegeben.
 	 * Wenn man aber den Parameter <code>longName<code> beim Aufruf der Funktion auf <code>TRUE<code> setzt, wird
 	 * versucht ein genauerer Sektorname zu generieren.
 	 */
-	CString GetName(BOOLEAN longName = FALSE) const;
+	CString GetLongName() const;
 
 //// SectorAttributes ////
 	/// Diese Funktion gibt zurück, ob sich in diesem Sektor ein Sonnensystem befindet.
@@ -250,9 +248,6 @@ public:
 //////////////////////////////////////////////////////////////////////
 // setting
 //////////////////////////////////////////////////////////////////////
-
-	/// Funktion legt den Namen des Sektors fest.
-	void SetSectorsName(const CString& nameOfSunSystem) {m_strSectorName = nameOfSunSystem;}
 
 //// SectorAttributes ////
 	/// Diese Funktion legt fest, ob sich ein Sonnensystem in diesem Sektor befindet.
@@ -449,14 +444,9 @@ public:
 //////////////////////////////////////////////////////////////////////
 
 protected:
-	/// Die Koordinate des Sektors auf der Map
-	CPoint m_KO;
 
 	/// Wem gehört der Sektor?
 	boost::shared_ptr<CRace> m_Owner;
-
-	/// Der Name des Sectors
-	CString m_strSectorName;
 
 	bool m_bSunSystem;// Ist ein Sonnensystem in diesem Sektor?
 private:

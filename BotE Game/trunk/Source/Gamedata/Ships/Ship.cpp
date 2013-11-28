@@ -27,6 +27,7 @@ static char THIS_FILE[]=__FILE__;
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CShip::CShip() :
+	CInGameEntity(),
 	m_iID(0),
 	m_iMaintenanceCosts(0),
 	m_byManeuverability(0),
@@ -37,7 +38,6 @@ CShip::CShip() :
 	m_iColonizePoints(0),
 	m_iStationBuildPoints(0),
 	m_iStealthGrade(0),
-	m_KO(-1, -1),
 	m_TargetKO(-1, -1)
 {
 	m_iCrewExperiance = 0;
@@ -61,12 +61,11 @@ CShip::~CShip()
 // Kopierkonstruktor
 //////////////////////////////////////////////////////////////////////
 CShip::CShip(const CShip & rhs) :
+	CInGameEntity(rhs),
 	m_Hull(rhs.m_Hull),
 	m_Shield(rhs.m_Shield),
-	m_strShipName(rhs.m_strShipName),
 	m_strShipClass(rhs.m_strShipClass),
 	m_sOwnerOfShip(rhs.m_sOwnerOfShip),
-	m_KO(rhs.m_KO),
 	m_TargetKO(rhs.m_TargetKO)
 {
 	m_TorpedoWeapons.RemoveAll();
@@ -116,6 +115,8 @@ CShip & CShip::operator=(const CShip & rhs)
 	if (this == &rhs)
 		return *this;
 
+	CInGameEntity::operator=(rhs);
+
 	m_Hull = rhs.m_Hull;
 	m_Shield = rhs.m_Shield;
 	m_TorpedoWeapons.RemoveAll();
@@ -133,7 +134,6 @@ CShip & CShip::operator=(const CShip & rhs)
 
 
 	m_iID = rhs.m_iID;
-	m_KO = rhs.m_KO;
 	m_TargetKO = rhs.m_TargetKO;
 	m_sOwnerOfShip = rhs.m_sOwnerOfShip;
 	m_iMaintenanceCosts = rhs.m_iMaintenanceCosts;
@@ -154,7 +154,6 @@ CShip & CShip::operator=(const CShip & rhs)
 	m_iStationBuildPoints = rhs.m_iStationBuildPoints;
 	m_iCurrentOrder = rhs.m_iCurrentOrder;
 	m_nTerraformingPlanet = rhs.m_nTerraformingPlanet;
-	m_strShipName = rhs.m_strShipName;
 	m_strShipDescription = rhs.m_strShipDescription;
 	m_strShipClass = rhs.m_strShipClass;
 	m_bIsFlagShip = rhs.m_bIsFlagShip;
@@ -170,6 +169,7 @@ CShip & CShip::operator=(const CShip & rhs)
 //////////////////////////////////////////////////////////////////////
 void CShip::Serialize(CArchive &ar)
 {
+	CInGameEntity::Serialize(ar);
 
 	m_Hull.Serialize(ar);
 	m_Shield.Serialize(ar);
@@ -178,7 +178,6 @@ void CShip::Serialize(CArchive &ar)
 	if (ar.IsStoring())
 	{
 		ar << m_iID;
-		ar << m_KO;
 		ar << m_TargetKO;
 		ar << m_sOwnerOfShip;
 		ar << m_iMaintenanceCosts;
@@ -201,7 +200,6 @@ void CShip::Serialize(CArchive &ar)
 		ar << m_nSpecial[0];
 		ar << m_nSpecial[1];
 		ar << m_nTerraformingPlanet;
-		ar << m_strShipName;
 		ar << m_strShipDescription;
 		ar << m_strShipClass;
 		ar << m_bIsFlagShip;
@@ -222,7 +220,6 @@ void CShip::Serialize(CArchive &ar)
 	{
 		int number = 0;
 		ar >> m_iID;
-		ar >> m_KO;
 		ar >> m_TargetKO;
 		ar >> m_sOwnerOfShip;
 		ar >> m_iMaintenanceCosts;
@@ -258,7 +255,6 @@ void CShip::Serialize(CArchive &ar)
 		ar >> nSpecial;
 		m_nSpecial[1] = (SHIP_SPECIAL::Typ)nSpecial;
 		ar >> m_nTerraformingPlanet;
-		ar >> m_strShipName;
 		ar >> m_strShipDescription;
 		ar >> m_strShipClass;
 		ar >> m_bIsFlagShip;
@@ -425,7 +421,7 @@ void CShip::AdoptOrdersFrom(const CShip& ship)
 	SetTerraform(ship.m_nTerraformingPlanet);
 	m_iCurrentOrder = order;
 	m_nCombatTactic = ship.GetCombatTactic();
-	m_KO = ship.GetKO();
+	m_Co = ship.m_Co;
 	m_TargetKO = ship.GetTargetKO();
 }
 
@@ -569,7 +565,7 @@ void CShip::UnsetCurrentOrder() {
 	const bool was_terraform = m_iCurrentOrder == SHIP_ORDER::TERRAFORM;
 	m_iCurrentOrder = SHIP_ORDER::NONE;
 	if(was_terraform)
-		resources::pDoc->GetSystem(m_KO.x, m_KO.y).RecalcPlanetsTerraformingStatus();
+		resources::pDoc->GetSystem(m_Co.x, m_Co.y).RecalcPlanetsTerraformingStatus();
 }
 
 bool CShip::RemoveDestroyed(CRace& owner, unsigned short round, const CString& sEvent, const CString& sStatus, CStringArray* destroyedShips, const CString& anomaly) {
@@ -579,7 +575,7 @@ bool CShip::RemoveDestroyed(CRace& owner, unsigned short round, const CString& s
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 	owner.AddToLostShipHistory(CShips(*this), sEvent, sStatus, round);
 	if(destroyedShips)
-		destroyedShips->Add(m_strShipName + " (" + GetShipTypeAsString() + ", " + m_strShipClass + ")");
+		destroyedShips->Add(m_sName + " (" + GetShipTypeAsString() + ", " + m_strShipClass + ")");
 	if(m_bIsFlagShip)
 		owner.LostFlagShip(*this);
 	if(IsStation())
@@ -599,7 +595,7 @@ void CShip::SetTerraform(short planetNumber) {
 	else
 		m_iCurrentOrder = SHIP_ORDER::TERRAFORM;
 	m_nTerraformingPlanet = planetNumber;
-	resources::pDoc->GetSystem(m_KO.x, m_KO.y).RecalcPlanetsTerraformingStatus();
+	resources::pDoc->GetSystem(m_Co.x, m_Co.y).RecalcPlanetsTerraformingStatus();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -929,7 +925,7 @@ bool CShip::IsDoingStationWork(SHIP_ORDER::Typ ignore) const
 /// @return	der erstellte Tooltip-Text
 CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info) const
 {
-	CString sName = GetShipName();
+	CString sName = m_sName;
 	if (sName.IsEmpty() == false)
 	{
 		if (info)
@@ -1251,7 +1247,7 @@ void CShip::DrawOrderTerraform(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool,
 	AssertBotE(pDoc);
 
 	if (pDoc->m_bDataReceived) {
-		const CSystem& sec = pDoc->GetSystem(m_KO.x, m_KO.y);
+		const CSystem& sec = pDoc->GetSystem(m_Co.x, m_Co.y);
 		CString s = sec.GetPlanet(GetTerraform())->GetPlanetGraphicFile();
 		Bitmap* graphic = pGraphicPool->GetGDIGraphic(s);
 
@@ -1392,7 +1388,7 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 		{
 			if (!IsAlien())
 			{
-				g->DrawString(CComBSTR(m_strShipName), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(m_sName), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
 				s = m_strShipClass + "-" + CLoc::GetString("CLASS");
 				g->DrawString(CComBSTR(s), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
 			}
@@ -1405,7 +1401,7 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 		else
 		{
 			// Schiffsnamen holen und die ersten 4 Zeichen (z.B. USS_) und die lezten 2 Zeichen (z.B. _A) entfernen
-			s.Format("%s", m_strShipName);
+			s.Format("%s", m_sName);
 			if (s.GetLength() > 4 && s.GetAt(3) == ' ')
 				s.Delete(0,4);
 			if (s.GetLength() > 2 && s.ReverseFind(' ') == s.GetLength() - 2)
@@ -1450,7 +1446,7 @@ void CShip::Retreat(const CPoint& ptRetreatSector, COMBAT_TACTIC::Typ const* New
 	// Kann das Schiff überhaupt fliegen?
 	if (m_iSpeed > 0)
 	{
-		m_KO = ptRetreatSector;
+		m_Co = ptRetreatSector;
 		// aktuell eingestellten Kurs löschen (nicht dass das Schiff wieder in den Gefahrensektor fliegt)
 		m_TargetKO = CPoint(-1, -1);
 	}
@@ -1497,7 +1493,7 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 		pMajor->GetEmpire()->AddShipCosts(GetMaintenanceCosts());
 		// die Schiffe in der Flotte beim modifizieren der Schiffslisten der einzelnen Imperien beachten
 		const boost::shared_ptr<const CShips> s(new CShips(*this));
-		pMajor->GetShipHistory()->ModifyShip(s, sector.GetName(TRUE));
+		pMajor->GetShipHistory()->ModifyShip(s, sector.GetLongName());
 	}
 	// Erfahrungspunkte der Schiffe anpassen
 	CalcExp();
@@ -1514,7 +1510,7 @@ bool CShip::BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major, 
 		: ((order == SHIP_ORDER::BUILD_STARBASE) ? "STARBASE_FINISHED" 
 		: ((order == SHIP_ORDER::UPGRADE_OUTPOST) ? "OUTPOST_UPGRADE_FINISHED" 
 		: "STARBASE_UPGRADE_FINISHED" ));
-	message.CreateNews(CLoc::GetString(s1),EMPIRE_NEWS_TYPE::MILITARY,"",sector.GetKO());
+	message.CreateNews(CLoc::GetString(s1),EMPIRE_NEWS_TYPE::MILITARY,"",sector.GetCo());
 	major.GetEmpire()->AddMsg(message);
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 	const CString& s2 = (order == SHIP_ORDER::BUILD_OUTPOST) ? "OUTPOST_CONSTRUCTION" 
@@ -1525,7 +1521,7 @@ bool CShip::BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major, 
 	major.AddToLostShipHistory(CShips(*this), CLoc::GetString(s2),
 		CLoc::GetString("DESTROYED"), pDoc->GetCurrentRound());
 	resources::pClientWorker->CalcStationReady(type, major);
-	pDoc->BuildShip(id, sector.GetKO(), m_sOwnerOfShip);
+	pDoc->BuildShip(id, sector.GetCo(), m_sOwnerOfShip);
 	// Wenn hier ein Au?enposten gebaut wurde den Befehl f?r die Flotte auf Meiden stellen
 	UnsetCurrentOrder();
 	return true;
@@ -1534,7 +1530,7 @@ bool CShip::BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major, 
 void CShip::Scrap(CMajor& major, CSystem& sy, bool disassembly) {
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 	const boost::shared_ptr<const CShips> s(new CShips(*this));
-	major.GetShipHistory()->ModifyShip(s, sy.GetName(TRUE),
+	major.GetShipHistory()->ModifyShip(s, sy.GetLongName(),
 		resources::pDoc->GetCurrentRound(), CLoc::GetString(disassembly ?
 		"DISASSEMBLY" : "UPGRADE"), CLoc::GetString("DESTROYED"));
 	if(sy.OwnerID() != m_sOwnerOfShip)
@@ -1555,12 +1551,12 @@ void CShip::Scrap(CMajor& major, CSystem& sy, bool disassembly) {
 }
 
 CString CShip::SanityCheckUniqueness(std::set<CString>& already_encountered) const {
-	const std::set<CString>::const_iterator found = already_encountered.find(m_strShipName);
+	const std::set<CString>::const_iterator found = already_encountered.find(m_sName);
 	if(found == already_encountered.end()) {
-		already_encountered.insert(m_strShipName);
+		already_encountered.insert(m_sName);
 		return CString();
 	}
-	return m_strShipName;
+	return m_sName;
 }
 
 bool CShip::SanityCheckOrdersConsistency(const CShip& with) const {
@@ -1576,11 +1572,11 @@ bool CShip::SanityCheckOrdersConsistency(const CShip& with) const {
 	AssertBotE(CanHaveOrder(with.m_iCurrentOrder, false));
 	if(m_iCurrentOrder == SHIP_ORDER::TERRAFORM) {
 		AssertBotE(0 <= m_nTerraformingPlanet &&
-			m_nTerraformingPlanet < static_cast<int>(resources::pDoc->GetSystem(m_KO.x, m_KO.y).GetNumberOfPlanets()));
+			m_nTerraformingPlanet < static_cast<int>(resources::pDoc->GetSystem(m_Co.x, m_Co.y).GetNumberOfPlanets()));
 	}
 	return m_iCurrentOrder == with.m_iCurrentOrder
 		&& m_nCombatTactic == with.m_nCombatTactic
-		&& m_KO == with.m_KO
+		&& m_Co == with.m_Co
 		&& m_TargetKO == with.m_TargetKO
 		&& m_nTerraformingPlanet == with.m_nTerraformingPlanet;
 }

@@ -89,7 +89,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentNear);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	s = CLoc::GetString("FIRSTCONTACTEVENT_TEXT", FALSE, pContactedRace->GetRaceName());
+	s = CLoc::GetString("FIRSTCONTACTEVENT_TEXT", FALSE, pContactedRace->GetName());
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(800,610,470,100), &fontFormat, &fontBrush);
 
 	// Bild der Rasse zeichnen
@@ -101,7 +101,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	// Name der Rasse zeichnen
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
-	s = pContactedRace->GetRaceName();
+	s = pContactedRace->GetName();
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(5,717,304,50), &fontFormat, &fontBrush);
 
 	// Eigenschaften zeichnen

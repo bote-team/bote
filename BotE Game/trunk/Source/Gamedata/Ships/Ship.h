@@ -29,6 +29,7 @@
 #include "Hull.h"
 #include "Races/Starmap.h"
 #include "Troops/TroopInfo.h"
+#include "General/InGameEntity.h"
 
 // forward declaration
 class CGraphicPool;
@@ -38,7 +39,7 @@ class CMajor;
 class CSystem;
 
 /// Klasse beschreibt ein Schiff in BotE
-class CShip
+class CShip : public CInGameEntity
 {
 protected:
 // Konstruktion & Destruktion
@@ -88,7 +89,6 @@ public:
 	const CArray<CTroop>* GetTransportedTroops(void) const {return &m_Troops;}
 
 	USHORT GetID() const {return m_iID;}
-	CPoint GetKO() const {return m_KO;}
 	CPoint GetTargetKO() const {return m_TargetKO;}
 	CArray<Sector>* GetPath() {return &m_Path;}
 	const CArray<Sector>* GetPath() const {return &m_Path;}
@@ -107,7 +107,6 @@ public:
 	BYTE GetStationBuildPoints() const {return m_iStationBuildPoints;}
 	SHIP_ORDER::Typ GetCurrentOrder() const {return m_iCurrentOrder;}
 	short GetTerraform() const {return m_nTerraformingPlanet;}
-	const CString& GetShipName() const {return m_strShipName;}
 	const CString& GetShipClass() const {return m_strShipClass;}
 	const CString& GetShipDescription() const {return m_strShipDescription;}
 	CString GetShipTypeAsString(BOOL plural = FALSE) const;
@@ -127,7 +126,7 @@ public:
 
 	// zum Schreiben der Membervariablen
 	void SetID(USHORT ID) {m_iID = ID+10000;}
-	void SetKO(int x, int y) {m_KO = CPoint(x, y);}
+	void SetCo(int x, int y) { m_Co = CPoint(x, y); }
 	void SetTargetKO(const CPoint& TargetKO, const bool simple_setter = false);
 	void SetOwnerOfShip(const CString& sOwnerOfShip) {m_sOwnerOfShip = sOwnerOfShip;}
 	void SetMaintenanceCosts(USHORT MaintenanceCosts) {m_iMaintenanceCosts = MaintenanceCosts;}
@@ -147,7 +146,6 @@ public:
 	void SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder);
 	void SetSpecial(int n, SHIP_SPECIAL::Typ nAbility) {m_nSpecial[n] = nAbility;}
 	void SetTerraform(short planetNumber = -1);
-	void SetShipName(const CString& ShipName) {m_strShipName = ShipName;}
 	void SetShipDescription(const CString& ShipDescription) {m_strShipDescription = ShipDescription;}
 	void SetShipClass(const CString& ShipClass) {m_strShipClass = ShipClass;}
 	void SetIsShipFlagShip(bool bIs) {m_bIsFlagShip = bIs;}
@@ -325,7 +323,6 @@ protected:
 	BYTE m_iColonizePoints;				// Kolonisierungs/Terraform-Punkte -> Dauer
 	BYTE m_iStationBuildPoints;			// Außenposten/Stations-baupunkte -> Dauer
 	SHIP_SPECIAL::Typ m_nSpecial[2];	// Die beiden möglichen Spezialfähigkeiten des Schiffes
-	CString m_strShipName;				// Der Name des Schiffes
 	CString m_strShipDescription;		// Die Beschreibung des Schiffes
 	CString m_strShipClass;				// Der Name der Schiffsklasse
 
@@ -333,7 +330,6 @@ private:
 	unsigned m_iStealthGrade;			// Tarnstärke des Schiffes: 0 = keine Tarnung, 1 = bissl ...
 	SHIP_ORDER::Typ m_iCurrentOrder;	// Aktueller Befehl des Schiffes, nutze dazu enum
 	CString m_sOwnerOfShip;				// Besitzer des Schiffes
-	CPoint m_KO;						// Koordinate des Schiffes im Raum (welcher Sector?)
 	CPoint m_TargetKO;					// Der Zielkurs des Schiffes
 	CArray<Sector> m_Path;				// Der Kurs des Schiffes zum Ziel
 	bool m_bCloakOn;					// ist die Tarnung eingeschaltet

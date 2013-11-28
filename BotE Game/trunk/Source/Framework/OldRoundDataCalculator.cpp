@@ -62,7 +62,7 @@ int COldRoundDataCalculator::DeritiumForTheAI(bool human, const CSystem& system,
 void COldRoundDataCalculator::ExecuteRebellion(CSystem& system, CMajor* pMajor) const
 {
 	CEmpire* pEmpire = pMajor->GetEmpire();
-	const CPoint& co = system.GetKO();
+	const CPoint& co = system.GetCo();
 	const CString& sectorname = system.GetName();
 	const CRaceController* pRaceCtrl = m_pDoc->GetRaceCtrl();
 
@@ -88,7 +88,7 @@ void COldRoundDataCalculator::ExecuteRebellion(CSystem& system, CMajor* pMajor) 
 			pMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 
 			pMinor->SetRelation(pMajor->GetRaceID(), (-(rand()%50+20)));
-			news = CLoc::GetString("MINOR_CANCELS_MEMBERSHIP", FALSE, pMinor->GetRaceName());
+			news = CLoc::GetString("MINOR_CANCELS_MEMBERSHIP", FALSE, pMinor->GetName());
 			CEmpireNews message;
 			message.CreateNews(news, EMPIRE_NEWS_TYPE::DIPLOMACY, "", co);
 			pEmpire->AddMsg(message);
@@ -104,7 +104,7 @@ void COldRoundDataCalculator::ExecuteRebellion(CSystem& system, CMajor* pMajor) 
 
 void COldRoundDataCalculator::ExecuteFamine(CSystem& system, CMajor* pMajor)
 {
-	const CPoint& co = system.GetKO();
+	const CPoint& co = system.GetCo();
 	CEmpire* pEmpire = pMajor->GetEmpire();
 	system.LetPlanetsShrink((float)(system.GetFoodStore()) * 0.01f);
 	// nur wenn die Moral über 50 ist sinkt die Moral durch Hungersnöte
@@ -123,7 +123,7 @@ void COldRoundDataCalculator::SystemMessage(const CSystem& sector, CMajor* pMajo
 		EMPIRE_NEWS_TYPE::Typ message_typ, BYTE byFlag) {
 	const CString& news = CLoc::GetString(key, FALSE, sector.GetName());
 	CEmpireNews message;
-	message.CreateNews(news, message_typ, "", sector.GetKO(), false, byFlag);
+	message.CreateNews(news, message_typ, "", sector.GetCo(), false, byFlag);
 	pMajor->GetEmpire()->AddMsg(message);
 	resources::pClientWorker->SetToEmpireViewFor(*pMajor);
 }
@@ -149,14 +149,14 @@ static void MilitaryMessage(const CSector& sector, CMajor* pMajor, const CString
 	const CString& s = CLoc::GetString(key,FALSE,
 		object_name,sector.GetName());
 	CEmpireNews message;
-	message.CreateNews(s,EMPIRE_NEWS_TYPE::MILITARY,sector.GetName(),sector.GetKO());
+	message.CreateNews(s,EMPIRE_NEWS_TYPE::MILITARY,sector.GetName(),sector.GetCo());
 	pMajor->GetEmpire()->AddMsg(message);
 }
 
 void COldRoundDataCalculator::FinishBuild(const int to_build, CSystem& system,
 		CMajor* pMajor, const CArray<CBuildingInfo,CBuildingInfo>& BuildingInfo) const {
 	int list = to_build;
-	const CPoint& co = system.GetKO();
+	const CPoint& co = system.GetCo();
 	// Ab jetzt die Abfrage ob Gebäude oder ein Update fertig wurde
 	if (list > 0 && list < 10000 && !BuildingInfo[list-1].GetNeverReady())	// Es wird ein Gebäude gebaut
 	{
@@ -245,7 +245,7 @@ void COldRoundDataCalculator::Build(CSystem& system, CMajor* pMajor,
 			// Handelsgüter wenn nix mehr drin steht. Hier mal testweise weggelassen, weil diese Funktion
 			// später eh für das System aufgerufen wird und wir bis jetzt glaub ich keine Notwendigkeit
 			// haben die Funktion CalculateVariables() aufzurufen.
-			assembly_list->ClearAssemblyList(system.GetKO(), m_pDoc->m_Systems);
+			assembly_list->ClearAssemblyList(system.GetCo(), m_pDoc->m_Systems);
 			// Wenn die Bauliste nach dem letzten gebauten Gebäude leer ist, eine Nachricht generieren
 			if (assembly_list->GetAssemblyListEntry(0) == 0)
 				SystemMessage(system, pMajor, "EMPTY_BUILDLIST", EMPIRE_NEWS_TYPE::SOMETHING, 0);

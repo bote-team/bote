@@ -63,7 +63,7 @@ static void EmitLostRouteMessage(unsigned deletedRoutes, const CString& single_k
 
 void CNewRoundDataCalculator::CheckRoutes(CSystem& system, CMajor* pMajor) {
 	CEmpire* pEmpire = pMajor->GetEmpire();
-	const CPoint& co = system.GetKO();
+	const CPoint& co = system.GetCo();
 	const CString& sector_name = system.GetName();
 	bool select_empire_view = false;
 
@@ -226,7 +226,7 @@ namespace {
 			const CMinor* pMinor = dynamic_cast<const CMinor*>(&right);
 			AssertBotE(pMinor);
 			GiveDiploGoodies(sector, agreement, left_id, right_id,
-				sector.GetKO() == pMinor->GetRaceKO() && pMinor->GetSpaceflightNation());
+				sector.GetCo() == pMinor->GetRaceKO() && pMinor->GetSpaceflightNation());
 		}
 		else {
 			GiveDiploGoodies(sector, agreement, left_id, right_id);

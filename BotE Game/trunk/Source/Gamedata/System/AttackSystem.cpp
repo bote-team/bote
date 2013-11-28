@@ -41,7 +41,7 @@ void CAttackSystem::Init(CRace* pDefender, CSystem* system, CShipMap* ships, CSe
 	m_pSystem = system;
 	m_pSector = sector;
 //	MYTRACE("general")(MT::LEVEL_INFO, "System Attack: Defender %s, System %s, Sector %s\n", pDefender, system, sector);
-	m_KO = sector->GetKO();;
+	m_KO = sector->GetCo();;
 
 	m_bTroopsInvolved = FALSE;
 	m_bAssultShipInvolved = FALSE;
@@ -51,7 +51,7 @@ void CAttackSystem::Init(CRace* pDefender, CSystem* system, CShipMap* ships, CSe
 	m_pShips.RemoveAll();
 
 	for (CShipMap::iterator i = ships->begin(); i != ships->end(); ++i)
-		if (i->second->GetKO() == m_KO && i->second->GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
+		if (i->second->GetCo() == m_KO && i->second->GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
 			// Schiffe mit Rückzugsbefehl nehmen nicht am Systemangriff teil
 			if (i->second->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT)

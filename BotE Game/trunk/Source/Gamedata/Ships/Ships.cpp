@@ -146,7 +146,7 @@ CString CShips::GetRangeAsString() const {
 //////////////////////////////////////////////////////////////////////
 
 void CShips::SetKO(int x, int y) {
-	CShip::SetKO(x, y);
+	CShip::SetCo(x, y);
 	for(CShips::iterator i = begin(); i != end(); ++i)
 		i->second->SetKO(x, y);
 }
@@ -197,8 +197,8 @@ void CShips::AdoptOrdersFrom(const CShips& ship)
 void CShips::AddShipToFleet(const boost::shared_ptr<CShips>& fleet) {
 	CString s;
 	if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
-		s.Format("CShips: adding ship with leader %s to fleet of %s", fleet->GetShipName(),
-			CShip::GetShipName());
+		s.Format("CShips: adding ship with leader %s to fleet of %s", fleet->m_sName,
+			m_sName);
 		MYTRACE("ships")(MT::LEVEL_INFO, s);
 	}
 	AssertBotE(fleet->GetOwnerOfShip() == GetOwnerOfShip());
@@ -210,8 +210,8 @@ void CShips::AddShipToFleet(const boost::shared_ptr<CShips>& fleet) {
 	i->second->AdoptOrdersFrom(*this);
 	if(fleet->HasFleet()) {
 		if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
-			s.Format("CShips: adding the fleet of leader %s to fleet of %s", fleet->GetShipName(),
-				CShip::GetShipName());
+			s.Format("CShips: adding the fleet of leader %s to fleet of %s", fleet->m_sName,
+				m_sName);
 			MYTRACE("ships")(MT::LEVEL_INFO, s);
 		}
 		m_Fleet.Append(i->second->m_Fleet);

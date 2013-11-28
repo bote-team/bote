@@ -176,7 +176,7 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 
 						i->second->SetOwnerOfShip(pMajor->GetRaceID());
 						// Schiff in die Shiphistory stecken
-						pMajor->GetShipHistory()->AddShip(i->second, pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(true), pDoc->GetCurrentRound());
+						pMajor->GetShipHistory()->AddShip(i->second, pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetLongName(), pDoc->GetCurrentRound());
 					}
 				}
 			}
@@ -261,7 +261,7 @@ void CDiplomacyController::SendToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDiplom
 	case DIPLOMATIC_AGREEMENT::MEMBERSHIP:	{sAgreement = CLoc::GetString("MEMBERSHIP_WITH_ARTICLE");		break;}
 	case DIPLOMATIC_AGREEMENT::NAP:			{sAgreement = CLoc::GetString("NON_AGGRESSION_WITH_ARTICLE");	break;}
 	case DIPLOMATIC_AGREEMENT::DEFENCEPACT:	{sAgreement = CLoc::GetString("DEFENCE_PACT_WITH_ARTICLE");		break;}
-	case DIPLOMATIC_AGREEMENT::WARPACT:		{sAgreement = CLoc::GetString("WAR_PACT_WITH_ARTICLE", FALSE, pWarpactEnemy->GetRaceName()); break;}
+	case DIPLOMATIC_AGREEMENT::WARPACT:		{sAgreement = CLoc::GetString("WAR_PACT_WITH_ARTICLE", FALSE, pWarpactEnemy->GetName()); break;}
 	case DIPLOMATIC_AGREEMENT::REQUEST:		{sAgreement = CLoc::GetString("REQUEST_WITH_ARTICLE");			break;}
 	}
 
@@ -361,11 +361,11 @@ void CDiplomacyController::SendToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDiplom
 				CString s = "";
 				switch (pInfo->m_nType)
 				{
-				case DIPLOMATIC_AGREEMENT::TRADE:		s = CLoc::GetString("MIN_OFFER_TRADE", FALSE, pFromRace->GetRaceName());	break;
-				case DIPLOMATIC_AGREEMENT::FRIENDSHIP:s = CLoc::GetString("MIN_OFFER_FRIEND", FALSE, pFromRace->GetRaceName());	break;
-				case DIPLOMATIC_AGREEMENT::COOPERATION:			s = CLoc::GetString("MIN_OFFER_COOP", FALSE, pFromRace->GetRaceName());		break;
-				case DIPLOMATIC_AGREEMENT::AFFILIATION:			s = CLoc::GetString("MIN_OFFER_AFFI", FALSE, pFromRace->GetRaceName());		break;
-				case DIPLOMATIC_AGREEMENT::MEMBERSHIP:			s = CLoc::GetString("MIN_OFFER_MEMBER", FALSE, pFromRace->GetRaceName());	break;
+				case DIPLOMATIC_AGREEMENT::TRADE:		s = CLoc::GetString("MIN_OFFER_TRADE", FALSE, pFromRace->GetName());	break;
+				case DIPLOMATIC_AGREEMENT::FRIENDSHIP:s = CLoc::GetString("MIN_OFFER_FRIEND", FALSE, pFromRace->GetName());	break;
+				case DIPLOMATIC_AGREEMENT::COOPERATION:			s = CLoc::GetString("MIN_OFFER_COOP", FALSE, pFromRace->GetName());		break;
+				case DIPLOMATIC_AGREEMENT::AFFILIATION:			s = CLoc::GetString("MIN_OFFER_AFFI", FALSE, pFromRace->GetName());		break;
+				case DIPLOMATIC_AGREEMENT::MEMBERSHIP:			s = CLoc::GetString("MIN_OFFER_MEMBER", FALSE, pFromRace->GetName());	break;
 				}
 				message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY, 2);
 				pToMajor->GetEmpire()->AddMsg(message);
@@ -412,7 +412,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 	case DIPLOMATIC_AGREEMENT::MEMBERSHIP:	{sAgreement = CLoc::GetString("MEMBERSHIP_WITH_ARTICLE");		break;}
 	case DIPLOMATIC_AGREEMENT::NAP:			{sAgreement = CLoc::GetString("NON_AGGRESSION_WITH_ARTICLE");	break;}
 	case DIPLOMATIC_AGREEMENT::DEFENCEPACT:	{sAgreement = CLoc::GetString("DEFENCE_PACT_WITH_ARTICLE");		break;}
-	case DIPLOMATIC_AGREEMENT::WARPACT:		{sAgreement = CLoc::GetString("WAR_PACT_WITH_ARTICLE", FALSE, pWarpactEnemy->GetRaceName()); break;}
+	case DIPLOMATIC_AGREEMENT::WARPACT:		{sAgreement = CLoc::GetString("WAR_PACT_WITH_ARTICLE", FALSE, pWarpactEnemy->GetName()); break;}
 	case DIPLOMATIC_AGREEMENT::REQUEST:		{sAgreement = CLoc::GetString("REQUEST_WITH_ARTICLE");			break;}
 	}
 
@@ -561,7 +561,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						// Nachricht über Ablehnung
 						if (answer.m_nAnswerStatus == ANSWER_STATUS::DECLINED)
 						{
-							CString s = CLoc::GetString("WE_DECLINE_MAJ_OFFER", FALSE, sAgreement, pFromRace->GetRaceName());
+							CString s = CLoc::GetString("WE_DECLINE_MAJ_OFFER", FALSE, sAgreement, pFromRace->GetName());
 							message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY);
 							pToMajor->GetEmpire()->AddMsg(message);
 
@@ -670,10 +670,10 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 					{
 						MYTRACE("general")(MT::LEVEL_INFO, "Race: %s accepted WARPACT from %s versus %s", pToMajor->GetRaceID(), pFromRace->GetRaceID(), pWarpactEnemy->GetRaceID());
 
-						s = CLoc::GetString("WE_ACCEPT_WARPACT", FALSE, pWarpactEnemy->GetRaceName(), pFromMajor->GetEmpireNameWithAssignedArticle());
+						s = CLoc::GetString("WE_ACCEPT_WARPACT", FALSE, pWarpactEnemy->GetName(), pFromMajor->GetEmpireNameWithAssignedArticle());
 						message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY);
 						pToMajor->GetEmpire()->AddMsg(message);
-						s = CLoc::GetString("OUR_WARPACT_ACCEPT", TRUE, pToMajor->GetEmpireNameWithArticle(), pWarpactEnemy->GetRaceName());
+						s = CLoc::GetString("OUR_WARPACT_ACCEPT", TRUE, pToMajor->GetEmpireNameWithArticle(), pWarpactEnemy->GetName());
 						message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY, 2);
 						pFromMajor->GetEmpire()->AddMsg(message);
 
@@ -757,10 +757,10 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						// Wir haben den Kriegspakt abgelehnt
 						if (answer.m_nAnswerStatus == ANSWER_STATUS::DECLINED)
 						{
-							s = CLoc::GetString("WE_DECLINE_WARPACT", FALSE, pFromMajor->GetEmpireNameWithAssignedArticle(), pWarpactEnemy->GetRaceName());
+							s = CLoc::GetString("WE_DECLINE_WARPACT", FALSE, pFromMajor->GetEmpireNameWithAssignedArticle(), pWarpactEnemy->GetName());
 							message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY);
 							pToMajor->GetEmpire()->AddMsg(message);
-							s = CLoc::GetString("OUR_WARPACT_DECLINE", TRUE, pToMajor->GetEmpireNameWithArticle(), pWarpactEnemy->GetRaceName());
+							s = CLoc::GetString("OUR_WARPACT_DECLINE", TRUE, pToMajor->GetEmpireNameWithArticle(), pWarpactEnemy->GetName());
 							message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY, 2);
 							pFromMajor->GetEmpire()->AddMsg(message);
 
@@ -771,7 +771,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						// auf unseren Kriegspakt wurde nicht reagiert
 						else
 						{
-							s = CLoc::GetString("NOT_REACTED_WARPACT", TRUE, pToMajor->GetEmpireNameWithArticle(), pWarpactEnemy->GetRaceName());
+							s = CLoc::GetString("NOT_REACTED_WARPACT", TRUE, pToMajor->GetEmpireNameWithArticle(), pWarpactEnemy->GetName());
 							message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY);
 							pFromMajor->GetEmpire()->AddMsg(message);
 						}
@@ -798,7 +798,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 				{
 					CString sEventText = "";
 					if (pInfo->m_nType == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
-						sEventText = pToMajor->GetMoralObserver()->AddEvent(10, pToMajor->GetRaceMoralNumber() , pFromRace->GetRaceName());
+						sEventText = pToMajor->GetMoralObserver()->AddEvent(10, pToMajor->GetRaceMoralNumber() , pFromRace->GetName());
 
 					// wenn es keine Bestechung ist
 					if (pInfo->m_nType != DIPLOMATIC_AGREEMENT::CORRUPTION)
@@ -814,7 +814,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						// nur Text bei Vertragsformen erstellen
 						if (!sAgreement.IsEmpty())
 						{
-							CString	s = CLoc::GetString("FEMALE_ARTICLE", TRUE) + " " + pFromRace->GetRaceName() + " " + CLoc::GetString("MIN_ACCEPT_OFFER", FALSE, sAgreement, pToMajor->GetEmpireNameWithAssignedArticle());
+							CString	s = CLoc::GetString("FEMALE_ARTICLE", TRUE) + " " + pFromRace->GetName() + " " + CLoc::GetString("MIN_ACCEPT_OFFER", FALSE, sAgreement, pToMajor->GetEmpireNameWithAssignedArticle());
 							message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY);
 							pToMajor->GetEmpire()->AddMsg(message);
 						}
@@ -823,15 +823,15 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						CString sEventText = "";
 						switch (pInfo->m_nType)
 						{
-						case DIPLOMATIC_AGREEMENT::TRADE: sEventText = pToMajor->GetMoralObserver()->AddEvent(34, pToMajor->GetRaceMoralNumber(), pFromRace->GetRaceName());	break;
+						case DIPLOMATIC_AGREEMENT::TRADE: sEventText = pToMajor->GetMoralObserver()->AddEvent(34, pToMajor->GetRaceMoralNumber(), pFromRace->GetName());	break;
 						// Sign Friendship/Cooperation Treaty #35
-						case DIPLOMATIC_AGREEMENT::FRIENDSHIP: sEventText = pToMajor->GetMoralObserver()->AddEvent(35, pToMajor->GetRaceMoralNumber(), pFromRace->GetRaceName()); break;
+						case DIPLOMATIC_AGREEMENT::FRIENDSHIP: sEventText = pToMajor->GetMoralObserver()->AddEvent(35, pToMajor->GetRaceMoralNumber(), pFromRace->GetName()); break;
 						// Sign Friendship/Cooperation Treaty #35
-						case DIPLOMATIC_AGREEMENT::COOPERATION: sEventText = pToMajor->GetMoralObserver()->AddEvent(35, pToMajor->GetRaceMoralNumber(), pFromRace->GetRaceName());	break;
+						case DIPLOMATIC_AGREEMENT::COOPERATION: sEventText = pToMajor->GetMoralObserver()->AddEvent(35, pToMajor->GetRaceMoralNumber(), pFromRace->GetName());	break;
 						// Sign an Affiliation Treaty #36
-						case DIPLOMATIC_AGREEMENT::AFFILIATION: sEventText = pToMajor->GetMoralObserver()->AddEvent(36, pToMajor->GetRaceMoralNumber(), pFromRace->GetRaceName());	break;
+						case DIPLOMATIC_AGREEMENT::AFFILIATION: sEventText = pToMajor->GetMoralObserver()->AddEvent(36, pToMajor->GetRaceMoralNumber(), pFromRace->GetName());	break;
 						// Sign a Membership #10
-						case DIPLOMATIC_AGREEMENT::MEMBERSHIP: sEventText = pToMajor->GetMoralObserver()->AddEvent(10, pToMajor->GetRaceMoralNumber() , pFromRace->GetRaceName());	break;
+						case DIPLOMATIC_AGREEMENT::MEMBERSHIP: sEventText = pToMajor->GetMoralObserver()->AddEvent(10, pToMajor->GetRaceMoralNumber() , pFromRace->GetName());	break;
 						}
 
 						if (!sEventText.IsEmpty())
@@ -857,7 +857,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						case DIPLOMATIC_AGREEMENT::AFFILIATION:	sAgreement = CLoc::GetString("AFFILIATION"); break;
 						case DIPLOMATIC_AGREEMENT::MEMBERSHIP:	sAgreement = CLoc::GetString("MEMBERSHIP"); break;
 					}
-					CString s = CLoc::GetString("WE_DECLINE_MIN_OFFER", FALSE, sAgreement, pFromRace->GetRaceName());
+					CString s = CLoc::GetString("WE_DECLINE_MIN_OFFER", FALSE, sAgreement, pFromRace->GetName());
 					message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY);
 					pToMajor->GetEmpire()->AddMsg(message);
 				}
@@ -909,7 +909,7 @@ void CDiplomacyController::SendToMinor(CBotEDoc* pDoc, CMinor* pToMinor, CDiplom
 			{
 				CString sCredits;
 				sCredits.Format("%d", pInfo->m_nCredits);
-				s = sEmpireName + " " + CLoc::GetString("CREDITS_PRESENT", FALSE, sCredits, pToMinor->GetRaceName());
+				s = sEmpireName + " " + CLoc::GetString("CREDITS_PRESENT", FALSE, sCredits, pToMinor->GetName());
 				message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY);
 				pFromMajor->GetEmpire()->AddMsg(message);
 				s = "";
@@ -919,48 +919,48 @@ void CDiplomacyController::SendToMinor(CBotEDoc* pDoc, CMinor* pToMinor, CDiplom
 			{
 				CString number;
 				number.Format("%d", pInfo->m_nResources[RESOURCES::TITAN]);
-				s = sEmpireName + " " + CLoc::GetString("TITAN_PRESENT", FALSE, number, pToMinor->GetRaceName());
+				s = sEmpireName + " " + CLoc::GetString("TITAN_PRESENT", FALSE, number, pToMinor->GetName());
 			}
 			else if (pInfo->m_nResources[RESOURCES::DEUTERIUM] > 0)
 			{
 				CString number;
 				number.Format("%d", pInfo->m_nResources[RESOURCES::DEUTERIUM]);
-				s = sEmpireName + " " + CLoc::GetString("DEUTERIUM_PRESENT", FALSE, number, pToMinor->GetRaceName());
+				s = sEmpireName + " " + CLoc::GetString("DEUTERIUM_PRESENT", FALSE, number, pToMinor->GetName());
 			}
 			else if (pInfo->m_nResources[RESOURCES::DURANIUM] > 0)
 			{
 				CString number;
 				number.Format("%d", pInfo->m_nResources[RESOURCES::DURANIUM]);
-				s = sEmpireName + " " + CLoc::GetString("DURANIUM_PRESENT", FALSE, number, pToMinor->GetRaceName());
+				s = sEmpireName + " " + CLoc::GetString("DURANIUM_PRESENT", FALSE, number, pToMinor->GetName());
 			}
 			else if (pInfo->m_nResources[RESOURCES::CRYSTAL] > 0)
 			{
 				CString number;
 				number.Format("%d", pInfo->m_nResources[RESOURCES::CRYSTAL]);
-				s = sEmpireName + " " + CLoc::GetString("CRYSTAL_PRESENT", FALSE, number, pToMinor->GetRaceName());
+				s = sEmpireName + " " + CLoc::GetString("CRYSTAL_PRESENT", FALSE, number, pToMinor->GetName());
 			}
 			else if (pInfo->m_nResources[RESOURCES::IRIDIUM] > 0)
 			{
 				CString number;
 				number.Format("%d", pInfo->m_nResources[RESOURCES::IRIDIUM]);
-				s = sEmpireName + " " + CLoc::GetString("IRIDIUM_PRESENT", FALSE, number, pToMinor->GetRaceName());
+				s = sEmpireName + " " + CLoc::GetString("IRIDIUM_PRESENT", FALSE, number, pToMinor->GetName());
 			}
 			else if (pInfo->m_nResources[RESOURCES::DERITIUM] > 0)
 			{
 				CString number;
 				number.Format("%d", pInfo->m_nResources[RESOURCES::DERITIUM]);
-				s = sEmpireName + " " + CLoc::GetString("DERITIUM_PRESENT", FALSE, number, pToMinor->GetRaceName());
+				s = sEmpireName + " " + CLoc::GetString("DERITIUM_PRESENT", FALSE, number, pToMinor->GetName());
 			}
 		}
 		// Nachricht machen, das wir eine Bestechung versuchen
 		else if (pInfo->m_nType == DIPLOMATIC_AGREEMENT::CORRUPTION)
 		{
-			s = sEmpireName + " " + CLoc::GetString("TRY_CORRUPTION", FALSE, pToMinor->GetRaceName());
+			s = sEmpireName + " " + CLoc::GetString("TRY_CORRUPTION", FALSE, pToMinor->GetName());
 		}
 		// Nachricht machen, das wir Vertrag aufgehoben haben
 		else if (pInfo->m_nType == DIPLOMATIC_AGREEMENT::NONE)
 		{
-			s = sEmpireName + " " + CLoc::GetString("CANCEL_CONTRACT", FALSE, pToMinor->GetRaceName());
+			s = sEmpireName + " " + CLoc::GetString("CANCEL_CONTRACT", FALSE, pToMinor->GetName());
 			pFromMajor->SetAgreement(pToMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 			pToMinor->SetAgreement(pFromMajor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 		}
@@ -999,7 +999,7 @@ void CDiplomacyController::SendToMinor(CBotEDoc* pDoc, CMinor* pToMinor, CDiplom
 			case DIPLOMATIC_AGREEMENT::AFFILIATION:	{sAgreement = CLoc::GetString("AFFILIATION_WITH_ARTICLE");		break;}
 			case DIPLOMATIC_AGREEMENT::MEMBERSHIP:	{sAgreement = CLoc::GetString("MEMBERSHIP_WITH_ARTICLE");		break;}
 			}
-			s = sEmpireName + " " + CLoc::GetString("OUR_MIN_OFFER", FALSE, pToMinor->GetRaceName(), sAgreement);
+			s = sEmpireName + " " + CLoc::GetString("OUR_MIN_OFFER", FALSE, pToMinor->GetName(), sAgreement);
 		}
 
 		if (!s.IsEmpty())
@@ -1062,7 +1062,7 @@ void CDiplomacyController::ReceiveToMinor(CBotEDoc* pDoc, CMinor* pToMinor, CDip
 					// nur Text bei Vertragsformen erstellen
 					if (!sAgreement.IsEmpty())
 					{
-						CString	s = CLoc::GetString("FEMALE_ARTICLE", TRUE) + " " + pToMinor->GetRaceName() + " " + CLoc::GetString("MIN_ACCEPT_OFFER", FALSE, sAgreement, pFromMajor->GetEmpireNameWithAssignedArticle());
+						CString	s = CLoc::GetString("FEMALE_ARTICLE", TRUE) + " " + pToMinor->GetName() + " " + CLoc::GetString("MIN_ACCEPT_OFFER", FALSE, sAgreement, pFromMajor->GetEmpireNameWithAssignedArticle());
 						CEmpireNews message;
 						message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY, 2);
 						pFromMajor->GetEmpire()->AddMsg(message);
@@ -1073,15 +1073,15 @@ void CDiplomacyController::ReceiveToMinor(CBotEDoc* pDoc, CMinor* pToMinor, CDip
 					// Moralevent einplanen
 					switch (pInfo->m_nType)
 					{
-					case DIPLOMATIC_AGREEMENT::TRADE: sEventText = pFromMajor->GetMoralObserver()->AddEvent(34, pFromMajor->GetRaceMoralNumber(), pToMinor->GetRaceName());	break;
+					case DIPLOMATIC_AGREEMENT::TRADE: sEventText = pFromMajor->GetMoralObserver()->AddEvent(34, pFromMajor->GetRaceMoralNumber(), pToMinor->GetName());	break;
 					// Sign Friendship/Cooperation Treaty #35
-					case DIPLOMATIC_AGREEMENT::FRIENDSHIP: sEventText = pFromMajor->GetMoralObserver()->AddEvent(35, pFromMajor->GetRaceMoralNumber(), pToMinor->GetRaceName()); break;
+					case DIPLOMATIC_AGREEMENT::FRIENDSHIP: sEventText = pFromMajor->GetMoralObserver()->AddEvent(35, pFromMajor->GetRaceMoralNumber(), pToMinor->GetName()); break;
 					// Sign Friendship/Cooperation Treaty #35
-					case DIPLOMATIC_AGREEMENT::COOPERATION: sEventText = pFromMajor->GetMoralObserver()->AddEvent(35, pFromMajor->GetRaceMoralNumber(), pToMinor->GetRaceName());	break;
+					case DIPLOMATIC_AGREEMENT::COOPERATION: sEventText = pFromMajor->GetMoralObserver()->AddEvent(35, pFromMajor->GetRaceMoralNumber(), pToMinor->GetName());	break;
 					// Sign an Affiliation Treaty #36
-					case DIPLOMATIC_AGREEMENT::AFFILIATION: sEventText = pFromMajor->GetMoralObserver()->AddEvent(36, pFromMajor->GetRaceMoralNumber(), pToMinor->GetRaceName());	break;
+					case DIPLOMATIC_AGREEMENT::AFFILIATION: sEventText = pFromMajor->GetMoralObserver()->AddEvent(36, pFromMajor->GetRaceMoralNumber(), pToMinor->GetName());	break;
 					// Sign a Membership #10
-					case DIPLOMATIC_AGREEMENT::MEMBERSHIP: sEventText = pFromMajor->GetMoralObserver()->AddEvent(10, pFromMajor->GetRaceMoralNumber() , pToMinor->GetRaceName());	break;
+					case DIPLOMATIC_AGREEMENT::MEMBERSHIP: sEventText = pFromMajor->GetMoralObserver()->AddEvent(10, pFromMajor->GetRaceMoralNumber() , pToMinor->GetName());	break;
 					}
 
 					if (!sEventText.IsEmpty())
@@ -1115,7 +1115,7 @@ void CDiplomacyController::ReceiveToMinor(CBotEDoc* pDoc, CMinor* pToMinor, CDip
 						case DIPLOMATIC_AGREEMENT::MEMBERSHIP:	sAgreement = CLoc::GetString("MEMBERSHIP"); break;
 					}
 
-					s = CLoc::GetString("MIN_DECLINE_OFFER", FALSE, pToMinor->GetRaceName(), sAgreement);
+					s = CLoc::GetString("MIN_DECLINE_OFFER", FALSE, pToMinor->GetName(), sAgreement);
 					CEmpireNews message;
 					message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY, 2);
 					pFromMajor->GetEmpire()->AddMsg(message);
@@ -1193,7 +1193,7 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 		if (pEnemy->IsMajor())
 			s = CLoc::GetString("WE_DECLARE_WAR", FALSE, dynamic_cast<CMajor*>(pEnemy)->GetEmpireNameWithAssignedArticle());
 		else if (pEnemy->IsMinor())
-			s = CLoc::GetString("WE_DECLARE_WAR_TO_MIN", FALSE, pEnemy->GetRaceName());
+			s = CLoc::GetString("WE_DECLARE_WAR_TO_MIN", FALSE, pEnemy->GetName());
 
 		message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY);
 		pFromMajor->GetEmpire()->AddMsg(message);
@@ -1203,7 +1203,7 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 			// zusätzliche Eventnachricht wegen der Moral an das Imperium
 			CString sEventText = "";
 			short nAgreement = pFromRace->GetAgreement(pEnemy->GetRaceID());
-			CString sParam = CLoc::GetString("FEMALE_ARTICLE") + " " + pEnemy->GetRaceName();
+			CString sParam = CLoc::GetString("FEMALE_ARTICLE") + " " + pEnemy->GetName();
 			if (pEnemy->IsMajor())
 				sParam = dynamic_cast<CMajor*>(pEnemy)->GetEmpireNameWithArticle();
 
@@ -1268,7 +1268,7 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 				if (!pPartner)
 					return;
 
-				s = sEmpireArticleName + " " + CLoc::GetString("WAR_TO_PARTNER", FALSE, pPartner->GetRaceName());
+				s = sEmpireArticleName + " " + CLoc::GetString("WAR_TO_PARTNER", FALSE, pPartner->GetName());
 				message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY, 2);
 				pEnemyMajor->GetEmpire()->AddMsg(message);
 
@@ -1287,7 +1287,7 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 	}
 	else if (pFromRace->IsMinor())
 	{
-		s = CLoc::GetString("MIN_OFFER_WAR", FALSE, pFromRace->GetRaceName());
+		s = CLoc::GetString("MIN_OFFER_WAR", FALSE, pFromRace->GetName());
 		message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY, 2);
 		// Kriegserklärung von Minor kann nur an Majors gehen
 		dynamic_cast<CMajor*>(pEnemy)->GetEmpire()->AddMsg(message);
@@ -1299,7 +1299,7 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 		CMajor* pEnemyMajor = dynamic_cast<CMajor*>(pEnemy);
 		AssertBotE(pEnemyMajor);
 		// zusätzliche Eventnachricht wegen der Moral an das Imperium
-		CString sParam = CLoc::GetString("FEMALE_ARTICLE") + " " + pFromRace->GetRaceName();
+		CString sParam = CLoc::GetString("FEMALE_ARTICLE") + " " + pFromRace->GetName();
 		if (pFromRace->IsMajor())
 			sParam = dynamic_cast<CMajor*>(pFromRace)->GetEmpireNameWithArticle();
 		CString sEventText = "";

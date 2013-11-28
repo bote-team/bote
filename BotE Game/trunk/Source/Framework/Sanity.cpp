@@ -39,7 +39,7 @@ void CSanity::Notify(const CString& s, bool bPopup) {
 void CSanity::CheckShipTargetCoordinates(const CShips& ship)
 {
 	SHIP_ORDER::Typ order = ship.GetCurrentOrder();
-	const CPoint& co = ship.GetKO();
+	const CPoint& co = ship.GetCo();
 	const CPoint& tco = ship.GetTargetKO();
 	//orders which match the fact that the ship has a target != CPoint(-1, -1) set
 	if(order == SHIP_ORDER::NONE || order == SHIP_ORDER::ENCLOAK || order == SHIP_ORDER::DECLOAK || order == SHIP_ORDER::DESTROY_SHIP) {
@@ -52,7 +52,7 @@ void CSanity::CheckShipTargetCoordinates(const CShips& ship)
 	if(tco != CPoint(-1, -1)) {
 		CString s;
 		s.Format("The %s from %s at (%u, %u) has target (%u, %u) set and current order is %s.",
-			ship.GetShipName(),
+			ship.GetName(),
 			ship.GetOwnerOfShip(),
 			co.x, co.y,
 			tco.x, tco.y,
@@ -65,13 +65,13 @@ void CSanity::SanityCheckShip(const CShips& ship)
 {
 	CheckShipTargetCoordinates(ship);
 
-	const CPoint& co = ship.GetKO();
+	const CPoint& co = ship.GetCo();
 	if(ship.GetTerraform() != -1 && ship.GetCurrentOrder() != SHIP_ORDER::TERRAFORM
 		|| ship.GetTerraform() == -1 && ship.GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 	{
 		CString s;
 		s.Format("The %s from %s at (%u, %u) has m_nTerraformingPlanet %i set but current order is %s.",
-			ship.GetShipName(),
+			ship.GetName(),
 			ship.GetOwnerOfShip(),
 			co.x, co.y,
 			ship.GetTerraform(),
@@ -81,7 +81,7 @@ void CSanity::SanityCheckShip(const CShips& ship)
 	if(!ship.IsAlive()) {
 		CString s;
 		s.Format("The %s from %s at (%u, %u) has hull < 1 but wasn't removed!",
-			ship.GetShipName(),
+			ship.GetName(),
 			ship.GetOwnerOfShip(),
 			co.x, co.y);
 		Notify(s);
@@ -89,7 +89,7 @@ void CSanity::SanityCheckShip(const CShips& ship)
 	if(!ship.CanHaveOrder(ship.GetCurrentOrder(), false)) {
 		CString s;
 		s.Format("The %s from %s at (%u, %u) has order %s which it should not be allowed to have!",
-			ship.GetShipName(),
+			ship.GetName(),
 			ship.GetOwnerOfShip(),
 			co.x, co.y,
 			ship.GetCurrentOrderAsString());
@@ -113,7 +113,7 @@ void CSanity::CheckShipUniqueness(const CShips& ship, std::set<CString>& already
 	if(duplicate.IsEmpty())
 		return;
 	CString s;
-	s.Format("Duplicate ship named %s in fleet of %s!", duplicate, ship.GetShipName());
+	s.Format("Duplicate ship named %s in fleet of %s!", duplicate, ship.GetName());
 	Notify(s);
 }
 
@@ -130,10 +130,10 @@ void CSanity::SanityCheckSectorAndSystem(const CSystem& system)
 //	const int size = shiparray.GetSize();
 //	if(0 <= index && index < size) {
 //		const CShip& ship = shiparray.GetAt(index);
-//		const CPoint& p = ship.GetKO();
+//		const CPoint& p = ship.GetCo();
 //		CString sector;
 //		sector.Format("%c%i",(char)(p.y+97),p.x+1);
-//		s.Format("%s; %s; %s", s, ship.GetShipName(), sector);
+//		s.Format("%s; %s; %s", s, ship.GetName(), sector);
 //	}
 //	MYTRACE_CHECKED("shipindices")(MT::LEVEL_INFO, s);
 //}

@@ -57,13 +57,13 @@ void CIntelInfo::CalcIntelInfo(CBotEDoc* pDoc, CMajor* pOurRace)
 			// Sektoren und Systeme ermitteln
 			switch (intelObj->GetType())
 			{
-			case 0:	ko = dynamic_cast<CEcoIntelObj*>(intelObj)->GetKO(); break;
-			case 1:	ko = dynamic_cast<CScienceIntelObj*>(intelObj)->GetKO(); break;
+			case 0:	ko = dynamic_cast<CEcoIntelObj*>(intelObj)->GetCo(); break;
+			case 1:	ko = dynamic_cast<CScienceIntelObj*>(intelObj)->GetCo(); break;
 			case 2:
 			{
 				CMilitaryIntelObj* miobj = dynamic_cast<CMilitaryIntelObj*>(intelObj);
 				if (miobj->GetIsBuilding())
-					ko = miobj->GetKO();
+					ko = miobj->GetCo();
 				break;
 			}
 			}

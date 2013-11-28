@@ -972,7 +972,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 			if (nOffer != DIPLOMATIC_AGREEMENT::NONE)
 			{
 				//	CString s;
-				//	s.Format("Angebot: %d\nvon: %s\nan: %s",offer,CMajorRace::GetRaceName(m_iRaceNumber),CMajorRace::GetRaceName(race));
+				//	s.Format("Angebot: %d\nvon: %s\nan: %s",offer,CMajorRace::GetName(m_iRaceNumber),CMajorRace::GetName(race));
 				//	AfxMessageBox(s);
 
 				// Jetzt muss die Dauer des Vertrages festgelegt werden. Umso "höherwertiger" ein Vertrag ist, desto
@@ -1274,7 +1274,7 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 					}
 
 			//CString d;
-			//d.Format("Meiste Ressource (%d) liegt in System: %d:%d\nBesitzer %s\nMenge: %d\nglobaler Durchschnitt: %d",whichRes,system.x,system.y,this->GetRaceName(m_iRaceNumber),mostRes,averageRessourceStorages[whichRes]);
+			//d.Format("Meiste Ressource (%d) liegt in System: %d:%d\nBesitzer %s\nMenge: %d\nglobaler Durchschnitt: %d",whichRes,system.x,system.y,this->GetName(m_iRaceNumber),mostRes,averageRessourceStorages[whichRes]);
 			//AfxMessageBox(d);
 
 			// Jetzt geben wir eine Menge zwischen 0 und 20000 in 1000er Schritten als Mitgift (max. 20000)

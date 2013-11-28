@@ -403,7 +403,7 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, std::v
 					if (systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(k).GetResource() == res)
 					{
 						// Stimmt das Zielsystem mit unserem überein?
-						if (systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(k).GetKO() == ko)
+						if (systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(k).GetCo() == ko)
 						{
 							// prüfen das die Route nicht schon verwendet wird
 							bool bUsed = false;
@@ -511,7 +511,7 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, std::vecto
 			{
 				for (int i = 0; i < systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize(); i++)
 				{
-					if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).GetKO() == ko)
+					if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).GetCo() == ko)
 					{
 						if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetBlockade() == NULL && systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetBlockade() == NULL)
 						{
@@ -686,7 +686,7 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, std::vector<CSystem>& sy
 			{
 				for (int i = 0; i < systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize(); i++)
 				{
-					if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).GetKO() == ko)
+					if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).GetCo() == ko)
 					{
 						// prozentualen Anteil vom alten Auftrag zurücksetzen
 						systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->ElementAt(i).SetPercent(0);

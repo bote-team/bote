@@ -99,14 +99,14 @@ void CShipHistory::AddShip(const boost::shared_ptr<const CShips>& ship, const CS
 {
 	// Überprüfen, das dieses Schiff nicht schon in der Liste der Schiffe vorhanden ist
 	for (int i = 0; i < m_ShipHistory.GetSize(); i++)
-		if (ship->GetShipName() == m_ShipHistory.GetAt(i).m_strShipName)
+		if (ship->GetName() == m_ShipHistory.GetAt(i).m_strShipName)
 		{
-			//AfxMessageBox("BUG: Ship -" + ship->GetShipName() + "-  allready exists in shiphistory!\nPlease post a bugreport at www.birth-of-the-empires.de");
-			MYTRACE("general")(MT::LEVEL_INFO, "Ship already exists in shiphistory: %d\n", ship->GetShipName());
+			//AfxMessageBox("BUG: Ship -" + ship->GetName() + "-  allready exists in shiphistory!\nPlease post a bugreport at www.birth-of-the-empires.de");
+			MYTRACE("general")(MT::LEVEL_INFO, "Ship already exists in shiphistory: %d\n", ship->GetName());
 			return;
 		}
 	CShipHistoryStruct temp;
-	temp.m_strShipName = ship->GetShipName();
+	temp.m_strShipName = ship->GetName();
 	temp.m_strShipType = ship->GetShipTypeAsString();
 	temp.m_strShipClass = ship->GetShipClass();
 	temp.m_strSectorName = buildsector;
@@ -132,7 +132,7 @@ bool CShipHistory::ModifyShip(const boost::shared_ptr<const CShips>& ship, const
 {
 	for (int i = 0; i < m_ShipHistory.GetSize(); i++)
 	{
-		if (m_ShipHistory.GetAt(i).m_strShipName == ship->GetShipName())
+		if (m_ShipHistory.GetAt(i).m_strShipName == ship->GetName())
 		{
 			m_ShipHistory.ElementAt(i).m_strCurrentSector = sector;
 			m_ShipHistory.ElementAt(i).m_strCurrentTask = ship->GetCurrentOrderAsString();
@@ -162,14 +162,14 @@ bool CShipHistory::ModifyShip(const boost::shared_ptr<const CShips>& ship, const
 void CShipHistory::RemoveShip(const CShips* ship)
 {
 	for (int i = 0; i < m_ShipHistory.GetSize(); i++)
-		if (m_ShipHistory.GetAt(i).m_strShipName == ship->GetShipName())
+		if (m_ShipHistory.GetAt(i).m_strShipName == ship->GetName())
 		{
 			m_ShipHistory.RemoveAt(i);
 			return;
 		}
 
-	//AfxMessageBox("BUG: Ship -" + ship->GetShipName() + "- doesn't exist in shiphistory!\nPlease post a bugreport at www.birth-of-the-empires.de");
-	MYTRACE("general")(MT::LEVEL_INFO, "Ship doesn't exist in shiphistory: %d\n", ship->GetShipName());
+	//AfxMessageBox("BUG: Ship -" + ship->GetName() + "- doesn't exist in shiphistory!\nPlease post a bugreport at www.birth-of-the-empires.de");
+	MYTRACE("general")(MT::LEVEL_INFO, "Ship doesn't exist in shiphistory: %d\n", ship->GetName());
 }
 
 /// Funktion gibt die Anzahl der noch lebenden Schiffe zurück, wenn der Parameter <code>shipAlive</code> wahr ist.

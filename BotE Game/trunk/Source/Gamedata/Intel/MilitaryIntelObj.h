@@ -43,7 +43,7 @@ public:
 
 	// Zugriffsfunktionen
 	/// Funktion gibt die Koordinaten des Sektors zurück, auf welchen sich die Geheimdienstaktion auswirkt.
-	CPoint GetKO() const {return m_KO;}
+	CPoint GetCo() const {return m_KO;}
 
 	/// Funktion gibt die ID des Gebäudes, des Schiffes oder der Truppe zurück, auf welches sich die Geheimdienstaktion
 	/// auswirkt.

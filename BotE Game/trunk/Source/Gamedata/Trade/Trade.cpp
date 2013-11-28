@@ -242,7 +242,7 @@ void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<CSystem>& systems
 						CString s;
 						s.Format("%d %s",sum[x][y][i],resName);
 						CEmpireNews message;
-						message.CreateNews(CLoc::GetString("GET_RESOURCES",0,s,systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName()), EMPIRE_NEWS_TYPE::ECONOMY, "", systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetKO());
+						message.CreateNews(CLoc::GetString("GET_RESOURCES",0,s,systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName()), EMPIRE_NEWS_TYPE::ECONOMY, "", systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetCo());
 						pMajor->GetEmpire()->AddMsg(message);
 					}
 }

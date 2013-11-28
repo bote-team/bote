@@ -237,7 +237,7 @@ void CSystemMenuView::OnXButtonDown(UINT nFlags, UINT nButton, CPoint point)
 		return;
 
 	// Wenn wir in irgendeinem System sind, können wir mit dem links rechts Pfeil zu einem anderen System wechseln
-	CPoint p = pDoc->GetKO();
+	CPoint p = pDoc->GetCo();
 
 	// an welcher Stelle in der Liste befindet sich das aktuelle System?
 	short pos = 0;
@@ -309,7 +309,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	Gdiplus::Color oldColor = color;
 
 	CString s;
-	CPoint p = pDoc->GetKO();
+	CPoint p = pDoc->GetCo();
 	if (bg_buildmenu)
 		g->DrawImage(bg_buildmenu, 0, 0, 1075, 750);
 
@@ -849,7 +849,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 		return;
 
 	CString s;
-	CPoint p = pDoc->GetKO();
+	CPoint p = pDoc->GetCo();
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
@@ -1212,7 +1212,7 @@ void CSystemMenuView::DrawBuildingsOverviewMenue(Graphics* g)
 	if (!pMajor)
 		return;
 
-	CPoint p = pDoc->GetKO();;
+	CPoint p = pDoc->GetCo();;
 	CString s;
 
 	CString fontName = "";
@@ -1374,7 +1374,7 @@ void CSystemMenuView::DrawEnergyMenue(Gdiplus::Graphics *g)
 	if (!pMajor)
 		return;
 
-	CPoint p = pDoc->GetKO();;
+	CPoint p = pDoc->GetCo();;
 	CString s;
 
 	CString fontName = "";
@@ -1542,7 +1542,7 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	if (!pMajor)
 		return;
 
-	CPoint p = pDoc->GetKO();;
+	CPoint p = pDoc->GetCo();;
 	CString s,s2;
 
 	CString fontName = "";
@@ -1645,7 +1645,7 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	for (int i = 0; i < pDoc->GetSystem(p.x, p.y).GetResourceRoutes()->GetSize(); i++)
 	{
 		int j = i + numberOfTradeRoutes;
-		CPoint dest = pDoc->GetSystem(p.x, p.y).GetResourceRoutes()->GetAt(i).GetKO();
+		CPoint dest = pDoc->GetSystem(p.x, p.y).GetResourceRoutes()->GetAt(i).GetCo();
 		s.Format("%s", pDoc->GetSystem(dest.x, dest.y).GetName());
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(70,260+j*30,125,25), &fontFormat, &markBrush);
 		switch (pDoc->GetSystem(p.x, p.y).GetResourceRoutes()->GetAt(i).GetResource())
@@ -1824,7 +1824,7 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
 
-	CPoint p = pDoc->GetKO();
+	CPoint p = pDoc->GetCo();
 	CString m_strAssemblyListEntry("");
 
 	int y = 410;
@@ -1928,7 +1928,7 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 
 	CString s;
 	CPoint p;
-	p = pDoc->GetKO();
+	p = pDoc->GetCo();
 
 	// Die Rohstoffe und sonstige Informationen im System oben in der Mitte anzeigen
 	// Lager und Rohstoffe rechts zeichnen
@@ -2079,7 +2079,7 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 
 			for (int i = 0; i < pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetSize(); i++)
 			{
-				CPoint ptTarget = pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(i).GetKO();
+				CPoint ptTarget = pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(i).GetCo();
 				// ist das Ziel das aktuelle System?
 				if (ptTarget == p)
 				{
@@ -2797,7 +2797,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 	// Wenn es sich um ein Upgrade handelt:
 	else if (m_vBuildlist[m_iClickedOn] < 0)
 	{
-		CPoint p = pDoc->GetKO();
+		CPoint p = pDoc->GetCo();
 		// aktuelles Gebäude, also Gebäude welches geupdated werden soll
 		CBuildingInfo* b1 = &pDoc->GetBuildingInfo(pDoc->BuildingInfo.GetAt(RunningNumber - 1).GetPredecessorID());
 		if (b1->GetWorker())
@@ -3008,7 +3008,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			CSystem& system = pDoc->CurrentSystem();
 			CManagerSettingsDlg dlg(&system.Manager(), system);
 			if(dlg.DoModal() == IDOK)
-				ReflectPossibleResearchOrSecurityWorkerChange(pMajor, pDoc, pDoc->GetKO(), true);
+				ReflectPossibleResearchOrSecurityWorkerChange(pMajor, pDoc, pDoc->GetCo(), true);
 		}
 		else
 			m_bySubMenu = temp;
@@ -3071,7 +3071,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 		}
 
-		const CPoint& p = pDoc->GetKO();
+		const CPoint& p = pDoc->GetCo();
 		// Überprüfen ob wir auf den KaufenButton gedrückt haben und wir noch nix gekauft haben
 		// dies geht nicht bei NeverReady wie z.B. Kriegsrecht Aufträgen
 		int nFirstAssemblyListEntry = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetAssemblyListEntry(0);
@@ -3152,7 +3152,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					{
 						CPoint ko = pMajor->GetEmpire()->GetSystemList()->GetAt(k).ko;
 						for (int l = 0; l < pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetSize(); l++)
-							if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetKO() == p)
+							if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetCo() == p)
 								if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetResource() == j)
 									if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetPercent() > 0)
 									{
@@ -3238,7 +3238,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Ins Arbeiterzuweisungsmenü (normale Gebäude)
 	if (m_bySubMenu == 1)
 	{
-		CPoint p = pDoc->GetKO();
+		CPoint p = pDoc->GetCo();
 		if (ChangeWorkersButton.PtInRect(point))
 		{
 			m_bySubMenu = 12;
@@ -3306,7 +3306,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		if (m_bySubMenu == 12)
 		{
-			CPoint p = pDoc->GetKO();
+			CPoint p = pDoc->GetCo();
 			if (ChangeWorkersButton.PtInRect(point))
 			{
 				m_bySubMenu = 1;
@@ -3371,7 +3371,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Ins Energiezuweisungsmenü
 	if (m_bySubMenu == 2)
 	{
-		const CPoint& p = pDoc->GetKO();
+		const CPoint& p = pDoc->GetCo();
 		for (int i = m_iELPage * NOBIEL; i < m_EnergyList.GetSize(); i++)
 			// Wenn wir auf der richtigen Seite sind
 			if (i < m_iELPage * NOBIEL + NOBIEL)
@@ -3413,7 +3413,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	else if (m_bySubMenu == 3)
 	{
 		// Wenn ich Gebäude abreißen will, mit links auf die Schaltfläche drücken
-		CPoint p = pDoc->GetKO();
+		CPoint p = pDoc->GetCo();
 		for (int i = m_iBOPage * NOBIOL; i < m_BuildingOverview.GetSize(); i++)
 			// Wenn wir auf der richtigen Seite sind
 			if (i < m_iBOPage * NOBIOL + NOBIOL)
@@ -3445,7 +3445,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (CRect(60,600,180,630).PtInRect(point))
 		{
 			CGalaxyMenuView::IsDrawTradeRoute(TRUE);
-			CGalaxyMenuView::GetDrawnTradeRoute()->GenerateTradeRoute(pDoc->GetKO());
+			CGalaxyMenuView::GetDrawnTradeRoute()->GenerateTradeRoute(pDoc->GetCo());
 			resources::pMainFrame->SelectMainView(VIEWS::GALAXY_VIEW, pMajor->GetRaceID());
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 		}
@@ -3453,7 +3453,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		else if (CRect(360,600,480,630).PtInRect(point))
 		{
 			CGalaxyMenuView::IsDrawResourceRoute(TRUE);
-			CGalaxyMenuView::GetDrawnResourceRoute()->GenerateResourceRoute(pDoc->GetKO(), m_byResourceRouteRes);
+			CGalaxyMenuView::GetDrawnResourceRoute()->GenerateResourceRoute(pDoc->GetCo(), m_byResourceRouteRes);
 			resources::pMainFrame->SelectMainView(VIEWS::GALAXY_VIEW, pMajor->GetRaceID());
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 		}
@@ -3479,7 +3479,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		else
 		{
-			CPoint p = pDoc->GetKO();
+			CPoint p = pDoc->GetCo();
 			// einzelne Buttons um womöglich eine Ressourcenroute zu kündigen
 			for (int i = 0; i < pDoc->GetSystem(p.x, p.y).GetResourceRoutes()->GetSize(); i++)
 			{
@@ -3582,7 +3582,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		return;
 
 	// Wenn wir uns in der Systemansicht befinden
-	CPoint p = pDoc->GetKO();
+	CPoint p = pDoc->GetCo();
 
 	// Baulisteneintrag hinzufügen
 	if (m_bySubMenu == 0)
@@ -3678,7 +3678,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 							CPoint ko = pMajor->GetEmpire()->GetSystemList()->GetAt(k).ko;
 							for (int l = 0; l < pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetSize(); l++)
 							{
-								if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetKO() == p)
+								if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetCo() == p)
 								{
 									if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetResource() == j)
 									{
@@ -3768,7 +3768,7 @@ void CSystemMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	if (m_bySubMenu == 3)
 	{
 		// Wenn ich Gebäude nicht mehr abreißen will, mit rechts auf die Schaltfläche drücken
-		CPoint p = pDoc->GetKO();
+		CPoint p = pDoc->GetCo();
 		for (int i = m_iBOPage * NOBIOL; i < m_BuildingOverview.GetSize(); i++)
 			// Wenn wir auf der richtigen Seite sind
 			if (i < m_iBOPage * NOBIOL + NOBIOL)
@@ -3820,7 +3820,7 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		return;
 
 	// Wenn wir in irgendeinem System sind, können wir mit dem links rechts Pfeil zu einem anderen System wechseln
-	CPoint p = pDoc->GetKO();
+	CPoint p = pDoc->GetCo();
 	if (nChar == VK_RIGHT || nChar == VK_LEFT)
 	{
 		// an welcher Stelle in der Liste befindet sich das aktuelle System?

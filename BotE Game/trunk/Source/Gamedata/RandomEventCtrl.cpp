@@ -147,7 +147,7 @@ void CRandomEventCtrl::GlobalEventResearch(CMajor *pRace)
 void CRandomEventCtrl::GlobalEventMinor(CMajor* pRace, CMinor* pMinor)
 {
 	pMinor->SetRelation(pRace->GetRaceID(), (rand() % 101) - pMinor->GetRelation(pRace->GetRaceID()));
-	CString messagetext=CLoc::GetString("GLOBALEVENTMINOR",false,pMinor->GetRaceName());
+	CString messagetext=CLoc::GetString("GLOBALEVENTMINOR",false,pMinor->GetName());
 	CEmpireNews message;
 	message.CreateNews(messagetext,EMPIRE_NEWS_TYPE::DIPLOMACY);//Nachricht für Randomevent erstellen
 	pRace->GetEmpire()->AddMsg(message);
@@ -176,7 +176,7 @@ void CRandomEventCtrl::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMa
 		int nAdd = (50 + rand()%101) * nSystemCount;
 		pRace->GetEmpire()->AddFP(nAdd);
 
-		CString sSectorName = pDoc->GetSystem(ko.x, ko.y).GetName(false);
+		CString sSectorName = pDoc->GetSystem(ko.x, ko.y).GetName();
 		if (sSectorName.IsEmpty())
 			sSectorName.Format("%c%i", (char)(ko.y+97), ko.x + 1);
 
@@ -193,14 +193,14 @@ void CRandomEventCtrl::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMa
 	{
 		for (CShipMap::iterator i = ships->begin(); i != ships->end(); ++i)
 		{
-			if (i->second->GetOwnerOfShip() == pRace->GetRaceID() && i->second->GetKO()==ko)
+			if (i->second->GetOwnerOfShip() == pRace->GetRaceID() && i->second->GetCo()==ko)
 			{
 				const int additional_experience = rand() % 401 + 50;
 				i->second->SetCrewExperiance(additional_experience);
 			}
 		}
 
-		sMessageText = CLoc::GetString("EVENTSHIPXP",false,pDoc->GetSystem(ko.x, ko.y).GetName(true));
+		sMessageText = CLoc::GetString("EVENTSHIPXP",false,pDoc->GetSystem(ko.x, ko.y).GetLongName());
 		typ = EMPIRE_NEWS_TYPE::MILITARY;
 	}
 
@@ -242,7 +242,7 @@ void CRandomEventCtrl::CalcShipEvents() const
 				if (i->second->IsAlien())
 					continue;
 
-				if (i->second->GetKO() != pSector->GetKO())
+				if (i->second->GetCo() != pSector->GetCo())
 					continue;
 
 				int nCurrentHull = i->second->GetHull()->GetCurrentHull();
@@ -267,13 +267,13 @@ void CRandomEventCtrl::CalcShipEvents() const
 				if (!pMajor)
 					continue;
 
-				CString sSectorName = pSector->GetName(false);
+				CString sSectorName = pSector->GetName();
 				if (sSectorName.IsEmpty())
-					sSectorName.Format("%c%i", (char)(pSector->GetKO().y+97), pSector->GetKO().x + 1);
+					sSectorName.Format("%c%i", (char)(pSector->GetCo().y+97), pSector->GetCo().x + 1);
 
 				CString sMessageText = CLoc::GetString("EVENTHULLVIRUS", false, sSectorName);
 				CEmpireNews message;
-				message.CreateNews(sMessageText,EMPIRE_NEWS_TYPE::MILITARY,pSector->GetName(),pSector->GetKO());
+				message.CreateNews(sMessageText,EMPIRE_NEWS_TYPE::MILITARY,pSector->GetName(),pSector->GetCo());
 				pMajor->GetEmpire()->AddMsg(message);
 
 				if (pMajor->IsHumanPlayer())

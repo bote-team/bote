@@ -34,7 +34,7 @@ public:
 	// Zugriffsfunktionen
 	// zum Lesen der Membervariablen
 	EMPIRE_NEWS_TYPE::Typ GetType(void) const {return m_nType;}
-	const CPoint& GetKO(void) const {return m_ptKO;}
+	const CPoint& GetCo(void) const {return m_ptKO;}
 	BYTE GetFlag(void) const {return m_byFlag;}
 	const CString& GetText(void) const {return m_sText;}
 

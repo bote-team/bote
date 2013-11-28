@@ -37,14 +37,14 @@ bool CompareRaceName(const CRace* pRace1, const CRace* pRace2)
 	if (!pRace2->IsAlien() && pRace1->IsAlien())
 		return false;
 
-	return pRace1->GetRaceName() < pRace2->GetRaceName();
+	return pRace1->GetName() < pRace2->GetName();
 }
 
 /// Funktion soriert Rassen nach Wertigkeit des Vertrages
 bool ComareRaceAgreement(const CRace* pRace1, const CRace* pRace2)
 {
 	if (pRace1->IsMinor() && ((CMinor*)pRace1)->GetSubjugated() && pRace2->IsMinor() && ((CMinor*)pRace2)->GetSubjugated())
-		return pRace1->GetRaceName() < pRace2->GetRaceName();
+		return pRace1->GetName() < pRace2->GetName();
 
 	if (pRace1->IsMinor() && ((CMinor*)pRace1)->GetSubjugated())
 		return true;
@@ -53,7 +53,7 @@ bool ComareRaceAgreement(const CRace* pRace1, const CRace* pRace2)
 		return false;
 
 	if (pPlayer->GetAgreement(pRace1->GetRaceID()) == pPlayer->GetAgreement(pRace2->GetRaceID()))
-		return pRace1->GetRaceName() < pRace2->GetRaceName();
+		return pRace1->GetName() < pRace2->GetName();
 
 	return pPlayer->GetAgreement(pRace1->GetRaceID()) < pPlayer->GetAgreement(pRace2->GetRaceID());
 }
@@ -781,7 +781,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 
 				// Name der Rasse zeichnen
 				fontBrush.SetColor(markColor);
-				g->DrawString(CComBSTR(pRace->GetRaceName()), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(pRace->GetName()), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 
 				// Farbe der Schrift und Markierung wählen, wenn wir auf eine Rasse geklickt haben
 				g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(8,100+count*25,142,25));
@@ -837,7 +837,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 				Gdiplus::Color color(normalColor);
 				s = this->PrintDiplomacyStatus(pPlayer->GetRaceID(), pRace->GetRaceID(), color);
 				fontBrush.SetColor(color);
-				g->DrawString(CComBSTR(pRace->GetRaceName()), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(pRace->GetName()), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 			}
 			fontBrush.SetColor(normalColor);
 			count++;
@@ -869,7 +869,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 			{
 				// Name der Rasse zeichnen
 				fontBrush.SetColor(markColor);
-				g->DrawString(CComBSTR(pRace->GetRaceName()), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(pRace->GetName()), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 
 				// Farbe der Schrift und Markierung wählen, wenn wir auf eine Rasse geklickt haben
 				g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(8,100+count*25,142,25));
@@ -946,7 +946,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 			// handelt es sich nicht um das angeklickte Angebot, so muss trotzdem deren Name angezeigt werden
 			else
 			{
-				g->DrawString(CComBSTR(pRace->GetRaceName()), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(pRace->GetName()), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 			}
 
 			// Handelt es sich um eine diplomatisches Angebot (keine Antwort, kein normaler Text)
@@ -1095,7 +1095,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 	rect.Y -= 100;
 	fontBrush.SetColor(normalColor);
 	fontFormat.SetAlignment(StringAlignmentFar);
-	s = pRace->GetRaceName();
+	s = pRace->GetName();
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 25;
 
@@ -1172,7 +1172,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 				{
 					fontBrush.SetColor(normalColor);
 					fontFormat.SetAlignment(StringAlignmentNear);
-					s = it->second->GetRaceName();
+					s = it->second->GetName();
 					g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 
 					fontFormat.SetAlignment(StringAlignmentFar);
@@ -1211,7 +1211,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 		{
 			m_OutgoingInfo.m_sHeadline = CLoc::GetString("CANCEL_AGREEMENT");
 			Gdiplus::Color color;
-			m_OutgoingInfo.m_sText = CLoc::GetString("CANCEL_AGREEMENT_TEXT", FALSE, this->PrintDiplomacyStatus(pPlayer->GetRaceID(), m_sClickedOnRace, color), pRace->GetRaceName());
+			m_OutgoingInfo.m_sText = CLoc::GetString("CANCEL_AGREEMENT_TEXT", FALSE, this->PrintDiplomacyStatus(pPlayer->GetRaceID(), m_sClickedOnRace, color), pRace->GetName());
 
 			if (m_bShowSendButton == TRUE)
 				s = CLoc::GetString("BTN_ANNUL");
@@ -1438,7 +1438,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					CMajor* pCorruptedMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_OutgoingInfo.m_sCorruptedRace));
 					if (!pCorruptedMajor)
 						return;
-					s = pCorruptedMajor->GetRaceName();
+					s = pCorruptedMajor->GetName();
 
 					fontFormat.SetAlignment(StringAlignmentCenter);
 					if (graphic)
@@ -1485,7 +1485,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					CMajor* pWarpactEnemy = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_OutgoingInfo.m_sWarpactEnemy));
 					if (!pWarpactEnemy)
 						return;
-					s = pWarpactEnemy->GetRaceName();
+					s = pWarpactEnemy->GetName();
 
 					fontFormat.SetAlignment(StringAlignmentCenter);
 					if (graphic)

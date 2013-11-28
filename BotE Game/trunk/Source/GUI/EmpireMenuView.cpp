@@ -1803,7 +1803,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 						if (pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType() == EMPIRE_NEWS_TYPE::ECONOMY ||
 							pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType() == EMPIRE_NEWS_TYPE::SOMETHING)
 						{
-							CPoint p = pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetKO();
+							CPoint p = pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetCo();
 							if (p != CPoint(-1, -1))
 							{
 								pDoc->SetKO(p.x,p.y);
@@ -1831,7 +1831,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 						}
 						else if (pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType() == EMPIRE_NEWS_TYPE::MILITARY)
 						{
-							CPoint p = pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetKO();
+							CPoint p = pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetCo();
 							if (p != CPoint(-1, -1))
 							{
 								pDoc->SetKO(p.x,p.y);
@@ -1921,7 +1921,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				CPoint pt = CPoint(-1,-1);
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 					for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-						if (pDoc->GetSystem(x,y).GetName(true) == pShipHistory->m_strCurrentSector)
+						if (pDoc->GetSystem(x,y).GetLongName() == pShipHistory->m_strCurrentSector)
 						{
 							pt = CPoint(x,y);
 							break;

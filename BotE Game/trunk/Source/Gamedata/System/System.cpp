@@ -2021,11 +2021,11 @@ void CSystem::Colonize(const CShips& ship, CMajor& major)
 		// Nachricht an das Imperium senden, das ein System neu kolonisiert wurde
 		CString s = CLoc::GetString("FOUND_COLONY_MESSAGE",FALSE,GetName());
 		CEmpireNews message;
-		message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,GetName(),m_KO);
+		message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,GetName(),m_Co);
 		empire->AddMsg(message);
 
 		// zusätzliche Eventnachricht (Colonize a system #12) wegen der Moral an das Imperium
-		message.CreateNews(major.GetMoralObserver()->AddEvent(12, major.GetRaceMoralNumber(), GetName()), EMPIRE_NEWS_TYPE::SOMETHING, "", m_KO);
+		message.CreateNews(major.GetMoralObserver()->AddEvent(12, major.GetRaceMoralNumber(), GetName()), EMPIRE_NEWS_TYPE::SOMETHING, "", m_Co);
 		empire->AddMsg(message);
 		if (major.IsHumanPlayer())
 		{
@@ -2033,7 +2033,7 @@ void CSystem::Colonize(const CShips& ship, CMajor& major)
 			resources::pClientWorker->SetToEmpireViewFor(major);
 			CEventColonization* eventScreen = new CEventColonization(major.GetRaceID(), CLoc::GetString("COLOEVENT_HEADLINE", FALSE, GetName()), CLoc::GetString("COLOEVENT_TEXT_" + major.GetRaceID(), FALSE, GetName()));
 			empire->GetEvents()->Add(eventScreen);
-			s.Format("Added Colonization-Eventscreen for Race %s in System %s", major.GetRaceName(), GetName());
+			s.Format("Added Colonization-Eventscreen for Race %s in System %s", major.GetName(), GetName());
 			MYTRACE("general")(MT::LEVEL_INFO, s);
 		}
 	}
@@ -2042,7 +2042,7 @@ void CSystem::Colonize(const CShips& ship, CMajor& major)
 		// Nachricht an das Imperium senden, das ein Planet kolonisiert wurde
 		CString s = CLoc::GetString("NEW_PLANET_COLONIZED",FALSE,GetName());
 		CEmpireNews message;
-		message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,GetName(),m_KO);
+		message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,GetName(),m_Co);
 		empire->AddMsg(message);
 		resources::pClientWorker->SetToEmpireViewFor(major);
 	}
@@ -3048,7 +3048,7 @@ unsigned CSystem::CheckTradeRoutesDiplomacy(CBotEDoc& pDoc) {
 		CTradeRoute& trade_route = m_TradeRoutes.GetAt(i);
 		const CPoint& dest = trade_route.GetDestKO();
 		// Wenn die Handelsroute aus diplomatischen Gründen nicht mehr vorhanden sein kann
-		if (!trade_route.CheckTradeRoute(m_KO, dest, &pDoc))
+		if (!trade_route.CheckTradeRoute(m_Co, dest, &pDoc))
 		{
 			// dann müssen wir diese Route löschen
 			m_TradeRoutes.RemoveAt(i--);
@@ -3056,7 +3056,7 @@ unsigned CSystem::CheckTradeRoutesDiplomacy(CBotEDoc& pDoc) {
 		}
 		// Ansonsten könnte sich die Beziehung zu der Minorrace verbessern
 		else
-			trade_route.PerhapsChangeRelationship(m_KO, dest, &pDoc);
+			trade_route.PerhapsChangeRelationship(m_Co, dest, &pDoc);
 	}
 	return deletedTradeRoutes;
 }
@@ -3098,7 +3098,7 @@ BOOLEAN CSystem::AddResourceRoute(CPoint dest, BYTE res, const std::vector<CSyst
 		return FALSE;
 	// gibt es schon eine Route mit dem Rohstoff ins Zielsystem?
 	for (int i = 0; i < m_ResourceRoutes.GetSize(); i++)
-		if (m_ResourceRoutes.GetAt(i).GetResource() == res && m_ResourceRoutes.GetAt(i).GetKO() == dest)
+		if (m_ResourceRoutes.GetAt(i).GetResource() == res && m_ResourceRoutes.GetAt(i).GetCo() == dest)
 			return FALSE;
 
 	CResourceRoute route;
@@ -3151,7 +3151,7 @@ unsigned CSystem::CheckResourceRoutesExistence(CBotEDoc& pDoc) {
 	for (int i = 0; i < m_ResourceRoutes.GetSize(); i++)
 	{
 		CResourceRoute& res_route = m_ResourceRoutes.GetAt(i);
-		const CPoint dest = res_route.GetKO();
+		const CPoint dest = res_route.GetCo();
 
 		if (!res_route.CheckResourceRoute(OwnerID(), &pDoc.GetSystem(dest.x, dest.y)))
 		{
@@ -3294,11 +3294,11 @@ void CSystem::ExecuteManager(CMajor& owner, bool turn_change, bool energy)
 	const CString& name = GetName();
 
 	if(energy && m_Manager.CheckEnergyConsumers(*this) && turn_change)
-		ManagerMessage(CLoc::GetString("MANAGER_BOMB_WARNING",false, name), owner, m_KO);
+		ManagerMessage(CLoc::GetString("MANAGER_BOMB_WARNING",false, name), owner, m_Co);
 	if(!m_Manager.DistributeWorkers(*this))
-		ManagerMessage(CLoc::GetString("MANAGER_MALFUNCTION",false, name), owner, m_KO);
+		ManagerMessage(CLoc::GetString("MANAGER_MALFUNCTION",false, name), owner, m_Co);
 	if(turn_change && m_Manager.CheckFamine(*this))
-		ManagerMessage(CLoc::GetString("MANAGER_FAMINE_WARNING",false, name), owner, m_KO);
+		ManagerMessage(CLoc::GetString("MANAGER_FAMINE_WARNING",false, name), owner, m_Co);
 }
 
 bool CSystem::CheckSanity() const

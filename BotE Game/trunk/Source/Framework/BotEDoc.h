@@ -131,7 +131,7 @@ public:
 		return m_ShipMap.FleetShip();
 	}
 
-	const CPoint& GetKO(void) const {return m_ptKO;}
+	const CPoint& GetCo(void) const {return m_ptKO;}
 	void SetKO(int x, int y);
 
 	CSystem& GetSystem(int x, int y) {

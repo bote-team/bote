@@ -380,10 +380,10 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Wenn wir auf irgendeinen der Buttons geklickt haben um Schiffe hinzuzufügen
 	if (whichRect > 0 && whichRect < 4)
 	{
-		const CPoint& ko = pDoc->FleetShip()->second->GetKO();
+		const CPoint& ko = pDoc->FleetShip()->second->GetCo();
 		for(CShipMap::iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end();) {
 			const CShipMap::iterator& fleetship = pDoc->FleetShip();
-			if (i->second->GetOwnerOfShip() != fleetship->second->GetOwnerOfShip() || i->second->GetKO() != ko || i->second->IsStation()) {
+			if (i->second->GetOwnerOfShip() != fleetship->second->GetOwnerOfShip() || i->second->GetCo() != ko || i->second->IsStation()) {
 				++i;
 				continue;
 			}

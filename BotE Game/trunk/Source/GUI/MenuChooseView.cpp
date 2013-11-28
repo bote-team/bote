@@ -448,12 +448,12 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 		{
 			resources::pMainFrame->SelectMainView(VIEWS::SYSTEM_VIEW, pMajor->GetRaceID());
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
-			m_LastSystem = pDoc->GetKO();
+			m_LastSystem = pDoc->GetCo();
 
 			// unsichtbar auf der Galaxiekarte auf das System zentrieren, so dass wenn man zurück auf die
 			// Galaxiemap springt diese das System anzeigt
 			if (CGalaxyMenuView* pView = dynamic_cast<CGalaxyMenuView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CGalaxyMenuView))))
-				pView->ScrollToSector(pDoc->GetKO());
+				pView->ScrollToSector(pDoc->GetCo());
 		}
 	}
 	// Forschungsbutton

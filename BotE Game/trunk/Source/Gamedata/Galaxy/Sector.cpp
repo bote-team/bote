@@ -197,7 +197,7 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 		m_bSunSystem = true;
 		// Zahl[0,99] generieren und vergleichen (Minorrace?)
 		bool bMinor = rand()%100 >= (100 - minorProb);
-		m_strSectorName = CGenSectorName::GetInstance()->GetNextRandomSectorName(m_KO, bMinor);
+		m_sName = CGenSectorName::GetInstance()->GetNextRandomSectorName(m_Co, bMinor);
 		// bMinor wird in der Generierungsfunktion angepasst, falls es keine Minorracesystemnamen mehr gibt
 		SetMinorRace(bMinor);
 
@@ -307,7 +307,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 						for (int i = 0; i < number; i++)
 						{
 							CPlanet planet;
-							zone = planet.Create(GetName(FALSE), zone, i, true);
+							zone = planet.Create(m_sName, zone, i, true);
 							m_Planets.push_back(planet);
 						}
 
@@ -380,7 +380,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 			for (int i = 0; i < number; i++)
 			{
 				CPlanet planet;
-				zone = planet.Create(GetName(FALSE), zone, i, GetMinorRace());
+				zone = planet.Create(m_sName, zone, i, GetMinorRace());
 				m_Planets.push_back(planet);
 
 				// nicht zu viele große Planeten generieren, da diese dann nicht mehr
@@ -449,7 +449,7 @@ void CSector::RecalcPlanetsTerraformingStatus() {
 	for(CShipMap::const_iterator i = sm.begin(); i != sm.end(); ++i) {
 		if(terraformable.empty())
 			break;
-		if(i->second->GetKO() != m_KO || i->second->GetCurrentOrder() != SHIP_ORDER::TERRAFORM)
+		if(i->second->GetCo() != m_Co || i->second->GetCurrentOrder() != SHIP_ORDER::TERRAFORM)
 			continue;
 		const unsigned planet = i->second->GetTerraform();
 		CPlanet& p = m_Planets.at(planet);

@@ -120,14 +120,14 @@ bool CMinor::PerhapsExtend(CBotEDoc* pDoc)
 
 	// Wenn der dazugehörige Sektor nicht der kleinen Rasse gehört, also eine andere Rasse diese vereinnahmt hat,
 	// dann wächst das System auch nicht mehr automatisch
-	if (pDoc->GetSystem(m_ptKO.x, m_ptKO.y).OwnerID() != m_sID)
+	if (pDoc->GetSystem(m_Co.x, m_Co.y).OwnerID() != m_sID)
 		return false;
 
-	bool bColonized = pDoc->GetSystem(m_ptKO.x, m_ptKO.y).PerhapsMinorExtends(m_iTechnologicalProgress);
+	bool bColonized = pDoc->GetSystem(m_Co.x, m_Co.y).PerhapsMinorExtends(m_iTechnologicalProgress);
 
 	if (bColonized)
 		// dann sind im System auch weitere Einwohner hinzugekommen
-		pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetHabitants(pDoc->GetSystem(m_ptKO.x, m_ptKO.y).GetCurrentHabitants());
+		pDoc->GetSystem(m_Co.x, m_Co.y).SetHabitants(pDoc->GetSystem(m_Co.x, m_Co.y).GetCurrentHabitants());
 
 	return bColonized;
 }
@@ -142,12 +142,12 @@ void CMinor::PerhapsBuildShip(CBotEDoc* pDoc)
 	if (!m_bSpaceflight)
 		return;
 
-	if (m_ptKO == CPoint(-1,-1))
+	if (m_Co == CPoint(-1,-1))
 		return;
 
 	// Wenn der dazugehörige Sektor nicht der kleinen Rasse gehört, also eine andere Rasse diese vereinnahmt hat,
 	// dann wächst das System auch nicht mehr automatisch
-	if (pDoc->GetSystem(m_ptKO.x, m_ptKO.y).OwnerID() != m_sID)
+	if (pDoc->GetSystem(m_Co.x, m_Co.y).OwnerID() != m_sID)
 		return;
 
 	// Vielleicht baut die Minorrace ein Schiff in dieser Runde
@@ -246,7 +246,7 @@ void CMinor::ConsumeResources(CBotEDoc* pDoc)
 
 	// bewohnbar sind:    C,F,G,H,K,L,M,N,O,P,Q,R
 	BOOLEAN exist[RESOURCES::DERITIUM + 1] = {0};
-	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).GetAvailableResources(exist, true);
+	pDoc->GetSystem(m_Co.x, m_Co.y).GetAvailableResources(exist, true);
 
 	short div;
 	int value;
@@ -255,7 +255,7 @@ void CMinor::ConsumeResources(CBotEDoc* pDoc)
 	exist[RESOURCES::TITAN] == TRUE ? div = 1000 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(RESOURCES::TITAN, -value);
+	pDoc->GetSystem(m_Co.x, m_Co.y).SetResourceStore(RESOURCES::TITAN, -value);
 
 	//CString s;
 	//s.Format("Name der Rasse: %s\nTitanabbau: %d\nVerbrauch: %d\nLager: %d",m_strRaceName,exist[0],value,m_iRessourceStorage[0]);
@@ -265,29 +265,29 @@ void CMinor::ConsumeResources(CBotEDoc* pDoc)
 	exist[RESOURCES::DEUTERIUM] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(RESOURCES::DEUTERIUM, -value);
+	pDoc->GetSystem(m_Co.x, m_Co.y).SetResourceStore(RESOURCES::DEUTERIUM, -value);
 
 	// Duranium
 	exist[RESOURCES::DURANIUM] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(RESOURCES::DURANIUM, -value);
+	pDoc->GetSystem(m_Co.x, m_Co.y).SetResourceStore(RESOURCES::DURANIUM, -value);
 
 	// Kristalle
 	exist[RESOURCES::CRYSTAL] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(RESOURCES::CRYSTAL, -value);
+	pDoc->GetSystem(m_Co.x, m_Co.y).SetResourceStore(RESOURCES::CRYSTAL, -value);
 
 	// Iridium
 	exist[RESOURCES::IRIDIUM] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(RESOURCES::IRIDIUM, -value);
+	pDoc->GetSystem(m_Co.x, m_Co.y).SetResourceStore(RESOURCES::IRIDIUM, -value);
 
 	// Deritium
 	value = rand()%2;
-	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(RESOURCES::DERITIUM, -value);
+	pDoc->GetSystem(m_Co.x, m_Co.y).SetResourceStore(RESOURCES::DERITIUM, -value);
 }
 
 /// Funktion überprüft, ob die Minorrace das Angebot aufgrund anderer Verträge überhaupt annehmen kann.

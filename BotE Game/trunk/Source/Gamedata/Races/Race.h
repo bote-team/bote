@@ -11,6 +11,7 @@
 #include "BotEStandardTypes.h"
 #include "Constants.h"
 #include "AI\DiplomacyAI.h"
+#include "General/InGameEntity.h"
 
 class CShips;
 class CShip;
@@ -41,7 +42,7 @@ enum RaceSpecialAbilities
 };
 
 /// Basisklasse für alle Rassen.
-class CRace
+class CRace : public CInGameEntity
 {
 public:
 
@@ -85,10 +86,6 @@ public:
 	/// Funktion gibt den Namen des Heimatsystems zurück
 	/// @return Name des Heimatsystems
 	const CString& GetHomesystemName(void) const {return m_sHomeSystem;}
-
-	/// Funktion gibt den Rassennamen zurück
-	/// @return Rassenname
-	const CString& GetRaceName(void) const {return m_sName;}
 
 	/// Funktion gibt die Rassenbeschreibung zurück
 	/// @return Rassenbeschreibung
@@ -252,10 +249,11 @@ public:
 
 	/// Funktion gibt die Koordinate des Heimatsystems der Race zurück.
 	/// @return Koordinate des Heimatsystems
-	const CPoint& GetRaceKO(void) const
+	const CPoint GetRaceKO(void) const
 	{
-		AssertBotE(IsAlien() || PT_IN_RECT(m_ptKO, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT));
-		return m_ptKO;
+		if(IsAlien())
+			return m_Co;
+		return CInGameEntity::GetCo();
 	}
 
 	// zum Schreiben der Membervariablen
@@ -264,7 +262,7 @@ public:
 	void SetRaceKO(const CPoint& ko)
 	{
 		AssertBotE(PT_IN_RECT(ko, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT));
-		m_ptKO = ko;
+		m_Co = ko;
 	}
 
 
@@ -273,8 +271,6 @@ protected:
 	// Beschreibende Attribute
 	CString				m_sID;			///<!!! Rassen-ID
 	CString				m_sHomeSystem;	///<!!! Name des Heimatsystems
-	CPoint m_ptKO;							///< Koordinaten der Rasse
-	CString				m_sName;		///<!!! Rassenname
 	CString				m_sNameArticle;	///<!!! Artikel für Rassenname
 	CString				m_sDesc;		///<!!! Rassenbeschreibung
 	const RACE_TYPE		m_RaceType;		///<!!! Rassentyp (Major, Minor, Alien)

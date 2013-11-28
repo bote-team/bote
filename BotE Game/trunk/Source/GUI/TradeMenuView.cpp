@@ -241,7 +241,7 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 			CRace* pMonopolist = pDoc->GetRaceCtrl()->GetRace(CTrade::GetMonopolOwner(i));
 			if (pMonopolist)
 			{
-				s = pMonopolist->GetRaceName();
+				s = pMonopolist->GetName();
 				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40+i*200,455,190,25), &fontFormat, &fontBrush);
 			}
 		}
@@ -388,7 +388,7 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 			{
 				CRace* pMonopol = pDoc->GetRaceCtrl()->GetRace(CTrade::GetMonopolOwner(i));
 				if (pMonopol)
-					s.Format("%s",pMonopol->GetRaceName());
+					s.Format("%s",pMonopol->GetName());
 			}
 			else
 				s = CLoc::GetString("UNKNOWN");
@@ -518,7 +518,7 @@ void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 	}
 	// Transfers berechnen
 	for (int i = 0; i < pMajor->GetTrade()->GetTradeActions()->GetSize(); i++)
-		if (pMajor->GetTrade()->GetTradeActions()->GetAt(i).system == pDoc->GetKO())
+		if (pMajor->GetTrade()->GetTradeActions()->GetAt(i).system == pDoc->GetCo())
 		{
 			USHORT res = pMajor->GetTrade()->GetTradeActions()->GetAt(i).res;
 			// Ressourcen die gekauft werden
@@ -647,7 +647,7 @@ void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (CRect(r.left+75+i*200,r.top+275,r.left+195+i*200,r.top+305).PtInRect(point))
 			{
 				int costs = pMajor->GetTrade()->BuyRessource(i, pMajor->GetTrade()->GetQuantity(),
-					pDoc->GetKO(),pMajor->GetEmpire()->GetCredits());
+					pDoc->GetCo(),pMajor->GetEmpire()->GetCredits());
 				// Wenn wir soviel Credits haben um etwas zu kaufen -> also costs != NULL)
 				if (costs != 0)
 				{
@@ -664,7 +664,7 @@ void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// Überprüfen, das wir bei einem Verkauf nicht mehr Ressourcen aus dem System nehmen als im Lager vorhanden sind
 				if (pDoc->CurrentSystem().GetResourceStore(i) >= pMajor->GetTrade()->GetQuantity())
 				{
-					pMajor->GetTrade()->SellRessource(i, pMajor->GetTrade()->GetQuantity(),pDoc->GetKO());
+					pMajor->GetTrade()->SellRessource(i, pMajor->GetTrade()->GetQuantity(),pDoc->GetCo());
 					// Ressource aus dem Lager nehmen
 					pDoc->CurrentSystem().SetResourceStore(i,-pMajor->GetTrade()->GetQuantity());
 					CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_SHIPTARGET);
@@ -734,7 +734,7 @@ void CTradeMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		return;
 
 	// Wenn wir in irgendeinem System sind, können wir mit dem links rechts Pfeil zu einem anderen System wechseln
-	CPoint p = pDoc->GetKO();
+	CPoint p = pDoc->GetCo();
 	if (nChar == VK_RIGHT || nChar == VK_LEFT)
 	{
 		// an welcher Stelle in der Liste befindet sich das aktuelle System?

@@ -467,7 +467,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		{
 			char speed = (char)(ship->second->GetSpeed(ship->second->HasFleet()));
 			char range = (char)(ship->second->GetRange(ship->second->HasFleet()));
-			pMajor->GetStarmap()->CalcPath(ship->second->GetKO(), ship->second->GetTargetKO(), 3 - range, speed, *ship->second->GetPath());
+			pMajor->GetStarmap()->CalcPath(ship->second->GetCo(), ship->second->GetTargetKO(), 3 - range, speed, *ship->second->GetPath());
 		}
 
 		const CArray<Sector>* pPath = ship->second->GetPath();
@@ -543,9 +543,9 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	if (bShowTraderoutes)
 	{
 		if (m_bDrawTradeRoute && (pDoc->CurrentSystem().OwnerID() == pMajor->GetRaceID()))
-			m_TradeRoute.DrawTradeRoute(pDC, pDoc->GetKO(), pMajor);
+			m_TradeRoute.DrawTradeRoute(pDC, pDoc->GetCo(), pMajor);
 		if (m_bDrawResourceRoute && (pDoc->CurrentSystem().OwnerID() == pMajor->GetRaceID()))
-			m_ResourceRoute.DrawResourceRoute(pDC, pDoc->GetKO(), pMajor);
+			m_ResourceRoute.DrawResourceRoute(pDC, pDoc->GetCo(), pMajor);
 	}
 
 	pOldPen->DeleteObject();
@@ -838,10 +838,10 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						{
 							for(CShipMap::const_iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end(); ++i)
 							{
-								const CPoint& point = i->second->GetKO();
+								const CPoint& point = i->second->GetCo();
 								if(sector == Sector(point.x, point.y))
 								{
-									m_PreviouslyJumpedToShip = RememberedShip(i->second->GetShipName(), i->first);
+									m_PreviouslyJumpedToShip = RememberedShip(i->second->GetName(), i->first);
 									break;
 								}
 							}
@@ -891,7 +891,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// Wenn wir eine Handelsroute festlegen wollen
 		else if (sector != struct::Sector(-1,-1) && m_bDrawTradeRoute == TRUE)
 		{
-			CPoint p = pDoc->GetKO();
+			CPoint p = pDoc->GetCo();
 			BYTE numberOfRoutes = pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetSize();
 			// konnten erfolgreich eine hinzufügen aufgrund der Bevölkerung
 			if (pDoc->GetSystem(sector.x, sector.y).GetSunSystem() == TRUE && pDoc->GetSystem(p.x, p.y).AddTradeRoute(CPoint(sector.x,sector.y), pDoc->m_Systems, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
@@ -928,7 +928,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// Wenn wir eine Ressourcenroute festlegen wollen
 		else if (sector != struct::Sector(-1,-1) && m_bDrawResourceRoute == TRUE)
 		{
-			CPoint p = pDoc->GetKO();
+			CPoint p = pDoc->GetCo();
 			// konnten erfolgreich eine hinzufügen aufgrund der Bevölkerung
 			if (pDoc->GetSystem(sector.x, sector.y).GetSunSystem() == TRUE && p != CPoint(sector.x,sector.y) &&
 				pDoc->GetSystem(p.x, p.y).AddResourceRoute(CPoint(sector.x,sector.y), CSystemMenuView::GetResourceRouteRes(), pDoc->m_Systems, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
@@ -947,10 +947,10 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// Wenn wir ein Schiff bewegen wollen und der Kurs größer als eins ist, dann neues Ziel setzen
 		// Oder wir brechen den Kurs ab, indem wir auf den aktuellen Sektor klicken
 		if (m_bShipMove && (pDoc->CurrentShip()->second->GetPath()->GetSize()
-			|| target == pDoc->CurrentShip()->second->GetKO()))
+			|| target == pDoc->CurrentShip()->second->GetCo()))
 		{
 			const CShipMap::iterator& ship = pDoc->CurrentShip();
-			ship->second->SetTargetKO(target == ship->second->GetKO() ? CPoint(-1, -1) : target);
+			ship->second->SetTargetKO(target == ship->second->GetCo() ? CPoint(-1, -1) : target);
 			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 			SetMoveShip(FALSE);
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
@@ -1167,7 +1167,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 
 		// Sektor, über dem sich die Maus befindet, ermitteln
 		struct::Sector target = pMajor->GetStarmap()->GetClickedSector(pt);
-		struct::Sector shipKO(pDoc->CurrentShip()->second->GetKO().x,pDoc->CurrentShip()->second->GetKO().y);
+		struct::Sector shipKO(pDoc->CurrentShip()->second->GetCo().x,pDoc->CurrentShip()->second->GetCo().y);
 
 		if (target.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
 		{
@@ -1428,8 +1428,8 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotEDoc* pDoc, SHIP_ORDER::
 	if(previous_ship != pDoc->m_ShipMap.end())
 	{
 		if(previous_ship->second->GetOwnerOfShip() == m_pPlayersRace->GetRaceID()
-				&& Sector(previous_ship->second->GetKO()) == m_pPlayersRace->GetStarmap()->GetSelection()
-				&& previous_ship->second->GetShipName() == m_PreviouslyJumpedToShip.name)
+				&& Sector(previous_ship->second->GetCo()) == m_pPlayersRace->GetStarmap()->GetSelection()
+				&& previous_ship->second->GetName() == m_PreviouslyJumpedToShip.name)
 		{
 			//the previously jumped to ship is still valid
 			start_at = previous_ship;
@@ -1447,7 +1447,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotEDoc* pDoc, SHIP_ORDER::
 			i = pDoc->m_ShipMap.begin();
 		}
 		if(m_pPlayersRace->GetRaceID() == i->second->GetOwnerOfShip()) {
-			const CPoint& coords = i->second->GetKO();
+			const CPoint& coords = i->second->GetCo();
 			const Sector& sector = Sector(coords.x, coords.y);
 
 			if(i->second->HasNothingToDo()) {
@@ -1459,7 +1459,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotEDoc* pDoc, SHIP_ORDER::
 					//has a valid target, but still would get order sentry or wait
 					previous_ship->second->SetTargetKO(CPoint(-1, -1), true);
 				}
-				m_PreviouslyJumpedToShip = RememberedShip(i->second->GetShipName(), i->second->Key());
+				m_PreviouslyJumpedToShip = RememberedShip(i->second->GetName(), i->second->Key());
 				m_pPlayersRace->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view
 				pDoc->SetKO(sector.x,sector.y);//neccessary for that the ship is selected for VIEWS::SHIP_BOTTOM_VIEW
 				ScrollToSector(coords);
@@ -1678,7 +1678,7 @@ CString CGalaxyMenuView::CreateTooltip(void)
 		else if (pSector->GetKnown(pMajor->GetRaceID()) == FALSE)
 			sTip.Format("%s %c%i", CLoc::GetString("SECTOR"),(char)(ko.y+97), ko.x+1);
 		else
-			sTip = pDoc->GetSystem(ko.x, ko.y).GetName(true);
+			sTip = pDoc->GetSystem(ko.x, ko.y).GetLongName();
 
 		sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
 		sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h5"));
