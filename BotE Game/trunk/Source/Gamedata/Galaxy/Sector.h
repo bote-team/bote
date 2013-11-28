@@ -34,6 +34,7 @@ public:
 // construction/destruction
 //////////////////////////////////////////////////////////////////////
 
+protected:
 	/// Konstruktor
 	CSector(void);
 	CSector(int x, int y);
@@ -42,6 +43,7 @@ public:
 	CSector(const CSector& other);
 
 	CSector& operator=(const CSector&);
+public:
 
 	/// Destruktor
 	virtual ~CSector(void);

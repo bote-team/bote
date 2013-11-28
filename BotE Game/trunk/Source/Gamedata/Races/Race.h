@@ -51,8 +51,11 @@ public:
 		RACE_TYPE_ALIEN				=	2
 	};
 
+protected:
 	/// Standardkonstruktor
 	CRace(RACE_TYPE type);
+
+public:
 	/// Standarddestruktor
 	virtual ~CRace(void);
 	/// Serialisierungsfunktion

@@ -46,6 +46,7 @@ public:
 // construction/destruction
 //////////////////////////////////////////////////////////////////////
 
+protected:
 	/// Konstruktor
 	CMapTile(void);
 	CMapTile(int x, int y);
@@ -54,6 +55,7 @@ public:
 	CMapTile(const CMapTile& other);
 
 	CMapTile& operator=(const CMapTile&);
+public:
 
 	/// Destruktor
 	virtual ~CMapTile(void);

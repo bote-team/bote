@@ -786,7 +786,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			CString s = CLoc::GetString("ALL_SHIPS");
 			if (m_nShipType != -1)
 			{
-				CShip temp;
+				CShips temp;
 				temp.SetShipType((SHIP_TYPE::Typ)m_nShipType);
 				s = temp.GetShipTypeAsString();
 			}
@@ -968,7 +968,7 @@ void CCombatMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 		CString s = CLoc::GetString("ALL_SHIPS");
 		if (m_nShipType != -1)
 		{
-			CShip temp;
+			CShips temp;
 			temp.SetShipType((SHIP_TYPE::Typ)m_nShipType);
 			s = temp.GetShipTypeAsString();
 		}

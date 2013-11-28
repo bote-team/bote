@@ -40,16 +40,17 @@ class CSystem;
 /// Klasse beschreibt ein Schiff in BotE
 class CShip
 {
-public:
+protected:
 // Konstruktion & Destruktion
 	CShip();
+public:
 	virtual ~CShip();
 // Kopierkonstruktor
 	CShip(const CShip & rhs);
 // Zuweisungsoperatur
+protected:
 	CShip & operator=(const CShip &);
 // Serialisierungsfunktion
-protected:
 	void Serialize(CArchive &ar);
 public:
 
