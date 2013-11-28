@@ -201,7 +201,7 @@ void CShips::AddShipToFleet(const boost::shared_ptr<CShips>& fleet) {
 			m_sName);
 		MYTRACE("ships")(MT::LEVEL_INFO, s);
 	}
-	AssertBotE(fleet->GetOwnerOfShip() == GetOwnerOfShip());
+	AssertBotE(fleet->OwnerID() == OwnerID());
 	const CShipMap::iterator i = m_Fleet.Add(fleet);
 	const SHIP_ORDER::Typ order = GetCurrentOrder();
 	AssertBotE(order != SHIP_ORDER::ASSIGN_FLAGSHIP);
@@ -578,8 +578,8 @@ void CShips::Scrap(CMajor& major, CSystem& sy, bool disassembly)
 	// dann dem Sektor bekanntgeben, dass in ihm keine Station mehr ist
 	if (IsStation() && disassembly)
 	{
-		sy.UnsetOutpost(GetOwnerOfShip());
-		sy.UnsetStarbase(GetOwnerOfShip());
+		sy.UnsetOutpost(OwnerID());
+		sy.UnsetStarbase(OwnerID());
 	}
 }
 

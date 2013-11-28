@@ -90,7 +90,7 @@ BOOLEAN CTorpedo::Fly(CArray<CCombatShip*,CCombatShip*>* CS)
 	short shipNumber = -1;
 	for (int i = 0; i < CS->GetSize(); i++)
 	{
-		if (m_pShipFiredTorpedo->GetOwnerOfShip() != CS->GetAt(i)->m_pShip->GetOwnerOfShip() && CS->GetAt(i)->m_pShip->IsAlive())
+		if (m_pShipFiredTorpedo->OwnerID() != CS->GetAt(i)->m_pShip->OwnerID() && CS->GetAt(i)->m_pShip->IsAlive())
 		{
 			vec3i t;
 			if (c.x != 0)

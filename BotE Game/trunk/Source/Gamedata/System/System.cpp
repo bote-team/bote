@@ -2007,7 +2007,7 @@ int CSystem::UpdateBuildings(int nRunningNumber, int nNeededEnergy)
 
 void CSystem::Colonize(const CShips& ship, CMajor& major)
 {
-	const CString shipowner = ship.GetOwnerOfShip();
+	const CString shipowner = ship.OwnerID();
 	CEmpire* empire = major.GetEmpire();
 	// Gebäude bauen, wenn wir das System zum ersten Mal kolonisieren,
 	// sprich das System noch niemanden gehört

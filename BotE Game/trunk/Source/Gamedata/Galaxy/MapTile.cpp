@@ -41,7 +41,6 @@ CMapTile::CMapTile(int x, int y) :
 
 CMapTile::CMapTile(const CMapTile& other) :
 	CInGameEntity(other),
-	m_Owner(other.m_Owner),
 	m_bSunSystem(other.m_bSunSystem),
 	m_Status(other.m_Status),
 	m_bShipPort(other.m_bShipPort),
@@ -66,7 +65,6 @@ CMapTile& CMapTile::operator=(const CMapTile& other){
 	{
 		CInGameEntity::operator=(other);
 
-		m_Owner = other.m_Owner;
 		m_bSunSystem = other.m_bSunSystem;
 		m_Status = other.m_Status;
 		m_bShipPort = other.m_bShipPort;
@@ -106,8 +104,6 @@ void CMapTile::Reset(bool call_up)
 	m_iStartStationPoints.clear();
 	m_iNeededStationPoints.clear();
 
-	m_Owner.reset();
-
 	delete m_pAnomaly;
 	m_pAnomaly = NULL;
 
@@ -140,7 +136,6 @@ void CMapTile::Serialize(CArchive &ar)
 		ar << m_bSunSystem;
 		ar << m_Outpost;
 		ar << m_Starbase;
-		ar << OwnerID();
 		ar << m_pAnomaly;
 	}
 	else
@@ -151,9 +146,6 @@ void CMapTile::Serialize(CArchive &ar)
 		ar >> m_Outpost;
 		m_Starbase.Empty();
 		ar >> m_Starbase;
-		CString owner;
-		ar >> owner;
-		SetOwner(owner);
 		delete m_pAnomaly;
 		ar >> m_pAnomaly;
 	}
@@ -486,30 +478,6 @@ void CMapTile::CalculateOwner()
 	if (!newOwner.IsEmpty())
 		SetScanned(newOwner);
 	SetOwner(newOwner);
-}
-
-const boost::shared_ptr<CRace>& CMapTile::Owner() const
-{
-	return m_Owner;
-}
-
-CString CMapTile::OwnerID() const
-{
-	if(!m_Owner)
-		return CString();
-	AssertBotE(!m_Owner->Deleted());
-	return m_Owner->GetRaceID();
-}
-
-void CMapTile::SetOwner(const CString& id)
-{
-	if(id.IsEmpty())
-	{
-		m_Owner.reset();
-		return;
-	}
-	m_Owner = resources::pDoc->GetRaceCtrl()->GetRaceSafe(id);
-	AssertBotE(m_Owner);
 }
 
 //////////////////////////////////////////////////////////////////////

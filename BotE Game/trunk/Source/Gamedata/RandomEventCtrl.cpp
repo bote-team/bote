@@ -193,7 +193,7 @@ void CRandomEventCtrl::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMa
 	{
 		for (CShipMap::iterator i = ships->begin(); i != ships->end(); ++i)
 		{
-			if (i->second->GetOwnerOfShip() == pRace->GetRaceID() && i->second->GetCo()==ko)
+			if (i->second->OwnerID() == pRace->GetRaceID() && i->second->GetCo()==ko)
 			{
 				const int additional_experience = rand() % 401 + 50;
 				i->second->SetCrewExperiance(additional_experience);

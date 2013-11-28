@@ -79,11 +79,11 @@ void CShipBottomView::OnNewRound()
 static bool ShipCanHaveOrder(const CShips& ships, SHIP_ORDER::Typ order, const CSystem* system = NULL) {
 	switch(order) {
 		case SHIP_ORDER::TRAIN_SHIP:
-			return system->GetSunSystem() && system->OwnerID() == ships.GetOwnerOfShip()
+			return system->GetSunSystem() && system->OwnerID() == ships.OwnerID()
 				&& system->GetProduction()->GetShipTraining() > 0 && ships.CanHaveOrder(order, true);
 		case SHIP_ORDER::REPAIR:
 			return ships.CanHaveOrder(SHIP_ORDER::REPAIR, true)
-				&& system->GetShipPort(ships.GetOwnerOfShip());
+				&& system->GetShipPort(ships.OwnerID());
 		case SHIP_ORDER::TRANSPORT:
 			return ships.CanHaveOrder(order, true, false);
 		case SHIP_ORDER::TERRAFORM:
@@ -182,9 +182,9 @@ bool CShipBottomView::CheckDisplayShip(const CShips *pShip, const CSystem *syste
 	const USHORT stealthPower = pShip->GetStealthPower();
 
 	CString rid = m_pPlayersRace->GetRaceID();
-	if (   pShip->GetOwnerOfShip() != rid				// Schiff gehört anderer Rasse als der aktuellen
+	if (   pShip->OwnerID() != rid				// Schiff gehört anderer Rasse als der aktuellen
 		&& system->GetScanPower(rid) < stealthPower		// Scanpower im Sektor ist kleiner stealthpower des Schiffs
-		&& m_pPlayersRace->GetAgreement(pShip->GetOwnerOfShip()) < DIPLOMATIC_AGREEMENT::AFFILIATION) // Diplomatie ist kleiner "Affiliation"
+		&& m_pPlayersRace->GetAgreement(pShip->OwnerID()) < DIPLOMATIC_AGREEMENT::AFFILIATION) // Diplomatie ist kleiner "Affiliation"
 			return false;
 	return true;
 }
@@ -234,10 +234,10 @@ void CShipBottomView::DrawShipContent()
 			if (m_dc.pDoc->CurrentSystem().GetIsStationInSector())
 			{
 				// gehört uns die Station oder kennen wir die andere Rasse
-				if (pMajor->GetRaceID() == pShip->GetOwnerOfShip() || pMajor->IsRaceContacted(pShip->GetOwnerOfShip()))
+				if (pMajor->GetRaceID() == pShip->OwnerID() || pMajor->IsRaceContacted(pShip->OwnerID()))
 				{
 					// Major holen, welcher die Station besitzt
-					if (CMajor* pStationOwner = dynamic_cast<CMajor*>(m_dc.pDoc->GetRaceCtrl()->GetRace(pShip->GetOwnerOfShip())))
+					if (CMajor* pStationOwner = dynamic_cast<CMajor*>(m_dc.pDoc->GetRaceCtrl()->GetRace(pShip->OwnerID())))
 					{
 						// schönerer Grafik der Station des Majors groß anzeigen
 						DrawImage("Other\\" + pStationOwner->GetPrefix() + "Starbase.bop", CRect(CPoint(550,20),CSize(235,200)));
@@ -278,7 +278,7 @@ void CShipBottomView::DrawShipContent()
 	// Wenn nur ein Schiff in dem System ist, so wird es automatisch ausgewählt
 	// Nicht automatisch machen, wenn zuvor genau das gleiche CurrentShip angewählt war. Dann könnte man
 	// in der Galaxieansicht nicht mehr mit Rechts abbrechen, da das Schiff gleich wieder angewählt wird.
-	if (counter == 1 && !m_bShowStation	&& oneShip->second->GetOwnerOfShip() == pMajor->GetRaceID() && oneShip->second != m_dc.pDoc->CurrentShip()->second)
+	if (counter == 1 && !m_bShowStation	&& oneShip->second->OwnerID() == pMajor->GetRaceID() && oneShip->second != m_dc.pDoc->CurrentShip()->second)
 	{
 		// Wenn wenn wir auf der Galaxiekarte sind
 		if (resources::pMainFrame->GetActiveView(0, 1) == VIEWS::GALAXY_VIEW)
@@ -299,11 +299,11 @@ void CShipBottomView::DrawShipContent()
 		pShip = itdraw->second;
 
 		// Kennen wir den Besizter des Schiffes?
-		bool bUnknown = (pMajor->GetRaceID() != pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false);
+		bool bUnknown = (pMajor->GetRaceID() != pShip->OwnerID() && pMajor->IsRaceContacted(pShip->OwnerID()) == false);
 		if (bUnknown)
 		{
 			// Wenn kein diplomatischer Kontakt möglich ist, wird das Schiff immer angezeigt
-			CRace* pShipOwner = m_dc.pDoc->GetRaceCtrl()->GetRace(pShip->GetOwnerOfShip());
+			CRace* pShipOwner = m_dc.pDoc->GetRaceCtrl()->GetRace(pShip->OwnerID());
 			if (pShipOwner)
 				bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
 		}
@@ -418,7 +418,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 			// Wenn im System noch Bevölkerung vorhanden ist
 			system.GetCurrentHabitants() > 0.0f &&
 			// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
-			m_dc.pDoc->CurrentSystem().OwnerID() != pShip.GetOwnerOfShip())
+			m_dc.pDoc->CurrentSystem().OwnerID() != pShip.OwnerID())
 		{
 			CRace* pOwnerOfSector = m_dc.pDoc->GetRaceCtrl()->GetRace(system.OwnerID());
 
@@ -443,7 +443,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 		// Überprüfen ob man eine Blockade im System überhaupt errichten kann
 		// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
 		CRace* pOwnerOfSystem = m_dc.pDoc->GetRaceCtrl()->GetRace(m_dc.pDoc->CurrentSystem().OwnerID());
-		if (pOwnerOfSystem != NULL && pOwnerOfSystem->GetRaceID() != pShip.GetOwnerOfShip()
+		if (pOwnerOfSystem != NULL && pOwnerOfSystem->GetRaceID() != pShip.OwnerID()
 			&& pMajor->GetAgreement(pOwnerOfSystem->GetRaceID()) < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 		{
 			DrawSmallButton("BTN_BLOCKADE_SYSTEM",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::BLOCKADE_SYSTEM);
@@ -473,7 +473,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 		// hier schauen, ob ich in der Schiffsinfoliste schon einen Außenposten habe den ich bauen kann, wenn in dem
 		// Sector noch kein Außenposten steht und ob ich diesen in dem Sector überhaupt bauen kann. Das geht nur
 		// wenn der Sektor mir oder niemanden gehört
-		if(system.IsStationBuildable(SHIP_ORDER::BUILD_OUTPOST, pShip.GetOwnerOfShip()))
+		if(system.IsStationBuildable(SHIP_ORDER::BUILD_OUTPOST, pShip.OwnerID()))
 		{
 			// Hier überprüfen, ob ich einen Außenposten technologisch überhaupt bauen kann
 			for (int l = 0; l < m_dc.pDoc->m_ShipInfoArray.GetSize(); l++)
@@ -486,7 +486,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 				}
 		}
 		// Wenn hier schon ein Außenposten steht, können wir vielleicht auch eine Sternbasis bauen
-		if (system.IsStationBuildable(SHIP_ORDER::BUILD_STARBASE, pShip.GetOwnerOfShip()))
+		if (system.IsStationBuildable(SHIP_ORDER::BUILD_STARBASE, pShip.OwnerID()))
 		{
 			// Hier überprüfen, ob ich eine Sternbasis technologisch überhaupt bauen kann
 			for (int l = 0; l < m_dc.pDoc->m_ShipInfoArray.GetSize(); l++)
@@ -499,12 +499,12 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 				}
 		}
 		// If a better outpost is available and buildable in this sector draw the upgrade button
-		if (system.IsStationBuildable(SHIP_ORDER::UPGRADE_OUTPOST, pShip.GetOwnerOfShip())) {
+		if (system.IsStationBuildable(SHIP_ORDER::UPGRADE_OUTPOST, pShip.OwnerID())) {
 			DrawSmallButton("BTN_UPGRADE_OUTPOST",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::UPGRADE_OUTPOST);
 			counter++;
 		}
 		// If a better starbase is available and buildable in this sector draw the upgrade button
-		if (system.IsStationBuildable(SHIP_ORDER::UPGRADE_STARBASE, pShip.GetOwnerOfShip())) {
+		if (system.IsStationBuildable(SHIP_ORDER::UPGRADE_STARBASE, pShip.OwnerID())) {
 			DrawSmallButton("BTN_UPGRADE_STARBASE",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::UPGRADE_STARBASE);
 			counter++;
 		}
@@ -571,7 +571,7 @@ short CShipBottomView::DrawSingleTurnOrderMenu() {
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::COLONIZE))
 	{
 		// Wenn das System uns bzw. niemanden gehört können wir nur kolonisieren
-		if (!system.Majorized() || system.OwnerID() == pShip.GetOwnerOfShip())
+		if (!system.Majorized() || system.OwnerID() == pShip.OwnerID())
 			for (int l = 0; l < system.GetNumberOfPlanets(); l++)
 				if (system.GetPlanet(l)->GetTerraformed() == TRUE
 					&& system.GetPlanet(l)->GetCurrentHabitant() == 0.0f)
@@ -734,7 +734,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 	}
 
 	// Die ganzen Befehlsbuttons für die Schiffe anzeigen
-	if (CGalaxyMenuView::IsMoveShip() == TRUE && m_dc.pDoc->CurrentShip()->second->GetOwnerOfShip() == pMajor->GetRaceID())
+	if (CGalaxyMenuView::IsMoveShip() == TRUE && m_dc.pDoc->CurrentShip()->second->OwnerID() == pMajor->GetRaceID())
 	{
 		DrawMenu();
 	}
@@ -843,7 +843,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (pDoc->CurrentShip()->second == i->second)
 		{
 			// Nicht machen, wenn es nicht unser eigenes Schiff ist
-			if (pDoc->CurrentShip()->second->GetOwnerOfShip() != pMajor->GetRaceID())
+			if (pDoc->CurrentShip()->second->OwnerID() != pMajor->GetRaceID())
 				return;
 
 			// Wenn wir in der MainView nicht im Flottenmenü sind
@@ -860,7 +860,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 			const CShipMap::iterator& fleetship = pDoc->FleetShip();
 			//double-clicking a foreign fleet gets us into the fleet view for that fleet
 			//clicking an own ship to add it then must be aborted here
-			if(fleetship->second->GetOwnerOfShip() != pMajor->GetRaceID())
+			if(fleetship->second->OwnerID() != pMajor->GetRaceID())
 				return;
 			const CShipMap::iterator& current_ship = pDoc->CurrentShip();
 			// Jetzt fügen wir der Flotte das angeklickte Schiff hinzu, wenn es nicht das Schiff selbst ist,
@@ -888,7 +888,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				while(it != pDoc->m_ShipMap.end())
 				{
 					if(fleetship->second->GetCo() != it->second->GetCo()
-							|| fleetship->second->GetOwnerOfShip() != it->second->GetOwnerOfShip()
+							|| fleetship->second->OwnerID() != it->second->OwnerID()
 							|| it->second->IsStation())
 					{
 						++it;
@@ -1004,7 +1004,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					// Das ganze Schiffsarray und auch die Flotten durchgehen, wenn wir ein altes Flagschiff						//finden, diesem den Titel wegnehmen
 					for(CShipMap::iterator n = pDoc->m_ShipMap.begin(); n != pDoc->m_ShipMap.end(); ++n)
 					{
-						if (n->second->GetOwnerOfShip() != current_ship->second->GetOwnerOfShip())
+						if (n->second->OwnerID() != current_ship->second->OwnerID())
 							continue;
 						n->second->UnassignFlagship();
 					}
@@ -1091,7 +1091,7 @@ void CShipBottomView::OnLButtonDblClk(UINT nFlags, CPoint point)
 			return;
 
 		// handelt es sich nur um ein nicht eigenes Schiff (keine Flotte), dann ebenfalls kein Flottenmenü anzeigen
-		if (i->second->GetFleetSize() == 0 && i->second->GetOwnerOfShip() != pMajor->GetRaceID())
+		if (i->second->GetFleetSize() == 0 && i->second->OwnerID() != pMajor->GetRaceID())
 			return;
 
 		CGalaxyMenuView::SetMoveShip(FALSE);
@@ -1244,14 +1244,14 @@ CString CShipBottomView::CreateTooltip(void)
 		return "";
 
 	// ist der Besitzer des Schiffes unbekannt?
-	if (pMajor->GetRaceID() != pShip->GetOwnerOfShip())
+	if (pMajor->GetRaceID() != pShip->OwnerID())
 	{
 		bool bNoDiplomacy = false;
-		CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->GetOwnerOfShip());
+		CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->OwnerID());
 		if (pShipOwner)
 			bNoDiplomacy = pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
 
-		if (!bNoDiplomacy && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false)
+		if (!bNoDiplomacy && pMajor->IsRaceContacted(pShip->OwnerID()) == false)
 		{
 			CString s = CLoc::GetString("UNKNOWN");
 			s = CHTMLStringBuilder::GetHTMLColor(s);
@@ -1308,7 +1308,7 @@ CString CShipBottomView::CreateTooltip(void)
 //				stealthPower = pFleet->GetFleetStealthPower(pShip);
 //
 //			const CString& sRaceID = pMajor->GetRaceID();
-//			if (pShip->GetOwnerOfShip() != sRaceID
+//			if (pShip->OwnerID() != sRaceID
 //				&& pDoc->GetSystem(active_sector.x, active_sector.y).GetScanPower(sRaceID) <= stealthPower)
 //				continue;
 //			if (counter < m_iPage*9 && counter >= (m_iPage-1)*9)

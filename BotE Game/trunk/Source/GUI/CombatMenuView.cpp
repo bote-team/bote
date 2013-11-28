@@ -523,7 +523,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 		if (m_nShipType != -1 && pShip->GetShipType() != m_nShipType)
 			continue;
 
-		CRace* pRace = pDoc->GetRaceCtrl()->GetRace(pShip->GetOwnerOfShip());
+		CRace* pRace = pDoc->GetRaceCtrl()->GetRace(pShip->OwnerID());
 
 		if (!pRace || m_sFriends.find(pRace) == m_sFriends.end())
 			continue;
@@ -544,7 +544,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 		bool bMarked = pShip == m_pMarkedShip;
 		pShip->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, false, false, normalColor, normalColor, Gdiplus::Font(CComBSTR(fontName), fontSize));
 		// aktueller Schiffsbefehl anzeigen
-		if (pShip->GetOwnerOfShip() == pMajor->GetRaceID())
+		if (pShip->OwnerID() == pMajor->GetRaceID())
 		{
 			Bitmap* graphic = NULL;
 			switch (pShip->GetCombatTactic())
@@ -584,7 +584,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 		if (m_nShipType != -1 && pShip->GetShipType() != m_nShipType)
 			continue;
 
-		CRace* pRace = pDoc->GetRaceCtrl()->GetRace(pShip->GetOwnerOfShip());
+		CRace* pRace = pDoc->GetRaceCtrl()->GetRace(pShip->OwnerID());
 
 		if (!pRace || m_sEnemies.find(pRace) == m_sEnemies.end())
 			continue;
@@ -812,7 +812,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				CShips* pShip = m_vShipRects[i].second;
 				AssertBotE(pShip);
 				// es können nur eigene Schiffe eingestellt werden
-				if (pShip->GetOwnerOfShip() != pMajor->GetRaceID())
+				if (pShip->OwnerID() != pMajor->GetRaceID())
 					return;
 				// aktuell eingestellt Befehl an das Schiff übergeben
 				int nOrder = -1;
@@ -873,7 +873,7 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				if (m_nShipType != -1 && pShip->GetShipType() != m_nShipType)
 					continue;
 
-				if (pShip->GetOwnerOfShip() != pMajor->GetRaceID() || pShip->GetCo() != pDoc->m_ptCurrentCombatSector)
+				if (pShip->OwnerID() != pMajor->GetRaceID() || pShip->GetCo() != pDoc->m_ptCurrentCombatSector)
 					continue;
 
 				switch (i)
@@ -900,14 +900,14 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 			CShips* pShip = m_vShipRects[i].second;
 			AssertBotE(pShip);
 			// es können nur eigene Schiffe eingestellt werden
-			if (pShip->GetOwnerOfShip() != pMajor->GetRaceID())
+			if (pShip->OwnerID() != pMajor->GetRaceID())
 				return;
 			// aktuell eingestellten Befehl an alle Schiffe dieser Klasse übergeben
 			for (int j = 0; j < m_vInvolvedShips.GetSize(); j++)
 			{
 				CShips* pShip2 = m_vInvolvedShips[j];
 
-				if (pShip2->GetOwnerOfShip() != pMajor->GetRaceID() || pShip2->GetCo() != pDoc->m_ptCurrentCombatSector || pShip2->GetShipClass() != pShip->GetShipClass())
+				if (pShip2->OwnerID() != pMajor->GetRaceID() || pShip2->GetCo() != pDoc->m_ptCurrentCombatSector || pShip2->GetShipClass() != pShip->GetShipClass())
 					continue;
 
 				// aktuell eingestellt Befehl an das Schiff übergeben

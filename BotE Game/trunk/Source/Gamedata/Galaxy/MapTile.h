@@ -412,8 +412,6 @@ public:
 	void AddOwnerPoints(BYTE ownerPoints, const CString& sOwner) {m_byOwnerPoints[sOwner] += ownerPoints;}
 
 	/// Diese Funktion gibt zurück, wer im Besitz dieses Sektors ist.
-	const boost::shared_ptr<CRace>& Owner() const;
-	CString OwnerID() const;
 
 	bool Free() const { return !m_Owner; }
 
@@ -422,7 +420,6 @@ protected:
 	/// gehört. Übergeben wird dafür auch der mögliche Besitzer des Systems in diesem Sektor.
 	void CalculateOwner();
 
-	void SetOwner(const CString& id);
 public:
 
 //////////////////////////////////////////////////////////////////////
@@ -444,9 +441,6 @@ public:
 //////////////////////////////////////////////////////////////////////
 
 protected:
-
-	/// Wem gehört der Sektor?
-	boost::shared_ptr<CRace> m_Owner;
 
 	bool m_bSunSystem;// Ist ein Sonnensystem in diesem Sektor?
 private:

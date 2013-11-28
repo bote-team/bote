@@ -780,7 +780,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 		CArray<boost::shared_ptr<CShips>> stations;
 		// Felder mit allen zu spionierenden Schiffe und Stationen anlegen
 		for(CShipMap::iterator i = m_pDoc->m_ShipMap.begin(); i != m_pDoc->m_ShipMap.end(); ++i)
-			if (i->second->GetOwnerOfShip() == pEnemyRace->GetRaceID())
+			if (i->second->OwnerID() == pEnemyRace->GetRaceID())
 			{
 				if (i->second->IsStation())
 					stations.Add(i->second);
@@ -1401,7 +1401,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 			std::vector<CPoint> allShips;//x: ship key in global shipmap; y: ship key within another ship's fleet
 			for(CShipMap::const_iterator i = m_pDoc->m_ShipMap.begin(); i != m_pDoc->m_ShipMap.end(); ++i)
 			{
-				if (i->second->GetCo() == report->GetCo() && i->second->GetOwnerOfShip() != report->GetOwner())
+				if (i->second->GetCo() == report->GetCo() && i->second->OwnerID() != report->GetOwner())
 				{
 					// besitzt dieses Schiff eine Flotte, so könnte sich unser Schiff auch in der Flotte befinden
 					for(CShips::const_iterator j = i->second->begin(); j != i->second->end(); ++j)
@@ -1448,7 +1448,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					m_pDoc->GetCurrentRound(), CLoc::GetString("SABOTAGE"), CLoc::GetString("MISSED"));
 
 				// neuen Besitzer hinzufügen
-				ship->SetOwnerOfShip(pRace->GetRaceID());
+				ship->SetOwner(pRace->GetRaceID());
 				ship->SetIsShipFlagShip(FALSE);
 				ship->UnsetCurrentOrder();
 				ship->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);

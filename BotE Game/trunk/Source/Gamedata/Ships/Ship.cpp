@@ -13,7 +13,8 @@
 #include "Races/major.h"
 #include "General/Loc.h"
 #include "Ships/Ships.h"
-#include "clientWorker.h"
+#include "ClientWorker.h"
+#include "Races/RaceController.h"
 
 
 
@@ -65,7 +66,6 @@ CShip::CShip(const CShip & rhs) :
 	m_Hull(rhs.m_Hull),
 	m_Shield(rhs.m_Shield),
 	m_strShipClass(rhs.m_strShipClass),
-	m_sOwnerOfShip(rhs.m_sOwnerOfShip),
 	m_TargetKO(rhs.m_TargetKO)
 {
 	m_TorpedoWeapons.RemoveAll();
@@ -135,7 +135,6 @@ CShip & CShip::operator=(const CShip & rhs)
 
 	m_iID = rhs.m_iID;
 	m_TargetKO = rhs.m_TargetKO;
-	m_sOwnerOfShip = rhs.m_sOwnerOfShip;
 	m_iMaintenanceCosts = rhs.m_iMaintenanceCosts;
 	m_iShipType = rhs.m_iShipType;
 	m_nShipSize = rhs.m_nShipSize;
@@ -179,7 +178,6 @@ void CShip::Serialize(CArchive &ar)
 	{
 		ar << m_iID;
 		ar << m_TargetKO;
-		ar << m_sOwnerOfShip;
 		ar << m_iMaintenanceCosts;
 		ar << m_iShipType;
 		ar << m_nShipSize;
@@ -221,7 +219,6 @@ void CShip::Serialize(CArchive &ar)
 		int number = 0;
 		ar >> m_iID;
 		ar >> m_TargetKO;
-		ar >> m_sOwnerOfShip;
 		ar >> m_iMaintenanceCosts;
 		int nType;
 		ar >> nType;
@@ -412,6 +409,12 @@ bool CShip::GetCloak() const {
 //////////////////////////////////////////////////////////////////////
 // setting
 //////////////////////////////////////////////////////////////////////
+
+void CShip::SetOwner(const CString& id)
+{
+	AssertBotE(!id.IsEmpty());
+	CInGameEntity::SetOwner(id);
+}
 
 void CShip::AdoptOrdersFrom(const CShip& ship)
 {
@@ -1345,7 +1348,7 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 	// Wenn es das Flagschiff unseres Imperiums ist, dann kleines Zeichen zeichnen
 	if (m_bIsFlagShip)
 	{
-		graphic = pGraphicPool->GetGDIGraphic("Symbols\\" + m_sOwnerOfShip + ".bop");
+		graphic = pGraphicPool->GetGDIGraphic("Symbols\\" + OwnerID() + ".bop");
 		if (graphic)
 			g->DrawImage(graphic, pt.x + 37, pt.y + 30, 25, 25);
 	}
@@ -1500,11 +1503,11 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 }
 
 bool CShip::BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major, short id) {
-	if(!sector.SetNeededStationPoints(m_iStationBuildPoints, m_sOwnerOfShip))
+	if(!sector.SetNeededStationPoints(m_iStationBuildPoints, OwnerID()))
 		return false;
 	SHIP_TYPE::Typ type = (order == SHIP_ORDER::BUILD_OUTPOST 
 		|| order == SHIP_ORDER::UPGRADE_OUTPOST) ? SHIP_TYPE::OUTPOST : SHIP_TYPE::STARBASE;
-	sector.BuildStation(type, m_sOwnerOfShip);
+	sector.BuildStation(type, OwnerID());
 	CEmpireNews message;
 	const CString& s1 = (order == SHIP_ORDER::BUILD_OUTPOST) ? "OUTPOST_FINISHED" 
 		: ((order == SHIP_ORDER::BUILD_STARBASE) ? "STARBASE_FINISHED" 
@@ -1521,7 +1524,7 @@ bool CShip::BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major, 
 	major.AddToLostShipHistory(CShips(*this), CLoc::GetString(s2),
 		CLoc::GetString("DESTROYED"), pDoc->GetCurrentRound());
 	resources::pClientWorker->CalcStationReady(type, major);
-	pDoc->BuildShip(id, sector.GetCo(), m_sOwnerOfShip);
+	pDoc->BuildShip(id, sector.GetCo(), OwnerID());
 	// Wenn hier ein Au?enposten gebaut wurde den Befehl f?r die Flotte auf Meiden stellen
 	UnsetCurrentOrder();
 	return true;
@@ -1533,7 +1536,7 @@ void CShip::Scrap(CMajor& major, CSystem& sy, bool disassembly) {
 	major.GetShipHistory()->ModifyShip(s, sy.GetLongName(),
 		resources::pDoc->GetCurrentRound(), CLoc::GetString(disassembly ?
 		"DISASSEMBLY" : "UPGRADE"), CLoc::GetString("DESTROYED"));
-	if(sy.OwnerID() != m_sOwnerOfShip)
+	if(sy.OwnerID() != OwnerID())
 		return;
 	// wenn wir in dem Sector wo wir das Schiff demoniteren ein uns gehörendes System haben,
 	// dann bekommen wir teilweise Rohstoffe aus der Demontage zurück (vlt. auch ein paar Credits)

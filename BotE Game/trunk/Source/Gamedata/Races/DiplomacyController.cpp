@@ -168,13 +168,13 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 				// alle Schiffe der Minor gehen nun an den Major
 				for (CShipMap::iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end(); ++i)
 				{
-					if (i->second->GetOwnerOfShip() == pMinor->GetRaceID())
+					if (i->second->OwnerID() == pMinor->GetRaceID())
 					{
 						// Der Ehlenen Beschützer geht niemals an den Major
 						if (pMinor->GetRaceID() == "EHLEN" && i->second->GetShipType() == SHIP_TYPE::STARBASE)
 							continue;
 
-						i->second->SetOwnerOfShip(pMajor->GetRaceID());
+						i->second->SetOwner(pMajor->GetRaceID());
 						// Schiff in die Shiphistory stecken
 						pMajor->GetShipHistory()->AddShip(i->second, pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetLongName(), pDoc->GetCurrentRound());
 					}

@@ -260,7 +260,7 @@ void CShipMap::SerializeEndOfRoundData(CArchive& ar, const CString& sMajorID) {
 	if(ar.IsStoring()) {
 		std::vector<boost::shared_ptr<CShips>> ships;
 		for(CShipMap::const_iterator i = begin(); i != end(); ++i)
-			if (i->second->GetOwnerOfShip() == sMajorID)
+			if (i->second->OwnerID() == sMajorID)
 				ships.push_back(i->second);
 		ar << ships.size();
 		for(std::vector<boost::shared_ptr<CShips>>::iterator i = ships.begin(); i != ships.end(); ++i)
@@ -270,7 +270,7 @@ void CShipMap::SerializeEndOfRoundData(CArchive& ar, const CString& sMajorID) {
 		int count = 0;
 		ar >> count;
 		for(CShipMap::iterator i = begin(); i != end();) {
-			if (i->second->GetOwnerOfShip() == sMajorID) {
+			if (i->second->OwnerID() == sMajorID) {
 				EraseAt(i);
 				continue;
 			}
@@ -281,7 +281,7 @@ void CShipMap::SerializeEndOfRoundData(CArchive& ar, const CString& sMajorID) {
 			const boost::shared_ptr<CShips> ship(new CShips());
 			ship->Serialize(ar);
 			const CShipMap::iterator j = Add(ship);
-			AssertBotE(j->second->GetOwnerOfShip() == sMajorID);
+			AssertBotE(j->second->OwnerID() == sMajorID);
 		}
 	}
 	else
@@ -374,7 +374,7 @@ CShips* CShipMap::GetLeader(const CShips* pShip) const
 			return i->second.get();
 
 		// Schiff ist in einer Flotte (nur prüfen wenn der Flottenführer auch von der gleichen Rasse ist)
-		if (i->second->GetOwnerOfShip() != pShip->GetOwnerOfShip())
+		if (i->second->OwnerID() != pShip->OwnerID())
 			continue;
 
 		for (CShips::const_iterator j = i->second->begin(); j != i->second->end(); ++j)

@@ -702,9 +702,9 @@ private:
 		const int scan_power = m_pSystem->GetScanPower(m_pSystem->OwnerID(), true);
 		for(CShipMap::const_iterator it = ships.begin(); it != ships.end(); ++it)
 		{
-			if(it->second->GetCo() != m_pSystem->GetCo() || enemies.find(it->second->GetOwnerOfShip()) == enemies.end())
+			if(it->second->GetCo() != m_pSystem->GetCo() || enemies.find(it->second->OwnerID()) == enemies.end())
 				continue;
-			if(!it->second->GetCloak() && m_pSystem->GetNeededScanPower(it->second->GetOwnerOfShip()) <= scan_power)
+			if(!it->second->GetCloak() && m_pSystem->GetNeededScanPower(it->second->OwnerID()) <= scan_power)
 				return true;
 		}
 		return false;

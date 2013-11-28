@@ -12,9 +12,11 @@
 
 #include "Constants.h"
 #include "AssertBote.h"
+#include "boost/shared_ptr.hpp"
 
 #pragma once
 
+class CRace;
 
 // forward declaration
 
@@ -63,12 +65,18 @@ public:
 
 	CString GetName() const { return m_sName; }
 
+	const boost::shared_ptr<CRace> Owner() const;
+	CString OwnerID() const;
+
 //////////////////////////////////////////////////////////////////////
 // setting
 //////////////////////////////////////////////////////////////////////
 
 	/// Funktion legt den Namen des Sektors fest.
 	void SetName(const CString& name) { m_sName = name; }
+
+protected:
+	void SetOwner(const CString& id);
 
 //////////////////////////////////////////////////////////////////////
 // members
@@ -78,5 +86,6 @@ protected:
 
 	CPoint m_Co;
 	CString m_sName;
+	boost::shared_ptr<CRace> m_Owner;
 
 };

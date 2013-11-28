@@ -300,12 +300,12 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		CString s;
 
 		const CShipMap::const_iterator& pShip = GetShip(*pDoc);
-		bool bUnknown = (pMajor->GetRaceID() != pShip->second->GetOwnerOfShip()
-			&& pMajor->IsRaceContacted(pShip->second->GetOwnerOfShip()) == false);
+		bool bUnknown = (pMajor->GetRaceID() != pShip->second->OwnerID()
+			&& pMajor->IsRaceContacted(pShip->second->OwnerID()) == false);
 		if (bUnknown)
 		{
 			// Wenn kein diplomatischer Kontakt möglich ist, wird das Schiff immer angezeigt
-			CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->second->GetOwnerOfShip());
+			CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->second->OwnerID());
 			if (pShipOwner)
 				bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
 		}
@@ -390,9 +390,9 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		}
 
 		CPoint TargetKO = pShip->second->GetTargetKO();
-		if (TargetKO.x == -1 && pShip->second->GetOwnerOfShip() != pMajor->GetRaceID())
+		if (TargetKO.x == -1 && pShip->second->OwnerID() != pMajor->GetRaceID())
 			s = CLoc::GetString("UNKNOWN_TARGET");
-		if (TargetKO.x != -1 && pShip->second->GetOwnerOfShip() == pMajor->GetRaceID())
+		if (TargetKO.x != -1 && pShip->second->OwnerID() == pMajor->GetRaceID())
 		{
 			if(m_DisplayMode == DISPLAY_MODE_SHIP_BOTTEM_VIEW)
 				AssertBotE(pShip == pDoc->CurrentShip());
@@ -418,13 +418,13 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			else
 				s.Format("%s: %c%i (%d %s)", CLoc::GetString("TARGET"), (char)(TargetKO.y+97),TargetKO.x+1, rounds, CLoc::GetString("ROUND"));
 		}
-		if (TargetKO.x == -1 && pShip->second->GetOwnerOfShip() == pMajor->GetRaceID())
+		if (TargetKO.x == -1 && pShip->second->OwnerID() == pMajor->GetRaceID())
 			s = CLoc::GetString("NO_TARGET");
-		if (TargetKO.x != -1 && pShip->second->GetOwnerOfShip() != pMajor->GetRaceID())
+		if (TargetKO.x != -1 && pShip->second->OwnerID() != pMajor->GetRaceID())
 			s = CLoc::GetString("UNKNOWN_TARGET");
 		if (TargetKO.x == pShip->second->GetCo().x &&
 			TargetKO.y == pShip->second->GetCo().y &&
-			pShip->second->GetOwnerOfShip() == pMajor->GetRaceID())
+			pShip->second->OwnerID() == pMajor->GetRaceID())
 			s = CLoc::GetString("NO_TARGET");
 		if (CGalaxyMenuView::IsMoveShip() == TRUE)
 		{
@@ -433,7 +433,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		}
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,185), &fontFormat, &fontBrush);
 		// bei eigenem Schiff aktuellen Befehl zeichnen
-		if (pShip->second->GetOwnerOfShip() == pMajor->GetRaceID())
+		if (pShip->second->OwnerID() == pMajor->GetRaceID())
 		{
 			pDC->SetTextColor(CFontLoader::GetFontColor(pMajor, 4));
 			CFontLoader::GetGDIFontColor(pMajor, 4, color);

@@ -52,7 +52,7 @@ void CCombat::SetInvolvedShips(const CArray<CShips*>* pShips, CRaceController* p
 	m_mRaces = pmRaces;
 
 	for (int i = 0; i < pShips->GetSize(); i++)
-		m_mInvolvedRaces.insert(pShips->GetAt(i)->GetOwnerOfShip());
+		m_mInvolvedRaces.insert(pShips->GetAt(i)->OwnerID());
 
 	// Check machen, dass die Rassen wegen ihrer diplomatischen Beziehung auch angreifen können
 	for (CRaceController::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
@@ -139,7 +139,7 @@ void CCombat::PreCombatCalculation()
 		// Hier das Feld aller beteiligten Schiffe durchgehen
 		for (int i = 0; i < m_CS.GetSize(); i++)
 		{
-			if (m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() != *it)
+			if (m_CS.GetAt(i)->m_pShip->OwnerID() != *it)
 				continue;
 
 			// Schiffsposition zuweisen
@@ -206,7 +206,7 @@ void CCombat::PreCombatCalculation()
 		// Jetzt noch die ganzen Boni/Mali den Schiffen zuweisen und die Felder mit den Gegnern für die einzelnen Rassen füllen
 		for (int i = 0; i < m_CS.GetSize(); i++)
 		{
-			if (m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() == *it)
+			if (m_CS.GetAt(i)->m_pShip->OwnerID() == *it)
 			{
 				// 10% Bonus wenn Schiff mit Kommandoeigenschaft am Kampf teilnimmt
 				if (bCommandship)
@@ -229,7 +229,7 @@ void CCombat::PreCombatCalculation()
 			else
 			{
 				// Feld mit allen möglichen gegnerischen Schiffen füllen
-				if (CCombat::CheckDiplomacyStatus(m_mRaces->GetRaceSafe(*it).get(), m_mRaces->GetRaceSafe(m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()).get()))
+				if (CCombat::CheckDiplomacyStatus(m_mRaces->GetRaceSafe(*it).get(), m_mRaces->GetRaceSafe(m_CS.GetAt(i)->m_pShip->OwnerID()).get()))
 					m_mEnemies[*it].push_back(m_CS.GetAt(i));
 			}
 		}
@@ -435,7 +435,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 		for (std::set<CString>::const_iterator it = m_mInvolvedRaces.begin(); it != m_mInvolvedRaces.end(); ++it)
 			winner[*it] = 2;
 		for (int i = 0; i < m_CS.GetSize(); i++)
-			winner[m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()] = 1;
+			winner[m_CS.GetAt(i)->m_pShip->OwnerID()] = 1;
 
 		// ein Unentschieden wurde erreicht, wenn es mehrere "Gewinner" gibt, diese aber keine diplomatische
 		// Beziehung haben, um sich nicht anzugreifen
@@ -473,7 +473,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 bool CCombat::SetTarget(int i)
 {
 	CShips* pShip = m_CS.GetAt(i)->m_pShip;
-	CString sOwner = pShip->GetOwnerOfShip();
+	CString sOwner = pShip->OwnerID();
 	AssertBotE(m_CS.GetAt(i)->m_pTarget == NULL);
 
 	// Wenn das enemy-Feld leer ist, dann gibt es keine gegnerischen Schiffe mehr in diesem Kampf und wir können
@@ -615,7 +615,7 @@ double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& v
 		double dOffensive = pShip->GetCompleteOffensivePower(true, bCanUseTorpedos);
 		double dDefensive = pShip->GetCompleteDefensivePower(bCanUseShields) / 2.0;
 
-		if (pShip->GetOwnerOfShip() == pOurRace->GetRaceID())
+		if (pShip->OwnerID() == pOurRace->GetRaceID())
 		{
 			sFriends.insert(pOurRace);
 			dOurOffensive += dOffensive;
@@ -623,10 +623,10 @@ double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& v
 		}
 		else
 		{
-			if (pmRaces->find(pShip->GetOwnerOfShip()) == pmRaces->end())
+			if (pmRaces->find(pShip->OwnerID()) == pmRaces->end())
 				continue;
 
-			const CRace* pOtherRace  = pmRaces->find(pShip->GetOwnerOfShip())->second.get();
+			const CRace* pOtherRace  = pmRaces->find(pShip->OwnerID())->second.get();
 			AssertBotE(pOtherRace);
 
 			if (CheckDiplomacyStatus(pOurRace, pOtherRace))

@@ -65,7 +65,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 			CalculateAlienShipOrders(*i->second);
 			continue;
 		}
-		const CString& sOwner	= i->second->GetOwnerOfShip();
+		const CString& sOwner	= i->second->OwnerID();
 		CMajor* pOwner	= dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sOwner));
 
 		// gilt erstmal nur für Majors
@@ -218,7 +218,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 //////////////////////////////////////////////////////////////////////
 void CShipAI::CalculateAlienShipOrders(CShips& ship)
 {
-	if (ship.GetOwnerOfShip() == StrToCStr(MIDWAY_ZEITREISENDE))
+	if (ship.OwnerID() == StrToCStr(MIDWAY_ZEITREISENDE))
 	{
 		const CPoint& co = ship.GetCo();
 		const CSystem& system = m_pDoc->GetSystem(co.x, co.y);
@@ -267,7 +267,7 @@ bool CShipAI::DoTerraform(CShips* pShip)
 
 	CSector* pSector = &m_pDoc->GetSystem(pShip->GetCo().x, pShip->GetCo().y);
 	// nur wenn der Sektor noch niemandem gehört bzw. uns selbst ist, sollen Planeten terraformt werden
-	if (!pSector->Free() && pSector->OwnerID() != pShip->GetOwnerOfShip())
+	if (!pSector->Free() && pSector->OwnerID() != pShip->OwnerID())
 		return false;
 
 	int nMinTerraPoints = INT_MAX;
@@ -327,7 +327,7 @@ bool CShipAI::DoColonize(CShips* pShip)
 
 	CSector* pSector = &m_pDoc->GetSystem(pShip->GetCo().x, pShip->GetCo().y);
 	// Gehört der Sektor aktuell auch keiner Minorrace (also niemanden oder uns selbst)
-	if (!pSector->Free() && pSector->OwnerID() != pShip->GetOwnerOfShip())
+	if (!pSector->Free() && pSector->OwnerID() != pShip->OwnerID())
 		return false;
 
 	// Kolonisierungsbefehl geben
@@ -449,7 +449,7 @@ bool CShipAI::DoBombardSystem(CShips* pShip)
 		return false;
 	}
 
-	if (pShip->GetCo() == m_BombardSector[pShip->GetOwnerOfShip()])
+	if (pShip->GetCo() == m_BombardSector[pShip->OwnerID()])
 	{
 		// Hier muss als erstes ein möglicher neuer Kurs gelöscht werden und ein alter Systemangriffsbefehl aufgehoben werden
 		pShip->SetTargetKO(CPoint(-1, -1));
@@ -471,7 +471,7 @@ bool CShipAI::DoBombardSystem(CShips* pShip)
 
 		for(CShipMap::iterator i = m_pDoc->m_ShipMap.begin(); i != m_pDoc->m_ShipMap.end(); ++i)
 		{
-			if (i->second->GetOwnerOfShip() != pShip->GetOwnerOfShip())
+			if (i->second->OwnerID() != pShip->OwnerID())
 				continue;
 
 			if (i->second->GetCo() != pShip->GetCo())
@@ -490,7 +490,7 @@ bool CShipAI::DoBombardSystem(CShips* pShip)
 		//AfxMessageBox(s);
 		if (nShipValue > nShipDefend)
 		{
-			MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) is bombarding system: %d,%d\n",pShip->GetOwnerOfShip(), pShip->GetName(), pShip->GetShipTypeAsString(), pShip->GetCo().x,pShip->GetCo().y);
+			MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) is bombarding system: %d,%d\n",pShip->OwnerID(), pShip->GetName(), pShip->GetShipTypeAsString(), pShip->GetCo().x,pShip->GetCo().y);
 			pShip->SetCurrentOrder(SHIP_ORDER::ATTACK_SYSTEM);
 			return true;
 		}
@@ -543,7 +543,7 @@ void CShipAI::DoMakeFleet(const CShipMap::iterator& pShip)
 			break;
 
 		// Schiffe müssen von der selben Rasse sein
-		if (pShip->second->GetOwnerOfShip() != i->second->GetOwnerOfShip())
+		if (pShip->second->OwnerID() != i->second->OwnerID())
 			continue;
 
 		// Schiffe müssen sich im selben Sektor befinden
@@ -596,7 +596,7 @@ bool CShipAI::DoStationBuild(CShips* pShip)
 	if (pShip->GetStationBuildPoints() <= 0 || pShip->GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST)
 		return false;
 
-	const CString& sRace = pShip->GetOwnerOfShip();
+	const CString& sRace = pShip->OwnerID();
 	if (m_pSectorAI->GetStationBuildSector(sRace).points <= MINBASEPOINTS)
 		return false;
 

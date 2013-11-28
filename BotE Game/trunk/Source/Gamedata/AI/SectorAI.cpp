@@ -126,7 +126,7 @@ void CSectorAI::CalcualteSectorPriorities()
 /// Sektor.
 void CSectorAI::AddDanger(const boost::shared_ptr<const CShips>& ship)
 {
-	CString race = ship->GetOwnerOfShip();
+	CString race = ship->OwnerID();
 
 	UINT offensive = ship->GetCompleteOffensivePower();
 	UINT defensive = ship->GetCompleteDefensivePower() / 2;

@@ -265,6 +265,12 @@ public:
 		m_Co = ko;
 	}
 
+private:
+	//deactivated for CRace tree
+	const boost::shared_ptr<CRace> Owner() const;
+	CString OwnerID() const;
+	void SetOwner(const CString& id);
+
 
 protected:
 	// Attribute

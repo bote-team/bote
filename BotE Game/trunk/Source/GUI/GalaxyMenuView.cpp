@@ -453,7 +453,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	set<pair<int, int> > setPathKOs;
 	for (CShipMap::const_iterator ship = pDoc->m_ShipMap.begin(); ship != pDoc->m_ShipMap.end(); ++ship)
 	{
-		if (ship->second->GetOwnerOfShip() != pMajor->GetRaceID())
+		if (ship->second->OwnerID() != pMajor->GetRaceID())
 			continue;
 
 		if (m_nRange && ship == pDoc->CurrentShip())
@@ -1427,7 +1427,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotEDoc* pDoc, SHIP_ORDER::
 	CShipMap::iterator previous_ship = pDoc->m_ShipMap.find(m_PreviouslyJumpedToShip.key);
 	if(previous_ship != pDoc->m_ShipMap.end())
 	{
-		if(previous_ship->second->GetOwnerOfShip() == m_pPlayersRace->GetRaceID()
+		if(previous_ship->second->OwnerID() == m_pPlayersRace->GetRaceID()
 				&& Sector(previous_ship->second->GetCo()) == m_pPlayersRace->GetStarmap()->GetSelection()
 				&& previous_ship->second->GetName() == m_PreviouslyJumpedToShip.name)
 		{
@@ -1446,7 +1446,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotEDoc* pDoc, SHIP_ORDER::
 				break;
 			i = pDoc->m_ShipMap.begin();
 		}
-		if(m_pPlayersRace->GetRaceID() == i->second->GetOwnerOfShip()) {
+		if(m_pPlayersRace->GetRaceID() == i->second->OwnerID()) {
 			const CPoint& coords = i->second->GetCo();
 			const Sector& sector = Sector(coords.x, coords.y);
 

@@ -198,7 +198,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 
 	CString s;
 	const CString& systemOwner = pDoc->GetSystem(p.x, p.y).OwnerID();
-	const CString& shipOwner = pDoc->CurrentShip()->second->GetOwnerOfShip();
+	const CString& shipOwner = pDoc->CurrentShip()->second->OwnerID();
 
 	Gdiplus::Font font(CComBSTR(fontName), fontSize);
 	if (systemOwner == shipOwner)
@@ -459,14 +459,14 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	// Wenn wir in der Transportansicht sind (brauchen auch nur Klicks überprüfen, wenn das Schiff Lagerraum hat)
 	CShipMap::iterator ship = pDoc->CurrentShip();
-	if (ship->second->GetOwnerOfShip() != pMajor->GetRaceID())
+	if (ship->second->OwnerID() != pMajor->GetRaceID())
 		return;
 
 	CalcLogicalPoint(point);
 
 	CPoint p = pDoc->GetCo();
 	const CString& systemOwner = pDoc->GetSystem(p.x, p.y).OwnerID();
-	const CString& shipOwner   = ship->second->GetOwnerOfShip();
+	const CString& shipOwner   = ship->second->OwnerID();
 
 	BOOLEAN isFleet = FALSE;
 	int number = 1;
@@ -796,12 +796,12 @@ void CTransportMenuView::OnMouseMove(UINT nFlags, CPoint point)
 
 	// Wenn wir in der Transportansicht sind (brauchen auch nur Klicks überprüfen, wenn das Schiff Lagerraum hat)
 	const CShips::const_iterator& ship = pDoc->CurrentShip();
-	if (ship->second->GetOwnerOfShip() != pMajor->GetRaceID())
+	if (ship->second->OwnerID() != pMajor->GetRaceID())
 		return;
 
 	CPoint p = pDoc->GetCo();
 	const CString& systemOwner = pDoc->GetSystem(p.x, p.y).OwnerID();
-	const CString& shipOwner   = ship->second->GetOwnerOfShip();
+	const CString& shipOwner   = ship->second->OwnerID();
 
 	if (systemOwner == shipOwner)
 	{

@@ -169,7 +169,7 @@ void CMinor::PerhapsBuildShip(CBotEDoc* pDoc)
 					int nNumber = 1;
 					for(CShipMap::const_iterator j = pDoc->m_ShipMap.begin(); j != pDoc->m_ShipMap.end(); ++j)
 					{
-						if (j->second->GetOwnerOfShip() == m_sID && j->second->GetShipClass() == pShipInfo->GetShipClass())
+						if (j->second->OwnerID() == m_sID && j->second->GetShipClass() == pShipInfo->GetShipClass())
 							nNumber++;
 					}
 					nNumber *= 5;

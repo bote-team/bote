@@ -200,11 +200,11 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	fontBrush.SetColor(normalColor);
 
 	const CShipMap::iterator& pShip = pDoc->FleetShip();
-	bool bUnknown = (pMajor->GetRaceID() != pShip->second->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->second->GetOwnerOfShip()) == false);
+	bool bUnknown = (pMajor->GetRaceID() != pShip->second->OwnerID() && pMajor->IsRaceContacted(pShip->second->OwnerID()) == false);
 	if (bUnknown)
 	{
 		// Wenn kein diplomatischer Kontakt möglich ist, wird das Schiff immer angezeigt
-		CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->second->GetOwnerOfShip());
+		CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->second->OwnerID());
 		if (pShipOwner)
 			bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
 	}
@@ -373,7 +373,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Fremde Flotten können nicht bearbeitet werden
 	// It is possible to view the content of a foreign fleet by double-clicking onto it in ship bottom view...
 	// However, we of course don't want someone else to modify our fleets.
-	if(pDoc->FleetShip()->second->GetOwnerOfShip() != m_pPlayersRace->GetRaceID())
+	if(pDoc->FleetShip()->second->OwnerID() != m_pPlayersRace->GetRaceID())
 		return;
 	// Auf welches Rechteck haben wir geklickt (gleiche Klasse oder gleichen Typ oder alle hinzufügen?)
 	const unsigned whichRect = CheckClickedButtonRect(point);
@@ -383,7 +383,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		const CPoint& ko = pDoc->FleetShip()->second->GetCo();
 		for(CShipMap::iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end();) {
 			const CShipMap::iterator& fleetship = pDoc->FleetShip();
-			if (i->second->GetOwnerOfShip() != fleetship->second->GetOwnerOfShip() || i->second->GetCo() != ko || i->second->IsStation()) {
+			if (i->second->OwnerID() != fleetship->second->OwnerID() || i->second->GetCo() != ko || i->second->IsStation()) {
 				++i;
 				continue;
 			}
@@ -592,11 +592,11 @@ CString CFleetMenuView::CreateTooltip(void)
 	if (!pShip)
 		return "";
 
-	bool bUnknown = (pMajor->GetRaceID() != pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false);
+	bool bUnknown = (pMajor->GetRaceID() != pShip->OwnerID() && pMajor->IsRaceContacted(pShip->OwnerID()) == false);
 	if (bUnknown)
 	{
 		// Wenn kein diplomatischer Kontakt möglich ist, wird das Schiff immer angezeigt
-		CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->GetOwnerOfShip());
+		CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->OwnerID());
 		if (pShipOwner)
 			bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
 	}

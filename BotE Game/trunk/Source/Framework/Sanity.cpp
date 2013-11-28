@@ -53,7 +53,7 @@ void CSanity::CheckShipTargetCoordinates(const CShips& ship)
 		CString s;
 		s.Format("The %s from %s at (%u, %u) has target (%u, %u) set and current order is %s.",
 			ship.GetName(),
-			ship.GetOwnerOfShip(),
+			ship.OwnerID(),
 			co.x, co.y,
 			tco.x, tco.y,
 			ship.GetCurrentOrderAsString());
@@ -72,7 +72,7 @@ void CSanity::SanityCheckShip(const CShips& ship)
 		CString s;
 		s.Format("The %s from %s at (%u, %u) has m_nTerraformingPlanet %i set but current order is %s.",
 			ship.GetName(),
-			ship.GetOwnerOfShip(),
+			ship.OwnerID(),
 			co.x, co.y,
 			ship.GetTerraform(),
 			ship.GetCurrentOrderAsString());
@@ -82,7 +82,7 @@ void CSanity::SanityCheckShip(const CShips& ship)
 		CString s;
 		s.Format("The %s from %s at (%u, %u) has hull < 1 but wasn't removed!",
 			ship.GetName(),
-			ship.GetOwnerOfShip(),
+			ship.OwnerID(),
 			co.x, co.y);
 		Notify(s);
 	}
@@ -90,7 +90,7 @@ void CSanity::SanityCheckShip(const CShips& ship)
 		CString s;
 		s.Format("The %s from %s at (%u, %u) has order %s which it should not be allowed to have!",
 			ship.GetName(),
-			ship.GetOwnerOfShip(),
+			ship.OwnerID(),
 			co.x, co.y,
 			ship.GetCurrentOrderAsString());
 		Notify(s);

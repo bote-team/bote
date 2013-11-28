@@ -51,7 +51,7 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShips*>& vInvolvedShips, const C
 	// beteiligte Rassen
 	set<CString> sInvolvedRaces;
 	for (int i = 0; i < vInvolvedShips.GetSize(); i++)
-		sInvolvedRaces.insert(vInvolvedShips[i]->GetOwnerOfShip());
+		sInvolvedRaces.insert(vInvolvedShips[i]->OwnerID());
 
 	// Kampfbefehl berechnen
 	for (set<CString>::const_iterator it = sInvolvedRaces.begin(); it != sInvolvedRaces.end(); ++it)
@@ -150,7 +150,7 @@ void CCombatAI::ApplyShipTactics(const CArray<CShips*>& vInvolvedShips, map<CStr
 	for (int i = 0; i < vInvolvedShips.GetSize(); i++)
 	{
 		CShips* pShip = vInvolvedShips[i];
-		CString sOwner = pShip->GetOwnerOfShip();
+		CString sOwner = pShip->OwnerID();
 		if (mCombatOrders.find(sOwner) != mCombatOrders.end())
 		{
 			COMBAT_ORDER::Typ nOrder = mCombatOrders[sOwner];
