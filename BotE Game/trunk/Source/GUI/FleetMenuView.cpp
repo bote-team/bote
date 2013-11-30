@@ -204,7 +204,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	if (bUnknown)
 	{
 		// Wenn kein diplomatischer Kontakt möglich ist, wird das Schiff immer angezeigt
-		CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->second->OwnerID());
+		CRace* pShipOwner = pShip->second->Owner().get();
 		if (pShipOwner)
 			bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
 	}
@@ -596,7 +596,7 @@ CString CFleetMenuView::CreateTooltip(void)
 	if (bUnknown)
 	{
 		// Wenn kein diplomatischer Kontakt möglich ist, wird das Schiff immer angezeigt
-		CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->OwnerID());
+		CRace* pShipOwner = pShip->Owner().get();
 		if (pShipOwner)
 			bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
 	}

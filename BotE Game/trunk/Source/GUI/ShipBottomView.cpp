@@ -237,7 +237,7 @@ void CShipBottomView::DrawShipContent()
 				if (pMajor->GetRaceID() == pShip->OwnerID() || pMajor->IsRaceContacted(pShip->OwnerID()))
 				{
 					// Major holen, welcher die Station besitzt
-					if (CMajor* pStationOwner = dynamic_cast<CMajor*>(m_dc.pDoc->GetRaceCtrl()->GetRace(pShip->OwnerID())))
+					if (CMajor* pStationOwner = dynamic_cast<CMajor*>(pShip->Owner().get()))
 					{
 						// schönerer Grafik der Station des Majors groß anzeigen
 						DrawImage("Other\\" + pStationOwner->GetPrefix() + "Starbase.bop", CRect(CPoint(550,20),CSize(235,200)));
@@ -303,7 +303,7 @@ void CShipBottomView::DrawShipContent()
 		if (bUnknown)
 		{
 			// Wenn kein diplomatischer Kontakt möglich ist, wird das Schiff immer angezeigt
-			CRace* pShipOwner = m_dc.pDoc->GetRaceCtrl()->GetRace(pShip->OwnerID());
+			CRace* pShipOwner = pShip->Owner().get();
 			if (pShipOwner)
 				bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
 		}

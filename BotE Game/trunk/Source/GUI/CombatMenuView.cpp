@@ -523,7 +523,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 		if (m_nShipType != -1 && pShip->GetShipType() != m_nShipType)
 			continue;
 
-		CRace* pRace = pDoc->GetRaceCtrl()->GetRace(pShip->OwnerID());
+		CRace* pRace = pShip->Owner().get();
 
 		if (!pRace || m_sFriends.find(pRace) == m_sFriends.end())
 			continue;
@@ -584,7 +584,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 		if (m_nShipType != -1 && pShip->GetShipType() != m_nShipType)
 			continue;
 
-		CRace* pRace = pDoc->GetRaceCtrl()->GetRace(pShip->OwnerID());
+		CRace* pRace = pShip->Owner().get();
 
 		if (!pRace || m_sEnemies.find(pRace) == m_sEnemies.end())
 			continue;

@@ -305,7 +305,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		if (bUnknown)
 		{
 			// Wenn kein diplomatischer Kontakt möglich ist, wird das Schiff immer angezeigt
-			CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->second->OwnerID());
+			CRace* pShipOwner = pShip->second->Owner().get();
 			if (pShipOwner)
 				bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
 		}

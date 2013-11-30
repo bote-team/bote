@@ -626,7 +626,7 @@ double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& v
 			if (pmRaces->find(pShip->OwnerID()) == pmRaces->end())
 				continue;
 
-			const CRace* pOtherRace  = pmRaces->find(pShip->OwnerID())->second.get();
+			const CRace* pOtherRace  = pShip->Owner().get();
 			AssertBotE(pOtherRace);
 
 			if (CheckDiplomacyStatus(pOurRace, pOtherRace))

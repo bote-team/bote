@@ -1149,15 +1149,14 @@ void CBotEDoc::GenerateGalaxy()
 
 ////////////////////////////////////////////////
 //BEGINN: helper functions for NextRound()
-static bool HumanPlayerInCombat(const CShipMap& ships, const CPoint& CurrentCombatSector,
-		const std::map<CString, CMajor*>& majors) {
+static bool HumanPlayerInCombat(const CShipMap& ships, const CPoint& CurrentCombatSector) {
 
 	for(CShipMap::const_iterator i = ships.begin(); i != ships.end(); ++i)
 	{
 		if (i->second->GetCo() != CurrentCombatSector)
 			continue;
-		const std::map<CString, CMajor*>::const_iterator major = majors.find(i->second->OwnerID());
-		if (major != majors.end() && major->second->IsHumanPlayer())
+		const boost::shared_ptr<CMajor>& major = boost::dynamic_pointer_cast<CMajor>(i->second->Owner());
+		if (major && major->IsHumanPlayer())
 			return true;
 	}
 	return false;
@@ -1223,7 +1222,7 @@ void CBotEDoc::NextRound()
 		{
 			// Ist ein menschlicher Spieler beteiligt?
 			// kein menschlicher Spieler beteiligt -> gleich weiter
-			if (!HumanPlayerInCombat(m_ShipMap, m_ptCurrentCombatSector, *pmMajors))
+			if (!HumanPlayerInCombat(m_ShipMap, m_ptCurrentCombatSector))
 				NextRound();
 
 			// findet ein Kampf statt, so sofort aus der Funktion rausgehen und die Kampfberechnungen durchführen
@@ -1239,10 +1238,9 @@ void CBotEDoc::NextRound()
 		// Wenn wieder ein Kampf stattfindet, so aus der Funktion springen
 		if (IsShipCombat())
 		{
-			map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 			// Ist ein menschlicher Spieler beteiligt?
 			// kein menschlicher Spieler beteiligt -> gleich weiter
-			if (!HumanPlayerInCombat(m_ShipMap, m_ptCurrentCombatSector, *pmMajors))
+			if (!HumanPlayerInCombat(m_ShipMap, m_ptCurrentCombatSector))
 				NextRound();
 
 			// findet ein Kampf statt, so sofort aus der Funktion rausgehen und die Kampfberechnungen durchführen
@@ -3025,9 +3023,7 @@ void CBotEDoc::CalcSystemAttack()
 	if (fightInSystem.GetSize() > 0)
 		for(CShipMap::iterator i = m_ShipMap.begin(); i != m_ShipMap.end();)
 		{
-			CRace* race = m_pRaceCtrl->GetRace(i->second->OwnerID());
-			AssertBotE(race);
-			if(i->second->RemoveDestroyed(*race, m_iRound, CLoc::GetString("SYSTEMATTACK"),
+			if(i->second->RemoveDestroyed(*i->second->Owner(), m_iRound, CLoc::GetString("SYSTEMATTACK"),
 					CLoc::GetString("DESTROYED"))) {
 				++i;
 				continue;
@@ -3513,7 +3509,7 @@ void CBotEDoc::CalcTrade()
 /////BEGIN: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
 
 bool CBotEDoc::BuildStation(CShips& ship, SHIP_ORDER::Typ order, CSystem& system) {
-	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(ship.OwnerID()));
+	CMajor* pMajor = dynamic_cast<CMajor*>(ship.Owner().get());
 	AssertBotE(pMajor);
 	const CString& owner = ship.OwnerID();
 
@@ -3608,7 +3604,7 @@ void CBotEDoc::CalcShipOrders()
 			if(!AttackStillValid(*y->second, *m_pRaceCtrl, *pSystem))
 				y->second->SetCurrentOrderAccordingToType();
 
-		CRace* pRace = m_pRaceCtrl->GetRace(y->second->OwnerID());
+		CRace* pRace = y->second->Owner().get();
 		if(pRace->IsMinor())
 			continue;//minors don't currently can do something else
 		CMajor* pMajor = dynamic_cast<CMajor*>(pRace);
@@ -3817,7 +3813,7 @@ void CBotEDoc::CalcShipOrders()
 					pSystem->GetTradeRoutes()->GetAt(i).SetCredits(NULL);
 
 				// Eventscreen für den Angreifer und den Blockierten anlegen
-				CRace* pShipOwner = m_pRaceCtrl->GetRace(y->second->OwnerID());
+				CRace* pShipOwner = y->second->Owner().get();
 				CMajor* pShipOwnerMajor = NULL;
 				if (pShipOwner != NULL && pShipOwner->IsMajor() && (pShipOwnerMajor = dynamic_cast<CMajor*>(pShipOwner))->IsHumanPlayer())
 				{
@@ -3984,7 +3980,7 @@ void CBotEDoc::CalcShipMovement()
 			}
 			else
 			{
-				pRace = m_pRaceCtrl->GetRace(y->second->OwnerID());
+				pRace = y->second->Owner().get();
 				if (pRace != NULL && pRace->IsMajor())
 				{
 					nextKO = dynamic_cast<CMajor*>(pRace)->GetStarmap()->CalcPath(shipKO,targetKO,range,speed,*y->second->GetPath());
@@ -4062,7 +4058,7 @@ void CBotEDoc::CheckShipsDestroyedByAnomaly() {
 		}
 		const CString& anomaly = GetSystem(co.x, co.y).GetAnomaly()
 			->GetMapName(co);
-		CRace* pRace = m_pRaceCtrl->GetRace(i->second->OwnerID());
+		CRace* pRace = i->second->Owner().get();
 		if(i->second->RemoveDestroyed(*pRace, m_iRound, anomaly,
 				CLoc::GetString("DESTROYED"), NULL, anomaly)) {
 			++i;
@@ -4322,7 +4318,7 @@ void CBotEDoc::CalcShipCombat()
 					j->second->SetCombatTactic(LeadersCombatTactic);
 			}
 
-		CRace* pOwner = m_pRaceCtrl->GetRace(i->second->OwnerID());
+			CRace* pOwner = i->second->Owner().get();
 		AssertBotE(pOwner);
 		if (i->second->RemoveDestroyed(*pOwner, m_iRound, CLoc::GetString("COMBAT"),	CLoc::GetString("DESTROYED"), &destroyedShips))
 		{
@@ -5104,7 +5100,7 @@ void CBotEDoc::CalcAlienShipEffects()
 		if (!ship->second->IsAlien())
 			continue;
 
-		CMinor* pAlien = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(ship->second->OwnerID()));
+		CMinor* pAlien = dynamic_cast<CMinor*>(ship->second->Owner().get());
 		if (!pAlien || !pAlien->IsAlien())
 		{
 			AssertBotE(FALSE);
@@ -5201,7 +5197,7 @@ void CBotEDoc::CalcAlienShipEffects()
 						if (pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 							continue;
 
-						CRace* race = m_pRaceCtrl->GetRace(pShip->OwnerID());
+						CRace* race = pShip->Owner().get();
 						if(race->IsMinor())
 							continue;
 						CMajor* pShipOwner = dynamic_cast<CMajor*>(race);
