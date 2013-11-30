@@ -759,12 +759,6 @@ void CBotEDoc::PrepareData()
 
 	if (!m_bGameLoaded)
 	{
-		// neue Majors anlegen
-		if (!m_pRaceCtrl->Init())
-		{
-			AfxMessageBox("CBotEDoc::PrepareData(): Could not initiate races!");
-			exit(1);
-		}
 		m_pClientWorker->SetMajorsToHumanOrAi(*m_pRaceCtrl->GetMajors());
 
 		// ALPHA6 DEBUG alle Rassen untereinander bekanntgeben

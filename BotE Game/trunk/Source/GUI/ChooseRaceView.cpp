@@ -194,7 +194,12 @@ void CChooseRaceView::OnInitialUpdate()
 	m_TotalSize = CSize(1280, 1024);
 
 	// Majorrassen einlesen um Rasseninformationen zu bekommen (Imperiumsname, Bild, Beschreibung...)
-	pDoc->GetRaceCtrl()->Init();
+	// neue Majors anlegen
+	if (!pDoc->GetRaceCtrl()->Init())
+	{
+		AfxMessageBox("CBotEDoc::PrepareData(): Could not initiate races!");
+		exit(1);
+	}
 
 	// Structure containing Style
 	tButtonStyle tStyle;

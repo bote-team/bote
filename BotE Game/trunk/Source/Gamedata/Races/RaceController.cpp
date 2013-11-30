@@ -13,12 +13,10 @@ IMPLEMENT_SERIAL (CRaceController, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 CRaceController::CRaceController(void)
 {
-	Reset();
 }
 
 CRaceController::~CRaceController(void)
 {
-	Reset();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -36,48 +34,31 @@ void CRaceController::Serialize(CArchive &ar)
 		for (const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 		{
 			ar << it->first;
-			ar << static_cast<int>(it->second->GetType());
 			it->second->Serialize(ar);
 		}
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
 	{
-		// alle Rassen und Zeiger löschen
-		Reset();
-
-		size_t mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
+		unsigned size = 0;
+		ar >> size;
+		const_iterator it = m_mRaces.begin();
+		for(unsigned i = 0; i < size; ++i)
 		{
-			CString key;
-			ar >> key;
-			int type = 0;
-			ar >> type;
-			RacePtr race;
-			switch(type)
+			AssertBotE(it != m_mRaces.end());
+			CString id;
+			ar >> id;
+			while(it->first != id)
 			{
-				case CRace::RACE_TYPE_MAJOR:
-					race = RacePtr(new CMajor());
-				break;
-				case CRace::RACE_TYPE_MINOR:
-					race = RacePtr(new CMinor());
-				break;
-				case CRace::RACE_TYPE_ALIEN:
-					race = RacePtr(new CAlien());
-				break;
-				default:
-					AssertBotE(false);
+				it = RemoveRaceInternal(it);
+				AssertBotE(it != m_mRaces.end());
 			}
-
-			AssertBotE(race);
-			race->Serialize(ar);
-			m_mRaces[key] = race;
-			if(race->IsMajor())
-				m_mMajors[key] = dynamic_cast<CMajor*>(race.get());
-			else
-				m_mMinors[key] = dynamic_cast<CMinor*>(race.get());
+			it->second->Serialize(ar);
+			AssertBotE(!it->second->Deleted());
+			++it;
 		}
+		while(it != m_mRaces.end())
+			it = RemoveRaceInternal(it);
 	}
 }
 
@@ -90,8 +71,7 @@ void CRaceController::Serialize(CArchive &ar)
 /// @return <code>true</code> wenn Initalisierung erfolgreich war, sonst <code>false</code>
 bool CRaceController::Init(int nSource/* = RACESOURCE_DATAFILE*/)
 {
-	// alle alten Rassen löschen
-	Reset();
+	AssertBotE(m_mRaces.empty());
 
 	if ((InitMajors(nSource) & InitMinors(nSource) & InitAlienEntities(nSource)) == false)
 		return false;
@@ -154,35 +134,16 @@ CMinor* CRaceController::GetMinorRace(const CString& sMinorsHome) const
 /// @param sRaceID Rassen-ID
 void CRaceController::RemoveRace(const CString& sRaceID)
 {
-	for (iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
-	{
-		if (it->first == sRaceID)
-		{
-			AssertBotE(it->second);
-			it->second->IsMajor() ? m_mMajors.erase(it->first) : m_mMinors.erase(it->first);
-			it->second->Delete();
-			it->second.reset();
-			m_mRaces.erase(it);
-			break;
-		}
-	}
+	std::map<CString, RacePtr>::const_iterator race = m_mRaces.find(sRaceID);
+	RemoveRaceInternal(race);
 }
 
-/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
-void CRaceController::Reset(void)
+CRaceController::const_iterator CRaceController::RemoveRaceInternal(const const_iterator& it)
 {
-	// Objekte in der Map löschen
-	for (iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
-	{
-		AssertBotE(it->second);
-		it->second->Delete();
-		it->second.reset();
-	}
-	// Map löschen
-	m_mRaces.clear();
-
-	m_mMajors.clear();
-	m_mMinors.clear();
+	AssertBotE(it != m_mRaces.end() && !it->second->Deleted());
+	it->second->IsMajor() ? m_mMajors.erase(it->second->GetRaceID()) : m_mMinors.erase(it->second->GetRaceID());
+	it->second->Delete();
+	return m_mRaces.erase(it);
 }
 
 //////////////////////////////////////////////////////////////////////

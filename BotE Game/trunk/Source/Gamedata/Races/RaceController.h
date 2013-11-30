@@ -81,7 +81,8 @@ public:
 
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
 private:
-	void Reset(void);
+
+	const_iterator RemoveRaceInternal(const const_iterator& it);
 
 	// private Funktionen
 	/// Funktion zum Einlesen und Initialisieren der beteiligten Majors
