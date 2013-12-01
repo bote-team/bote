@@ -2475,7 +2475,7 @@ void CBotEDoc::CalcSystemAttack()
 			// Wurde das System mit Truppen erobert, so wechselt es den Besitzer
 			if (pSystemAttack->Calculate(attacker))
 			{
-				CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(attacker));
+				const boost::shared_ptr<CMajor> pMajor = m_pRaceCtrl->GetMajorSafe(attacker);
 				AssertBotE(pMajor);
 
 				// Wenn in dem System eine Minorrace beheimatet ist und das System nicht vorher schon von jemand
@@ -2490,6 +2490,7 @@ void CBotEDoc::CalcSystemAttack()
 					GetSystem(p.x, p.y).BuildBuildingsForMinorRace(&BuildingInfo, m_Statistics.GetAverageTechLevel(), pMinor);
 					// Sektor gilt ab jetzt als erobert.
 					GetSystem(p.x, p.y).ChangeOwner(attacker, CSystem::OWNING_STATUS_TAKEN);
+					pMinor->SetOwner(pMajor);
 					// Beziehung zu dieser Minorrace verschlechtert sich auf 0 Punkte
 					pMinor->SetRelation(attacker, -100);
 					// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte
@@ -2574,6 +2575,8 @@ void CBotEDoc::CalcSystemAttack()
 					}
 					// Sektor gilt ab jetzt als nicht mehr erobert.
 					GetSystem(p.x, p.y).ChangeOwner(pMinor->GetRaceID(), CSystem::OWNING_STATUS_INDEPENDENT_MINOR);
+					boost::shared_ptr<CMajor> empty;
+					pMinor->SetOwner(empty);
 					// Moral in dem System um rand()%50+25 erhöhen
 					GetSystem(p.x, p.y).SetMoral(rand()%50+25);
 				}

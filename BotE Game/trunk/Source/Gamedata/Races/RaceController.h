@@ -16,6 +16,7 @@
 #define	RACESOURCE_DATAFILE		0		///< Rassendaten werden aus *.data Dateien gelesen
 #define RACESOURCE_CONST		1		///< Rassendaten kommen hart aus dem Quellcode
 
+typedef const boost::shared_ptr<const CRace> ConstRacePtr;
 typedef boost::shared_ptr<CRace> RacePtr;
 
 /// Klasse zum Verwalten aller Rassen im Spiel.
@@ -59,8 +60,11 @@ public:
 	const CRace* GetRace(const CString& sID) const;
 	CRace* GetRace(const CString& sID);
 
-	const boost::shared_ptr<CRace> GetRaceSafe(const CString& sID) const;
+	const boost::shared_ptr<const CRace> GetRaceSafe(const CString& sID) const;
 	boost::shared_ptr<CRace> GetRaceSafe(const CString& sID);
+
+	const boost::shared_ptr<const CMajor> GetMajorSafe(const CString& sID) const;
+	boost::shared_ptr<CMajor> GetMajorSafe(const CString& sID);
 
 	/// Funktion gibt alle Hauptrassen des Spiels zurück.
 	/// @return Map mit allen Hauptrassen des Spiels

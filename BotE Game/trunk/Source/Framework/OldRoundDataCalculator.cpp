@@ -93,6 +93,8 @@ void COldRoundDataCalculator::ExecuteRebellion(CSystem& system, CMajor* pMajor) 
 			message.CreateNews(news, EMPIRE_NEWS_TYPE::DIPLOMACY, "", co);
 			pEmpire->AddMsg(message);
 		}
+		boost::shared_ptr<CMajor> empty;
+		pMinor->SetOwner(empty);
 		system.ChangeOwner(pMinor->GetRaceID(), CSystem::OWNING_STATUS_INDEPENDENT_MINOR);
 	}
 	else

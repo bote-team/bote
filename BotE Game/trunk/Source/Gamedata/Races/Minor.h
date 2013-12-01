@@ -11,6 +11,7 @@
 
 // forward declaration
 class CBotEDoc;
+class CMajor;
 
 /// Klasse zur Abstraktion einer Minorrace
 class CMinor : public CRace
@@ -123,6 +124,8 @@ public:
 
 	// Is this minor race member to the major race with given ID, or to any major in case of an empty ID ?
 	bool IsMemberTo(const CString& MajorID = "") const;
+
+	void SetOwner(const boost::shared_ptr<CMajor>& race);
 
 protected:
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.

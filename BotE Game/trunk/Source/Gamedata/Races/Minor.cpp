@@ -669,3 +669,8 @@ bool CMinor::IsMemberTo(const CString& MajorID) const {
 	}
 	return false;
 }
+
+void CMinor::SetOwner(const boost::shared_ptr<CMajor>& race)
+{
+	m_Owner = race;
+}

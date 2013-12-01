@@ -104,7 +104,7 @@ CRace* CRaceController::GetRace(const CString& sID)
 		return NULL;
 }
 
-const boost::shared_ptr<CRace> CRaceController::GetRaceSafe(const CString& sID) const
+const boost::shared_ptr<const CRace> CRaceController::GetRaceSafe(const CString& sID) const
 {
 	const const_iterator it = m_mRaces.find(sID);
 	AssertBotE(it != end());
@@ -116,6 +116,16 @@ boost::shared_ptr<CRace> CRaceController::GetRaceSafe(const CString& sID)
 	iterator it = m_mRaces.find(sID);
 	AssertBotE(it != end());
 	return it->second;
+}
+
+const boost::shared_ptr<const CMajor> CRaceController::GetMajorSafe(const CString& sID) const
+{
+	return boost::dynamic_pointer_cast<const CMajor>(GetRaceSafe(sID));
+}
+
+boost::shared_ptr<CMajor> CRaceController::GetMajorSafe(const CString& sID)
+{
+	return boost::dynamic_pointer_cast<CMajor>(GetRaceSafe(sID));
 }
 
 /// Funktion liefert die Minorrace, welche in einem bestimmten Sektor beheimatet ist.

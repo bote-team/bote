@@ -147,7 +147,8 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 
 		for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)
 		{
-			CMajor* pMajor = jt->second;
+			//don't create an independent shared_ptr - get from race control
+			const boost::shared_ptr<CMajor>& pMajor = pDoc->GetRaceCtrl()->GetMajorSafe(jt->first);
 
 			// Wenn wir mit der Minorrace mindst. einen Handelsvertrag abgeschlossen haben, dann wird deren Sector gescannt/gesehen
 			if (pMinor->GetAgreement(pMajor->GetRaceID()) >= DIPLOMATIC_AGREEMENT::TRADE)
@@ -161,6 +162,7 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetFullKnown(pMajor->GetRaceID());
 				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).ChangeOwner(pMajor->GetRaceID(),
 					CSystem::OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME);
+				pMinor->SetOwner(pMajor);
 				// Nun Gebäude in neuen System bauen
 				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).BuildBuildingsForMinorRace(&pDoc->BuildingInfo, pDoc->GetStatistics()->GetAverageTechLevel(), pMinor);
 				// Gebäude so weit wie möglich mit Arbeitern besetzen
@@ -202,6 +204,8 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 			{
 				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).ChangeOwner(pMinor->GetRaceID(), 
 					CSystem::OWNING_STATUS_INDEPENDENT_MINOR);
+				boost::shared_ptr<CMajor> empty;
+				pMinor->SetOwner(empty);
 				CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sOwner));
 				if (pMajor)
 				{
