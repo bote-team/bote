@@ -1975,7 +1975,7 @@ void CBotEDoc::ReadShipInfosFromFile()
 					ShipInfo.SetRace(PLAYER_RACES::MINORNUMBER);
 				ShipInfo.SetID(j);
 				ShipInfo.SetShipClass(data[1]);
-				ShipInfo.SetShipDescription(data[2]);
+				ShipInfo.SetDescription(data[2]);
 				ShipInfo.SetShipType((SHIP_TYPE::Typ)atoi(data[3]));
 				ShipInfo.SetShipSize((SHIP_SIZE::Typ)atoi(data[4]));
 				ShipInfo.SetManeuverability(atoi(data[5]));

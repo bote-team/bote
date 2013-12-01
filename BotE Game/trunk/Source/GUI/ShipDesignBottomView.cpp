@@ -93,7 +93,7 @@ void CShipDesignBottomView::OnDraw(CDC* dc)
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	fontBrush.SetColor(Color(200,200,250));
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	s = pDoc->m_ShipInfoArray.GetAt(m_nCurrentShipInfo).GetShipDescription();
+	s = pDoc->m_ShipInfoArray.GetAt(m_nCurrentShipInfo).GetDescription();
 	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 100, rect.right - 90, rect.bottom - 50), &fontFormat, &fontBrush);
 
 	g.ReleaseHDC(pDC->GetSafeHdc());

@@ -87,10 +87,6 @@ public:
 	/// @return Name des Heimatsystems
 	const CString& GetHomesystemName(void) const {return m_sHomeSystem;}
 
-	/// Funktion gibt die Rassenbeschreibung zurück
-	/// @return Rassenbeschreibung
-	const CString& GetRaceDesc(void) const {return m_sDesc;}
-
 	/// Funktion gibt den Rassennamen inkl. vorangestelltem Artikel zurück
 	/// @return Rassenname inkl Artikel
 	CString GetRaceNameWithArticle(void) const {return m_sNameArticle + " " + m_sName;}
@@ -271,7 +267,6 @@ protected:
 	CString				m_sID;			///<!!! Rassen-ID
 	CString				m_sHomeSystem;	///<!!! Name des Heimatsystems
 	CString				m_sNameArticle;	///<!!! Artikel für Rassenname
-	CString				m_sDesc;		///<!!! Rassenbeschreibung
 	const RACE_TYPE		m_RaceType;		///<!!! Rassentyp (Major, Minor, Alien)
 	int					m_nProperty;	///<!!! Rasseneigenschaften
 	BYTE				m_byShipNumber;	///<!!! zugewiesene Nummer, welche Schiffe verwendet werden sollen

@@ -29,7 +29,7 @@ void CAlien::Create(const CStringArray& saInfo, int& nPos)
 	m_sID				= saInfo[nPos++];				// Rassen-ID
 	m_sID.Remove(':');
 	m_sName				= saInfo[nPos++];				// Rassenname
-	m_sDesc				= saInfo[nPos++];				// Rassenbeschreibung
+	m_sDescription				= saInfo[nPos++];				// Rassenbeschreibung
 
 	// grafische Attribute
 	m_sGraphicFile		= saInfo[nPos++];				// Name der zugehörigen Grafikdatei

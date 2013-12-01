@@ -171,7 +171,7 @@ void CChooseRaceView::OnDraw(CDC* dc)
 		format.SetAlignment(StringAlignmentCenter);
 		format.SetLineAlignment(StringAlignmentCenter);
 		Gdiplus::Font font(L"Calibri", 11, FontStyleBold);
-		g.DrawString(CComBSTR(pRace->GetRaceDesc()), -1, &font, RectF(775, 307, 450, 300), &format, &SolidBrush(Color::WhiteSmoke));
+		g.DrawString(CComBSTR(pRace->GetDescription()), -1, &font, RectF(775, 307, 450, 300), &format, &SolidBrush(Color::WhiteSmoke));
 
 		// Rassensymbol noch in die Ecke zeichnen
 		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + pRace->GetRaceID() + ".bop");

@@ -326,7 +326,7 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 	m_sEmpireWithAssignedArticle= saInfo[nPos++] + " " + m_sEmpireName;		// bestimmter Artikel für den Imperiumsnamen
 	m_sPrefix					= saInfo[nPos++];	// Rassenprefix
 
-	m_sDesc				= saInfo[nPos++];				// Rassenbeschreibung
+	m_sDescription				= saInfo[nPos++];				// Rassenbeschreibung
 	m_byBuildingNumber	= atoi(saInfo[nPos++]);			// zugewiesene Nummer, welche Gebäude verwendet werden sollen
 	m_byShipNumber		= atoi(saInfo[nPos++]);			// zugewiesene Nummer, welche Schiffe verwendet werden sollen
 	m_byMoralNumber		= atoi(saInfo[nPos++]);			// zugewiesene Nummer, welche Moralwerte verwendet werden sollen

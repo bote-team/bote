@@ -1073,7 +1073,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 	CString s;
 
 	// Beschreibung der Rasse
-	g->DrawString(CComBSTR(pRace->GetRaceDesc()), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(190,475,845,190), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(pRace->GetDescription()), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(190,475,845,190), &fontFormat, &fontBrush);
 
 	// Ingame-Daten zu der Rasse, welche in der Box angezeigt werden
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
@@ -2614,7 +2614,7 @@ CString CDiplomacyMenuView::CreateTooltip(void)
 			if (!pRace)
 				return "";
 
-			CString sTip = pRace->GetRaceDesc();
+			CString sTip = pRace->GetDescription();
 			sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
 			sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h4"));
 
@@ -2667,7 +2667,7 @@ CString CDiplomacyMenuView::CreateTooltip(void)
 			if (!pRace)
 				return "";
 
-			CString sTip = pRace->GetRaceDesc();
+			CString sTip = pRace->GetDescription();
 			sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
 			sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h4"));
 

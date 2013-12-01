@@ -607,7 +607,7 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 	m_sHomeSystem.SetAt(0, sChar.MakeUpper().GetAt(0));
 
 	m_sName				= saInfo[nPos++];				// Rassenname
-	m_sDesc				= saInfo[nPos++];				// Rassenbeschreibung
+	m_sDescription				= saInfo[nPos++];				// Rassenbeschreibung
 
 	// grafische Attribute
 	m_sGraphicFile				= saInfo[nPos++];		// Name der zugehörigen Grafikdatei

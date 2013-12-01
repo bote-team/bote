@@ -573,7 +573,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 			if (m_iWhichSubMenu == 0)		// im Gebäudeuntermenü
 				s = pDoc->GetBuildingDescription(RunningNumber);
 			else if (m_iWhichSubMenu == 1 && pDoc->GetSystem(p.x, p.y).GetBuildableShips()->GetSize() > 0)	// im Schiffsuntermenü
-				s = pDoc->m_ShipInfoArray.GetAt(RunningNumber-10000).GetShipDescription();
+				s = pDoc->m_ShipInfoArray.GetAt(RunningNumber-10000).GetDescription();
 			else if (m_iWhichSubMenu == 2 && pDoc->GetSystem(p.x, p.y).GetBuildableTroops()->GetSize() > 0)	// im Kasernenuntermenü
 				s = pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetDescription();
 			fontFormat.SetAlignment(StringAlignmentNear);

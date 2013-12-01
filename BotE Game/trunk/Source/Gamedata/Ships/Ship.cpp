@@ -100,7 +100,6 @@ CShip::CShip(const CShip & rhs) :
 	m_iStationBuildPoints = rhs.m_iStationBuildPoints;
 	m_iCurrentOrder = rhs.m_iCurrentOrder;
 	m_nTerraformingPlanet = rhs.m_nTerraformingPlanet;
-	m_strShipDescription = rhs.m_strShipDescription;
 	m_bIsFlagShip = rhs.m_bIsFlagShip;
 	m_nSpecial[0] = rhs.m_nSpecial[0];
 	m_nSpecial[1] = rhs.m_nSpecial[1];
@@ -153,7 +152,6 @@ CShip & CShip::operator=(const CShip & rhs)
 	m_iStationBuildPoints = rhs.m_iStationBuildPoints;
 	m_iCurrentOrder = rhs.m_iCurrentOrder;
 	m_nTerraformingPlanet = rhs.m_nTerraformingPlanet;
-	m_strShipDescription = rhs.m_strShipDescription;
 	m_strShipClass = rhs.m_strShipClass;
 	m_bIsFlagShip = rhs.m_bIsFlagShip;
 	m_nSpecial[0] = rhs.m_nSpecial[0];
@@ -198,7 +196,6 @@ void CShip::Serialize(CArchive &ar)
 		ar << m_nSpecial[0];
 		ar << m_nSpecial[1];
 		ar << m_nTerraformingPlanet;
-		ar << m_strShipDescription;
 		ar << m_strShipClass;
 		ar << m_bIsFlagShip;
 		ar << m_TorpedoWeapons.GetSize();
@@ -252,7 +249,6 @@ void CShip::Serialize(CArchive &ar)
 		ar >> nSpecial;
 		m_nSpecial[1] = (SHIP_SPECIAL::Typ)nSpecial;
 		ar >> m_nTerraformingPlanet;
-		ar >> m_strShipDescription;
 		ar >> m_strShipClass;
 		ar >> m_bIsFlagShip;
 		ar >> number;
@@ -1237,7 +1233,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info) const
 	sSpecials += CHTMLStringBuilder::GetHTMLStringHorzLine();
 	sSpecials += CHTMLStringBuilder::GetHTMLStringNewLine();
 
-	CString sDesc = GetShipDescription();
+	CString sDesc = m_sDescription;
 	sDesc = CHTMLStringBuilder::GetHTMLColor(sDesc);
 	sDesc = CHTMLStringBuilder::GetHTMLHeader(sDesc, _T("h5"));
 

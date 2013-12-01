@@ -107,7 +107,6 @@ public:
 	SHIP_ORDER::Typ GetCurrentOrder() const {return m_iCurrentOrder;}
 	short GetTerraform() const {return m_nTerraformingPlanet;}
 	const CString& GetShipClass() const {return m_strShipClass;}
-	const CString& GetShipDescription() const {return m_strShipDescription;}
 	CString GetShipTypeAsString(BOOL plural = FALSE) const;
 	CString GetCurrentOrderAsString() const;
 	CString GetCombatTacticAsString() const;
@@ -145,7 +144,6 @@ public:
 	void SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder);
 	void SetSpecial(int n, SHIP_SPECIAL::Typ nAbility) {m_nSpecial[n] = nAbility;}
 	void SetTerraform(short planetNumber = -1);
-	void SetShipDescription(const CString& ShipDescription) {m_strShipDescription = ShipDescription;}
 	void SetShipClass(const CString& ShipClass) {m_strShipClass = ShipClass;}
 	void SetIsShipFlagShip(bool bIs) {m_bIsFlagShip = bIs;}
 	void SetCombatTactic(COMBAT_TACTIC::Typ nTactic) {m_nCombatTactic = nTactic;}
@@ -322,7 +320,6 @@ protected:
 	BYTE m_iColonizePoints;				// Kolonisierungs/Terraform-Punkte -> Dauer
 	BYTE m_iStationBuildPoints;			// Außenposten/Stations-baupunkte -> Dauer
 	SHIP_SPECIAL::Typ m_nSpecial[2];	// Die beiden möglichen Spezialfähigkeiten des Schiffes
-	CString m_strShipDescription;		// Die Beschreibung des Schiffes
 	CString m_strShipClass;				// Der Name der Schiffsklasse
 
 private:

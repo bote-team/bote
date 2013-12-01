@@ -68,12 +68,15 @@ public:
 	const boost::shared_ptr<CRace> Owner() const;
 	CString OwnerID() const;
 
+	CString GetDescription() const { return m_sDescription; }
+
 //////////////////////////////////////////////////////////////////////
 // setting
 //////////////////////////////////////////////////////////////////////
 
 	/// Funktion legt den Namen des Sektors fest.
 	void SetName(const CString& name) { m_sName = name; }
+	void SetDescription(const CString& text) { m_sDescription = text; }
 
 protected:
 	void SetOwner(const CString& id);
@@ -87,5 +90,6 @@ protected:
 	CPoint m_Co;
 	CString m_sName;
 	boost::shared_ptr<CRace> m_Owner;
+	CString m_sDescription;
 
 };

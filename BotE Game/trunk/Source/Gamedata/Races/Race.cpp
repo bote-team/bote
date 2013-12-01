@@ -56,7 +56,6 @@ void CRace::Serialize(CArchive &ar)
 		ar << m_sID;			// Rassen-ID
 		ar << m_sHomeSystem;	// Name des Heimatsystems
 		ar << m_sNameArticle;	// Artikel für Rassenname
-		ar << m_sDesc;			// Rassenbeschreibung
 		ar << m_nProperty;		// Rasseneigenschaften
 		ar << m_byShipNumber;	// zugewiesene Nummer welche Schiffe verwendet werden sollen
 		ar << m_byBuildingNumber;	// zugewiesene Nummer welche Gebäude verwendet werden sollen
@@ -80,7 +79,6 @@ void CRace::Serialize(CArchive &ar)
 		ar >> m_sID;			// Rassen-ID
 		ar >> m_sHomeSystem;	// Name des Heimatsystems
 		ar >> m_sNameArticle;	// Artikel für Rassenname
-		ar >> m_sDesc;			// Rassenbeschreibung
 		ar >> m_nProperty;		// Rasseneigenschaften
 		ar >> m_byShipNumber;	// zugewiesene Nummer welche Schiffe verwendet werden sollen
 		ar >> m_byBuildingNumber;	// zugewiesene Nummer welche Gebäude verwendet werden sollen
@@ -297,7 +295,6 @@ void CRace::Reset(bool call_up)
 	m_sID				= "";		// Rassen-ID
 	m_sHomeSystem		= "";		// Name des Heimatsystems
 	m_sNameArticle		= "";		// Artikel für Rassenname
-	m_sDesc				= "";		// Rassenbeschreibung
 	m_nProperty			= 0;		// Rasseneigenschaften
 	m_nSpecialAbility	= 0;		// Spezialfähigkeiten der Rasse
 	m_byShipNumber		= 0;		// zugewiesene Nummer welche Schiffe verwendet werden sollen

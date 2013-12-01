@@ -1076,7 +1076,7 @@ CString CCombatMenuView::CreateTooltip(void)
 
 			if (CRect(nPosX, 125, nPosX + 200, 325).PtInRect(pt))
 			{
-				CString sTip = pRace->GetRaceDesc();
+				CString sTip = pRace->GetDescription();
 				sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
 				sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h4"));
 
@@ -1096,7 +1096,7 @@ CString CCombatMenuView::CreateTooltip(void)
 
 			if (CRect(nPosX, 450, nPosX + 200, 650).PtInRect(pt))
 			{
-				CString sTip = pRace->GetRaceDesc();
+				CString sTip = pRace->GetDescription();
 				sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
 				sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h4"));
 

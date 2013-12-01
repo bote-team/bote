@@ -281,7 +281,7 @@ CString CEventFirstContact::GetTooltip(const CPoint &pt) const
 	// wurde auf das Rassenbild gehalten, dann Beschreibung der Rasse anzeigen
 	if (CRect(6, 399, 301, 767).PtInRect(pt))
 	{
-		CString sTip = pContactedRace->GetRaceDesc();
+		CString sTip = pContactedRace->GetDescription();
 		sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
 		sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h4"));
 

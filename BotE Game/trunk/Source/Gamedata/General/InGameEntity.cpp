@@ -13,7 +13,8 @@
 CInGameEntity::CInGameEntity(void) :
 	m_Co(-1, -1),
 	m_sName(),
-	m_Owner()
+	m_Owner(),
+	m_sDescription()
 {
 	Reset();
 }
@@ -21,7 +22,8 @@ CInGameEntity::CInGameEntity(void) :
 CInGameEntity::CInGameEntity(int x, int y) :
 	m_Co(x, y),
 	m_sName(),
-	m_Owner()
+	m_Owner(),
+	m_sDescription()
 {
 	Reset();
 }
@@ -29,7 +31,8 @@ CInGameEntity::CInGameEntity(int x, int y) :
 CInGameEntity::CInGameEntity(const CInGameEntity& other) :
 	m_Co(other.m_Co),
 	m_sName(other.m_sName),
-	m_Owner(other.m_Owner)
+	m_Owner(other.m_Owner),
+	m_sDescription(other.m_sDescription)
 {
 }
 
@@ -40,6 +43,7 @@ CInGameEntity& CInGameEntity::operator=(const CInGameEntity& other){
 	m_Co = other.m_Co;
 	m_sName = other.m_sName;
 	m_Owner = other.m_Owner;
+	m_sDescription = other.m_sDescription;
 
 	return *this;
 };
@@ -54,6 +58,7 @@ void CInGameEntity::Reset()
 {
 	m_sName.Empty();
 	m_Owner.reset();
+	m_sDescription.Empty();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -66,6 +71,7 @@ void CInGameEntity::Serialize(CArchive &ar)
 		ar << m_Co;
 		ar << m_sName;
 		ar << OwnerID();
+		ar << m_sDescription;
 	}
 	else
 	{
@@ -75,6 +81,7 @@ void CInGameEntity::Serialize(CArchive &ar)
 		ar >> owner;
 		if(owner != OwnerID())
 			SetOwner(owner);
+		ar >> m_sDescription;
 	}
 }
 
