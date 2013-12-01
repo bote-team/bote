@@ -73,7 +73,8 @@ void CInGameEntity::Serialize(CArchive &ar)
 		ar >> m_sName;
 		CString owner;
 		ar >> owner;
-		SetOwner(owner);
+		if(owner != OwnerID())
+			SetOwner(owner);
 	}
 }
 

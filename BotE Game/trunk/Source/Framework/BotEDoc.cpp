@@ -296,7 +296,6 @@ void CBotEDoc::Serialize(CArchive& ar)
 		}
 	}
 
-	//make sure to serialize races before systems and ships, as the ladder 2 reclaim their race member
 	m_pRaceCtrl->Serialize(ar);
 	m_ShipMap.Serialize(ar);
 	SerializeSectorsAndSystems(ar);
