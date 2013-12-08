@@ -24,12 +24,12 @@ class CSanity
 
 	void SanityCheckFleet(const CShips& ship);
 	static void SanityCheckSectorAndSystem(const CSystem& system);
-	static void SanityCheckRacePtrUseCounts(const CBotEDoc& doc);
+	void SanityCheckRacePtrUseCounts(const CBotEDoc& doc);
 	//static void ShipInfo(const CArray<CShip, CShip>& shiparray, int index, const CString& indexname);
 	void CheckShipUniqueness(const CShips& ship, std::set<CString>& already_encountered);
 private:
 	void SanityCheckShip(const CShips& ship);
 	void CheckShipTargetCoordinates(const CShips& ship);
-	void Notify(const CString& s, bool bPopup = true);
+	void Notify(const CString& s, bool bPopup = true, bool force_popup = false);
 
 };

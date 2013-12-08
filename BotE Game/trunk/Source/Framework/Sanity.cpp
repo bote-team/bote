@@ -26,11 +26,11 @@ CSanity* CSanity::GetInstance() {
 //instead of their current coordinates. Later on, the places that handle the case of
 //(target coords)==(current coords) can be removed (filled with AssertBotE(false)).
 
-void CSanity::Notify(const CString& s, bool bPopup) {
+void CSanity::Notify(const CString& s, bool bPopup, bool force_popup) {
 	CString sMessage;
 	sMessage.Format("%s This is a bug, please report.", s);
 	MYTRACE("general")(MT::LEVEL_WARNING, sMessage);
-	if(bPopup && !notified) {
+	if(bPopup && !notified || force_popup) {
 		notified = true;
 		AfxMessageBox(sMessage);
 	}
@@ -180,7 +180,13 @@ void CSanity::SanityCheckRacePtrUseCounts(const CBotEDoc& doc)
 		if(it->second->IsAlien())
 			continue;
 		AssertBotE(count->first == it->first);
-		AssertBotE(it->second.use_count() == count->second);
+		int use_count = it->second.use_count();
+		if(use_count != count->second)
+		{
+			CString s;
+			s.Format("race pointer use count for %s inconsistent; is: %i, should be: %i", it->first, use_count, count->second);
+			Notify(s, true, true);
+		}
 		++count;
 	}
 	AssertBotE(count == use_counts.end());
