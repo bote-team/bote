@@ -296,7 +296,6 @@ void CBotEDoc::Serialize(CArchive& ar)
 		}
 	}
 
-	m_pRaceCtrl->Serialize(ar);
 	m_ShipMap.Serialize(ar);
 	SerializeSectorsAndSystems(ar);
 
@@ -306,6 +305,7 @@ void CBotEDoc::Serialize(CArchive& ar)
 	m_GlobalBuildings.Serialize(ar);
 	m_Statistics.Serialize(ar);
 
+	m_pRaceCtrl->Serialize(ar);
 	m_pClientWorker->Serialize(ar, false);
 
 	if (ar.IsLoading())
@@ -454,10 +454,9 @@ void CBotEDoc::SerializeNextRoundData(CArchive &ar)
 		}
 	}
 
-	m_pRaceCtrl->Serialize(ar);
 	m_ShipMap.Serialize(ar);
 	SerializeSectorsAndSystems(ar);
-
+	m_pRaceCtrl->Serialize(ar);
 	m_pClientWorker->Serialize(ar, true);
 
 	m_GenShipName.Serialize(ar);
@@ -512,7 +511,6 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 			if (m_ShipInfoArray.GetAt(i).GetRace() == pPlayer->GetRaceShipNumber())
 				m_ShipInfoArray.GetAt(i).Serialize(ar);
 
-		pPlayer->Serialize(ar);
 
 		m_ShipMap.SerializeEndOfRoundData(ar, pPlayer->GetRaceID());
 
@@ -529,6 +527,7 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 			m_Systems.at(*it).Serialize(ar, true);
 		}
 
+		pPlayer->Serialize(ar);
 		// aktuelle View mit zum Server senden
 		ar << static_cast<unsigned short>(m_pClientWorker->GetSelectedViewFor(pPlayer->GetRaceID()));
 	}
@@ -562,8 +561,6 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 				AssertBotE(m_ShipInfoArray.GetAt(i).GetRace() == pMajor->GetRaceShipNumber());
 			}
 
-		pMajor->Serialize(ar);
-
 		m_ShipMap.SerializeEndOfRoundData(ar, sMajorID);
 
 		unsigned number = 0;
@@ -575,6 +572,7 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 			m_Systems.at(index).Serialize(ar, true);
 		}
 
+		pMajor->Serialize(ar);
 		unsigned short view;
 		ar >> view;
 		m_pClientWorker->SetSelectedViewForTo(*pMajor, view);
