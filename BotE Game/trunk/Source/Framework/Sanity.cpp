@@ -122,6 +122,70 @@ void CSanity::SanityCheckSectorAndSystem(const CSystem& system)
 	AssertBotE(system.CheckSanity());
 }
 
+void CSanity::SanityCheckRacePtrUseCounts(const CBotEDoc& doc)
+{
+	const CRaceController& race_ctrl = *doc.GetRaceCtrl();
+
+	std::map<CString, int> use_counts;
+
+	for(CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
+	{
+		if(it->second->IsAlien())
+			continue;
+
+		std::map<CString, int>::iterator count = use_counts.find(it->first);
+		if(count == use_counts.end())
+			use_counts[it->first] = 1;
+		else
+			count->second++;
+		if(it->second->IsMinor())
+		{
+			const boost::shared_ptr<CRace>& owner = it->second->Owner();
+			if(owner)
+			{
+				AssertBotE(owner->IsMajor());
+				std::map<CString, int>::iterator found = use_counts.find(owner->GetRaceID());
+				if(found == use_counts.end())
+					use_counts[owner->GetRaceID()] = 1;
+				else
+					found->second++;
+			}
+		}
+	}
+
+	for(std::vector<CSystem>::const_iterator it = doc.m_Systems.begin(); it != doc.m_Systems.end(); ++it)
+	{
+		const boost::shared_ptr<CRace>& owner = it->Owner();
+		if(owner)
+		{
+			std::map<CString, int>::iterator count = use_counts.find(owner->GetRaceID());
+			AssertBotE(count != use_counts.end());
+			count->second++;
+		}
+	}
+
+	for(CShipMap::const_iterator it = doc.m_ShipMap.begin(); it != doc.m_ShipMap.end(); ++it)
+	{
+		if(it->second->IsAlien())
+			continue;
+		std::map<CString, int>::iterator found = use_counts.find(it->second->OwnerID());
+		AssertBotE(found != use_counts.end());
+		found->second++;
+		found->second = found->second + it->second->Fleet().GetSize();
+	}
+
+	std::map<CString, int>::iterator count = use_counts.begin();
+	for(CRaceController::const_iterator it = race_ctrl.begin(); it != race_ctrl.end(); ++it)
+	{
+		if(it->second->IsAlien())
+			continue;
+		AssertBotE(count->first == it->first);
+		AssertBotE(it->second.use_count() == count->second);
+		++count;
+	}
+	AssertBotE(count == use_counts.end());
+}
+
 //void CSanity::ShipInfo(const CArray<CShip, CShip>& shiparray, int index, const CString& indexname) {
 //	if(!MT::CMyTrace::IsLoggingEnabledFor("shipindices"))
 //		return;

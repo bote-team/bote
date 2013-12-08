@@ -68,6 +68,7 @@ public:
 
 	/// Funktion gibt alle Hauptrassen des Spiels zurück.
 	/// @return Map mit allen Hauptrassen des Spiels
+	const map<CString, CMajor*>* GetMajors(void) const {return &m_mMajors;}
 	map<CString, CMajor*>* GetMajors(void) {return &m_mMajors;}
 
 	/// Funktion gibt alle Minorrassen des Spiels zurück.

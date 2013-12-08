@@ -1156,6 +1156,9 @@ static bool HumanPlayerInCombat(const CShipMap& ships, const CPoint& CurrentComb
 ////////////////////////////////////////////////
 void CBotEDoc::NextRound()
 {
+#ifdef CONSISTENCY_CHECKS
+	CSanity::GetInstance()->SanityCheckRacePtrUseCounts(*this);
+#endif
 	// gibt es für diese Runde Sektoren in welchen ein Kampf stattfand
 	bool bCombatInCurrentRound = !m_sCombatSectors.empty();
 
