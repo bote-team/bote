@@ -449,7 +449,7 @@ bool CShip::ApplyIonstormEffects() {
 		return true;
 	unsigned new_max_shield = old_max_shield * 1.03;
 	bool improvement_finished = false;
-	if(new_max_shield > max_max_shield) {
+	if(new_max_shield >= max_max_shield) {
 		new_max_shield = max_max_shield;
 		improvement_finished = true;
 	}
