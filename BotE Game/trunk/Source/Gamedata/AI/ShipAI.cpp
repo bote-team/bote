@@ -465,7 +465,7 @@ bool CShipAI::DoBombardSystem(CShips* pShip)
 		// Wenn die defensive Schiffsstärke im System des Angreifers ungefähr doppelt so groß als der Systemverteidigungswert
 		// des Verteidigers ist, wird bombardiert!
 		int nShipDefend = m_pDoc->GetSystem(pShip->GetCo().x, pShip->GetCo().y).GetProduction()->GetShipDefend();
-		nShipDefend *= 1.25;
+		//nShipDefend *= 1.25;
 
 		int nShipValue = 0;
 
