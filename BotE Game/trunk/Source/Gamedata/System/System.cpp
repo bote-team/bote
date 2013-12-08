@@ -2057,9 +2057,6 @@ void CSystem::Colonize(const CShips& ship, CMajor& major)
 // in diesem kolonisiert haben.
 void CSystem::BuildBuildingsAfterColonization(const BuildingInfoArray *buildingInfo, USHORT colonizationPoints)
 {
-	CBotEDoc* pDoc = resources::pDoc;
-	AssertBotE(pDoc);
-
 	AssertBotE(m_Owner && m_Owner->IsMajor());
 
 	// alle Gebäude die wir nach Systemeroberung nicht haben dürfen werden aus der Liste der aktuellen Gebäude entfernt

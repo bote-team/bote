@@ -12,8 +12,6 @@
 
 #pragma once
 
-#include "boost/shared_ptr.hpp"
-
 #include "BoteStandardTypes.h"
 #include "resources.h"
 #include "CommandLineParameters.h"

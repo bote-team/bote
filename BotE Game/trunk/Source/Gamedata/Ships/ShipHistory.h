@@ -8,7 +8,7 @@
 #pragma once
 #include "afx.h"
 #include "array_sort.h"
-#include "boost/shared_ptr.hpp"
+#include "AssertBotE.h"
 
 class CShips;
 

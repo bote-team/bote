@@ -12,7 +12,6 @@
 #include <map>
 #include <vector>
 #include <utility>
-#include "boost/shared_ptr.hpp"
 
 using namespace std;
 

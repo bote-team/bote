@@ -11,7 +11,7 @@
 #include "Race.h"
 #include "Major.h"
 #include "Minor.h"
-#include "boost/shared_ptr.hpp"
+#include "AssertBote.h"
 
 #define	RACESOURCE_DATAFILE		0		///< Rassendaten werden aus *.data Dateien gelesen
 #define RACESOURCE_CONST		1		///< Rassendaten kommen hart aus dem Quellcode

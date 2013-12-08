@@ -11,7 +11,7 @@
 #pragma once
 
 #include <map>
-#include "boost/shared_ptr.hpp"
+#include "AssertBotE.h"
 
 class CShips;
 

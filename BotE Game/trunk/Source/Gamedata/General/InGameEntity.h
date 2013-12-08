@@ -12,7 +12,6 @@
 
 #include "Constants.h"
 #include "AssertBote.h"
-#include "boost/shared_ptr.hpp"
 
 #pragma once
 
