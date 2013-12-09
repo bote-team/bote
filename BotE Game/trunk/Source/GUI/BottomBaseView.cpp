@@ -12,7 +12,8 @@ CMajor* CBottomBaseView::m_pPlayersRace = NULL;
 
 IMPLEMENT_DYNCREATE(CBottomBaseView, CView)
 
-CBottomBaseView::CBottomBaseView()
+CBottomBaseView::CBottomBaseView() :
+	m_TotalSize(1075, 249)
 {
 }
 

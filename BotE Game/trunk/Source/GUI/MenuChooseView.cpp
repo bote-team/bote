@@ -39,6 +39,7 @@ END_MESSAGE_MAP()
 
 CMenuChooseView::CMenuChooseView() :
 	m_LastSystem(-1,-1),
+	m_TotalSize(200, 750),
 	m_bKnowOtherMajors(false),
 	m_bKnowOtherRaces(false),
 	m_fMark(0.0f)

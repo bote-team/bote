@@ -11,7 +11,8 @@ CMajor* CMainBaseView::m_pPlayersRace = NULL;
 
 IMPLEMENT_DYNCREATE(CMainBaseView, CView)
 
-CMainBaseView::CMainBaseView()
+CMainBaseView::CMainBaseView() :
+	m_TotalSize(1075, 750)
 {
 }
 

@@ -27,6 +27,7 @@ IMPLEMENT_DYNCREATE(CChooseRaceView, CFormView)
 
 CChooseRaceView::CChooseRaceView() : CFormView(CChooseRaceView::IDD), m_bIsServer(false), m_nPlayerCount(0),
 	m_pBkgndImg(),
+	m_TotalSize(1280, 1024),
 	m_bStopDrawing(false)
 {
 }

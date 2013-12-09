@@ -29,6 +29,7 @@ CSmallInfoView::DISPLAY_MODE CSmallInfoView::m_DisplayMode = CSmallInfoView::DIS
 IMPLEMENT_DYNCREATE(CSmallInfoView, CView)
 
 CSmallInfoView::CSmallInfoView() :
+	m_TotalSize(200, 249),
 	m_bAnimatedIcon(false)
 {
 	m_nTimer = 0;

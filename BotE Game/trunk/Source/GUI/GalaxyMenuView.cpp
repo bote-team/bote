@@ -51,6 +51,7 @@ END_MESSAGE_MAP()
 // CGalaxyMenuView Konstruktion/Destruktion
 
 CGalaxyMenuView::CGalaxyMenuView() :
+	m_TotalSize(1075, 750),
 	m_bScrollToHome(TRUE),
 	m_fZoom(STARMAP_ZOOM_INITIAL),
 	m_nRange(SM_RANGE_SPACE),

@@ -37,7 +37,11 @@
 
 IMPLEMENT_DYNCREATE(CStartMenuView, CFormView)
 
-CStartMenuView::CStartMenuView() : CFormView(CStartMenuView::IDD), m_pChooseRaceView(NULL), m_pNewGameView(NULL)
+CStartMenuView::CStartMenuView() :
+	CFormView(CStartMenuView::IDD),
+	m_TotalSize(1280, 1024),
+	m_pChooseRaceView(NULL),
+	m_pNewGameView(NULL)
 {
 	// wollen Benachrichtigungen über Netzwerkereignisse erhalten
 	server.AddServerListener(this);
