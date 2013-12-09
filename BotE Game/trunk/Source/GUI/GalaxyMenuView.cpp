@@ -1716,7 +1716,8 @@ CString CGalaxyMenuView::CreateTooltip(void)
 				for (map<CString, int>::const_iterator it = mAllDefenceBuildings.begin(); it != mAllDefenceBuildings.end(); ++it)
 				{
 					CString sDefence;
-					sDefence.Format("%s: %d/%d\n", it->first, mOnlineDefenceBuildings[it->first], it->second);
+					int onlines = mOnlineDefenceBuildings[it->first];
+					sDefence.Format("%s: %d/%d\n", it->first, onlines, it->second);
 					sDefence = CHTMLStringBuilder::GetHTMLColor(sDefence);
 					sDefence = CHTMLStringBuilder::GetHTMLHeader(sDefence, _T("h5"));
 					sTip += sDefence;

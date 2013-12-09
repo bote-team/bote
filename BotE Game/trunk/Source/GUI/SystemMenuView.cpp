@@ -1745,7 +1745,7 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	// Button zum Ändern der Menge, wieviel pro Klick vom oder ins Globale Lager verschoben werden zeichnen
 	if (graphic)
 		g->DrawImage(graphic, 747, 600, 120, 30);
-	s.Format("%d",m_iGlobalStoreageQuantity);
+	s.Format("%u",m_iGlobalStoreageQuantity);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(747, 600, 120, 30), &fontFormat, &btnBrush);
 
 	// Systemnamen mit größerer Schrift in der Mitte zeichnen
@@ -2102,7 +2102,7 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	{
 		rect.Y += 25;
 		if (nResInDistSys[res] > resFromRoutes[res] + pDoc->GetSystem(p.x, p.y).GetResourceStore(res))
-			s.Format("[%i]", nResInDistSys[res]);
+			s.Format("[%lu]", nResInDistSys[res]);
 		else if (resFromRoutes[res] > 0)
 			s.Format("(%i)",pDoc->GetSystem(p.x,p.y).GetResourceStore(res) + resFromRoutes[res]);
 		else

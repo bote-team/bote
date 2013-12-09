@@ -74,7 +74,7 @@ void CSearchServersDlg::OnServerFound(const CString &strDescription, DWORD dwIP,
 
 	// Adresse setzen
 	CString strAddr;
-	strAddr.Format("%s:%u", network::AddrToString(dwIP), nTCPPort);
+	strAddr.Format("%s:%i", network::AddrToString(dwIP), nTCPPort);
 	m_listServers.SetItemText(idx, 1, strAddr);
 
 	// Werte merken

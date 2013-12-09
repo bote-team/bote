@@ -214,9 +214,9 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	fontFormat.SetAlignment(StringAlignmentNear);
 	fontBrush.SetColor(color);
 
-	s.Format("%s:",CLoc::GetString("CREDITS"), pMajor->GetEmpire()->GetCredits());
+	s.Format("%s:",CLoc::GetString("CREDITS"));
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 90, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
-	s.Format("%i",pMajor->GetEmpire()->GetCredits());
+	s.Format("%li",pMajor->GetEmpire()->GetCredits());
 	fontFormat.SetAlignment(StringAlignmentFar);
 	MYTRACE("general")(MT::LEVEL_INFO, "CREDITS (Empire) = %s\n", s);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 90, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);

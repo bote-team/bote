@@ -1059,7 +1059,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info) const
 	sBeams += CHTMLStringBuilder::GetHTMLStringNewLine();
 
 	CString sBeamWeaponHead;
-	sBeamWeaponHead.Format("%s (%s: %d)", CLoc::GetString("BEAMWEAPONS"), CLoc::GetString("DAMAGE"), nOverallDmg);
+	sBeamWeaponHead.Format("%s (%s: %u)", CLoc::GetString("BEAMWEAPONS"), CLoc::GetString("DAMAGE"), nOverallDmg);
 	sBeamWeaponHead = CHTMLStringBuilder::GetHTMLColor(sBeamWeaponHead, _T("silver"));
 	sBeamWeaponHead = CHTMLStringBuilder::GetHTMLHeader(sBeamWeaponHead, _T("h4"));
 	sBeamWeaponHead = CHTMLStringBuilder::GetHTMLCenter(sBeamWeaponHead);
@@ -1093,7 +1093,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info) const
 	sTorps = CHTMLStringBuilder::GetHTMLCenter(sTorps);
 	sTorps += CHTMLStringBuilder::GetHTMLStringNewLine();
 	CString sTupeWeaponHead;
-	sTupeWeaponHead.Format("%s (%s: %d)", CLoc::GetString("TORPEDOWEAPONS"), CLoc::GetString("DAMAGE"), nOverallDmg);
+	sTupeWeaponHead.Format("%s (%s: %u)", CLoc::GetString("TORPEDOWEAPONS"), CLoc::GetString("DAMAGE"), nOverallDmg);
 	sTupeWeaponHead = CHTMLStringBuilder::GetHTMLColor(sTupeWeaponHead, _T("silver"));
 	sTupeWeaponHead = CHTMLStringBuilder::GetHTMLHeader(sTupeWeaponHead, _T("h4"));
 	sTupeWeaponHead = CHTMLStringBuilder::GetHTMLCenter(sTupeWeaponHead);

@@ -547,7 +547,7 @@ void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 		// Alle gekauften
 		if (boughtResPrice[i] > 0)
 		{
-			s.Format("%d %s %d %s",boughtResNumber[i], CLoc::GetString("UNITS_FOR"),
+			s.Format("%li %s %d %s",boughtResNumber[i], CLoc::GetString("UNITS_FOR"),
 				(int)ceil((boughtResPrice[i]) * pMajor->GetTrade()->GetTax()), CLoc::GetString("CREDITS"));
 			fontFormat.SetAlignment(StringAlignmentNear);
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(210,250+i*70,865,25), &fontFormat, &fontBrush);
@@ -555,7 +555,7 @@ void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 		// Alle verkauften
 		if (selledResPrice[i] < 0)
 		{
-			s.Format("%d %s %d %s",selledResNumber[i], CLoc::GetString("UNITS_FOR"),
+			s.Format("%li %s %d %s",selledResNumber[i], CLoc::GetString("UNITS_FOR"),
 				-selledResPrice[i], CLoc::GetString("CREDITS"));
 			fontFormat.SetAlignment(StringAlignmentFar);
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,250+i*70,865,25), &fontFormat, &fontBrush);

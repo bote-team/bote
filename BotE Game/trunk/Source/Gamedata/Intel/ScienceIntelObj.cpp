@@ -187,7 +187,7 @@ void CScienceIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param)
 							s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(m_nSpecialTechComplex)->GetFieldName((BYTE)m_nChoosenSpecialTech);
 							csInput.Replace("$choosenspecial$", s);
 						}
-						s.Format("%d", m_iFP);
+						s.Format("%u", m_iFP);
 						csInput.Replace("$FP$", s);
 						m_strOwnerDesc = csInput;
 						break;
@@ -271,7 +271,7 @@ void CScienceIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param)
 									csInput.Replace("$choosenspecial$", s);
 								}
 							}
-							s.Format("%d", m_iFP);
+							s.Format("%u", m_iFP);
 							csInput.Replace("$FP$", s);
 							m_strEnemyDesc = csInput;
 							if (param != "")
