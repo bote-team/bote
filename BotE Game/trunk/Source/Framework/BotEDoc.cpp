@@ -1678,7 +1678,6 @@ void CBotEDoc::ReadTroopInfosFromFile()
 		CString data[22];
 		CString csInput;
 		int i=0;
-		CTroopInfo* troopInfo;
 		m_TroopInfo.RemoveAll();
 		while (file.ReadString(csInput))
 		{
@@ -1691,9 +1690,8 @@ void CBotEDoc::ReadTroopInfosFromFile()
 				i = 0;
 				BYTE techs[6]={atoi(data[7]),atoi(data[8]),atoi(data[9]),atoi(data[10]),atoi(data[11]),atoi(data[12])};
 				USHORT res[5] = {atoi(data[13]),atoi(data[14]),atoi(data[15]),atoi(data[16]),atoi(data[17])};
-				troopInfo = new CTroopInfo(CLoc::GetString(data[1]), CLoc::GetString(data[2]),data[3],atoi(data[4]),atoi(data[5]),atoi(data[6]),techs,res,atoi(data[18]),atoi(data[19]),data[0].GetString(),atoi(data[20]),atoi(data[21]));
-				m_TroopInfo.Add(*troopInfo);
-				delete troopInfo;
+				CTroopInfo troopInfo(CLoc::GetString(data[1]), CLoc::GetString(data[2]),data[3],atoi(data[4]),atoi(data[5]),atoi(data[6]),techs,res,atoi(data[18]),atoi(data[19]),data[0].GetString(),atoi(data[20]),atoi(data[21]));
+				m_TroopInfo.Add(troopInfo);
 			}
 		}
 
