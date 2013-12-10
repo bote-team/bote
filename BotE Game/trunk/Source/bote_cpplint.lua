@@ -57,8 +57,7 @@ for index, filenamestring in ipairs(files(currentdir, allowed_types)) do
 			local args_s, args_e = string.find(statement, "%b()", e)
 			if args_s and args_e and args_s == e then
 				local args = string.sub(statement, args_s, args_e)
-				local evil = string.find(statement, "[%,]*[%s]+" .. var .. ",")
-				evil = evil or string.find(statement, "," .. var .. ",")
+				local evil = string.find(statement, "[%,]+[%s]*" .. var .. "[%s]*[%,%)]")
 				if evil then
 					print(filenamestring .. ": " .. line_number .. ": CString passed to its own .Format call; this is undefined behavior, use += instead")
 				end
