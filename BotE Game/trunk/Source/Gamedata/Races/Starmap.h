@@ -39,9 +39,9 @@ class CSystem;
 struct Sector
 {
 	Sector() : x(-1), y(-1) {}
-	Sector(char _x, char _y) : x(_x), y(_y) {}
+	Sector(int _x, int _y) : x(_x), y(_y) {}
 	Sector(const Sector &other) : x(other.x), y(other.y) {}
-	Sector(const CPoint& p) : x((char)p.x), y((char)p.y) {}
+	Sector(const CPoint& p) : x(p.x), y(p.y) {}
 	int operator==(const Sector &other) const {return (other.x == x && other.y == y);}
 	Sector& operator=(const Sector &other) {x = other.x; y = other.y; return *this;}
 	Sector operator+(const Sector &other) {return Sector(x + other.x, y + other.y);}
@@ -49,7 +49,7 @@ struct Sector
 
 	/// Funktion, welche prüft, ob dies ein gültiger Sektor ist
 	bool on_map() const {
-		return 0 <= x && x < STARMAP_SECTORS_HCOUNT && 0 <= y && y < STARMAP_SECTORS_VCOUNT;
+		return is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT);
 	}
 
 	bool is_in_rect(int x1, int y1, int x2, int y2) const
@@ -57,7 +57,7 @@ struct Sector
 		return (x1 <= x && x < x2) && (y1 <= y && y < y2);
 	};
 
-	char x, y;
+	int x, y;
 };
 
 /// Struktur, die Informationen eines Sektors für die Berechnung eines kürzesten Weges aufnimmt

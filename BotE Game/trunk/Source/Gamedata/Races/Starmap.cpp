@@ -114,8 +114,8 @@ Sector CStarmap::GetClickedSector(const CPoint &pt)
 	// wenn innerhalb der Karte geklickt, dann Koordinaten umrechnen
 	if (PT_IN_RECT(pt, 0, 0, STARMAP_TOTALWIDTH, STARMAP_TOTALHEIGHT))
 	{
-		result.x = (char)(pt.x / STARMAP_SECTOR_WIDTH);
-		result.y = (char)(pt.y / STARMAP_SECTOR_HEIGHT);
+		result.x = pt.x / STARMAP_SECTOR_WIDTH;
+		result.y = pt.y / STARMAP_SECTOR_HEIGHT;
 		AssertBotE(result.on_map());
 	}
 
