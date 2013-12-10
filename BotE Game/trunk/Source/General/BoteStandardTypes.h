@@ -25,12 +25,15 @@ public:
 		if (ar.IsStoring())
 		{
 			ar << size();
-			for(std::map<Key, Value>::const_iterator it = begin(); it != end(); ++it)
-				ar << it->first << static_cast<Serializable>(it->second);
+			for(const_iterator it = map::begin(); it != map::end(); ++it)
+			{
+				ar << it->first;
+				ar << static_cast<Serializable>(it->second);
+			}
 		}
 		else
 		{
-			clear();
+			map::clear();
 			unsigned int size = 0;
 			ar >> size;
 			for (unsigned i = 0; i < size; ++i)
@@ -39,7 +42,7 @@ public:
 				ar >> key;
 				Serializable value;
 				ar >> value;
-				insert(std::pair<Key, Value>(key, static_cast<Value>(value)));
+				map::insert(std::pair<Key, Value>(key, static_cast<Value>(value)));
 			}
 		}
 	}
@@ -59,20 +62,20 @@ public:
 	{
 		if (ar.IsStoring())
 		{
-			ar << size();
-			for (std::set<Value>::const_iterator it = begin(); it != end(); ++it)
+			ar << set::size();
+			for (const_iterator it = set::begin(); it != set::end(); ++it)
 				ar << *it;
 		}
 		else
 		{
-			clear();
+			set::clear();
 			unsigned int size = 0;
 			ar >> size;
 			for (unsigned i = 0; i < size; ++i)
 			{
 				Value value;
 				ar >> value;
-				insert(value);
+				set::insert(value);
 			}
 		}
 	}
@@ -86,15 +89,15 @@ public:
 	void Serialize(CArchive &ar)
 	{
 		if (ar.IsStoring())
-			ar << size();
+			ar << vector::size();
 		else
 		{
 			unsigned int size = 0;
 			ar >> size;
-			clear();
-			resize(size);
+			vector::clear();
+			vector::resize(size);
 		}
-		for(std::vector<Value>::iterator it = begin(); it != end(); ++it)
+		for(iterator it = vector::begin(); it != vector::end(); ++it)
 			it->Serialize(ar);
 	}
 };
