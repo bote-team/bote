@@ -492,6 +492,12 @@ inline bool PT_IN_RECT(const CPoint& pt, int x1, int y1, int x2, int y2)
 	return (x1 <= pt.x && pt.x < x2) && (y1 <= pt.y && pt.y < y2);
 }
 
+inline int CoordsToIndex(int x, int y)
+{
+	AssertBotE(PT_IN_RECT(CPoint(x, y), 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT));
+	return x + STARMAP_SECTORS_HCOUNT * y;
+}
+
 inline void SetAttributes(BOOLEAN is, int attribute, int &variable)
 {
 	if (is)

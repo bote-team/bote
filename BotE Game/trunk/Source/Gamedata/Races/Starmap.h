@@ -99,8 +99,6 @@ public:
 /// Liste, die Nachbar-Sektoren mit Abständen aufnehmen kann (für CalcPath)
 typedef CSortedList<PathSector, PathSectorComparator> LeafList;
 
-/// Doppelt verkettete List mit Sector-Einträgen
-typedef std::list<Sector> SECTORLIST;
 
 /// Nimmt Informationen über Sektoren und deren Bewertung auf.
 struct BaseSector
@@ -118,18 +116,24 @@ struct BaseSector
 
 };
 
-typedef struct RangeMap
+struct RangeMap
 {
+	RangeMap() :
+		range(NULL),
+		w(0), h(0),
+		x0(0), y0(0)
+	{
+	}
+
 	unsigned char *range;		///< Array, das die Reichweitenmatrix zeilenweise enthält
-	char w;						///< Anzahl der Spalten der Matrix
-	char h;						///< Anzahl Zeilen der Matrix
+	int w;						///< Anzahl der Spalten der Matrix
+	int h;						///< Anzahl Zeilen der Matrix
 
 	/// nullbasierter Index einer Spalte; die Matrix wird so ausgerichtet, dass diese Spalte über dem Sektor eines Außenpostens steht
-	char x0;
+	int x0;
 	/// nullbasierter Index einer Zeile; die Matrix wird so ausgerichtet, dass diese Zeile über dem Sektor eines Außenpostens steht
-	char y0;
-}
-RangeMap;
+	int y0;
+};
 
 /**
  * Klasse, die für einen Spieler sämtliche Infos der Starmap enthält. Enthält Methoden zur Berechnung von Reichweiten,
@@ -146,13 +150,13 @@ class CStarmap
 protected:
 	/// Map, die die Entfernung vom nächsten Außenposten aufnimmt; der erste Index ist die x-,
 	/// der zweite die y-Koordinate eines Sektors (modelliert Einfluss, den der Außenposten hat)
-	std::vector<std::vector<unsigned char>> m_Range;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	std::vector<unsigned char> m_Range;
 	/// Koordinaten des aktuell ausgewählten Sektors; (-1, -1) wenn keiner ausgewählt ist
 	// (orange rectangle visible in galaxy view)
 	Sector m_Selection;
 
 	/// Liste der Sektoren, in denen sich ein Außenposten befindet
-	SECTORLIST m_lBases;
+	std::list<Sector> m_lBases;
 
 	/// zu verwendende lokale RangeMap, für nachfolgend hinzugefügte Außenposten
 	RangeMap m_RangeMap;
@@ -161,7 +165,7 @@ protected:
 	static std::vector<double> m_BadMapModifiers;
 
 	/// Array, das Informationen zur Berechnung der kürzesten Wege aufnimmt
-	std::vector<std::vector<PathSector>> pathMap;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	std::vector<PathSector> pathMap;
 	/// Liste der Nachbarn, die von den aktuellen Blättern aus erreichbar sind
 	/// (werden als nächstes zu Blättern des Baumes)
 	LeafList leaves;
@@ -172,23 +176,23 @@ protected:
 
 	BOOL m_bAICalculation;			///< zusätzliche Berechnungen für den automatischen Außenpostenbau aktiviert?
 	char m_nAIRange;				///< maximale Reichweite, innerhalb derer Außenposten gebaut werden sollen und die zusammenhängen soll
-	SECTORLIST m_lAITargets;		///< Ziele, zu denen sich bevorzugt ausgebreitet werden soll
-	SECTORLIST m_lAIKnownSystems;	///< Liste von der KI bekannten Systemen (durch Scannen)
+	std::list<Sector> m_lAITargets;		///< Ziele, zu denen sich bevorzugt ausgebreitet werden soll
+	std::list<Sector> m_lAIKnownSystems;	///< Liste von der KI bekannten Systemen (durch Scannen)
 
 	/// Gebietszuwachs für Sektor (x, y), wenn in diesem Sektor ein Außenposten gebaut würde
-	std::vector<std::vector<short>> m_AIRangePoints;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	std::vector<short> m_AIRangePoints;
 
 	/// für Sektoren außerhalb der gegebenen Reichweite die Anzahl der Nachbarn innerhalb der Reichweite
-	std::vector<std::vector<unsigned char>> m_AINeighbourCount;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	std::vector<int> m_AINeighbourCount;
 	/// Bewertung für den Zusammenhang eines Gebiets, um Lücken zu vermeiden und nicht zusammenhängende Gebiete zu verbinden
-	std::vector<std::vector<short>> m_AIConnectionPoints;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	std::vector<short> m_AIConnectionPoints;
 
 	/// Bewertung für bevorzugte Ausbreitungsrichtungen
-	std::vector<std::vector<short>> m_AITargetPoints;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	std::vector<short> m_AITargetPoints;
 
 	/// negative Bewertung für ein Gebiet durch feindliche Grenzen. Man sollte keinen Aussenposten auf einen freien
 	/// Fleck inmitten des gegnerischen Gebiets bauen.
-	std::vector<std::vector<short>> m_AIBadPoints;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	std::vector<short> m_AIBadPoints;
 
 public:
 	/**
@@ -203,7 +207,7 @@ public:
 	 * Funktion gibt den Wert aus der RangeMap <code>m_Range</code> an einer bestimmten Stelle <code>p</p> auf der
 	 * Karte zurück.
 	 */
-	unsigned char GetRange(const CPoint &p) const {return (3 - m_Range[p.x][p.y]);}
+	unsigned char GetRange(const CPoint &p) const {return (3 - m_Range.at(CoordsToIndex(p.x, p.y)));}
 
 	/**
 	 * Ermittelt die Koordinaten eines angeklickten Sektors. <code>pt</code> gibt die ungezoomten Mauskoordinaten

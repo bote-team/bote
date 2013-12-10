@@ -336,7 +336,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 			{
 				// aufspannenden Baum zeichnen
 				pDC->SelectObject(&parentPen);
-				struct::Sector *parent = &pMajor->GetStarmap()->pathMap[j][i].parent;
+				struct::Sector *parent = &pMajor->GetStarmap()->pathMap.at(CoordsToIndex(j, i)).parent;
 				if (parent->x > -1 && parent->y > -1)
 				{
 					ASSERT_SECTOR_VALID(*parent);
@@ -365,7 +365,8 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 				// muss modifiziert werden, wenn sich z.B. neben RANGE_NEAR ein Feld mit RANGE_FAR
 				// statt MIDDLE befindet (kann bei entsprechender Rangemap um eine Starbase
 				// auftreten, oder wenn sich das eigene Gebiet mit dem anderer Spieler überlappt)
-				int border = GetRangeBorder(pStarmap->m_Range[j][i], pStarmap->m_Range[j + 1][i], m_nRange);
+				int border = GetRangeBorder(pStarmap->m_Range.at(CoordsToIndex(j, i)),
+					pStarmap->m_Range.at(CoordsToIndex(j + 1, i)), m_nRange);
 				// bei Auswahl eines Ziels nur die jeweilige Grenze zeichnen
 				if (!m_nRange || border == m_nRange)
 				{
@@ -405,7 +406,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 				if (pDoc->GetSystem(j, i).GetScanPower(pMajor->GetRaceID()) > 0 && pDoc->GetSystem(j, i + 1).GetScanPower(pMajor->GetRaceID()) > 0)
 					pDC->SelectObject(&scanPen);
 				// Grenze der Reichweite
-				int border = GetRangeBorder(pStarmap->m_Range[j][i], pStarmap->m_Range[j][i + 1], m_nRange);
+				int border = GetRangeBorder(pStarmap->m_Range.at(CoordsToIndex(j, i)), pStarmap->m_Range.at(CoordsToIndex(j, i + 1)), m_nRange);
 				// bei Auswahl eines Ziels nur die jeweilige Grenze zeichnen
 				if (!m_nRange || border == m_nRange)
 				{

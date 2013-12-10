@@ -64,8 +64,7 @@ CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICal
 
 	memcpy(m_RangeMap.range, rangeMap, 49 * sizeof(unsigned char));
 
-	pathMap = std::vector<std::vector<PathSector>>(
-		STARMAP_SECTORS_HCOUNT, std::vector<PathSector>(STARMAP_SECTORS_VCOUNT));
+	pathMap.resize(STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT);
 }
 
 void CStarmap::AllocateStatics()
@@ -144,7 +143,7 @@ CPoint CStarmap::GetSectorCoords(const Sector& sector)
 
 BOOL CStarmap::IsBase(const Sector &sector)
 {
-	for (SECTORLIST::const_iterator it = m_lBases.begin(); it != m_lBases.end(); ++it)
+	for (std::list<Sector>::const_iterator it = m_lBases.begin(); it != m_lBases.end(); ++it)
 		if (it->x == sector.x && it->y == sector.y)
 			return TRUE;
 	return FALSE;
@@ -155,7 +154,7 @@ void CStarmap::SetFullRangeMap(int nRange/* = SM_RANGE_NEAR*/, const std::vector
 	for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			if (vExceptions.empty() || std::find(vExceptions.begin(), vExceptions.end(), Sector(x, y)) == vExceptions.end())
-				m_Range[x][y] = nRange;
+				m_Range.at(CoordsToIndex(x, y)) = nRange;
 }
 
 void CStarmap::AddBase(const Sector &sector, BYTE propTech)
@@ -177,7 +176,7 @@ void CStarmap::AddBase(const Sector &sector, BYTE propTech)
 			if (pt.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
 			{
 				// Wert überschreiben, wenn der neue Einfluss größer ist
-				m_Range[pt.x][pt.y] = max(m_Range[pt.x][pt.y], GetRangeMapValue(x, y));
+				m_Range.at(CoordsToIndex(pt.x, pt.y)) = max(m_Range.at(CoordsToIndex(pt.x, pt.y)), GetRangeMapValue(x, y));
 			}
 		}
 
@@ -203,8 +202,8 @@ void CStarmap::SynchronizeWithMap(const std::vector<CSystem>& systems, const std
 		if(!it->Free())
 		{
 			const CPoint& co = it->GetCo();
-			if (m_Range[co.x][co.y] > 0 && races->find(it->OwnerID())!= races->end())
-				m_Range[co.x][co.y] = 0;
+			if (m_Range.at(CoordsToIndex(co.x, co.y)) > 0 && races->find(it->OwnerID())!= races->end())
+				m_Range.at(CoordsToIndex(co.x, co.y)) = 0;
 		}
 }
 
@@ -232,30 +231,14 @@ void CStarmap::ClearAll()
 
 void CStarmap::InitSomeMembers()
 {
+	const int size = STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT;
 	// m_Range komplett mit RANGE_SPACE füllen
-	m_Range = std::vector<std::vector<unsigned char>>(
-		STARMAP_SECTORS_HCOUNT, std::vector<unsigned char>(STARMAP_SECTORS_VCOUNT, SM_RANGE_SPACE));
-	//memset(m_Range, SM_RANGE_SPACE, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
-
-	m_AINeighbourCount = std::vector<std::vector<unsigned char>>(
-		STARMAP_SECTORS_HCOUNT, std::vector<unsigned char>(STARMAP_SECTORS_VCOUNT, 0));
-	//memset(m_AINeighbourCount, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
-
-	m_AIRangePoints = std::vector<std::vector<short>>(
-		STARMAP_SECTORS_HCOUNT, std::vector<short>(STARMAP_SECTORS_VCOUNT, 0));
-	//memset(m_AIRangePoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
-
-	m_AIConnectionPoints = std::vector<std::vector<short>>(
-		STARMAP_SECTORS_HCOUNT, std::vector<short>(STARMAP_SECTORS_VCOUNT, 0));
-	//memset(m_AIConnectionPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
-
-	m_AITargetPoints = std::vector<std::vector<short>>(
-		STARMAP_SECTORS_HCOUNT, std::vector<short>(STARMAP_SECTORS_VCOUNT, 0));
-	//memset(m_AITargetPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
-
-	m_AIBadPoints = std::vector<std::vector<short>>(
-		STARMAP_SECTORS_HCOUNT, std::vector<short>(STARMAP_SECTORS_VCOUNT, 0));
-	//memset(m_AIBadPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+	m_Range.resize(size, SM_RANGE_SPACE);
+	m_AINeighbourCount.resize(size, 0);
+	m_AIRangePoints.resize(size, 0);
+	m_AIConnectionPoints.resize(size, 0);
+	m_AITargetPoints.resize(size, 0);
+	m_AIBadPoints.resize(size, 0);
 }
 
 // Kantengewichte; das diagonale Kantengewicht muss höher sein, da ein Weg sonst
@@ -276,8 +259,8 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 	// gegebene Parameter prüfen
 	if (pos == target								// Start == Ziel
 		|| range < 1 || range > 3
-		|| m_Range[pos.x][pos.y] < range			// Start außerhalb des Gebiets der Reichweite
-		|| m_Range[target.x][target.y] < range		// Ziel außerhalb der Reichweite
+		|| m_Range.at(CoordsToIndex(pos.x, pos.y)) < range			// Start außerhalb des Gebiets der Reichweite
+		|| m_Range.at(CoordsToIndex(target.x, target.y)) < range		// Ziel außerhalb der Reichweite
 		|| speed < 1)
 	{
 		return Sector();
@@ -295,7 +278,7 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 		for (int j = 0; j < STARMAP_SECTORS_VCOUNT; j++)
 			for (int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
 			{
-				/*PathSector *tmp = &(pathMap[i][j]);
+				/*PathSector *tmp = &(pathMap.at(CoordsToIndex(i, j)));
 				tmp->used = false;
 				tmp->distance = 0.;
 				tmp->hops = 0;
@@ -303,20 +286,21 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 
 				tmp->position.x = i; // für Zugriff aus leafList heraus merken
 				tmp->position.y = j;*/
-				pathMap[i][j].used=false;
-				pathMap[i][j].distance=0;
-				pathMap[i][j].hops=0;
-				pathMap[i][j].parent.x=-1;
-				pathMap[i][j].parent.y=-1;
-				pathMap[i][j].position.x=i;
-				pathMap[i][j].position.y=j;
+				const int index = CoordsToIndex(i, j);
+				pathMap.at(index).used=false;
+				pathMap.at(index).distance=0;
+				pathMap.at(index).hops=0;
+				pathMap.at(index).parent.x=-1;
+				pathMap.at(index).parent.y=-1;
+				pathMap.at(index).position.x=i;
+				pathMap.at(index).position.y=j;
 			}
 
 		// leaves zurücksetzen
 		leaves.Clear();
 
 		// Startknoten zur Liste der auszuwählenden Blätter hinzufügen
-		leaves.Add(&(pathMap[pos.x][pos.y]));
+		leaves.Add(&(pathMap.at(CoordsToIndex(pos.x, pos.y))));
 
 		// Parameter merken
 		pathStart = pos;
@@ -324,7 +308,7 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 	}
 
 	// ist der Weg zum angegebenen Ziel bereits bekannt?
-	if (pathMap[target.x][target.y].parent.x == -1 || pathMap[target.x][target.y].parent.y == -1)
+	if (pathMap.at(CoordsToIndex(target.x, target.y)).parent.x == -1 || pathMap.at(CoordsToIndex(target.x, target.y)).parent.y == -1)
 	{
 		// kürzeste Wege zu allen anderen Knoten bestimmen, bis uns der Zielknoten über den Weg läuft
 		bool found = false;
@@ -353,8 +337,8 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 
 				// nur Nachbarn betrachten, die noch nicht ausgewählt wurden und innerhalb der
 				// Reichweite liegen
-				PathSector *neighb = &(pathMap[npos.x][npos.y]);
-				if (neighb->used || m_Range[npos.x][npos.y] < range)
+				PathSector *neighb = &(pathMap.at(CoordsToIndex(npos.x, npos.y)));
+				if (neighb->used || m_Range.at(CoordsToIndex(npos.x, npos.y)) < range)
 					continue;
 
 				// kann der Nachbar über next auf einem kürzeren Weg als bisher erreicht werden,
@@ -390,7 +374,7 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 	// Ziel gefunden; Weg vom Ziel bis zum Startknoten zurück verfolgen,
 	// dabei von hinten beginnend in Array eintragen
 	Sector next = target;
-	int idx = pathMap[target.x][target.y].hops;
+	int idx = pathMap.at(CoordsToIndex(target.x, target.y)).hops;
 	AssertBotE(idx >= 1);
 
 	path.SetSize(idx); // Größe des Arrays setzen (= Länge des Weges)
@@ -399,7 +383,7 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 	{
 		AssertBotE(next.on_map());
 		path[idx] = next;
-		next = pathMap[next.x][next.y].parent;
+		next = pathMap.at(CoordsToIndex(next.x, next.y)).parent;
 	}
 	AssertBotE(idx == -1);
 
@@ -616,7 +600,7 @@ void CStarmap::AddTarget(const Sector &target)
 	if (!m_bAICalculation || !target.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT)) return;
 
 	// prüfen, ob Ziel bereits in Liste vorhanden ist
-	for (SECTORLIST::const_iterator it = m_lAITargets.begin(); it != m_lAITargets.end(); ++it)
+	for (std::list<Sector>::const_iterator it = m_lAITargets.begin(); it != m_lAITargets.end(); ++it)
 		if (*it == target)
 			return;
 
@@ -632,7 +616,7 @@ void CStarmap::AddTarget(const Sector &target)
 
 BOOL CStarmap::IsTarget(const Sector &sector)
 {
-	for (SECTORLIST::const_iterator it = m_lAITargets.begin(); it != m_lAITargets.end(); ++it)
+	for (std::list<Sector>::const_iterator it = m_lAITargets.begin(); it != m_lAITargets.end(); ++it)
 		if (it->x == sector.x && it->y == sector.y)
 			return TRUE;
 	return FALSE;
@@ -645,7 +629,7 @@ void CStarmap::AddKnownSystem(const Sector &sector)
 	if (!m_bAICalculation || !sector.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT)) return;
 
 	// prüfen, ob Ziel bereits in Liste vorhanden ist
-	for (SECTORLIST::const_iterator it = m_lAIKnownSystems.begin(); it != m_lAIKnownSystems.end(); ++it)
+	for (std::list<Sector>::const_iterator it = m_lAIKnownSystems.begin(); it != m_lAIKnownSystems.end(); ++it)
 		if (*it == sector)
 			return;
 
@@ -661,7 +645,7 @@ void CStarmap::AddKnownSystem(const Sector &sector)
 
 BOOL CStarmap::IsKnownSystem(const Sector &sector)
 {
-	for (SECTORLIST::const_iterator it = m_lAIKnownSystems.begin(); it != m_lAIKnownSystems.end(); ++it)
+	for (std::list<Sector>::const_iterator it = m_lAIKnownSystems.begin(); it != m_lAIKnownSystems.end(); ++it)
 		if (it->x == sector.x && it->y == sector.y)
 			return TRUE;
 	return FALSE;
@@ -672,18 +656,18 @@ void CStarmap::RecalcRangePoints()
 	//memset(m_AIRangePoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
 	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
 		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_AIRangePoints[i][j]=0;
+			m_AIRangePoints.at(CoordsToIndex(i, j))=0;
 
 	// komplette Starmap durchlaufen, Werte aus Effektivitätsgründen nur für Sektoren innerhalb der gegebenen
 	// Reichweite berechnen
 	for (char x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		for (char y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-			if (m_Range[x][y] >= m_nAIRange)
+			if (m_Range.at(CoordsToIndex(x, y)) >= m_nAIRange)
 			{
 				// für Sektoren innerhalb der gegebenen Reichweite Bewertung neu berechnen, die sich ergibt,
 				// wenn hier ein Außenposten gebaut würde
 
-				m_AIRangePoints[x][y] = 0;
+				m_AIRangePoints.at(CoordsToIndex(x, y)) = 0;
 
 				// lokale Rangemap durchlaufen
 				for (char mx = -m_RangeMap.x0; mx < m_RangeMap.w - m_RangeMap.x0; mx++)
@@ -693,7 +677,7 @@ void CStarmap::RecalcRangePoints()
 						if (mpt.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
 						{
 							// Gebietszuwachs ermitteln
-							m_AIRangePoints[x][y] += max(GetRangeMapValue(mx, my) - m_Range[mpt.x][mpt.y], 0);
+							m_AIRangePoints.at(CoordsToIndex(x, y)) += max(GetRangeMapValue(mx, my) - m_Range.at(CoordsToIndex(mpt.x, mpt.y)), 0);
 						}
 					}
 			}
@@ -704,17 +688,17 @@ void CStarmap::RecalcConnectionPoints()
 	//memset(m_AINeighbourCount, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
 	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
 		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_AINeighbourCount[i][j]=0;
+			m_AINeighbourCount.at(CoordsToIndex(i, j))=0;
 	//memset(m_AIConnectionPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
 
 	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
 		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_AIConnectionPoints[i][j]=0;
+			m_AIConnectionPoints.at(CoordsToIndex(i, j))=0;
 
 	// für Sektoren, die außerhalb der Reichweite liegen, die Anzahl der Nachbarn innerhalb der Reichweite neu bestimmen
 	for (char x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		for (char y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-			if (m_Range[x][y] >= m_nAIRange)
+			if (m_Range.at(CoordsToIndex(x, y)) >= m_nAIRange)
 			{
 				// Nachbaranzahl für Nachbarsektoren von (x, y), die außerhalb der Reichweite liegen, hochzählen
 				for (int nx = -1; nx <= 1; nx++)
@@ -722,10 +706,10 @@ void CStarmap::RecalcConnectionPoints()
 					{
 						Sector npt(x + nx, y + ny);
 						if (npt.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT) &&
-							m_Range[npt.x][npt.y] < m_nAIRange)
+							m_Range.at(CoordsToIndex(npt.x, npt.y)) < m_nAIRange)
 						{
 							// (npt.x, npt.y) ist jetzt immer != (x, y)
-							m_AINeighbourCount[npt.x][npt.y]++;
+							m_AINeighbourCount.at(CoordsToIndex(npt.x, npt.y))++;
 						}
 					}
 			}
@@ -733,7 +717,7 @@ void CStarmap::RecalcConnectionPoints()
 	// Bewertungen für Zusammenhang neu berechnen
 	for (char x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		for (char y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-			if (m_Range[x][y] >= m_nAIRange)
+			if (m_Range.at(CoordsToIndex(x, y)) >= m_nAIRange)
 			{
 				// für Sektoren (x, y) innerhalb der Reichweite die lokale Rangemap durchlaufen
 				for (char mx = -m_RangeMap.x0; mx < m_RangeMap.w - m_RangeMap.x0; mx++)
@@ -745,7 +729,7 @@ void CStarmap::RecalcConnectionPoints()
 							// für die (x, y) umgebenden Sektoren deren Anzahl der Nachbarn innerhalb der Reichweite
 							// verwerten: ist diese Anzahl hoch, befindet sich in der Nähe von (x, y) ein weiteres
 							// Gebiet innerhalb der Reichweite, das mit dem Gebiet von (x, y) nicht "direkt" zusammenhängt
-							m_AIConnectionPoints[x][y] += m_AINeighbourCount[mpt.x][mpt.y] * GetRangeMapValue(mx, my);
+							m_AIConnectionPoints.at(CoordsToIndex(x, y)) += m_AINeighbourCount.at(CoordsToIndex(mpt.x, mpt.y)) * GetRangeMapValue(mx, my);
 						}
 					}
 			}
@@ -759,7 +743,7 @@ void CStarmap::RecalcTargetPoints()
 	//memset(m_AITargetPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
 	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
 		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_AITargetPoints[i][j]=0;
+			m_AITargetPoints.at(CoordsToIndex(i, j))=0;
 
 	// abbrechen, wenn keine Ziele angegeben und keine Systeme bekannt sind
 	if (m_lAITargets.empty() && m_lAIKnownSystems.empty()) return;
@@ -767,13 +751,13 @@ void CStarmap::RecalcTargetPoints()
 	// alle Sektoren innerhalb der Reichweite durchlaufen
 	for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-			if (m_Range[x][y] >= m_nAIRange)
+			if (m_Range.at(CoordsToIndex(x, y)) >= m_nAIRange)
 			{
 				// alle Ziele untersuchen
-				for (SECTORLIST::const_iterator it = m_lAITargets.begin(); it != m_lAITargets.end(); ++it)
+				for (std::list<Sector>::const_iterator it = m_lAITargets.begin(); it != m_lAITargets.end(); ++it)
 				{
 					// Ziel überspringen, wenn es sich innerhalb der gegebenen Reichweite befindet
-					if (m_Range[it->x][it->y] >= m_nAIRange) continue;
+					if (m_Range.at(CoordsToIndex(it->x, it->y)) >= m_nAIRange) continue;
 
 					// zählen, wieviele Sektoren innerhalb der Reichweite besucht werden, wenn man
 					// vom Sektor (x, y) aus horizontal zu (tx, y) und vertikal zu (x, ty) läuft,
@@ -783,7 +767,7 @@ void CStarmap::RecalcTargetPoints()
 					short incx = sgn(it->x - x), px = x + incx;
 					while (incx)
 					{
-						if (m_Range[px][y] >= m_nAIRange)
+						if (m_Range.at(CoordsToIndex(px, y)) >= m_nAIRange)
 						{
 							intersect = true; break;
 						}
@@ -794,7 +778,7 @@ void CStarmap::RecalcTargetPoints()
 					short incy = sgn(it->y - y), py = y + incy;
 					while (incy && !intersect)
 					{
-						if (m_Range[x][py] >= m_nAIRange)
+						if (m_Range.at(CoordsToIndex(x, py)) >= m_nAIRange)
 						{
 							intersect = true; break;
 						}
@@ -803,20 +787,20 @@ void CStarmap::RecalcTargetPoints()
 					}
 
 					// Bonus, wenn keine Sektoren innerhalb der Reichweite besucht wurden
-					if (!intersect) m_AITargetPoints[x][y] += 20;
+					if (!intersect) m_AITargetPoints.at(CoordsToIndex(x, y)) += 20;
 
 					// Entfernung zum Ziel ermitteln (da (x, y) innerhalb der Reichweite und das Ziel außerhalb liegt,
 					// ist diese Entfernung >= 1)
 					short distance = max(abs(it->x - x), abs(it->y - y));
 					if (distance <= NEAR_TARGET_DISTANCE)
-						m_AITargetPoints[x][y] += (NEAR_TARGET_DISTANCE - distance + 1) * 5;
+						m_AITargetPoints.at(CoordsToIndex(x, y)) += (NEAR_TARGET_DISTANCE - distance + 1) * 5;
 				}
 
 				// die bekannten Systeme untersuchen
-				for (SECTORLIST::const_iterator it = m_lAIKnownSystems.begin(); it != m_lAIKnownSystems.end(); ++it)
+				for (std::list<Sector>::const_iterator it = m_lAIKnownSystems.begin(); it != m_lAIKnownSystems.end(); ++it)
 				{
 					// System überspringen, wenn es sich bereits innerhalb der gegebenen Reichweite befindet
-					if (m_Range[it->x][it->y] >= m_nAIRange) continue;
+					if (m_Range.at(CoordsToIndex(it->x, it->y)) >= m_nAIRange) continue;
 
 					// Bonus, wenn der Bau eines Außenpostens in (x, y) das System in die gegebene Reichweite
 					// eingliedern würde
@@ -824,14 +808,14 @@ void CStarmap::RecalcTargetPoints()
 					if (system.is_in_rect(-m_RangeMap.x0, -m_RangeMap.y0, m_RangeMap.w - m_RangeMap.x0, m_RangeMap.h - m_RangeMap.y0)
 						&& GetRangeMapValue(system.x, system.y) >= m_nAIRange)
 					{
-						m_AITargetPoints[x][y] += 30;
+						m_AITargetPoints.at(CoordsToIndex(x, y)) += 30;
 					}
 					// sonst in Abhängigkeit von der Entfernung zum System
 					else
 					{
 						short distance = max(abs(it->x - x), abs(it->y - y));
 						if (distance <= NEAR_SYSTEM_DISTANCE)
-							m_AITargetPoints[x][y] += (NEAR_SYSTEM_DISTANCE - distance + 1) * 5;
+							m_AITargetPoints.at(CoordsToIndex(x, y)) += (NEAR_SYSTEM_DISTANCE - distance + 1) * 5;
 					}
 				}
 			}
@@ -839,20 +823,20 @@ void CStarmap::RecalcTargetPoints()
 
 short CStarmap::GetPoints(const Sector &sector) const
 {
-	short points = m_AIRangePoints[sector.x][sector.y];
+	short points = m_AIRangePoints.at(CoordsToIndex(sector.x, sector.y));
 	if (points > 0)
 	{
 		// Verbinden von Gebieten und bevorzugte Ausbreitungsrichtung sind nur dort sinnvoll,
 		// wo Gebietszuwachs erreicht wird
-		points += m_AIConnectionPoints[sector.x][sector.y] + m_AITargetPoints[sector.x][sector.y];
+		points += m_AIConnectionPoints.at(CoordsToIndex(sector.x, sector.y)) + m_AITargetPoints.at(CoordsToIndex(sector.x, sector.y));
 	}
 
-	points -= m_AIBadPoints[sector.x][sector.y];
+	points -= m_AIBadPoints.at(CoordsToIndex(sector.x, sector.y));
 	return points;
 
-//	return m_AIRangePoints[sector.x][sector.y];
-//	return m_AIConnectionPoints[sector.x][sector.y];
-//	return m_AITargetPoints[sector.x][sector.y];
+//	return m_AIRangePoints.at(CoordsToIndex(sector.x, sector.y));
+//	return m_AIConnectionPoints.at(CoordsToIndex(sector.x, sector.y));
+//	return m_AITargetPoints.at(CoordsToIndex(sector.x, sector.y));
 }
 
 void CStarmap::SetBadAIBaseSectors(const std::vector<CSystem>& systems, const CString& race)
@@ -860,13 +844,13 @@ void CStarmap::SetBadAIBaseSectors(const std::vector<CSystem>& systems, const CS
 	//memset(m_AIBadPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
 	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
 		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_AIBadPoints[i][j]=0;
+			m_AIBadPoints.at(CoordsToIndex(i, j))=0;
 
 	for(std::vector<CSystem>::const_iterator it = systems.begin(); it != systems.end(); ++it)
 	{
 		const CPoint& co = it->GetCo();
 		const CString& owner = it->OwnerID();
-		if (m_Range[co.x][co.y] >= m_nAIRange)
+		if (m_Range.at(CoordsToIndex(co.x, co.y)) >= m_nAIRange)
 		{
 			double dValue = 0.0;
 			if (owner == race || it->Free())
@@ -886,10 +870,10 @@ void CStarmap::SetBadAIBaseSectors(const std::vector<CSystem>& systems, const CS
 			if (it->GetAnomaly())
 				dValue += it->GetAnomaly()->GetWaySearchWeight() * 100.0;
 
-			if ((double)m_AIBadPoints[co.x][co.y] + dValue > MAXSHORT)
-				m_AIBadPoints[co.x][co.y] = MAXSHORT;
+			if ((double)m_AIBadPoints.at(CoordsToIndex(co.x, co.y)) + dValue > MAXSHORT)
+				m_AIBadPoints.at(CoordsToIndex(co.x, co.y)) = MAXSHORT;
 			else
-				m_AIBadPoints[co.x][co.y] += (short)dValue;
+				m_AIBadPoints.at(CoordsToIndex(co.x, co.y)) += (short)dValue;
 		}
 	}
 }
@@ -911,7 +895,7 @@ BaseSector CStarmap::CalcAIBaseSector(double variance)
 	std::list<BaseSector> lSectors;
 	for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-			if (m_Range[x][y] >= m_nAIRange)
+			if (m_Range.at(CoordsToIndex(x, y)) >= m_nAIRange)
 			{
 				BaseSector sector;
 				sector.position = Sector(x, y);
