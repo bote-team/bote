@@ -138,6 +138,23 @@
 // This info structure
 typedef struct tagPPTOOLTIP_INFO
 {
+	tagPPTOOLTIP_INFO() :
+		nIDTool(0),
+		rectBounds(0, 0, 0, 0),
+		sTooltip(""),
+		nMask(0),
+		nStyles(0),
+		nDirection(0),
+		nEffect(0),
+		nBehaviour(0),
+		nGranularity(0),
+		nTransparency(0),
+		crBegin(RGB(0, 0, 0)),
+		crMid(RGB(0, 0, 0)),
+		crEnd(RGB(0, 0, 0))
+	{
+	}
+
     UINT		nIDTool;		// ID of tool
     CRect		rectBounds;		// Bounding rect for toolinfo to be displayed
 	CString		sTooltip;		// The string of the tooltip
