@@ -63,6 +63,15 @@ struct Sector
 /// Struktur, die Informationen eines Sektors für die Berechnung eines kürzesten Weges aufnimmt
 struct PathSector
 {
+	PathSector() :
+		used(false),
+		distance(0),
+		hops(0),
+		parent(-1, -1),
+		position(-1, -1)
+	{
+	}
+
 	bool used;			///< <code>true</code>, wenn der Knoten bereits gewählt wurde, sonst <code>false</code>
 	double distance;	///< Entfernung vom Start
 	int hops;			///< Anzahl der Hops vom Start-Sektor
