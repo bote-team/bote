@@ -908,29 +908,36 @@ void CBotEDoc::GenerateGalaxy()
 	nMinDiff = max(nMinDiff, 4);
 
 	std::map<CString, CPoint> RaceKO;
+	const int cease_at = max((STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT) / 4, 20);
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); )
 	{
 		// Zufällig einen Sektor ermitteln. Dies wird solange getan, solange der ermittelte Sektor noch nicht die
 		// if Bedingung erfüllt oder die Abbruchbedingung erreicht ist.
 		bool bRestart = false;
 		int nCount = 0;
-
+		CPoint co(-1, -1);
 		do
 		{
-			const CPoint co(rand()%STARMAP_SECTORS_HCOUNT, rand()%STARMAP_SECTORS_VCOUNT);
-			RaceKO[it->first] = co;
+			co = CPoint(rand()%STARMAP_SECTORS_HCOUNT, rand()%STARMAP_SECTORS_VCOUNT);
 
-			for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)
+			for (std::map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != it; ++jt)
 			{
-				if (it->first != jt->first && RaceKO[jt->first] != CPoint(-1,-1) && abs(RaceKO[it->first].x - RaceKO[jt->first].x) < nMinDiff && abs(RaceKO[it->first].y - RaceKO[jt->first].y) < nMinDiff||RaceKO[it->first] != CPoint(-1,-1)&&nGenField[RaceKO[it->first].x][RaceKO[it->first].y]==false)
-					RaceKO[it->first] = CPoint(-1,-1);
+				const std::map<CString, CPoint>::const_iterator their_co = RaceKO.find(jt->first);
+				AssertBotE(their_co != RaceKO.end() && their_co->second != CPoint(-1,-1) && co != CPoint(-1 -1));
+				if (!nGenField[co.x][co.y] ||
+					abs(co.x - their_co->second.x) < nMinDiff && abs(co.y - their_co->second.y) < nMinDiff)
+				{
+					co = CPoint(-1, -1);
+					break;
+				}
 			}
 			// Abbruchbedingung
-			if (++nCount > max((STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT) / 4, 20))
+			if (++nCount > cease_at)
 				bRestart = true;
 		}
-		while (RaceKO[it->first] == CPoint(-1,-1) && bRestart == false);
+		while (co == CPoint(-1,-1) && bRestart == false);
 
+		RaceKO[it->first] = co;
 		// nächsten Major auswählen
 		++it;
 
