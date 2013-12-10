@@ -214,7 +214,7 @@ void CStarmap::SynchronizeWithAnomalies(const std::vector<CSystem>& systems)
 {
 	for(std::vector<CSystem>::const_iterator it = systems.begin(); it != systems.end(); ++it)
 	{
-		const CAnomaly* anomaly = it->GetAnomaly();
+		const boost::shared_ptr<const CAnomaly>& anomaly = it->GetAnomaly();
 		if (anomaly)
 			m_BadMapModifiers.at(it - systems.begin()) = anomaly->GetWaySearchWeight();
 	}

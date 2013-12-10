@@ -241,7 +241,7 @@ public:
 	}
 
 	/// Diese Funktion gibt einen Zeiger auf eine eventuell vorhandene Anomalie zurück (<code>NULL</code> wenn kein vorhanden)
-	const CAnomaly* GetAnomaly(void) const {return m_pAnomaly;}
+	boost::shared_ptr<const CAnomaly> GetAnomaly(void) const {return m_pAnomaly;}
 
 //////////////////////////////////////////////////////////////////////
 // setting
@@ -482,5 +482,5 @@ private:
 	CBotEMap<CString, BYTE> m_byOwnerPoints;
 
 	/// Mögliche Anomalie in dem Sektor (NULL wenn keine vorhanden)
-	CAnomaly* m_pAnomaly;
+	boost::shared_ptr<CAnomaly> m_pAnomaly;
 };

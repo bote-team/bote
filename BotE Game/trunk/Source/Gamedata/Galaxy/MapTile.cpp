@@ -13,6 +13,7 @@
 #include "Ships/ships.h"
 #include "BotEDoc.h"
 #include "Races/Major.h"
+#include "boost/make_shared.hpp"
 
 
 
@@ -27,14 +28,14 @@ static char THIS_FILE[]=__FILE__;
 //////////////////////////////////////////////////////////////////////
 CMapTile::CMapTile(void) :
 	CInGameEntity(),
-	m_pAnomaly(NULL)
+	m_pAnomaly()
 {
 	Reset(false);
 }
 
 CMapTile::CMapTile(int x, int y) :
 	CInGameEntity(x, y),
-	m_pAnomaly(NULL)
+	m_pAnomaly()
 {
 	Reset(false);
 }
@@ -53,11 +54,9 @@ CMapTile::CMapTile(const CMapTile& other) :
 	m_iNeededScanPower(other.m_iNeededScanPower),
 	m_iNeededStationPoints(other.m_iNeededStationPoints),
 	m_iStartStationPoints(other.m_iStartStationPoints),
-	m_byOwnerPoints(other.m_byOwnerPoints)
+	m_byOwnerPoints(other.m_byOwnerPoints),
+	m_pAnomaly(other.m_pAnomaly)
 {
-	m_pAnomaly=NULL;
-	if(other.GetAnomaly())
-		m_pAnomaly = new CAnomaly(*other.m_pAnomaly);
 };
 
 CMapTile& CMapTile::operator=(const CMapTile& other){
@@ -78,9 +77,7 @@ CMapTile& CMapTile::operator=(const CMapTile& other){
 		m_iNeededStationPoints = other.m_iNeededStationPoints;
 		m_iStartStationPoints = other.m_iStartStationPoints;
 		m_byOwnerPoints = other.m_byOwnerPoints;
-		m_pAnomaly=NULL;
-		if(other.GetAnomaly())
-			m_pAnomaly = new CAnomaly(*other.m_pAnomaly);
+		m_pAnomaly = other.m_pAnomaly;
 	}
 
 	return *this;
@@ -104,8 +101,7 @@ void CMapTile::Reset(bool call_up)
 	m_iStartStationPoints.clear();
 	m_iNeededStationPoints.clear();
 
-	delete m_pAnomaly;
-	m_pAnomaly = NULL;
+	m_pAnomaly.reset();
 
 	ClearAllPoints(false);
 }
@@ -136,7 +132,10 @@ void CMapTile::Serialize(CArchive &ar)
 		ar << m_bSunSystem;
 		ar << m_Outpost;
 		ar << m_Starbase;
-		ar << m_pAnomaly;
+		bool anomaly = m_pAnomaly;
+		ar << anomaly;
+		if(anomaly)
+			m_pAnomaly->Serialize(ar);
 	}
 	else
 	// Alle Variablen in der richtigen Reihenfolge lesen
@@ -146,8 +145,14 @@ void CMapTile::Serialize(CArchive &ar)
 		ar >> m_Outpost;
 		m_Starbase.Empty();
 		ar >> m_Starbase;
-		delete m_pAnomaly;
-		ar >> m_pAnomaly;
+		bool anomaly(false);
+		ar >> anomaly;
+		if(anomaly)
+		{
+			if(!m_pAnomaly)
+				CreateAnomaly();
+			m_pAnomaly->Serialize(ar);
+		}
 	}
 }
 
@@ -335,7 +340,7 @@ void CMapTile::DrawSectorsName(CDC *pDC, CBotEDoc* pDoc, CMajor* pPlayer)
 				pDC->SetTextColor(dynamic_cast<CMajor*>(m_Owner.get())->GetDesign()->m_clrGalaxySectorText);
 		}
 		// Systemnamen zeichnen
-		if (m_pAnomaly == NULL)
+		if (!m_pAnomaly)
 			pDC->DrawText(m_sName, CRect(m_Co.x*STARMAP_SECTOR_WIDTH, m_Co.y*STARMAP_SECTOR_HEIGHT, m_Co.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH,m_Co.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT), DT_CENTER | DT_BOTTOM | DT_SINGLELINE);
 		else
 		{
@@ -487,13 +492,7 @@ void CMapTile::CalculateOwner()
 /// Funktion erzeugt eine zufällige Anomalie im Sektor.
 void CMapTile::CreateAnomaly(void)
 {
-	if (m_pAnomaly)
-	{
-		delete m_pAnomaly;
-		m_pAnomaly = NULL;
-	}
-
-	m_pAnomaly = new CAnomaly();
+	m_pAnomaly = boost::make_shared<CAnomaly>(CAnomaly());
 }
 
 /// In jeder neuen Runde die IsTerraforming und IsStationBuilding Variablen auf FALSE setzen, wenn Schiffe eine Aktion

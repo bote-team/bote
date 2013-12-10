@@ -4146,13 +4146,13 @@ void CBotEDoc::CalcShipCombat()
 
 	// Kampf-KI
 	CCombatAI AI;
-	bool bCombat = AI.CalcCombatTactics(vInvolvedShips, m_pRaceCtrl, m_mCombatOrders, GetSystem(p.x, p.y).GetAnomaly());
+	bool bCombat = AI.CalcCombatTactics(vInvolvedShips, m_pRaceCtrl, m_mCombatOrders, GetSystem(p.x, p.y).GetAnomaly().get());
 	if (!bCombat)
 		return;
 
 	// Jetzt können wir einen Kampf stattfinden lassen
 	CCombat Combat;
-	Combat.SetInvolvedShips(&vInvolvedShips, m_pRaceCtrl, GetSystem(p.x, p.y).GetAnomaly());
+	Combat.SetInvolvedShips(&vInvolvedShips, m_pRaceCtrl, GetSystem(p.x, p.y).GetAnomaly().get());
 	if (!Combat.GetReadyForCombat())
 		return;
 
@@ -4416,7 +4416,7 @@ void CBotEDoc::CalcShipEffects()
 		// Anomalien beachten
 		bool bDeactivatedShipScanner = false;
 		bool bBetterScanner = false;
-		const CAnomaly* const anomaly = system.GetAnomaly();
+		const boost::shared_ptr<const CAnomaly>& anomaly = system.GetAnomaly();
 		if(anomaly) {
 			bDeactivatedShipScanner = anomaly->IsShipScannerDeactivated();
 			bBetterScanner = anomaly->GetType() == QUASAR;

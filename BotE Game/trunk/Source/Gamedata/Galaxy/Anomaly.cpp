@@ -9,7 +9,6 @@
 #include "General/Loc.h"
 #include "Galaxy/Sector.h"
 
-IMPLEMENT_SERIAL (CAnomaly, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
@@ -85,7 +84,6 @@ CAnomaly::~CAnomaly(void)
 ///////////////////////////////////////////////////////////////////////
 void CAnomaly::Serialize(CArchive &ar)
 {
-	__super::Serialize(ar);
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -320,14 +318,14 @@ void CAnomaly::CalcShipEffects(CShips* pShip) const
 		pShip->ApplyIonstormEffects();
 }
 
-void CAnomaly::MakeShieldDmg(int nMinDmgValue, int nMaxDmgPercent, CShips* pShip) const
+void CAnomaly::MakeShieldDmg(int nMinDmgValue, int nMaxDmgPercent, CShips* pShip)
 {
 	int nMax = (int)pShip->GetShield()->GetCurrentShield() * (rand()%(nMaxDmgPercent + 1)) / 100;
 	int nShieldDmg = max(nMinDmgValue, nMax);
 	pShip->GetShield()->SetCurrentShield(pShip->GetShield()->GetCurrentShield() - nShieldDmg);
 }
 
-void CAnomaly::MakeHullDmg(int nMinDmgValue, int nMaxDmgPercent, CShips* pShip) const
+void CAnomaly::MakeHullDmg(int nMinDmgValue, int nMaxDmgPercent, CShips* pShip)
 {
 	int nMax = (int)pShip->GetHull()->GetCurrentHull() * (rand()%(nMaxDmgPercent + 1)) / 100;
 	int nHullDmg = max(nMinDmgValue, nMax);
@@ -352,7 +350,7 @@ void CAnomaly::ReduceScanPower(const CPoint &pt) const
 	}
 }
 
-void CAnomaly::PerhabsStrand(CShips* pShip) const
+void CAnomaly::PerhabsStrand(CShips* pShip)
 {
 	CBotEDoc* pDoc = resources::pDoc;
 	AssertBotE(pDoc);

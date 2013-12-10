@@ -64,11 +64,9 @@ typedef enum ANOMALYTYP
 	WORMHOLE
 };
 /// Klasse abstrahiert eine Anomalie im Weltraum
-class CAnomaly : public CObject
+class CAnomaly
 {
 public:
-	// Klasse serialisierbar machen
-	DECLARE_SERIAL (CAnomaly)
 
 	/// Standardkonstruktor
 	CAnomaly(void);
@@ -136,9 +134,9 @@ protected:
 	ANOMALYTYP m_byType;		///< Typ der Anomalie
 
 	// Funktionen
-	void MakeShieldDmg(int nMinDmgValue, int nMaxDmgPercent, CShips* pShip) const;
+	static void MakeShieldDmg(int nMinDmgValue, int nMaxDmgPercent, CShips* pShip);
 
-	void MakeHullDmg(int nMinDmgValue, int nMaxDmgPercent, CShips* pShip) const;
+	static void MakeHullDmg(int nMinDmgValue, int nMaxDmgPercent, CShips* pShip);
 
-	void PerhabsStrand(CShips* pShip) const;
+	static void PerhabsStrand(CShips* pShip);
 };
