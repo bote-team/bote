@@ -68,7 +68,7 @@ namespace network
 		}
 
 		CString s;
-		s.Format("socket error %u: %s.", nError, msg);
+		s.Format("socket error %i: %s.", nError, msg);
 
 		return s;
 	}
