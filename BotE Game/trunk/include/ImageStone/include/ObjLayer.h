@@ -5,7 +5,7 @@
  *   Create   :  2003-3-30
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_OBJECT_LAYER__2003_03_30__H__
 #define __FOO_OBJECT_LAYER__2003_03_30__H__
@@ -189,7 +189,7 @@ public:
         FCObjLayer::SetMemoObj (pMemo) ;
         if (pMemo->GetMemoType() != FCMemoLayer::MEMO_LAYER_TEXT)
         {
-            assert(false) ;
+            AssertBotE(false) ;
             return ;
         }
         const FCMemoTextLayer   * pTxt = (const FCMemoTextLayer*)pMemo ;

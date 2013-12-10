@@ -57,7 +57,7 @@ private:
         int    i;
         double constants [8];
         double div;
-        
+
         // The constants used in the implemenation of a casual sequence
         // using a 4th order approximation of the gaussian operator
         div = sqrt(LIB_2PI) * std_dev;
@@ -69,7 +69,7 @@ private:
         constants [5] = 3.735 / div;
         constants [6] = -0.6803 / div;
         constants [7] = -0.2598 / div;
-        
+
         n_p [0] = constants[4] + constants[6];
         n_p [1] = exp (constants[1]) *
             (constants[7] * sin (constants[3]) -
@@ -88,7 +88,7 @@ private:
             exp (constants[0] + 2 * constants[1]) *
             (constants[5] * sin (constants[2]) - constants[4] * cos (constants[2]));
         n_p [4] = 0.0;
-        
+
         d_p [0] = 0.0;
         d_p [1] = -2 * exp (constants[1]) * cos (constants[3]) -
             2 * exp (constants[0]) * cos (constants[2]);
@@ -97,14 +97,14 @@ private:
         d_p [3] = -2 * cos (constants[2]) * exp (constants[0] + 2 * constants[1]) -
             2 * cos (constants[3]) * exp (constants[1] + 2 * constants[0]);
         d_p [4] = exp (2 * constants[0] + 2 * constants[1]);
-        
+
         for (i = 0; i <= 4; i++)
             d_m [i] = d_p [i];
-        
+
         n_m[0] = 0.0;
         for (i = 1; i <= 4; i++)
             n_m [i] = n_p[i] - d_p[i] * n_p[0];
-        
+
         {
             double sum_n_p = 0.0;
             double sum_n_m = 0.0;
@@ -115,10 +115,10 @@ private:
                 sum_n_m += n_m[i];
                 sum_d += d_p[i];
             }
-            
+
             double a = sum_n_p / (1.0 + sum_d);
             double b = sum_n_m / (1.0 + sum_d);
-            
+
             for (i = 0; i <= 4; i++)
             {
                 bd_p[i] = d_p[i] * a;
@@ -164,7 +164,7 @@ private:
             BYTE    * sp_m = src.get() + (img.Height() - 1) * bytes ;
             double  * vp = val_p.get() ;
             double  * vm = val_m.get() + (img.Height() - 1) * bytes ;
-            
+
             // Set up the first vals
             int     initial_p[4],
                     initial_m[4] ;
@@ -273,7 +273,7 @@ private:
                 vp += bytes ;
                 vm -= bytes ;
             }
-            
+
             double  * pTmp_p = val_p.get(), * pTmp_m = val_m.get() ;
             for (int mm=0 ; mm < img.Width() ; mm++)
             {

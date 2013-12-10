@@ -5,7 +5,7 @@
  *   Create   :  2004-10-5
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_INTERFACE_COMMAND__2004_10_05__H__
 #define __FOO_INTERFACE_COMMAND__2004_10_05__H__
@@ -44,8 +44,8 @@ private:
  */
 class FCCmdOnceExecute : public FCCmdArtPrider
 {
-    virtual void Undo (FCObjCanvas& canvas) {assert(false);}
-    virtual void Redo (FCObjCanvas& canvas) {assert(false);}
+    virtual void Undo (FCObjCanvas& canvas) {AssertBotE(false);}
+    virtual void Redo (FCObjCanvas& canvas) {AssertBotE(false);}
 public:
     FCCmdOnceExecute() {SetDeleteFlagAfterExecute(true);}
 };

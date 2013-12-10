@@ -5,7 +5,7 @@
  *   Create   :  2004-6-18
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
 */
 #ifndef __FOO_IMAGE_HANDLE_GDIPLUS__2004_06_18__H__
 #define __FOO_IMAGE_HANDLE_GDIPLUS__2004_06_18__H__
@@ -281,7 +281,7 @@ class FCImageHandle_Gdiplus : public FCImageHandleBase,
     {
         if (gp_Bmp.GetLastStatus() != Gdiplus::Ok)
         {
-            /*assert(false);*/ return false;
+            /*AssertBotE(false);*/ return false;
         }
 
         // get frame dimensions
@@ -305,7 +305,7 @@ class FCImageHandle_Gdiplus : public FCImageHandleBase,
                 }
                 else
                 {
-                    delete pImg ; assert(false);
+                    delete pImg ; AssertBotE(false);
                 }
             }
         }

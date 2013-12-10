@@ -2,15 +2,18 @@
  *   Copyright (C) =USTC= Fu Li
  *
  *   Author   :  Fu Li
- *   Create   :  
+ *   Create   :
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __IMAGESTONE_HEADER__9711__H__
 #define __IMAGESTONE_HEADER__9711__H__
 
 //=============================================================================
+
+#pragma warning(push)
+#pragma warning(disable : 4100)
 
 #include "include/PCL_interface_lazyobj.h"
 #include "include/FTimeCount.h"
@@ -57,7 +60,7 @@ inline void FCObjImage::Stretch_Smooth (int nNewWidth, int nNewHeight, FCObjProg
     // parameter check
     if (!IsValidImage() || (nNewWidth <= 0) || (nNewHeight <= 0) || (ColorBits() < 24))
     {
-        assert(false) ; return ;
+        AssertBotE(false) ; return ;
     }
     if ((nNewWidth == Width()) && (nNewHeight == Height()))
         return ;
@@ -72,7 +75,7 @@ inline void FCObjImage::Stretch_Smooth (int nNewWidth, int nNewHeight, FCObjProg
     const FCObjImage     imgOld(*this) ;
     if (!Create (nNewWidth, nNewHeight, imgOld.ColorBits()))
     {
-        assert(false) ; return ;
+        AssertBotE(false) ; return ;
     }
 
     // initialize index table, to accelerate
@@ -138,3 +141,5 @@ inline void FCObjImage::Stretch_Smooth (int nNewWidth, int nNewHeight, FCObjProg
 }
 
 #endif
+
+#pragma warning(pop)

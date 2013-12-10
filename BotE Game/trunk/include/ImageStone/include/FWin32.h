@@ -5,7 +5,7 @@
  *   Create   :  2005-9-29
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifdef WIN32
 #ifndef __FOO_WIN32__2005_09_29__H__
@@ -84,7 +84,7 @@ public:
     {
         if (szAnsi == NULL)
             return "" ;
-        
+
         bstr_t   bstrTmp (szAnsi) ;
         int      nLen = ::WideCharToMultiByte (CP_UTF8, 0, (LPCWSTR)bstrTmp, -1, NULL, 0, NULL, NULL) ;
         char     * pUTF8 = new char[nLen+1] ;
@@ -110,7 +110,7 @@ public:
         bstr_t   sK = "Software\\Microsoft\\Windows\\CurrentVersion\\Run" ;
         LONG     l = ::RegOpenKeyEx (HKEY_CURRENT_USER, sK, 0, KEY_ALL_ACCESS, &hKey) ;
         if (l != ERROR_SUCCESS)
-            {assert(FALSE); return "";}
+            {AssertBotE(FALSE); return "";}
 
         TCHAR     szPath[MAX_PATH] = {0} ;
         DWORD     dw = sizeof(TCHAR) * MAX_PATH,
@@ -130,7 +130,7 @@ public:
         bstr_t   sK = "Software\\Microsoft\\Windows\\CurrentVersion\\Run" ;
         LONG     l = ::RegOpenKeyEx (HKEY_CURRENT_USER, sK, 0, KEY_ALL_ACCESS, &hKey) ;
         if (l != ERROR_SUCCESS)
-            {assert(FALSE); return;}
+            {AssertBotE(FALSE); return;}
 
         ::RegDeleteValue (hKey, szValue) ;
         if (lstrlen(szString))
@@ -214,7 +214,7 @@ public:
 	static HBITMAP CreateDDBHandle (const FCObjImage& img)
 	{
 		if (!img.IsValidImage())
-			{/*assert(false);*/ return NULL;}
+			{/*AssertBotE(false);*/ return NULL;}
 
 		// prepare info
 		PCL_array<BITMAPINFOHEADER>   bmfh (img.NewImgInfoWithPalette()) ;
@@ -374,14 +374,14 @@ public:
 	static BOOL CaptureDC (FCObjImage& img, HDC hdc, RECT rcCap)
 	{
 		if (IsRectEmpty(&rcCap) || (GetDeviceCaps (hdc, BITSPIXEL) <= 8)) // palette format
-			{assert(false); return FALSE;}
+			{AssertBotE(false); return FALSE;}
 
 		HDC       hMemDC = CreateCompatibleDC (hdc) ;
 		HBITMAP   hDDB = CreateCompatibleBitmap (hdc, RECTWIDTH(rcCap), RECTHEIGHT(rcCap)) ;
 		if (hDDB == NULL)
 		{
 			::DeleteDC (hMemDC) ;
-			assert(false); return FALSE;
+			AssertBotE(false); return FALSE;
 		}
 
 		// start capture
@@ -541,7 +541,7 @@ public:
             case 24 : fmt = PixelFormat24bppRGB ; break;
             case 32 : fmt = PixelFormat32bppARGB ; break;
             default :
-                assert(false); return NULL ;
+                AssertBotE(false); return NULL ;
         }
 
         Gdiplus::Bitmap   * pBmp = new Gdiplus::Bitmap (img.Width(), img.Height(), fmt) ;
@@ -825,7 +825,7 @@ public:
 	static HRGN ConvertAlphaImageToHRGN (const FCObjImage& img32)
 	{
 		if (!img32.IsValidImage() || (img32.ColorBits() != 32))
-			{assert(false); return NULL;}
+			{AssertBotE(false); return NULL;}
 
 		HRGN     hRgn = ::CreateRectRgn (0, 0, img32.Width(), img32.Height()) ;
 		for (int y=0 ; y < img32.Height() ; y++)
@@ -902,7 +902,7 @@ public:
 					::SetClipboardData (CF_DIB, hMem) ;
 				else
 				{
-					assert(false);
+					AssertBotE(false);
 					GlobalFree (hMem) ;
 				}
 				::CloseClipboard() ;

@@ -5,7 +5,7 @@
  *   Create   :  2005-3-9
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __PCL_TT_CONVERTOR__2005_03_09__H__
 #define __PCL_TT_CONVERTOR__2005_03_09__H__
@@ -13,7 +13,6 @@
     #pragma warning (disable : 4786) // identifier was truncated to '255' characters in the browser information
 #endif
 #include <deque>
-#include <assert.h>
 
 //=============================================================================
 /**
@@ -42,7 +41,7 @@ public:
     {
         if (m_t1Tab.size() == m_t2Tab.size())
             return (int)m_t1Tab.size();
-        assert(false) ;
+        AssertBotE(false) ;
         return 0 ;
     }
 
@@ -68,11 +67,11 @@ public:
     }
 
     /// Get first element of n index (<B>no bound check</B>)).
-    const T1& GetT1 (int n) const {assert(IsValidIndex(n)); return m_t1Tab[n];}
-          T1& GetT1 (int n)       {assert(IsValidIndex(n)); return m_t1Tab[n];}
+    const T1& GetT1 (int n) const {AssertBotE(IsValidIndex(n)); return m_t1Tab[n];}
+          T1& GetT1 (int n)       {AssertBotE(IsValidIndex(n)); return m_t1Tab[n];}
     /// Get second element of n index (<B>no bound check</B>)).
-    const T2& GetT2 (int n) const {assert(IsValidIndex(n)); return m_t2Tab[n];}
-          T2& GetT2 (int n)       {assert(IsValidIndex(n)); return m_t2Tab[n];}
+    const T2& GetT2 (int n) const {AssertBotE(IsValidIndex(n)); return m_t2Tab[n];}
+          T2& GetT2 (int n)       {AssertBotE(IsValidIndex(n)); return m_t2Tab[n];}
 
     /// Add a new element into table.
     void AddElement (const T1& t1, const T2& t2)
@@ -90,7 +89,7 @@ public:
             m_t2Tab.erase(m_t2Tab.begin() + nIndex) ;
         }
         else
-            {assert(false);}
+            {AssertBotE(false);}
     }
     /// Remove an element from table.
     void RemoveElement (const T1& t1, const T2& t2)

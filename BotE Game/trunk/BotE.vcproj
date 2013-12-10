@@ -52,7 +52,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;Source;Source\include;Source\Graphic;Source\Gamedata;Source\Dialogs;Source\Framework;Source\GUI;Source\General;&quot;..\..\BotE Tools\NetworkLib\include\foundation&quot;;&quot;..\..\BotE Tools\NetworkLib\include\LZMA&quot;;&quot;..\..\BotE Tools\NetworkLib\include\network&quot;;Source\include\sound;Source\include\CPPToolTip"
+				AdditionalIncludeDirectories=".;Source;Source\Graphic;Source\Gamedata;Source\Dialogs;Source\Framework;Source\GUI;Source\General;&quot;..\..\BotE Tools\NetworkLib\include\foundation&quot;;&quot;..\..\BotE Tools\NetworkLib\include\LZMA&quot;;&quot;..\..\BotE Tools\NetworkLib\include\network&quot;;include;include\CPPToolTip;include\ImageStone;include\sound"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
@@ -158,7 +158,7 @@
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories=".;Source;Source\include;Source\Graphic;Source\Gamedata;Source\Dialogs;Source\Framework;Source\GUI;Source\General;&quot;..\..\BotE Tools\NetworkLib\include\foundation&quot;;&quot;..\..\BotE Tools\NetworkLib\include\LZMA&quot;;&quot;..\..\BotE Tools\NetworkLib\include\network&quot;;Source\include\sound;Source\include\CPPToolTip"
+				AdditionalIncludeDirectories=".;Source;Source\Graphic;Source\Gamedata;Source\Dialogs;Source\Framework;Source\GUI;Source\General;&quot;..\..\BotE Tools\NetworkLib\include\foundation&quot;;&quot;..\..\BotE Tools\NetworkLib\include\LZMA&quot;;&quot;..\..\BotE Tools\NetworkLib\include\network&quot;;include;include\CPPToolTip;include\ImageStone;include\sound"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -264,7 +264,7 @@
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories=".;Source;Source\include;Source\Graphic;Source\Gamedata;Source\Dialogs;Source\Framework;Source\GUI;Source\General;&quot;..\..\BotE Tools\NetworkLib\include\foundation&quot;;&quot;..\..\BotE Tools\NetworkLib\include\LZMA&quot;;&quot;..\..\BotE Tools\NetworkLib\include\network&quot;;Source\include\sound;Source\include\CPPToolTip"
+				AdditionalIncludeDirectories=".;Source;Source\Graphic;Source\Gamedata;Source\Dialogs;Source\Framework;Source\GUI;Source\General;&quot;..\..\BotE Tools\NetworkLib\include\foundation&quot;;&quot;..\..\BotE Tools\NetworkLib\include\LZMA&quot;;&quot;..\..\BotE Tools\NetworkLib\include\network&quot;;include;include\CPPToolTip;include\ImageStone;include\sound"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				MinimalRebuild="true"
@@ -472,14 +472,6 @@
 				</File>
 				<File
 					RelativePath=".\Source\Graphic\OverlayBanner.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\include\CRoundButton2\RoundButton2.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\include\CRoundButton2\RoundButtonStyle.cpp"
 					>
 				</File>
 			</Filter>
@@ -1034,19 +1026,31 @@
 					Name="CPPToolTip"
 					>
 					<File
-						RelativePath=".\Source\include\CPPToolTip\CeXDib.cpp"
+						RelativePath=".\include\CPPToolTip\CeXDib.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\Source\include\CPPToolTip\PPDrawManager.cpp"
+						RelativePath=".\include\CPPToolTip\PPDrawManager.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\Source\include\CPPToolTip\PPHtmlDrawer.cpp"
+						RelativePath=".\include\CPPToolTip\PPHtmlDrawer.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\Source\include\CPPToolTip\PPTooltip.cpp"
+						RelativePath=".\include\CPPToolTip\PPTooltip.cpp"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="CRoundButton2"
+					>
+					<File
+						RelativePath=".\include\CRoundButton2\RoundButton2.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\include\CRoundButton2\RoundButtonStyle.cpp"
 						>
 					</File>
 				</Filter>
@@ -1149,14 +1153,6 @@
 				</File>
 				<File
 					RelativePath=".\Source\Graphic\OverlayBanner.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\include\CRoundButton2\RoundButton2.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\include\CRoundButton2\RoundButtonStyle.h"
 					>
 				</File>
 				<File
@@ -1763,25 +1759,37 @@
 			<Filter
 				Name="Include"
 				>
-				<File
-					RelativePath=".\Source\include\CPPToolTip\CeXDib.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\include\CPPToolTip\PPDrawManager.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\include\CPPToolTip\PPHtmlDrawer.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\include\CPPToolTip\PPTooltip.h"
-					>
-				</File>
 				<Filter
 					Name="CPPToolTip"
 					>
+					<File
+						RelativePath=".\include\CPPToolTip\CeXDib.h"
+						>
+					</File>
+					<File
+						RelativePath=".\include\CPPToolTip\PPDrawManager.h"
+						>
+					</File>
+					<File
+						RelativePath=".\include\CPPToolTip\PPHtmlDrawer.h"
+						>
+					</File>
+					<File
+						RelativePath=".\include\CPPToolTip\PPTooltip.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="CRoundButton2"
+					>
+					<File
+						RelativePath=".\include\CRoundButton2\RoundButton2.h"
+						>
+					</File>
+					<File
+						RelativePath=".\include\CRoundButton2\RoundButtonStyle.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>

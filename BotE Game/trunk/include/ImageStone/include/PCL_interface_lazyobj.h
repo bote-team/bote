@@ -5,7 +5,7 @@
  *   Create   :  2005-4-3
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __PCL_LAZY_OBJECT__2005_04_03__H__
 #define __PCL_LAZY_OBJECT__2005_04_03__H__

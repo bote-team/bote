@@ -5,7 +5,7 @@
  *   Create   :  2005-6-21
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_INTERFACE_IMAGEHANDLE_FACTORY__2005_06_21__H__
 #define __FOO_INTERFACE_IMAGEHANDLE_FACTORY__2005_06_21__H__
@@ -26,7 +26,7 @@ public:
     virtual IMAGE_TYPE QueryImageFileType (const char* szFileName)
     {
         if (!szFileName)
-            {assert(false); return IMG_UNKNOW;}
+            {AssertBotE(false); return IMG_UNKNOW;}
 
         std::string       strExt (FCOXOHelper::GetFileExt(szFileName)) ;
         PCL_array<char>   szConvert (new char[strExt.length() + 8]) ;

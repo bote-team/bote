@@ -5,11 +5,10 @@
  *   Create   :  2005-3-6
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_PCL_INTERFACE_UNDO_MANAGER_H__
 #define __FOO_PCL_INTERFACE_UNDO_MANAGER_H__
-#include <assert.h>
 #include <deque>
 
 template<class T> class PCL_Interface_Undo ;
@@ -101,7 +100,7 @@ public:
     {
         if (nLevel < 0)
         {
-            assert(false); return;
+            AssertBotE(false); return;
         }
 
         m_nUndoLevel = nLevel ; // >=0
@@ -150,7 +149,7 @@ protected:
     {
         if ((m_nUndoLevel <= 0) || !pCmd)
         {
-            assert(false); return false;
+            AssertBotE(false); return false;
         }
 
         // clear redo-list, ennnnnnn. this behavior like a bintree.

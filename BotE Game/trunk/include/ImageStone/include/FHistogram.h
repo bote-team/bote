@@ -5,7 +5,7 @@
  *   Create   :  2003-12-23
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_HISTOGRAM__2003_12_23__H__
 #define __FOO_HISTOGRAM__2003_12_23__H__
@@ -90,7 +90,7 @@ inline FCHistogram::FCHistogram (const FCObjImage& img) : m_HisGray(256), m_HisR
 inline void FCHistogram::AnalyzeImage (const FCObjImage& img)
 {
     if (!img.IsValidImage() || (img.ColorBits() < 24))
-        {assert(false); return;}
+        {AssertBotE(false); return;}
 
     for (int i=0 ; i < 256 ; i++)
     {

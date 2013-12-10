@@ -5,7 +5,7 @@
  *   Create   :  2003-4-10
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef	__FOO_OBJECT_PROGRESS__2003_04_10__H__
 #define	__FOO_OBJECT_PROGRESS__2003_04_10__H__

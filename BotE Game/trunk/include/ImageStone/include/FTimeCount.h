@@ -5,7 +5,7 @@
  *   Create   :  2005-3-3
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_TIME_COUNT__2005_03_03__H__
 #define __FOO_TIME_COUNT__2005_03_03__H__
