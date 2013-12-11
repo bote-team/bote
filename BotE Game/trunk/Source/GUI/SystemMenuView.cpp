@@ -1966,7 +1966,7 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	rect = RectF(870,80,60,25);
 	if (m_iWhichSubMenu == 0)		// Wenn wir im normalen Baumenü sind
 	{
-		if (pDoc->GetSystem(p.x,p.y).GetProduction()->GetUpdateBuildSpeed() == 
+		if (pDoc->GetSystem(p.x,p.y).GetProduction()->GetUpdateBuildSpeed() ==
 			pDoc->GetSystem(p.x,p.y).GetProduction()->GetBuildingBuildSpeed())
 		{
 			s.Format("%i",(short)(pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd() *
@@ -2035,9 +2035,9 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 25;
 	// Wenn wir im normalen Baumenü sind
-	if (m_iWhichSubMenu == 0 && 
+	if (m_iWhichSubMenu == 0 &&
 			(pDoc->GetSystem(p.x,p.y).GetProduction()->GetBuildingBuildSpeed() > 0 ||
-			pDoc->GetSystem(p.x, p.y).GetProduction()->GetUpdateBuildSpeed() > 0))		
+			pDoc->GetSystem(p.x, p.y).GetProduction()->GetUpdateBuildSpeed() > 0))
 	{
 		if (pDoc->GetSystem(p.x,p.y).GetProduction()->GetBuildingBuildSpeed() ==
 				pDoc->GetSystem(p.x,p.y).GetProduction()->GetUpdateBuildSpeed())

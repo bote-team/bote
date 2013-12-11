@@ -462,7 +462,7 @@ void CStatistics::CalcDemoValues(const CString& sRaceID, const std::map<CString,
 	// schlechtester Wert
 	fLast = vSortedVec.back();
 
-	MYTRACE("general")(MT::LEVEL_INFO, "First: %f ", fFirst);	
+	MYTRACE("general")(MT::LEVEL_INFO, "First: %f ", fFirst);
 	MYTRACE("general")(MT::LEVEL_INFO, "Average: %f ", fAverage);
 	MYTRACE("general")(MT::LEVEL_INFO, "Last: %f", fLast);
 	MYTRACE("general")(MT::LEVEL_INFO, "Value (own): %f ", fValue);

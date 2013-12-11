@@ -277,7 +277,7 @@ MYTRACE("general")(MT::LEVEL_INFO, "CHANGE (Empire) = %s\n", s);
 
 	fontFormat.SetAlignment(StringAlignmentFar);
 	s.Format("%.1lf",m_fMark);
-	MYTRACE("general")(MT::LEVEL_INFO, "RATING (Empire) = %s\n", s);	
+	MYTRACE("general")(MT::LEVEL_INFO, "RATING (Empire) = %s\n", s);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 290, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
 	// Sternzeit anzeigen

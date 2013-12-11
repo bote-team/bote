@@ -202,7 +202,7 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 			if (pMinor->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP && pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetMinorRace() == TRUE &&
 				!pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).Taken())
 			{
-				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).ChangeOwner(pMinor->GetRaceID(), 
+				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).ChangeOwner(pMinor->GetRaceID(),
 					CSystem::OWNING_STATUS_INDEPENDENT_MINOR);
 				boost::shared_ptr<CMajor> empty;
 				pMinor->SetOwner(empty);

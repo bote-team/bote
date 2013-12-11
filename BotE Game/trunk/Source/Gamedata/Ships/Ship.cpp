@@ -1501,20 +1501,20 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 bool CShip::BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major, short id) {
 	if(!sector.SetNeededStationPoints(m_iStationBuildPoints, OwnerID()))
 		return false;
-	SHIP_TYPE::Typ type = (order == SHIP_ORDER::BUILD_OUTPOST 
+	SHIP_TYPE::Typ type = (order == SHIP_ORDER::BUILD_OUTPOST
 		|| order == SHIP_ORDER::UPGRADE_OUTPOST) ? SHIP_TYPE::OUTPOST : SHIP_TYPE::STARBASE;
 	sector.BuildStation(type, OwnerID());
 	CEmpireNews message;
-	const CString& s1 = (order == SHIP_ORDER::BUILD_OUTPOST) ? "OUTPOST_FINISHED" 
-		: ((order == SHIP_ORDER::BUILD_STARBASE) ? "STARBASE_FINISHED" 
-		: ((order == SHIP_ORDER::UPGRADE_OUTPOST) ? "OUTPOST_UPGRADE_FINISHED" 
+	const CString& s1 = (order == SHIP_ORDER::BUILD_OUTPOST) ? "OUTPOST_FINISHED"
+		: ((order == SHIP_ORDER::BUILD_STARBASE) ? "STARBASE_FINISHED"
+		: ((order == SHIP_ORDER::UPGRADE_OUTPOST) ? "OUTPOST_UPGRADE_FINISHED"
 		: "STARBASE_UPGRADE_FINISHED" ));
 	message.CreateNews(CLoc::GetString(s1),EMPIRE_NEWS_TYPE::MILITARY,"",sector.GetCo());
 	major.GetEmpire()->AddMsg(message);
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-	const CString& s2 = (order == SHIP_ORDER::BUILD_OUTPOST) ? "OUTPOST_CONSTRUCTION" 
-		: ((order == SHIP_ORDER::BUILD_STARBASE) ? "STARBASE_CONSTRUCTION" 
-		: ((order == SHIP_ORDER::UPGRADE_OUTPOST) ? "OUTPOST_UPGRADE" 
+	const CString& s2 = (order == SHIP_ORDER::BUILD_OUTPOST) ? "OUTPOST_CONSTRUCTION"
+		: ((order == SHIP_ORDER::BUILD_STARBASE) ? "STARBASE_CONSTRUCTION"
+		: ((order == SHIP_ORDER::UPGRADE_OUTPOST) ? "OUTPOST_UPGRADE"
 		: "STARBASE_UPGRADE" ));
 	CBotEDoc* pDoc = resources::pDoc;
 	major.AddToLostShipHistory(CShips(*this), CLoc::GetString(s2),
