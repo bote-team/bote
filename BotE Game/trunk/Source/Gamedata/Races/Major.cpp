@@ -16,9 +16,9 @@
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CMajor::CMajor(void) :
-	CRace(RACE_TYPE_MAJOR)
+	CRace(RACE_TYPE_MAJOR),
+	m_pStarmap()
 {
-	m_pStarmap = NULL;
 	Reset(false);
 }
 
@@ -84,12 +84,8 @@ void CMajor::Serialize(CArchive &ar)
 		m_pDiplomacyAI = boost::make_shared<CMajorAI>(this);
 
 		// Starmap löschen (wird neu generiert)
-		if (m_pStarmap)
-		{
-			m_pStarmap->ClearAll();
-			delete m_pStarmap;
-		}
-		m_pStarmap = NULL;
+		m_pStarmap->ClearAll();
+		m_pStarmap.reset();
 	}
 
 	// Objekt welches gestalterische Informationen zur Rasse beinhaltet
@@ -421,21 +417,15 @@ void CMajor::Reset(bool call_up)
 	m_WeaponObserver.Reset();				// beobachtet die baubaren Waffen für Schiffe. Wird benötigt wenn wir Schiffe designen wollen
 
 	// Starmap
-	if (m_pStarmap)						// Die Starmap des Majors, beinhaltet Reichweiteninformationen (muss nicht serialisiert werden)
-	{
+	// Die Starmap des Majors, beinhaltet Reichweiteninformationen (muss nicht serialisiert werden)
+	if(m_pStarmap)
 		m_pStarmap->ClearAll();
-		delete m_pStarmap;
-	}
-	m_pStarmap = NULL;
+	m_pStarmap.reset();
 }
 
 void CMajor::CreateStarmap(void)
 {
-	if (m_pStarmap) {
-		delete m_pStarmap;
-		m_pStarmap = NULL;
-	}
-	m_pStarmap = new CStarmap(!m_bPlayer, 3 - SHIP_RANGE::MIDDLE);
+	m_pStarmap = boost::make_shared<CStarmap>(!m_bPlayer, 3 - SHIP_RANGE::MIDDLE);
 }
 
 void CMajor::Contact(const CRace& Race, const CPoint& p)

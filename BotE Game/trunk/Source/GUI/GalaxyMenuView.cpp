@@ -304,7 +304,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 
 	// wenn sich die Markierung ganz oben oder ganz links befindet, dann zugehörigen Abschnitt
 	// in Linie ganz oben bzw. links in der Farbe der Markierung zeichnen
-	CStarmap* pStarmap = pMajor->GetStarmap();
+	const boost::shared_ptr<CStarmap>& pStarmap = pMajor->GetStarmap();
 	if (pStarmap->m_Selection.x > -1 && pStarmap->m_Selection.y > -1)
 	{
 		pDC->SelectObject(&selPen);

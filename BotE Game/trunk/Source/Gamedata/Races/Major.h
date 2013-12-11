@@ -54,7 +54,7 @@ public:
 
 	/// Funktion gibt die Starmap der Rasse zurück. Diese beinhaltet Reichweiteninformationen sowie KI wichtige Sachen.
 	/// @return Zeiger auf Starmap der Rasse
-	CStarmap* GetStarmap(void) const {return m_pStarmap;}
+	boost::shared_ptr<CStarmap> GetStarmap(void) const {return m_pStarmap;}
 
 	/// Funktion erstellt eine neue Starmap für die Rasse.
 	void CreateStarmap(void);
@@ -206,5 +206,5 @@ protected:
 	CWeaponObserver		m_WeaponObserver;				///< beobachtet die baubaren Waffen für Schiffe. Wird benötigt wenn wir Schiffe designen wollen
 
 	// Starmap
-	CStarmap*			m_pStarmap;						///< Die Starmap des Majors, beinhaltet Reichweiteninformationen (muss nicht serialisiert werden)
+	boost::shared_ptr<CStarmap> m_pStarmap; ///< Die Starmap des Majors, beinhaltet Reichweiteninformationen (muss nicht serialisiert werden)
 };
