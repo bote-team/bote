@@ -53,5 +53,5 @@ void CAlien::Create(const CStringArray& saInfo, int& nPos)
 	m_byShipNumber = PLAYER_RACES::MINORNUMBER;
 
 	// Minorrace - KI anlegen
-	m_pDiplomacyAI = new CMinorAI(this);
+	m_pDiplomacyAI = boost::make_shared<CMinorAI>(this);
 }

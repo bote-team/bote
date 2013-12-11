@@ -21,9 +21,9 @@ CRace::CRace(RACE_TYPE type) :
 	m_byBuildingNumber(0),
 	m_byMoralNumber(0),
 	m_nSpecialAbility(0),
-	m_bDeleted(false)
+	m_bDeleted(false),
+	m_pDiplomacyAI()
 {
-	m_pDiplomacyAI = NULL;
 	Reset(false);
 }
 
@@ -222,7 +222,7 @@ void CRace::MakeOffersAI(void)
 		// bei einem menschlichen Spieler wird die KI nicht ausgeführt
 		if (dynamic_cast<CMajor*>(this)->AHumanPlays())
 			return;
-		dynamic_cast<CMajorAI*>(m_pDiplomacyAI)->CalcFavoriteMinors();
+		boost::dynamic_pointer_cast<CMajorAI>(m_pDiplomacyAI)->CalcFavoriteMinors();
 	}
 
 	// Angebote machen
@@ -314,11 +314,7 @@ void CRace::Reset(bool call_up)
 	m_sGraphicFile	= "";			// Name der zugehörigen Grafikdatei
 
 	// Diplomatie-KI nullen
-	if (m_pDiplomacyAI)
-	{
-		delete m_pDiplomacyAI;
-		m_pDiplomacyAI = NULL;
-	}
+	m_pDiplomacyAI.reset();
 }
 
 /// Funktion gibt zurück, ob eine andere Rasse bekannt ist.

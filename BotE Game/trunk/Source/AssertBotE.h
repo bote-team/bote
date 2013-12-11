@@ -10,10 +10,10 @@
 
 #ifdef NDEBUG
 #undef NDEBUG
-#include "boost/shared_ptr.hpp"
+#include "boost/smart_ptr.hpp"
 #define NDEBUG
 #else
-#include "boost/shared_ptr.hpp"
+#include "boost/smart_ptr.hpp"
 #endif
 
 #define AssertBotE(x) assert(x)

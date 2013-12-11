@@ -287,7 +287,7 @@ protected:
 	CString				m_sGraphicFile;			///<!!! Name der zugehörigen Grafikdatei
 
 	// Rassen Diplomatie-KI
-	CDiplomacyAI*		m_pDiplomacyAI;			///< Diplomatie-KI (muss nicht serialisiert werden)
+	boost::shared_ptr<CDiplomacyAI> m_pDiplomacyAI; ///< Diplomatie-KI (muss nicht serialisiert werden)
 
 private:
 	bool m_bDeleted;
