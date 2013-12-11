@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CMajorAI::CMajorAI(CRace* pRace) : CDiplomacyAI(pRace)
+CMajorAI::CMajorAI(const boost::shared_ptr<CRace>& pRace) : CDiplomacyAI(pRace)
 {
 }
 
@@ -85,7 +85,8 @@ void CMajorAI::CalcFavoriteMinors(void)
 {
 	m_sFavoriteMinor = "";
 
-	CMajor* pOurRace = dynamic_cast<CMajor*>(m_pRace);
+	const boost::shared_ptr<const CMajor> pOurRace = boost::dynamic_pointer_cast<CMajor>(m_pRace);
+	AssertBotE(pOurRace);
 	if (!pOurRace)
 		return;
 
@@ -182,7 +183,7 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMinorOffer(const CDiplomacyInfo& info)
 ///			<code>NOT_REACTED</code> für keine Reaktion
 ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 {
-	CRace* pRace = m_pRace;
+	const RacePtr& pRace = m_pRace;
 	if (!pRace)
 		return ANSWER_STATUS::NOT_REACTED;
 
@@ -429,7 +430,8 @@ ANSWER_STATUS::Typ CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 	if (rand()%10 == 0)
 		return ANSWER_STATUS::NOT_REACTED;
 
-	CMajor* pRace = dynamic_cast<CMajor*>(m_pRace);
+	const boost::shared_ptr<CMajor>& pRace = boost::dynamic_pointer_cast<CMajor>(m_pRace);
+	AssertBotE(pRace);
 	if (!pRace)
 		return ANSWER_STATUS::NOT_REACTED;
 
@@ -550,7 +552,8 @@ ANSWER_STATUS::Typ CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 /// @return <code>true</code> wenn ein Angebot erzeugt wurde, ansonsten <code>false</code>
 bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 {
-	CMajor* pOurRace = dynamic_cast<CMajor*>(m_pRace);
+	const boost::shared_ptr<const CMajor> pOurRace = boost::dynamic_pointer_cast<CMajor>(m_pRace);
+	AssertBotE(pOurRace);
 	if (!pOurRace)
 		return false;
 
@@ -740,7 +743,8 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 	// Können ja nur ein Angebot machen, wenn wir die Rasse kennen
 	// Wir machen auch nur ein Angebot, wenn wir die Rasse gut leiden können und die Rasse, an die das Angebot geht
 	// auch uns gut leiden kann. Die Differenz der beiden Werte darf nicht zu groß sein.
-	CMajor* pOurRace = dynamic_cast<CMajor*>(m_pRace);
+	const boost::shared_ptr<const CMajor> pOurRace = boost::dynamic_pointer_cast<CMajor>(m_pRace);
+	AssertBotE(pOurRace);
 	if (!pOurRace)
 		return false;
 
@@ -1182,7 +1186,8 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 {
 	bool bGiveDowry = false;	// wurde ein Geschenk gemacht
 
-	CMajor* pOurRace = dynamic_cast<CMajor*>(m_pRace);
+	const boost::shared_ptr<CMajor>& pOurRace = boost::dynamic_pointer_cast<CMajor>(m_pRace);
+	AssertBotE(pOurRace);
 	if (!pOurRace)
 		return false;
 
@@ -1308,7 +1313,8 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 {
 	bool bClaimRequest = false;	// wurde eine Forderung gestellt
 
-	CMajor* pOurRace = dynamic_cast<CMajor*>(m_pRace);
+	const boost::shared_ptr<const CMajor> pOurRace = boost::dynamic_pointer_cast<CMajor>(m_pRace);
+	AssertBotE(pOurRace);
 	if (!pOurRace)
 		return false;
 
@@ -1425,7 +1431,8 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 /// @param info Referenz auf eine Diplomatieinformation
 void CMajorAI::ReactOnDowry(const CDiplomacyInfo& info)
 {
-	CMajor* pOurRace = dynamic_cast<CMajor*>(m_pRace);
+	const boost::shared_ptr<CMajor>& pOurRace = boost::dynamic_pointer_cast<CMajor>(m_pRace);
+	AssertBotE(pOurRace);
 	if (!pOurRace)
 		return;
 

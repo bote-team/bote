@@ -127,9 +127,10 @@ public:
 
 	void SetOwner(const boost::shared_ptr<CMajor>& race);
 
-protected:
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
-	void Reset(bool call_up);
+	virtual void Reset(bool call_up);
+
+protected:
 
 	// Attribute
 	// feste Attribute aus der Data-Datei

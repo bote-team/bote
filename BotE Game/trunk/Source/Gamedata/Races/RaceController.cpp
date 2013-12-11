@@ -17,6 +17,12 @@ CRaceController::CRaceController(void)
 
 CRaceController::~CRaceController(void)
 {
+	//we need to manually call the reset of the shared CRace ptr in the CDiplomacyAI object which is
+	//member to the object of which it holds that shared ptr. Use count would never reach 1 to destruct
+	//races, as the inner shared ptr would only be resetted by CRace's destructor which isn't called
+	//due to use count not being 1 (circular causality trap)
+	for(const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
+		it->second->Reset(true);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -153,6 +159,7 @@ CRaceController::const_iterator CRaceController::RemoveRaceInternal(const const_
 	AssertBotE(it != m_mRaces.end() && !it->second->Deleted());
 	it->second->IsMajor() ? m_mMajors.erase(it->second->GetRaceID()) : m_mMinors.erase(it->second->GetRaceID());
 	it->second->Delete();
+	it->second->Reset(true);
 	return m_mRaces.erase(it);
 }
 

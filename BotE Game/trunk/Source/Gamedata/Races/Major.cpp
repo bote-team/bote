@@ -81,7 +81,7 @@ void CMajor::Serialize(CArchive &ar)
 		// Diplomatieobjekt neu erstellen
 		// Majorrace - KI anlegen
 		// Diplomatie neu anlegen
-		m_pDiplomacyAI = boost::make_shared<CMajorAI>(this);
+		m_pDiplomacyAI = boost::make_shared<CMajorAI>(shared_from_this());
 
 		// Starmap löschen (wird neu generiert)
 		m_pStarmap->ClearAll();
@@ -383,7 +383,7 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 	m_Empire.SetEmpireID(m_sID);
 
 	// Majorrace - KI anlegen
-	m_pDiplomacyAI = boost::make_shared<CMajorAI>(this);
+	m_pDiplomacyAI = boost::make_shared<CMajorAI>(shared_from_this());
 }
 
 /// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.

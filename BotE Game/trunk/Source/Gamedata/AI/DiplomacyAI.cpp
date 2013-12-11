@@ -158,7 +158,7 @@ void CDiplomacyInfo::Reset(void)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CDiplomacyAI::CDiplomacyAI(CRace* pRace) : m_pRace(pRace)
+CDiplomacyAI::CDiplomacyAI(const boost::shared_ptr<CRace>& pRace) : m_pRace(pRace)
 {
 	AssertBotE(m_pRace);
 
@@ -169,3 +169,9 @@ CDiplomacyAI::CDiplomacyAI(CRace* pRace) : m_pRace(pRace)
 CDiplomacyAI::~CDiplomacyAI(void)
 {
 }
+
+void CDiplomacyAI::Reset()
+{
+	m_pRace.reset();
+}
+

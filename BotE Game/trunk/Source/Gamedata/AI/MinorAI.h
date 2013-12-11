@@ -15,7 +15,7 @@ class CMinorAI : public CDiplomacyAI
 public:
 	/// Standardkonstruktor
 	/// @param pRace Zeiger auf Rasse, zu welcher das Diplomatieobjekt gehört
-	CMinorAI(CRace* pRace);
+	CMinorAI(const boost::shared_ptr<CRace>& pRace);
 	/// Standarddestruktor
 	virtual ~CMinorAI(void);
 

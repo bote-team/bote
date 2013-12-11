@@ -135,9 +135,9 @@ void CSanity::SanityCheckRacePtrUseCounts(const CBotEDoc& doc)
 
 		std::map<CString, int>::iterator count = use_counts.find(it->first);
 		if(count == use_counts.end())
-			use_counts[it->first] = 1;
+			use_counts[it->first] = 2;
 		else
-			count->second++;
+			count->second = count->second + 2;
 		if(it->second->IsMinor())
 		{
 			const boost::shared_ptr<CRace>& owner = it->second->Owner();

@@ -314,6 +314,8 @@ void CRace::Reset(bool call_up)
 	m_sGraphicFile	= "";			// Name der zugehörigen Grafikdatei
 
 	// Diplomatie-KI nullen
+	if(m_pDiplomacyAI)
+		m_pDiplomacyAI->Reset();
 	m_pDiplomacyAI.reset();
 }
 

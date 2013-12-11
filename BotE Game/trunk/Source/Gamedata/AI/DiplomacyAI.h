@@ -67,7 +67,7 @@ class CDiplomacyAI
 public:
 	/// Standardkonstruktor
 	/// @param pRace Zeiger auf Rasse, zu welcher das Diplomatieobjekt gehört
-	CDiplomacyAI(CRace* pRace);
+	CDiplomacyAI(const boost::shared_ptr<CRace>& pRace);
 	/// Standarddestruktor
 	virtual ~CDiplomacyAI(void);
 
@@ -87,6 +87,8 @@ public:
 	/// @return <code>true</code> wenn ein Angebot erzeugt wurde, ansonsten <code>false</code>
 	virtual bool MakeOffer(CString& sRaceID, CDiplomacyInfo& info) = 0;
 
+	void Reset();
+
 protected:
 	/// Funktion berechnet die Beziehungsverbesserungen durch die Übergabe von Credits und Ressourcen.
 	/// Die Credits werden hier jedoch nicht gutgeschrieben, sondern nur die Beziehung zur Majorrace verbessert.
@@ -95,5 +97,5 @@ protected:
 
 	// Attribute
 	CBotEDoc*	m_pDoc;				///< Zeiger auf das Dokument
-	CRace*		m_pRace;			///< Zeiger auf die Rasse, zu welcher das Diplomatie-KI Objekt gehört
+	boost::shared_ptr<CRace> m_pRace;	///< Zeiger auf die Rasse, zu welcher das Diplomatie-KI Objekt gehört
 };

@@ -58,7 +58,7 @@ void CMinor::Serialize(CArchive &ar)
 
 		// Diplomatieobjekt neu erstellen
 		// Minorrace - KI anlegen
-		m_pDiplomacyAI = boost::make_shared<CMinorAI>(this);
+		m_pDiplomacyAI = boost::make_shared<CMinorAI>(shared_from_this());
 	}
 }
 
@@ -637,7 +637,7 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 	m_byShipNumber = PLAYER_RACES::MINORNUMBER;
 
 	// Minorrace - KI anlegen
-	m_pDiplomacyAI = boost::make_shared<CMinorAI>(this);
+	m_pDiplomacyAI = boost::make_shared<CMinorAI>(shared_from_this());
 }
 
 /// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.

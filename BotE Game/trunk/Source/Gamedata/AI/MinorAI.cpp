@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CMinorAI::CMinorAI(CRace* pRace) : CDiplomacyAI(pRace)
+CMinorAI::CMinorAI(const boost::shared_ptr<CRace>& pRace) : CDiplomacyAI(pRace)
 {
 }
 
@@ -42,7 +42,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 
 	if (pFromRace->IsMajor())
 	{
-		CMinor* pMinor = dynamic_cast<CMinor*>(m_pRace);
+		const boost::shared_ptr<CMinor>& pMinor = boost::dynamic_pointer_cast<CMinor>(m_pRace);
 		AssertBotE(pMinor);
 
 		// wurde die Rasse erobert, so kann die Minorrace nicht auf das Angebot reagieren
@@ -217,7 +217,8 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 
 	if (pRace->IsMajor())
 	{
-		CMinor* pMinor = dynamic_cast<CMinor*>(m_pRace);
+		const boost::shared_ptr<const CMinor> pMinor = boost::dynamic_pointer_cast<CMinor>(m_pRace);
+		AssertBotE(pMinor);
 		if (!pMinor)
 			return false;
 
@@ -363,7 +364,8 @@ void CMinorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	if (nCredits <= 0)
 		return;
 
-	CMinor* pMinor = dynamic_cast<CMinor*>(m_pRace);
+	const boost::shared_ptr<CMinor>& pMinor = boost::dynamic_pointer_cast<CMinor>(m_pRace);
+	AssertBotE(pMinor);
 	if (!pMinor)
 		return;
 
@@ -532,7 +534,8 @@ void CMinorAI::CalcOtherMajorsRelationChange(const CDiplomacyInfo& info, short n
 /// @return <code>true</code> wenn Bestechung erfolgreich ist, sonst <code>false</code>
 bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 {
-	CMinor* pMinor = dynamic_cast<CMinor*>(m_pRace);
+	const boost::shared_ptr<CMinor>& pMinor = boost::dynamic_pointer_cast<CMinor>(m_pRace);
+	AssertBotE(pMinor);
 	if (!pMinor)
 		return false;
 
@@ -695,7 +698,8 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 /// @return Wert der übergebenen Ressourcen in Credits
 int CMinorAI::CalcResInCredits(const CDiplomacyInfo& info)
 {
-	CMinor* pMinor = dynamic_cast<CMinor*>(m_pRace);
+	const boost::shared_ptr<const CMinor> pMinor = boost::dynamic_pointer_cast<CMinor>(m_pRace);
+	AssertBotE(pMinor);
 	if (!pMinor)
 		return 0;
 

@@ -42,7 +42,7 @@ enum RaceSpecialAbilities
 };
 
 /// Basisklasse für alle Rassen.
-class CRace : public CInGameEntity
+class CRace : public CInGameEntity, public boost::enable_shared_from_this<CRace>
 {
 public:
 
@@ -126,7 +126,7 @@ public:
 	/// Funktion gibt Beziehungswert zu einer anderes Rasse zurück.
 	/// @param sOtherRace Beziehung zu der anderen Rasse
 	/// @return Beziehungswert (0-100)
-	BYTE GetRelation(const CString& sOtherRace)
+	BYTE GetRelation(const CString& sOtherRace) const
 	{
 		map<CString, BYTE>::const_iterator it = m_mRelations.find(sOtherRace);
 		if (it != m_mRelations.end())
@@ -235,9 +235,8 @@ public:
 	/// @param pOffer diplomatisches Angebot
 	void ReactOnOfferAI(CDiplomacyInfo* pOffer);
 
-protected:
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
-	void Reset(bool call_up);
+	virtual void Reset(bool call_up);
 public:
 
 	void Delete() { m_bDeleted = true; }
