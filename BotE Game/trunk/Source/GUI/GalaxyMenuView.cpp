@@ -308,7 +308,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	if (pStarmap->m_Selection.x > -1 && pStarmap->m_Selection.y > -1)
 	{
 		pDC->SelectObject(&selPen);
-		CPoint pos = pStarmap->GetSectorCoords(pStarmap->m_Selection);
+		const CPoint& pos = CStarmap::GetSectorCoords(pStarmap->m_Selection);
 		if (pStarmap->m_Selection.y == 0)
 		{
 			pDC->MoveTo(pos.x, pos.y);
@@ -487,7 +487,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		pDC->SelectObject(&pen);
 		for (set<pair<int, int> >::const_iterator it = setPathKOs.begin(); it != setPathKOs.end(); ++it)
 		{
-			CPoint pt = pMajor->GetStarmap()->GetSectorCoords(Sector(it->first, it->second));
+			const CPoint& pt = CStarmap::GetSectorCoords(Sector(it->first, it->second));
 			pDC->Ellipse(pt.x+STARMAP_SECTOR_WIDTH/2-4,pt.y+STARMAP_SECTOR_HEIGHT/2-4,pt.x+STARMAP_SECTOR_WIDTH/2+4,pt.y+STARMAP_SECTOR_HEIGHT/2+4);
 		}
 	}
@@ -504,12 +504,12 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 			pDC->SelectObject(&brush);
 			pDC->SelectObject(&pen);
 			AssertBotE(pDoc->CurrentShip()->second->GetPath()->GetAt(i).on_map());
-			CPoint pt = pMajor->GetStarmap()->GetSectorCoords(pDoc->CurrentShip()->second->GetPath()->GetAt(i));
+			const CPoint& pt = CStarmap::GetSectorCoords(pDoc->CurrentShip()->second->GetPath()->GetAt(i));
 			pDC->Ellipse(pt.x+STARMAP_SECTOR_WIDTH/2-4,pt.y+STARMAP_SECTOR_HEIGHT/2-4,pt.x+STARMAP_SECTOR_WIDTH/2+4,pt.y+STARMAP_SECTOR_HEIGHT/2+4);
 		}
 
 		// Anzahl der benötigten Runden in letztes Feld des Weges zeichnen
-		CPoint ptLast = pMajor->GetStarmap()->GetSectorCoords(pDoc->CurrentShip()->second->GetPath()->GetAt(pDoc->CurrentShip()->second->GetPath()->GetUpperBound()));
+		const CPoint& ptLast = CStarmap::GetSectorCoords(pDoc->CurrentShip()->second->GetPath()->GetAt(pDoc->CurrentShip()->second->GetPath()->GetUpperBound()));
 		CString s;
 		s.Format("%.0f",ceil((float)pDoc->CurrentShip()->second->GetPath()->GetSize() / (float)pDoc->CurrentShip()->second->GetSpeed(pDoc->CurrentShip()->second->HasFleet())));
 		pDC->SetTextColor(RGB(255,255,255));
@@ -1034,7 +1034,7 @@ BOOL CGalaxyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 		OnUpdate(this, 0, NULL);
 
 		// (neue) gezoomte Koordinaten des Sektors (Mittelpunkt) ermitteln
-		CPoint pt = pMajor->GetStarmap()->GetSectorCoords(sector);
+		CPoint pt = CStarmap::GetSectorCoords(sector);
 		pt += CPoint(STARMAP_SECTOR_WIDTH >> 1, STARMAP_SECTOR_HEIGHT >> 1);
 		Zoom(&pt);
 
@@ -1550,7 +1550,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
-			CPoint pt = pMajor->GetStarmap()->GetSectorCoords(struct::Sector(x, y));
+			const CPoint& pt = CStarmap::GetSectorCoords(struct::Sector(x, y));
 			if (!pDoc->GetSystem(x,y).Free() && !pDoc->GetSystem(x,y).IndependentMinor() && pDoc->GetSystem(x,y).GetScanned(pMajor->GetRaceID())
 				&& pMajor->IsRaceContacted(pDoc->GetSystem(x,y).OwnerID()) || pDoc->GetSystem(x,y).OwnerID() == pMajor->GetRaceID())
 			{
