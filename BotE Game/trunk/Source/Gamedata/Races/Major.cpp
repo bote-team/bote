@@ -84,7 +84,8 @@ void CMajor::Serialize(CArchive &ar)
 		m_pDiplomacyAI = boost::make_shared<CMajorAI>(shared_from_this());
 
 		// Starmap löschen (wird neu generiert)
-		m_pStarmap->ClearAll();
+		if(m_pStarmap)
+			m_pStarmap->ClearAll();
 		m_pStarmap.reset();
 	}
 
