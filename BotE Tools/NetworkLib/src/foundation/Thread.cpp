@@ -47,7 +47,7 @@ UINT CThread::ThreadProc(LPVOID pObject)
 
 	// initialisieren, ausführen, aufräumen
 	if (pThread->InitInstance())
-		pThread->Run();	
+		pThread->Run();
 	UINT nResult = pThread->ExitInstance();
 
 	// den tatsächlich gelieferten Exit-Code setzen

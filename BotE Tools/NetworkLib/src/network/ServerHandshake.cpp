@@ -84,7 +84,7 @@ namespace network
 		nDone = socket.Send(HANDSHAKE_SERVERID, strlen(HANDSHAKE_SERVERID));
 		if (nDone == SOCKET_ERROR) goto sockerror;
 		else if (nDone < strlen(HANDSHAKE_SERVERID)) goto error;
-		
+
 		lpBuf = new BYTE[nCount = 1 + sizeof(UINT) + 1];
 		lpBuf[0] = lpBuf[nCount - 1] = 0;
 		memcpy(&lpBuf[1], &m_nServerVersion, sizeof(UINT));
@@ -118,7 +118,7 @@ namespace network
 			SetExitCode(1);
 			return;
 		}
-		
+
 		delete[] lpBuf;
 
 		// Länge des Benutzernamens ermitteln

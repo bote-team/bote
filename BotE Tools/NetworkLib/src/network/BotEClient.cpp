@@ -20,7 +20,7 @@ namespace network
 	CBotEClient::CBotEClient() : m_nState(CLT_STATE_DISCONNECTED), m_pConnection(NULL),
 		m_nClientRace(RACE_NONE), m_strClientUserName("")
 	{
-		memset(m_pPlayers, 0, RACE_COUNT * sizeof(*m_pPlayers));		
+		memset(m_pPlayers, 0, RACE_COUNT * sizeof(*m_pPlayers));
 	}
 
 	CBotEClient::~CBotEClient()
@@ -81,7 +81,7 @@ namespace network
 			else {TRACE("client: connection interrupted\n");}
 			return FALSE;
 		}
-		
+
 		// Listeners informieren, Erfolg zurückgeben
 	//	TO_ALL_LISTENERS(OnClientConnected());
 		return TRUE;
@@ -421,7 +421,7 @@ namespace network
 	void CBotEClient::Chat(CString message)
 	{
 		if (m_nState == CLT_STATE_DISCONNECTED) return;
-		
+
 		TRACE("client: Chat() broadcast\n");
 		CChatMsg msg(message);
 		msg.AddReceiver(RACE_ALL);
@@ -431,7 +431,7 @@ namespace network
 	void CBotEClient::Chat(CString message, BOOL bIsReceiver[RACE_COUNT])
 	{
 		if (m_nState == CLT_STATE_DISCONNECTED) return;
-		
+
 		TRACE("client: Chat()\n");
 
 		// Empfänger setzen

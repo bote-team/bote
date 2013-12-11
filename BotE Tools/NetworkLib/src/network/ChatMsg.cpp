@@ -82,7 +82,7 @@ namespace network
 			BYTE nSender;
 			ar >> nSender;
 			SetSender((RACE)nSender);
-			
+
 			BYTE nCount;
 			ar >> nCount;
 			m_lReceivers.RemoveAll();

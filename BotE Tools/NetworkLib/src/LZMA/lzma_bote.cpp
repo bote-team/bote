@@ -169,7 +169,7 @@ BOOL BotE_LzmaCompress(const BYTE *inBuffer, size_t inSize, CFile &out,
 	UINT dictionarySize, ESZ_FILTER_MODE filterMode)
 {
 #ifndef _NO_EXCEPTIONS
-	try { 
+	try {
 #endif
 		const size_t kIdSize = 1;
 		const size_t kLzmaPropsSize = 5;
@@ -177,10 +177,10 @@ BOOL BotE_LzmaCompress(const BYTE *inBuffer, size_t inSize, CFile &out,
 		NCompress::NLZMA::CEncoder *encoderSpec = new NCompress::NLZMA::CEncoder;
 		CMyComPtr<ICompressCoder> encoder = encoderSpec;
 
-		PROPID propIDs[] = 
-		{ 
+		PROPID propIDs[] =
+		{
 			NCoderPropID::kAlgorithm,
-			NCoderPropID::kDictionarySize,  
+			NCoderPropID::kDictionarySize,
 			NCoderPropID::kNumFastBytes,
 		};
 		const int kNumProps = sizeof(propIDs) / sizeof(propIDs[0]);
@@ -261,7 +261,7 @@ BOOL BotE_LzmaCompress(const BYTE *inBuffer, size_t inSize, CFile &out,
 			{
 				mainResult = FALSE;
 				break;
-			} 
+			}
 			if (i == 0 || outStreamSpec->Pos <= minSize)
 			{
 				minSize = outStreamSpec->Pos;
@@ -273,7 +273,7 @@ BOOL BotE_LzmaCompress(const BYTE *inBuffer, size_t inSize, CFile &out,
 			{
 				mainResult = FALSE;
 				break;
-			} 
+			}
 		}
 		if (bestIsFiltered)
 		{

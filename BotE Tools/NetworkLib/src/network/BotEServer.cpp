@@ -288,7 +288,7 @@ namespace network
 	{
 		CSingleLock singleLock(&m_HandlerCriticalSection);
 		singleLock.Lock();
-		
+
 		// Listeners benachrichtigen
 		OnSocketError(nWSAError);
 
@@ -707,14 +707,14 @@ namespace network
 		if (m_nState != SRV_STATE_STOPPED && m_nState != SRV_STATE_COLLECTING)
 			return FALSE;
 		int idx = nRace - RACE_FIRST;
-		
+
 		// erfolgreich abbrechen, wenn gewünschter Zustand bereits existiert
 		if (m_pbPlayByServer[idx] == bPlayByServer) return TRUE;
 
 		// Volk schon vergeben?, vor Start() sind alle Einträge von m_pChosenRaces immer NULL
 		if (bPlayByServer && m_pChosenRaces[idx])
 			return FALSE;
-		
+
 		// Volk dem Server zuteilen bzw. freigeben
 		m_pbPlayByServer[idx] = bPlayByServer;
 
@@ -809,7 +809,7 @@ namespace network
 				{
 					// Referenz auf Nachricht merken
 					CReferenceTransfer<CMessage> result(request.refResponse);
-					
+
 					// Eintrag aus Liste entfernen
 					singleLock.Lock();
 					m_lRequests.RemoveAt(pos);

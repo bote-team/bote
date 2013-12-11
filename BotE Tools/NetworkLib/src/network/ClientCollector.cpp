@@ -41,7 +41,7 @@ namespace network
 		}
 
 		srvSocket.Detach();
-		
+
 		TRACE("server: client collector stopped\n");
 	}
 

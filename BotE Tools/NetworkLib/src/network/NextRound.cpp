@@ -15,7 +15,7 @@ namespace network
 	{
 		ASSERT(pDoc);
 		memset(m_pPlayers, 0, RACE_COUNT * sizeof(*m_pPlayers));
-		
+
 		// Dokument serialisieren
 		// TODO später zielspezifisch machen, senden erstmal allen Clients die kompletten Daten
 		CMemFile memFile;
