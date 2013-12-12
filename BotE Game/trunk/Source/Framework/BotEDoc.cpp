@@ -744,6 +744,10 @@ void CBotEDoc::DoViewWorkOnNewRound()
 
 	m_pClientWorker->DoViewWorkOnNewRound(*pPlayersRace);
 
+#ifdef CONSISTENCY_CHECKS
+	CSanity::GetInstance()->SanityCheckRacePtrUseCounts(*this);
+#endif
+
 	// wurde Rundenende geklickt zurücksetzen
 	m_bRoundEndPressed = false;
 	m_bDataReceived = true;
@@ -1164,9 +1168,6 @@ static bool HumanPlayerInCombat(const CShipMap& ships, const CPoint& CurrentComb
 ////////////////////////////////////////////////
 void CBotEDoc::NextRound()
 {
-#ifdef CONSISTENCY_CHECKS
-	CSanity::GetInstance()->SanityCheckRacePtrUseCounts(*this);
-#endif
 	// gibt es für diese Runde Sektoren in welchen ein Kampf stattfand
 	bool bCombatInCurrentRound = !m_sCombatSectors.empty();
 
