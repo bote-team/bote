@@ -133,7 +133,7 @@ void CGalaxyMenuView::OnNewRound()
 
 	if (m_bScrollToHome)
 	{
-		const CPoint& pRaceKO = m_pPlayersRace->GetRaceKO();
+		const CPoint& pRaceKO = m_pPlayersRace->GetCo();
 		pDoc->SetKO(pRaceKO.x, pRaceKO.y);	// damit in der BottomView auch das System angezeigt wird
 		ScrollToSector(pRaceKO);
 		m_bScrollToHome = false;
@@ -238,7 +238,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		g.SetCompositingMode( CompositingModeSourceOver );
 		REAL yThumbPos = (REAL)((pt.y + client.bottom - m_pThumbnail->GetHeight() - 15));
 		// wenn das System in der unteren rechten Hälfte ist, dann wird das Thumbnail oben rechts gezeichnet
-		const CPoint& pRaceKO = pMajor->GetRaceKO();
+		const CPoint& pRaceKO = pMajor->GetCo();
 		if (pRaceKO.x > STARMAP_SECTORS_HCOUNT * 0.75 && pRaceKO.y > STARMAP_SECTORS_VCOUNT * 0.75)
 			yThumbPos = (REAL)((pt.y + 15));
 		// Position des Thumbnails festlegen

@@ -123,9 +123,9 @@ void CDiplomacyMenuView::OnNewRound()
 
 	const CString& race = pPlayer->GetRaceID();
 
-	const CPoint& ko = pPlayer->GetRaceKO();
+	const CPoint& ko = pPlayer->GetCo();
 	if (ko != CPoint(-1,-1) && pDoc->GetSystem(ko.x, ko.y).OwnerID() == race)
-		m_ptResourceFromSystem = pPlayer->GetRaceKO();
+		m_ptResourceFromSystem = pPlayer->GetCo();
 	// Systeme nochmal durchgehen um ein System zu finden, aus dem wir Rohstoffe verschenken könnten
 	else if (pPlayer->GetEmpire()->GetSystemList()->GetSize() > 0)
 		m_ptResourceFromSystem = pPlayer->GetEmpire()->GetSystemList()->GetAt(0).ko;
@@ -1363,7 +1363,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					CMinor* pMinor = dynamic_cast<CMinor*>(pRace);
 					if (!pMinor)
 						return;
-					CPoint ko = pMinor->GetRaceKO();
+					CPoint ko = pMinor->GetCo();
 					if (ko == CPoint(-1,-1))
 						return;
 

@@ -90,9 +90,11 @@ void CIntelInfo::CalcIntelInfo(CBotEDoc* pDoc, CMajor* pOurRace)
 					if (races[ko.x][ko.y][intelObj->GetEnemy()] < 2)
 					{
 						// überprüfen, ob die Minorrace noch vorhanden ist
-						CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSystem(ko.x, ko.y).GetName());
-						if (pMinor != NULL)
+						const boost::shared_ptr<const CRace>& pMinor = pDoc->GetSystem(ko.x, ko.y).HomeOf();
+
+						if (pMinor)
 						{
+							AssertBotE(pMinor->IsMinor());
 							if (dynamic_cast<CDiplomacyIntelObj*>(intelObj)->GetAgreement() == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 								races[ko.x][ko.y][intelObj->GetEnemy()] = 2;
 							else
@@ -115,7 +117,7 @@ void CIntelInfo::CalcIntelInfo(CBotEDoc* pDoc, CMajor* pOurRace)
 		// ob eine andere Rasse diese Minorrace ebenfalls kennt.
 		// Wenn wir den Heimatsektor der Minorrace kennen und die von einer uns bekannten Majorrace vermitgliedert wurde,
 		// so wissen wir auch etwas von der Mitgliedschaft.
-		CPoint ko = pMinor->GetRaceKO();
+		CPoint ko = pMinor->GetCo();
 		if (ko != CPoint(-1,-1) && pMinor->GetAgreement(pOurRace->GetRaceID()) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 		{
 			for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)

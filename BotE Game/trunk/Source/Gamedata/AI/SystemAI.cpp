@@ -1112,11 +1112,11 @@ void CSystemAI::ApplyTradeRoutes()
 		{
 			CMinor* pMinor = it->second;
 			// nicht zu Aliens bzw. Minors ohne Heimatsystem
-			if (pMinor->IsAlien() || pMinor->GetRaceKO() == CPoint(-1, -1))
+			if (pMinor->IsAlien() || pMinor->GetCo() == CPoint(-1, -1))
 				continue;
 
 			if (pMinor->GetAgreement(race) >= DIPLOMATIC_AGREEMENT::TRADE && pMinor->GetAgreement(race) < DIPLOMATIC_AGREEMENT::MEMBERSHIP)
-				if (m_pDoc->GetSystem(ko.x, ko.y).AddTradeRoute(pMinor->GetRaceKO(), m_pDoc->m_Systems, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()) == FALSE)
+				if (m_pDoc->GetSystem(ko.x, ko.y).AddTradeRoute(pMinor->GetCo(), m_pDoc->m_Systems, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()) == FALSE)
 					break;
 		}
 	}

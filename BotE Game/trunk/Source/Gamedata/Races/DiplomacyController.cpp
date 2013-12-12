@@ -142,7 +142,7 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 		// Mitgliedschaft mit dieser Rasse hat. Verträge werden gekündigt, wenn die Minorrace unterworfen wurde
 		pMinor->CheckDiplomaticConsistence(pDoc);
 		pMinor->PerhapsCancelAgreement(pDoc);
-		if (pMinor->GetRaceKO() == CPoint(-1,-1))
+		if (pMinor->GetCo() == CPoint(-1,-1))
 			continue;
 
 		for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)
@@ -152,21 +152,21 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 
 			// Wenn wir mit der Minorrace mindst. einen Handelsvertrag abgeschlossen haben, dann wird deren Sector gescannt/gesehen
 			if (pMinor->GetAgreement(pMajor->GetRaceID()) >= DIPLOMATIC_AGREEMENT::TRADE)
-				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetScanned(pMajor->GetRaceID());
+				pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).SetScanned(pMajor->GetRaceID());
 			// Wenn wir mit der Minorrace mindst. einen Freundschaftsvertrag abgeschlossen haben, dann wird deren Sector bekannt
 			if (pMinor->GetAgreement(pMajor->GetRaceID()) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
-				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetKnown(pMajor->GetRaceID());
+				pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).SetKnown(pMajor->GetRaceID());
 			// Wenn wir eine Mitgliedschaft mit der kleinen Rasse haben und das System noch der kleinen Rasse gehört, dann bekommen wir das
-			if (pMinor->IsMemberTo(pMajor->GetRaceID()) && !pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).Majorized())
+			if (pMinor->IsMemberTo(pMajor->GetRaceID()) && !pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).Majorized())
 			{
-				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetFullKnown(pMajor->GetRaceID());
-				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).ChangeOwner(pMajor->GetRaceID(),
+				pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).SetFullKnown(pMajor->GetRaceID());
+				pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).ChangeOwner(pMajor->GetRaceID(),
 					CSystem::OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME);
 				pMinor->SetOwner(pMajor);
 				// Nun Gebäude in neuen System bauen
-				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).BuildBuildingsForMinorRace(&pDoc->BuildingInfo, pDoc->GetStatistics()->GetAverageTechLevel(), pMinor);
+				pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).BuildBuildingsForMinorRace(&pDoc->BuildingInfo, pDoc->GetStatistics()->GetAverageTechLevel(), pMinor);
 				// Gebäude so weit wie möglich mit Arbeitern besetzen
-				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetWorkersIntoBuildings();
+				pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).SetWorkersIntoBuildings();
 				// alle Schiffe der Minor gehen nun an den Major
 				for (CShipMap::iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end(); ++i)
 				{
@@ -178,7 +178,7 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 
 						i->second->SetOwner(pMajor->GetRaceID());
 						// Schiff in die Shiphistory stecken
-						pMajor->GetShipHistory()->AddShip(i->second, pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetLongName(), pDoc->GetCurrentRound());
+						pMajor->GetShipHistory()->AddShip(i->second, pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).GetLongName(), pDoc->GetCurrentRound());
 					}
 				}
 			}
@@ -190,19 +190,19 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 	{
 		CMinor* pMinor = it->second;
-		if (pMinor->GetRaceKO() == CPoint(-1,-1))
+		if (pMinor->GetCo() == CPoint(-1,-1))
 			continue;
 
-		const CString& sOwner = pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).OwnerID();
+		const CString& sOwner = pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).OwnerID();
 		if (!sOwner.IsEmpty())
 		{
 			// Wenn wir eine Mitgliedschaft bei der kleinen Rasse hatten, sprich uns das System noch gehört, wir aber
 			// der kleinen Rasse den Krieg erklären bzw. den Vertrag aufheben (warum auch immer?!?) und das System nicht
 			// gewaltätig erobert wurde, dann gehört uns das System auch nicht mehr
-			if (pMinor->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP && pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetMinorRace() == TRUE &&
-				!pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).Taken())
+			if (pMinor->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP && pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).GetMinorRace() == TRUE &&
+				!pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).Taken())
 			{
-				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).ChangeOwner(pMinor->GetRaceID(),
+				pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).ChangeOwner(pMinor->GetRaceID(),
 					CSystem::OWNING_STATUS_INDEPENDENT_MINOR);
 				boost::shared_ptr<CMajor> empty;
 				pMinor->SetOwner(empty);
@@ -294,7 +294,7 @@ void CDiplomacyController::SendToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDiplom
 				// Deritium kommt nicht ins globale Lager sondern ins Heimatsystem
 				if (pInfo->m_nResources[RESOURCES::DERITIUM] > 0)
 				{
-					const CPoint& p = pToMajor->GetRaceKO();
+					const CPoint& p = pToMajor->GetCo();
 					// gehört das System auch noch dem Major
 					if (p != CPoint(-1,-1) && pDoc->GetSystem(p.x, p.y).OwnerID() == pToMajor->GetRaceID())
 						pDoc->GetSystem(p.x, p.y).SetDeritiumStore(pInfo->m_nResources[RESOURCES::DERITIUM]);
@@ -534,7 +534,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						// Deritium kommt nicht ins globale Lager sondern ins Heimatsystem
 						if (pInfo->m_nResources[RESOURCES::DERITIUM] > 0)
 						{
-							const CPoint& p = pToMajor->GetRaceKO();
+							const CPoint& p = pToMajor->GetCo();
 							// gehört das System auch noch dem Major
 							if (p != CPoint(-1,-1) && pDoc->GetSystem(p.x, p.y).OwnerID() == pToMajor->GetRaceID())
 								pDoc->GetSystem(p.x, p.y).SetDeritiumStore(pInfo->m_nResources[RESOURCES::DERITIUM]);
@@ -621,7 +621,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						// Deritium kommt nicht ins globale Lager sondern ins Heimatsystem
 						if (pInfo->m_nResources[RESOURCES::DERITIUM] > 0)
 						{
-							const CPoint& p = pFromRace->GetRaceKO();
+							const CPoint& p = pFromRace->GetCo();
 							// gehört das System auch noch dem Major
 							if (p != CPoint(-1,-1) && pDoc->GetSystem(p.x, p.y).OwnerID() == pFromRace->GetRaceID())
 								pDoc->GetSystem(p.x, p.y).SetDeritiumStore(pInfo->m_nResources[RESOURCES::DERITIUM]);
@@ -692,7 +692,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						// Deritium kommt nicht ins globale Lager sondern ins Heimatsystem
 						if (pInfo->m_nResources[RESOURCES::DERITIUM] > 0)
 						{
-							const CPoint& p = pToMajor->GetRaceKO();
+							const CPoint& p = pToMajor->GetCo();
 							// gehört das System auch noch dem Major
 							if (p != CPoint(-1,-1) && pDoc->GetSystem(p.x, p.y).OwnerID() == pToMajor->GetRaceID())
 								pDoc->GetSystem(p.x, p.y).SetDeritiumStore(pInfo->m_nResources[RESOURCES::DERITIUM]);
@@ -1097,7 +1097,7 @@ void CDiplomacyController::ReceiveToMinor(CBotEDoc* pDoc, CMinor* pToMinor, CDip
 				}
 
 				// übergebene Ressourcen ins System der Minor einlagern
-				CPoint pt = pToMinor->GetRaceKO();
+				CPoint pt = pToMinor->GetCo();
 				if (pt != CPoint(-1,-1))
 				{
 					for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)

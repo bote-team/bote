@@ -135,9 +135,10 @@ void CSanity::SanityCheckRacePtrUseCounts(const CBotEDoc& doc)
 
 		std::map<CString, int>::iterator count = use_counts.find(it->first);
 		if(count == use_counts.end())
-			use_counts[it->first] = 2;
+			use_counts[it->first] = 3;//the race itself in race controller, in diplo ai object in CRace
+			//and HomeOf member in home system
 		else
-			count->second = count->second + 2;
+			count->second = count->second + 3;
 		if(it->second->IsMinor())
 		{
 			const boost::shared_ptr<CRace>& owner = it->second->Owner();

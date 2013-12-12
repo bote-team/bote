@@ -58,7 +58,6 @@ public:
 
 	CPoint GetCo() const
 	{
-		AssertBotE(PT_IN_RECT(m_Co, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT));
 		return m_Co;
 	}
 

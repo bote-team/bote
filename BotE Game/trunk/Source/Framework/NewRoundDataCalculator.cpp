@@ -226,7 +226,7 @@ namespace {
 			const CMinor* pMinor = dynamic_cast<const CMinor*>(&right);
 			AssertBotE(pMinor);
 			GiveDiploGoodies(sector, agreement, left_id, right_id,
-				sector.GetCo() == pMinor->GetRaceKO() && pMinor->GetSpaceflightNation());
+				sector.GetCo() == pMinor->GetCo() && pMinor->GetSpaceflightNation());
 		}
 		else {
 			GiveDiploGoodies(sector, agreement, left_id, right_id);

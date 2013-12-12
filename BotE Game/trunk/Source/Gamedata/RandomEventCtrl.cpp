@@ -62,7 +62,7 @@ void CRandomEventCtrl::CalcEvents(CMajor* pRace)
 		int whichsystem = rand() % size;//wählt System aus
 		const CPoint ko = systems->GetAt(whichsystem).ko; //sucht koordinaten des Systems
 		//Major home systems are generally unaffected. Unbalances too much.
-		if(pRace->GetRaceKO() == ko)
+		if(pRace->GetCo() == ko)
 			return;
 		for(int i=0; i<100; i++)
 			if(SystemEvent(ko, pRace))

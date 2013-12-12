@@ -990,6 +990,7 @@ void CBotEDoc::GenerateGalaxy()
 		const CPoint& raceKO = RaceKO[it->first];
 		CSystem& system = GetSystem(raceKO.x, raceKO.y);
 
+		system.SetHomeOf(it->first);
 		system.SetName(pMajor->GetHomesystemName());
 		it->second->SetRaceKO(raceKO);
 		system.SetSunSystem(TRUE);
@@ -1110,7 +1111,7 @@ void CBotEDoc::GenerateGalaxy()
 			if (GetSystem(x, y).GetMinorRace())
 			{
 				// Nun die Minorrace parametrisieren
-				CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSystem(x, y).GetName());
+				const boost::shared_ptr<CMinor>& pMinor = boost::dynamic_pointer_cast<CMinor>(GetSystem(x, y).HomeOf());
 				if (!pMinor)
 				{
 					AfxMessageBox("Error in function CBotEDoc::GenerateGalaxy(): Could not create Minorrace");
@@ -1275,7 +1276,7 @@ void CBotEDoc::NextRound()
 		if (bMember)
 			continue;
 
-		CPoint ko = pMinor->GetRaceKO();
+		CPoint ko = pMinor->GetCo();
 
 		if (ko != CPoint(-1,-1) && !GetSystem(ko.x, ko.y).Majorized() && GetSystem(ko.x, ko.y).OwnerID() == pMinor->GetRaceID())
 		{
@@ -1431,7 +1432,7 @@ void CBotEDoc::ApplyShipsAtStartup()
 				if (pShipInfo->GetOnlyInSystem() != pEhlen->GetHomesystemName())
 					continue;
 
-				BuildShip(m_ShipInfoArray.GetAt(i).GetID(), pEhlen->GetRaceKO(), pEhlen->GetRaceID());
+				BuildShip(m_ShipInfoArray.GetAt(i).GetID(), pEhlen->GetCo(), pEhlen->GetRaceID());
 				break;
 			}
 		}
@@ -2551,7 +2552,8 @@ void CBotEDoc::CalcSystemAttack()
 					// Die Beziehung zur Majorrace, die das System vorher besaß verschlechtert sich
 					defender->SetRelation(attacker, -rand()%50);
 					// Die Beziehung zu der Minorrace verbessert sich auf Seiten des Retters
-					CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSystem(p.x, p.y).GetName());
+					const boost::shared_ptr<CMinor>& pMinor =
+						boost::dynamic_pointer_cast<CMinor>(GetSystem(p.x, p.y).HomeOf());
 					AssertBotE(pMinor);
 					pMinor->SetRelation(attacker, rand()%50);
 					pMinor->SetSubjugated(false);
@@ -2663,7 +2665,8 @@ void CBotEDoc::CalcSystemAttack()
 						// Hat eine andere Majorrace die Minorrace vermitgliedelt, so unterwerfen wir auch diese Minorrace
 						if (GetSystem(p.x, p.y).GetMinorRace())
 						{
-							CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSystem(p.x, p.y).GetName());
+							const boost::shared_ptr<CMinor>& pMinor =
+								boost::dynamic_pointer_cast<CMinor>(GetSystem(p.x, p.y).HomeOf());
 							AssertBotE(pMinor);
 							pMinor->SetSubjugated(true);
 							// Beziehung zu dieser Minorrace verschlechtert sich auf 0 Punkte
@@ -2813,33 +2816,27 @@ void CBotEDoc::CalcSystemAttack()
 					// aus dem Spiel verschwunden. Alle Einträge in der Diplomatie müssen daher gelöscht werden
 					if (GetSystem(p.x, p.y).GetMinorRace())
 					{
-						if (CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSystem(p.x, p.y).GetName()))
+						const boost::shared_ptr<CMinor>& pMinor =
+							boost::dynamic_pointer_cast<CMinor>(GetSystem(p.x, p.y).HomeOf());
+						// Alle Effekte, Events usw. wegen der Auslöschung der Minorrace verarbeiten
+						CalcEffectsMinorEleminated(pMinor);
+
+						// Eventnachricht: #21	Eliminate a Minor Race Entirely
+						for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 						{
-							// Alle Effekte, Events usw. wegen der Auslöschung der Minorrace verarbeiten
-							CalcEffectsMinorEleminated(pMinor);
+							CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
+							if (!pMajor)
+								continue;
 
-							// Eventnachricht: #21	Eliminate a Minor Race Entirely
-							for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
-							{
-								CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
-								if (!pMajor)
-									continue;
-
-								CString param = pMinor->GetName();
-								CString eventText = pMajor->GetMoralObserver()->AddEvent(21, pMajor->GetRaceMoralNumber(), param);
-								CEmpireNews message;
-								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
-								pMajor->GetEmpire()->AddMsg(message);
-							}
-
-							// Rasse zum Löschen vormerken
-							sKilledMinors.insert(pMinor->GetRaceID());
+							CString param = pMinor->GetName();
+							CString eventText = pMajor->GetMoralObserver()->AddEvent(21, pMajor->GetRaceMoralNumber(), param);
+							CEmpireNews message;
+							message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
+							pMajor->GetEmpire()->AddMsg(message);
 						}
-						else
-						{
-							AssertBotE(FALSE);
-							GetSystem(p.x, p.y).SetMinorRace(false);
-						}
+
+						// Rasse zum Löschen vormerken
+						sKilledMinors.insert(pMinor->GetRaceID());
 					}
 					// Bei einer Majorrace verringert sich nur die Anzahl der Systeme (auch konnte dies das
 					// Minorracesystem von oben gewesen sein, hier verliert es aber die betroffene Majorrace)
@@ -4474,7 +4471,7 @@ void CBotEDoc::CalcContactMinor(CMajor& Major, const CSector& sector, const CPoi
 	if(!sector.GetMinorRace())
 		return;
 	// in dem Sektor lebt eine Minorrace
-	CMinor* pMinor = m_pRaceCtrl->GetMinorRace(sector.GetName());
+	const boost::shared_ptr<CMinor>& pMinor = boost::dynamic_pointer_cast<CMinor>(sector.HomeOf());
 	AssertBotE(pMinor);
 	// kann der Sektorbesitzer andere Rassen kennenlernen?
 	if (pMinor->CanBeContactedBy(Major.GetRaceID()))
@@ -4526,16 +4523,13 @@ void CBotEDoc::CalcContactNewRaces()
 
 /// Funktion berechnet die Auswirkungen wenn eine Minorrace eleminiert wurde und somit aus dem Spiel ausscheidet.
 /// @param pMinor Minorrace welche aus dem Spiel ausscheidet
-void CBotEDoc::CalcEffectsMinorEleminated(CMinor* pMinor)
+void CBotEDoc::CalcEffectsMinorEleminated(const boost::shared_ptr<CMinor>& pMinor)
 {
 	if (!pMinor)
 	{
 		AssertBotE(pMinor);
 		return;
 	}
-
-	if (!pMinor->IsAlien())
-		GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetMinorRace(false);
 
 	// Diplomatie/Nachrichten entfernen
 	pMinor->GetIncomingDiplomacyNews()->clear();
@@ -4572,7 +4566,7 @@ void CBotEDoc::CalcEffectsMinorEleminated(CMinor* pMinor)
 			if (pMinor->IsAlien())
 				message.CreateNews(news, EMPIRE_NEWS_TYPE::SOMETHING);
 			else
-				message.CreateNews(news, EMPIRE_NEWS_TYPE::SOMETHING, GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(), pMinor->GetRaceKO());
+				message.CreateNews(news, EMPIRE_NEWS_TYPE::SOMETHING, GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).GetName(), pMinor->GetCo());
 
 			pMajor->GetEmpire()->AddMsg(message);
 			if (pMajor->IsHumanPlayer())
@@ -5423,7 +5417,9 @@ void CBotEDoc::CalcAlienShipEffects()
 	// über deren Vernichtung erstellen
 	if (!bBattleStationIngame)
 	{
-		if (CMinor* pBattleStation = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(StrToCStr(KAMPFSTATION))))
+		const boost::shared_ptr<CMinor>& pBattleStation =
+			boost::dynamic_pointer_cast<CMinor>(m_pRaceCtrl->GetRaceSafe(StrToCStr(KAMPFSTATION)));
+		if (pBattleStation)
 		{
 			CalcEffectsMinorEleminated(pBattleStation);
 			m_pRaceCtrl->RemoveRace(pBattleStation->GetRaceID());

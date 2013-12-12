@@ -242,15 +242,6 @@ public:
 	void Delete() { m_bDeleted = true; }
 	bool Deleted() const { return m_bDeleted; }
 
-	/// Funktion gibt die Koordinate des Heimatsystems der Race zurück.
-	/// @return Koordinate des Heimatsystems
-	const CPoint GetRaceKO(void) const
-	{
-		if(IsAlien())
-			return m_Co;
-		return CInGameEntity::GetCo();
-	}
-
 	// zum Schreiben der Membervariablen
 	/// Funktion schreibt die Koordinate des Heimatsystems der Minorrace.
 	/// @param Koordinate des Heimatsystems

@@ -12,7 +12,7 @@
 #pragma once
 #include "MapTile.h"
 #include "Planet.h"
-
+#include "Races/Race.h"
 
 #include "BotE.h"
 
@@ -21,7 +21,6 @@ using namespace std;
 // forward declaration
 class CMajor;
 class CAnomaly;
-class CRace;
 class CShips;
 class CShip;
 
@@ -89,7 +88,10 @@ public:
 	BYTE GetSunColor() const {return m_bySunColor;}
 
 	/// Diese Funktion gibt zurück, ob sich in diesem Sektor eine Minorrace befindet.
-	bool GetMinorRace(void) const {return m_bMinor;}
+	bool GetMinorRace(void) const {return m_HomeOf && m_HomeOf->IsMinor();}
+
+	boost::shared_ptr<CRace> HomeOf() const { return m_HomeOf; }
+	CString HomeOfID() const;
 
 	/// Diese Funktion gibt die Anzahl der Planeten zurück, die in dem Sektor beheimatet sind.
 	BYTE GetNumberOfPlanets(void) const {return m_Planets.size();}
@@ -113,7 +115,7 @@ public:
 	void SetColonyOwner(const CString& sOwner) {m_sColonyOwner = sOwner;}
 
 	/// Funktion legt fest, ob sich eine Minorrace in diesem Sektor befindet.
-	void SetMinorRace(bool is) { m_bMinor = is; }
+	void SetHomeOf(const CString& race_id);
 
 //////////////////////////////////////////////////////////////////////
 // planets
@@ -182,6 +184,6 @@ private:
 	BYTE m_bySunColor;
 
 protected:
-	bool m_bMinor;// Gibt es eine kleine Rasse in dem Sector
+	boost::shared_ptr<CRace> m_HomeOf;// home system of this race
 
 };

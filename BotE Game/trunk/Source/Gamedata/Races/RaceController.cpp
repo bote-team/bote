@@ -5,6 +5,7 @@
 #include "Alien.h"
 #include "AI\MinorAI.h"
 #include "IOData.h"
+#include "BoteDoc.h"
 
 IMPLEMENT_SERIAL (CRaceController, CObject, 1)
 
@@ -113,14 +114,16 @@ CRace* CRaceController::GetRace(const CString& sID)
 const boost::shared_ptr<const CRace> CRaceController::GetRaceSafe(const CString& sID) const
 {
 	const const_iterator it = m_mRaces.find(sID);
-	AssertBotE(it != end());
+	if(it == end())
+		return boost::shared_ptr<const CRace>();
 	return it->second;
 }
 
 boost::shared_ptr<CRace> CRaceController::GetRaceSafe(const CString& sID)
 {
 	iterator it = m_mRaces.find(sID);
-	AssertBotE(it != end());
+	if(it == end())
+		return boost::shared_ptr<CRace>();
 	return it->second;
 }
 
@@ -137,13 +140,14 @@ boost::shared_ptr<CMajor> CRaceController::GetMajorSafe(const CString& sID)
 /// Funktion liefert die Minorrace, welche in einem bestimmten Sektor beheimatet ist.
 /// @param sMinorsHome Heimatsystem
 /// @return Zeiger auf Minorrace (<code>NULL</code> wenn die Rasse nicht gefunden werden konnte)
-CMinor* CRaceController::GetMinorRace(const CString& sMinorsHome) const
+boost::shared_ptr<CMinor> CRaceController::GetMinorRace(const CString& sMinorsHome) const
 {
 	for (const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 		if (it->second->IsMinor() && it->second->GetHomesystemName() == sMinorsHome)
-			return dynamic_cast<CMinor*>(it->second.get());
+			return boost::dynamic_pointer_cast<CMinor>(it->second);
 
-	return NULL;
+	AssertBotE(false);
+	return boost::shared_ptr<CMinor>();
 }
 
 /// Funktion entfernt eine nicht mehr zu benutzende Rasse.
@@ -159,6 +163,9 @@ CRaceController::const_iterator CRaceController::RemoveRaceInternal(const const_
 	AssertBotE(it != m_mRaces.end() && !it->second->Deleted());
 	it->second->IsMajor() ? m_mMajors.erase(it->second->GetRaceID()) : m_mMinors.erase(it->second->GetRaceID());
 	it->second->Delete();
+	const CPoint& co = it->second->GetCo();
+	if(co != CPoint(-1, -1))
+		resources::pDoc->GetSystem(co.x, co.y).SetHomeOf("");
 	it->second->Reset(true);
 	return m_mRaces.erase(it);
 }

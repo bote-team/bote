@@ -135,10 +135,10 @@ public:
 	void SetKO(int x, int y);
 
 	CSystem& GetSystem(int x, int y) {
-		return m_Systems.at(x+y*STARMAP_SECTORS_HCOUNT);
+		return m_Systems.at(CoordsToIndex(x, y));
 	}
 	const CSystem& GetSystem(int x, int y) const {
-		return m_Systems.at(x+y*STARMAP_SECTORS_HCOUNT);
+		return m_Systems.at(CoordsToIndex(x, y));
 	}
 
 	//returns system at m_ptKO
@@ -322,7 +322,7 @@ protected:
 
 	/// Funktion berechnet die Auswirkungen wenn eine Minorrace eleminiert wurde und somit aus dem Spiel ausscheidet.
 	/// @param pMinor Minorrace welche aus dem Spiel ausscheidet
-	void CalcEffectsMinorEleminated(CMinor* pMinor);
+	void CalcEffectsMinorEleminated(const boost::shared_ptr<CMinor>& pMinor);
 
 	/// Funktion berechnet, ob zufällig Alienschiffe ins Spiel kommen.
 	void CalcRandomAlienEntities();

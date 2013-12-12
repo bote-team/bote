@@ -13,6 +13,7 @@
 #include "Ships/ships.h"
 #include "ClientWorker.h"
 #include "Races/Major.h"
+#include "Races/RaceController.h"
 
 
 
@@ -48,7 +49,7 @@ CSector::CSector(const CSector& other) :
 	m_Planets(other.m_Planets),
 	m_sColonyOwner(other.m_sColonyOwner),
 	m_bySunColor(other.m_bySunColor),
-	m_bMinor(other.m_bMinor)
+	m_HomeOf(other.m_HomeOf)
 {
 };
 
@@ -59,7 +60,7 @@ CSector& CSector::operator=(const CSector& other){
 		m_Planets = other.m_Planets;
 		m_sColonyOwner = other.m_sColonyOwner;
 		m_bySunColor = other.m_bySunColor;
-		m_bMinor = other.m_bMinor;
+		m_HomeOf = other.m_HomeOf;
 	}
 
 	return *this;
@@ -77,7 +78,7 @@ void CSector::Reset(bool call_up)
 		CMapTile::Reset(call_up);
 
 	m_sColonyOwner.Empty();
-	m_bMinor = false;
+	m_HomeOf.reset();
 	m_Planets.clear();
 
 	ClearAllPoints(false);
@@ -94,7 +95,7 @@ void CSector::Serialize(CArchive &ar)
 	// Alle Variablen in der richtigen Reihenfolge schreiben
 	{
 		ar << m_sColonyOwner;
-		ar << m_bMinor;
+		ar << HomeOfID();
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen gespeichert werden
 		if (m_bSunSystem)
 		{
@@ -106,7 +107,12 @@ void CSector::Serialize(CArchive &ar)
 	// Alle Variablen in der richtigen Reihenfolge lesen
 	{
 		ar >> m_sColonyOwner;
-		ar >> m_bMinor;
+		CString home_of;
+		ar >> home_of;
+		if(home_of.IsEmpty())
+			m_HomeOf.reset();
+		else if(home_of != HomeOfID())
+			SetHomeOf(home_of);
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen geladen werden
 		if (m_bSunSystem)
 		{
@@ -147,6 +153,12 @@ CSector::iterator CSector::end()
 // getting
 //////////////////////////////////////////////////////////////////////
 
+CString CSector::HomeOfID() const
+{
+	if(!m_HomeOf)
+		return "";
+	return m_HomeOf->GetRaceID();
+}
 
 /// Funktion gibt alle Einwohner aller Planeten in dem Sektor zurück.
 float CSector::GetCurrentHabitants() const
@@ -180,6 +192,20 @@ void CSector::GetAvailableResources(BOOLEAN bResources[RESOURCES::DERITIUM + 1],
 }
 
 //////////////////////////////////////////////////////////////////////
+// setting
+//////////////////////////////////////////////////////////////////////
+
+void CSector::SetHomeOf(const CString& race_id)
+{
+	if(race_id.IsEmpty())
+	{
+		m_HomeOf.reset();
+		return;
+	}
+	m_HomeOf = resources::pDoc->GetRaceCtrl()->GetRaceSafe(race_id);
+}
+
+//////////////////////////////////////////////////////////////////////
 // planets
 //////////////////////////////////////////////////////////////////////
 
@@ -199,7 +225,11 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 		bool bMinor = rand()%100 >= (100 - minorProb);
 		m_sName = CGenSectorName::GetInstance()->GetNextRandomSectorName(m_Co, bMinor);
 		// bMinor wird in der Generierungsfunktion angepasst, falls es keine Minorracesystemnamen mehr gibt
-		SetMinorRace(bMinor);
+		if(bMinor)
+		{
+			m_HomeOf = resources::pDoc->GetRaceCtrl()->GetMinorRace(m_sName);
+			AssertBotE(m_HomeOf);
+		}
 
 		// Es konnte ein Sektor für eine Minorrace generiert werden
 		if (bMinor)

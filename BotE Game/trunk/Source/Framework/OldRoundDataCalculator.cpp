@@ -64,7 +64,6 @@ void COldRoundDataCalculator::ExecuteRebellion(CSystem& system, CMajor* pMajor) 
 	CEmpire* pEmpire = pMajor->GetEmpire();
 	const CPoint& co = system.GetCo();
 	const CString& sectorname = system.GetName();
-	const CRaceController* pRaceCtrl = m_pDoc->GetRaceCtrl();
 
 	// Nachricht über Rebellion erstellen
 	CString news = CLoc::GetString("REBELLION_IN_SYSTEM", FALSE, sectorname);
@@ -79,7 +78,7 @@ void COldRoundDataCalculator::ExecuteRebellion(CSystem& system, CMajor* pMajor) 
 
 	if (system.GetMinorRace())
 	{
-		CMinor* pMinor = pRaceCtrl->GetMinorRace(sectorname);
+		const boost::shared_ptr<CMinor>& pMinor = boost::dynamic_pointer_cast<CMinor>(system.HomeOf());
 		AssertBotE(pMinor);
 
 		if (!system.Taken())

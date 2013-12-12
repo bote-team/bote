@@ -183,7 +183,7 @@ void CSystem::Serialize(CArchive &ar, bool end_of_round)
 	if(!end_of_round)
 	{
 		CSector::Serialize(ar);
-		if(!m_bSunSystem || !m_Owner && m_sColonyOwner.IsEmpty() && !m_bMinor)
+		if(!m_bSunSystem || !m_Owner && m_sColonyOwner.IsEmpty() && !GetMinorRace())
 			return;
 	}
 
@@ -1160,7 +1160,7 @@ void CSystem::CalculateBuildableShips()
 	{
 		// Array mit baubaren Minorraceschiffen füllen
 		int nMinorShipNumber = -1;
-		if (m_bMinor)
+		if (GetMinorRace())
 		{
 			if(m_Owner->IsMinor())
 				nMinorShipNumber = m_Owner->GetRaceShipNumber();
@@ -1386,7 +1386,7 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 		}
 		if (building->GetOnlyMinorRace())
 		{
-			if (m_bMinor)
+			if (GetMinorRace())
 				return TRUE;
 		}
 		if (building->GetOnlyTakenSystem())
@@ -1410,7 +1410,7 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 		}
 		if (building->GetOnlyMinorRace())
 		{
-			if (m_bMinor)
+			if (GetMinorRace())
 				return TRUE;
 		}
 		if (building->GetOnlyTakenSystem())
@@ -1423,7 +1423,7 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 	// Zuerst Minorraceplanet checken
 	if (building->GetOnlyMinorRace())
 	{
-		if (m_bMinor)
+		if (GetMinorRace())
 		{
 			return TRUE;
 		}
@@ -1463,7 +1463,7 @@ BOOLEAN CSystem::CheckGeneralConditions(const CBuildingInfo* building, CGlobalBu
 		}
 		if (building->GetOnlyMinorRace())
 		{
-			if (m_bMinor)
+			if (GetMinorRace())
 				return TRUE;
 		}
 		return FALSE;
@@ -3302,7 +3302,7 @@ bool CSystem::CheckSanity() const
 {
 	AssertBotE(!HasOutpost() || !HasStarbase());
 
-	if(m_bMinor)
+	if(GetMinorRace())
 		AssertBotE(GetCurrentHabitants() > 0);
 
 	switch(m_OwningStatus)

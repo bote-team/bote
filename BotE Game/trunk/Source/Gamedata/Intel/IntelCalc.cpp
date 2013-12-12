@@ -983,7 +983,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySpy(CMajor* pRace, CMajor* pEnemyRace, CMajo
 		if (rand()%2 == NULL && minors.GetSize())
 		{
 			CString minor = minors.GetAt(rand()%minors.GetSize());
-			CPoint ko = (*pmMinors)[minor]->GetRaceKO();
+			CPoint ko = (*pmMinors)[minor]->GetCo();
 			if (ko != CPoint(-1,-1))
 				report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, ko, DIPLOMATIC_AGREEMENT::NONE, (*pmMinors)[minor]->GetRelation(pEnemyRace->GetRaceID()));
 		}
@@ -1054,7 +1054,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySpy(CMajor* pRace, CMajor* pEnemyRace, CMajo
 			CDiplomacyIntelObj* report = NULL;
 			// in random steht eine zufällig ermittelte Minorrace, in welchem spioniert werden kann.
 			CString minor = minors.GetAt(rand()%minors.GetSize());
-			CPoint ko = (*pmMinors)[minor]->GetRaceKO();
+			CPoint ko = (*pmMinors)[minor]->GetCo();
 			if (ko != CPoint(-1,-1))
 				 report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, ko, (*pmMinors)[minor]->GetAgreement(pEnemyRace->GetRaceID()), (*pmMinors)[minor]->GetRelation(pEnemyRace->GetRaceID()));
 			// Intelreport dem Akteur hinzufügen
@@ -1079,7 +1079,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySpy(CMajor* pRace, CMajor* pEnemyRace, CMajo
 		// in random steht eine zufällig ermittelte Minorrace, in welchem spioniert werden kann.
 		CString minor = minors.GetAt(rand()%minors.GetSize());
 		CDiplomacyIntelObj* report = NULL;
-		CPoint ko = (*pmMinors)[minor]->GetRaceKO();
+		CPoint ko = (*pmMinors)[minor]->GetCo();
 		if (ko != CPoint(-1,-1))
 			report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, ko);
 		// Intelreport dem Akteur hinzufügen
@@ -1745,7 +1745,9 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 		// zwischen Major und Minor
 		else
 		{
-			CMinor* minor = m_pDoc->GetRaceCtrl()->GetMinorRace(m_pDoc->GetSystem(report->GetMinorRaceKO().x, report->GetMinorRaceKO().y).GetName());
+			const boost::shared_ptr<CMinor>& minor =
+				boost::dynamic_pointer_cast<CMinor>(
+				m_pDoc->GetSystem(report->GetMinorRaceKO().x, report->GetMinorRaceKO().y).HomeOf());
 			if (minor)
 			{
 				// hier zwei Möglichkeiten: verschlechtern der Beziehung zwischen Geheimdienstopfer und Minor oder Verbesserung
@@ -1756,7 +1758,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 					int relationAdd = rand()%20 + 1;
 					minor->SetRelation(pRace->GetRaceID(), relationAdd);
 					pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
-					CPoint ko = minor->GetRaceKO();
+					CPoint ko = minor->GetCo();
 					if (ko != CPoint(-1,-1))
 						report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ko);
 
@@ -1779,7 +1781,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 					int relationSub = -rand()%20 + 1;
 					minor->SetRelation(pEnemyRace->GetRaceID(), relationSub);
 					pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
-					CPoint ko = minor->GetRaceKO();
+					CPoint ko = minor->GetCo();
 					if (ko != CPoint(-1,-1))
 						report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ko);
 

@@ -550,10 +550,10 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 	int nCredits = info.m_nCredits + CalcResInCredits(info);
 
 	// Bestechungsresitance durch z.B. Kommunikationsnetzwerke holen
-	if (pMinor->GetRaceKO() == CPoint(-1,-1))
+	if (pMinor->GetCo() == CPoint(-1,-1))
 		return false;
 
-	CSystem* pSystem = &(m_pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y));
+	CSystem* pSystem = &(m_pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y));
 	AssertBotE(pSystem);
 	short nResistance = pSystem->GetProduction()->GetResistance();
 	// Bei einer Bestechnung mit z.B. 5000 Creditübergabe ergibt dies einen Wert von 5000.

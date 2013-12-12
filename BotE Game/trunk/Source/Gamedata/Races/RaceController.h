@@ -78,7 +78,7 @@ public:
 	/// Funktion liefert die Minorrace, welche in einem bestimmten Sektor beheimatet ist.
 	/// @param sMinorsHome Heimatsystem
 	/// @return Zeiger auf Minorrace (<code>NULL</code> wenn die Rasse nicht gefunden werden konnte)
-	CMinor* GetMinorRace(const CString& sMinorsHome) const;
+	boost::shared_ptr<CMinor> GetMinorRace(const CString& sMinorsHome) const;
 
 	/// Funktion entfernt eine nicht mehr zu benutzende Rasse.
 	/// @param sRaceID Rassen-ID

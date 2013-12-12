@@ -170,7 +170,7 @@ void CMinor::PerhapsBuildShip(CBotEDoc* pDoc)
 					nNumber *= 5;
 					if (rand()%nNumber == 0)
 					{
-						CShipMap::iterator ship = pDoc->BuildShip(pShipInfo->GetID(), GetRaceKO(), m_sID);
+						CShipMap::iterator ship = pDoc->BuildShip(pShipInfo->GetID(), m_Co, m_sID);
 						// Befehl für nicht "böse" Rassen auf Meiden stellen
 						if (!IsRaceProperty(RACE_PROPERTY::HOSTILE)
 							&& !IsRaceProperty(RACE_PROPERTY::WARLIKE)
