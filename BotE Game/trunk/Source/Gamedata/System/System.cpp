@@ -3302,8 +3302,48 @@ bool CSystem::CheckSanity() const
 {
 	AssertBotE(!HasOutpost() || !HasStarbase());
 
-	if(GetMinorRace())
-		AssertBotE(GetCurrentHabitants() > 0);
+	if(m_HomeOf)
+	{
+		if(!resources::pDoc->GetRaceCtrl()->GetRaceSafe(m_HomeOf->GetRaceID()))
+			return false;
+		if(m_HomeOf->IsAlien())
+			return false;
+		if(m_HomeOf->IsMinor())
+		{
+			if(GetCurrentHabitants() <= 0)
+				return false;
+			switch(m_OwningStatus)
+			{
+				case OWNING_STATUS_EMPTY:
+					return false;
+				case OWNING_STATUS_INDEPENDENT_MINOR:
+				case OWNING_STATUS_REBELLED:
+					if(m_HomeOf != m_Owner)
+						return false;
+				break;
+				case OWNING_STATUS_TAKEN:
+				case OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME:
+					if(!m_Owner->IsMajor())
+						return false;
+				break;
+			}
+		}
+		else
+		{
+			AssertBotE(m_HomeOf->IsMajor());
+			switch(m_OwningStatus)
+			{
+				case OWNING_STATUS_INDEPENDENT_MINOR:
+					return false;
+				case OWNING_STATUS_TAKEN:
+					if(m_Owner == m_HomeOf)
+						return false;
+				break;
+				default:
+				break;
+			}
+		}
+	}
 
 	switch(m_OwningStatus)
 	{
