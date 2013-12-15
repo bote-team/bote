@@ -3227,7 +3227,7 @@ void CSystem::TrainTroops()
 //////////////////////////////////////////////////////////////////////
 
 // Funktion setzt den neuen Besitzer des Systems. Übergeben wird der Besitzer.
-void CSystem::ChangeOwner(const CString& new_one, OWNING_STATUS status)
+void CSystem::ChangeOwner(const CString& new_one, OWNING_STATUS status, bool reset_troops)
 {
 	if(new_one.IsEmpty())
 		AssertBotE(status == OWNING_STATUS_EMPTY || status == OWNING_STATUS_REBELLED);
@@ -3248,8 +3248,9 @@ void CSystem::ChangeOwner(const CString& new_one, OWNING_STATUS status)
 	m_TradeRoutes.RemoveAll();
 	m_ResourceRoutes.RemoveAll();
 
-	// Alle Truppen entfernen
-	m_Troops.RemoveAll();
+	if(reset_troops)
+		// Alle Truppen entfernen
+		m_Troops.RemoveAll();
 
 	// Bauliste hart löschen
 	m_AssemblyList.Reset();

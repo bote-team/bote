@@ -2497,7 +2497,7 @@ void CBotEDoc::CalcSystemAttack()
 					// Wenn das System noch keiner Majorrace gehört, dann Gebäude bauen
 					GetSystem(p.x, p.y).BuildBuildingsForMinorRace(&BuildingInfo, m_Statistics.GetAverageTechLevel(), pMinor);
 					// Sektor gilt ab jetzt als erobert.
-					GetSystem(p.x, p.y).ChangeOwner(attacker, CSystem::OWNING_STATUS_TAKEN);
+					GetSystem(p.x, p.y).ChangeOwner(attacker, CSystem::OWNING_STATUS_TAKEN, false);
 					pMinor->SetOwner(pMajor);
 					// Beziehung zu dieser Minorrace verschlechtert sich auf 0 Punkte
 					pMinor->SetRelation(attacker, -100);
@@ -2756,7 +2756,7 @@ void CBotEDoc::CalcSystemAttack()
 							m_pClientWorker->SetToEmpireViewFor(*pMajor);
 						}
 					}
-					GetSystem(p.x, p.y).ChangeOwner(attacker, new_owning_status);
+					GetSystem(p.x, p.y).ChangeOwner(attacker, new_owning_status, false);
 				}
 				// Gebäude die nach Eroberung automatisch zerstört werden
 				GetSystem(p.x, p.y).RemoveSpecialRaceBuildings(&this->BuildingInfo);

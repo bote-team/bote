@@ -451,7 +451,7 @@ public:
 
 	// zum Schreiben der Membervariabblen
 	// Funktion setzt den neuen Besitzer des Systems. Übergeben wird der Besitzer.
-	void ChangeOwner(const CString& new_one, OWNING_STATUS status);
+	void ChangeOwner(const CString& new_one, OWNING_STATUS status, bool reset_troops = true);
 
 	void CalculateOwner();
 
