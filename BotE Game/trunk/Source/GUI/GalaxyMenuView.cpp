@@ -1095,7 +1095,7 @@ void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		const CCommandLineParameters* const clp = resources::pClp;
 		if (sector.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT) &&
 			(clp->SeeAllOfMap() || pDoc->GetSystem(sector.x, sector.y).OwnerID() == pMajor->GetRaceID()) &&
-			pDoc->GetSystem(sector.x, sector.y).GetSunSystem() == TRUE)
+			pDoc->GetSystem(sector.x, sector.y).Majorized())
 			{
 				// falls ein Schiff markiert war wird dieses abgewählt
 				SetMoveShip(FALSE);
