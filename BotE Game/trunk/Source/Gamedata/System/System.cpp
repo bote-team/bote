@@ -1161,10 +1161,7 @@ void CSystem::CalculateBuildableShips()
 		// Array mit baubaren Minorraceschiffen füllen
 		int nMinorShipNumber = -1;
 		if (GetMinorRace())
-		{
-			if(m_Owner->IsMinor())
-				nMinorShipNumber = m_Owner->GetRaceShipNumber();
-		}
+			nMinorShipNumber = m_HomeOf->GetRaceShipNumber();
 
 		const CResearch* pResearch = m_Owner->GetEmpire()->GetResearch();
 		CArray<USHORT> obsoleteClasses;
