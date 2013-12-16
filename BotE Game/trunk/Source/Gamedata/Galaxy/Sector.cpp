@@ -123,8 +123,8 @@ void CSector::Serialize(CArchive &ar)
 			ar >> number;
 			m_Planets.clear();
 			m_Planets.resize(number);
-			for (int i = 0; i < number; i++)
-				m_Planets.at(i).Serialize(ar);
+			for(iterator it = begin(); it != end(); ++it)
+				it->Serialize(ar);
 		}
 		else
 		{
