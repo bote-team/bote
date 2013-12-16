@@ -35,9 +35,6 @@ void CMinor::Serialize(CArchive &ar)
 {
 	CRace::Serialize(ar);
 
-	// Akzeptanzpunkte (Rassen-ID, Punkte)
-	m_mAcceptance.Serialize(ar);
-
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -46,6 +43,10 @@ void CMinor::Serialize(CArchive &ar)
 		ar << m_bSpaceflight;				// Spaceflightnation (hat Schiffe)
 
 		ar << m_bSubjugated;				// wurde die Rasse unterworfen
+		// Akzeptanzpunkte (Rassen-ID, Punkte)
+		ar << m_mAcceptance.size();
+		for (map<CString, short>::const_iterator it = m_mAcceptance.begin(); it != m_mAcceptance.end(); ++it)
+			ar << it->first << it->second;
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
@@ -55,6 +56,18 @@ void CMinor::Serialize(CArchive &ar)
 		ar >> m_bSpaceflight;				// Spaceflightnation (hat Schiffe)
 
 		ar >> m_bSubjugated;			// wurde die Rasse unterworfen
+		// Akzeptanzpunkte (Rassen-ID, Punkte)
+		m_mAcceptance.clear();
+		size_t mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			short value;
+			ar >> key;
+			ar >> value;
+			m_mAcceptance[key] = value;
+		}
 
 		// Diplomatieobjekt neu erstellen
 		// Minorrace - KI anlegen

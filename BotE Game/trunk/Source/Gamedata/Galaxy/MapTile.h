@@ -12,7 +12,8 @@
 
 #pragma once
 
-#include "BoteStandardTypes.h"
+#include <map>
+#include <set>
 #include "resources.h"
 #include "CommandLineParameters.h"
 #include "General/InGameEntity.h"
@@ -445,10 +446,10 @@ private:
 
 	/// Variable speichert den Status über diesen Sektor, wobei 0 -> nichts, 1 -> gescannt,
 	/// 2 -> Name bekannt, 3 -> alles inkl. Planeten bekannt, bedeutet
-	CBotEMap<CString, DISCOVER_STATUS, BYTE> m_Status;
+	map<CString, DISCOVER_STATUS> m_Status;
 
 	/// Gibts in diesem Sektor eine online Werft (bzw. auch Station)
-	CBotESet<CString> m_bShipPort;
+	set<CString> m_bShipPort;
 
 	/// Besitzt die jeweilige Rasse in dem Sektor einen Außenposten?
 	CString m_Outpost;
@@ -457,29 +458,29 @@ private:
 	CString m_Starbase;
 
 	/// Hat eine Majorrace ein Schiff in diesem Sektor?
-	CBotESet<CString> m_bWhoIsOwnerOfShip;
+	set<CString> m_bWhoIsOwnerOfShip;
 
 	//race CString has this many ships in this sector
-	CBotEMap<CString, unsigned> m_mNumbersOfShips;
+	std::map<CString, unsigned> m_mNumbersOfShips;
 
 	/// Baut eine bestimmte Majorrasse gerade eine Station in dem Sektor?
-	CBotEMap<CString, SHIP_ORDER::Typ, unsigned> m_IsStationBuild;
+	std::map<CString, SHIP_ORDER::Typ> m_IsStationBuild;
 
 	/// Scanstärke der jeweiligen Major/Minorrace in dem Sektor
-	CBotEMap<CString, short> m_iScanPower;
+	map<CString, short> m_iScanPower;
 
 	/// benötigte Scanstärke der Majorrace, um ihr Schiff in diesem Sektor erkennen zu können
-	CBotEMap<CString, short> m_iNeededScanPower;
+	map<CString, short> m_iNeededScanPower;
 
 	/// Die aktuell benötigten Stationsbaupunkte bis zur Fertigstellung
-	CBotEMap<CString, short> m_iNeededStationPoints;
+	map<CString, short> m_iNeededStationPoints;
 
 	/// Die anfänglich benötigten Stationsbaupunkte (benötigt zur prozentualen Anzeige)
-	CBotEMap<CString, short> m_iStartStationPoints;
+	map<CString, short> m_iStartStationPoints;
 
 	/// Punktem welche angeben, wer den größten Einfluss auf diesen Sektor hat. Wer die meisten Punkte hat und kein
 	/// anderer in diesem Sektor einen Außenposten oder eine Kolonie besitzt, dem gehört der Sektor
-	CBotEMap<CString, BYTE> m_byOwnerPoints;
+	map<CString, BYTE> m_byOwnerPoints;
 
 	/// Mögliche Anomalie in dem Sektor (NULL wenn keine vorhanden)
 	boost::shared_ptr<CAnomaly> m_pAnomaly;

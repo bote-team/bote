@@ -39,17 +39,6 @@ void CRace::Serialize(CArchive &ar)
 {
 	CInGameEntity::Serialize(ar);
 
-	// Ingame-Attribute (Rassenwechselwirkung)
-	// Beziehungsmap (Rassen-ID, Beziehungswert)
-	m_mRelations.Serialize(ar);
-	// Diplomatischer Status gegenüber anderen Rassen (Rassen-ID, Status)
-	m_mAgreement.Serialize(ar);
-	// kennt die Rasse eine andere Rasse (Rassen-ID, Wahrheitswert)
-	m_vInContact.Serialize(ar);
-	// diplomatische Nachrichten
-	m_vDiplomacyNewsIn.Serialize(ar);
-	m_vDiplomacyNewsOut.Serialize(ar);
-
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -61,6 +50,27 @@ void CRace::Serialize(CArchive &ar)
 		ar << m_byBuildingNumber;	// zugewiesene Nummer welche Gebäude verwendet werden sollen
 		ar << m_byMoralNumber;	// zugewiesene Nummer welche Moralwerte verwendet werden sollen
 		ar << m_nSpecialAbility;// Spezialfähigkeiten der Rasse
+
+		// Ingame-Attribute (Rassenwechselwirkung)
+		// Beziehungsmap (Rassen-ID, Beziehungswert)
+		ar << m_mRelations.size();
+		for (map<CString, BYTE>::const_iterator it = m_mRelations.begin(); it != m_mRelations.end(); ++it)
+			ar << it->first << it->second;
+		// Diplomatischer Status gegenüber anderen Rassen (Rassen-ID, Status)
+		ar << m_mAgreement.size();
+		for (map<CString, DIPLOMATIC_AGREEMENT::Typ>::const_iterator it = m_mAgreement.begin(); it != m_mAgreement.end(); ++it)
+			ar << it->first << it->second;
+		// kennt die Rasse eine andere Rasse (Rassen-ID, Wahrheitswert)
+		ar << m_vInContact.size();
+		for (set<CString>::const_iterator it = m_vInContact.begin(); it != m_vInContact.end(); ++it)
+			ar << *it;
+		// diplomatische Nachrichten
+		ar << m_vDiplomacyNewsIn.size();
+		for (vector<CDiplomacyInfo>::iterator it = m_vDiplomacyNewsIn.begin(); it != m_vDiplomacyNewsIn.end(); ++it)
+			it->Serialize(ar);
+		ar << m_vDiplomacyNewsOut.size();
+		for (vector<CDiplomacyInfo>::iterator it = m_vDiplomacyNewsOut.begin(); it != m_vDiplomacyNewsOut.end(); ++it)
+			it->Serialize(ar);
 
 		// gemachte Angebote der letzten beiden Runden
 		ar << m_mLastOffers.size();
@@ -85,9 +95,59 @@ void CRace::Serialize(CArchive &ar)
 		ar >> m_byMoralNumber;	// zugewiesene Nummer welche Moralwerte verwendet werden sollen
 		ar >> m_nSpecialAbility;// Spezialfähigkeiten der Rasse
 
+		// Ingame-Attribute (Rassenwechselwirkung)
+		// Beziehungsmap (Rassen-ID, Beziehungswert)
+		m_mRelations.clear();
+		size_t mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			BYTE value;
+			ar >> key;
+			ar >> value;
+			m_mRelations[key] = value;
+		}
+		// Diplomatischer Status gegenüber anderen Rassen (Rassen-ID, Status)
+		m_mAgreement.clear();
+		mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			int value;
+			ar >> key;
+			ar >> value;
+			m_mAgreement[key] = (DIPLOMATIC_AGREEMENT::Typ)value;
+		}
+		// kennt die Rasse eine andere Rasse (Rassen-ID, Wahrheitswert)
+		m_vInContact.clear();
+		size_t vectorSize = 0;
+		ar >> vectorSize;
+		for (size_t i = 0; i < vectorSize; i++)
+		{
+			CString sID;
+			ar >> sID;
+			m_vInContact.insert(sID);
+		}
+		// diplomatische Nachrichten
+		m_vDiplomacyNewsIn.clear();
+		vectorSize = 0;
+		ar >> vectorSize;
+		m_vDiplomacyNewsIn.resize(vectorSize);
+		for (size_t i = 0; i < vectorSize; i++)
+			m_vDiplomacyNewsIn[i].Serialize(ar);
+		// diplomatische Nachrichten
+		m_vDiplomacyNewsOut.clear();
+		vectorSize = 0;
+		ar >> vectorSize;
+		m_vDiplomacyNewsOut.resize(vectorSize);
+		for (size_t i = 0; i < vectorSize; i++)
+			m_vDiplomacyNewsOut[i].Serialize(ar);
+
 		// gemachte Angebote der letzten beiden Runden
 		m_mLastOffers.clear();
-		unsigned mapSize = 0;
+		mapSize = 0;
 		ar >> mapSize;
 		for (size_t i = 0; i < mapSize; i++)
 		{

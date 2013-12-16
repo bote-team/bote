@@ -13,6 +13,9 @@
 #include "MapTile.h"
 #include "Planet.h"
 #include "Races/Race.h"
+#include <map>
+#include <set>
+#include <vector>
 
 #include "BotE.h"
 
@@ -173,7 +176,7 @@ public:
 protected:
 
 	/// Die Feld mit den einzelnen Planeten in dem Sektor
-	CBotEVector<CPlanet> m_Planets;
+	std::vector<CPlanet> m_Planets;
 
 	/// Wem gehört/gehörte der Sektor zuerst? Also eigene Kolonie und Heimatsystem
 	CString m_sColonyOwner;

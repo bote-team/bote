@@ -100,7 +100,9 @@ void CSector::Serialize(CArchive &ar)
 		if (m_bSunSystem)
 		{
 			ar << m_bySunColor;
-			m_Planets.Serialize(ar);
+			ar << m_Planets.size();
+			for(iterator it = begin(); it != end(); ++it)
+				it->Serialize(ar);
 		}
 	}
 	else
@@ -117,7 +119,12 @@ void CSector::Serialize(CArchive &ar)
 		if (m_bSunSystem)
 		{
 			ar >> m_bySunColor;
-			m_Planets.Serialize(ar);
+			int number = 0;
+			ar >> number;
+			m_Planets.clear();
+			m_Planets.resize(number);
+			for (int i = 0; i < number; i++)
+				m_Planets.at(i).Serialize(ar);
 		}
 		else
 		{

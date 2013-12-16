@@ -140,5 +140,5 @@ protected:
 
 	// Ingame Attribute
 	bool				m_bSubjugated;		///< wurde die Rasse unterworfen
-	CBotEMap<CString, short> m_mAcceptance;		///< Punkte die eine MajorRace durch längere Beziehung mit der Rasse ansammelt, wird schwerer diese Rasse wegzukaufen
+	map<CString, short> m_mAcceptance;		///< Punkte die eine MajorRace durch längere Beziehung mit der Rasse ansammelt, wird schwerer diese Rasse wegzukaufen
 };

@@ -8,7 +8,9 @@
 
 #pragma once
 #include "afx.h"
-#include "BotEStandardTypes.h"
+#include <map>
+#include <vector>
+#include <set>
 #include "Constants.h"
 #include "AI\DiplomacyAI.h"
 #include "General/InGameEntity.h"
@@ -265,12 +267,12 @@ protected:
 	int					m_nSpecialAbility;	///< Spezialfähigkeiten der Rasse
 
 	// Ingame-Attribute (Rassenwechselwirkung)
-	CBotEMap<CString, BYTE>	m_mRelations;	///< Beziehungsmap (Rassen-ID, Beziehungswert)
-	CBotEMap<CString, DIPLOMATIC_AGREEMENT::Typ, int>	m_mAgreement;	///< Diplomatischer Status gegenüber anderen Rassen (Rassen-ID, Status)
-	CBotESet<CString>		m_vInContact;	///< kennt die Rasse eine andere Rasse (Rassen-ID)
+	map<CString, BYTE>	m_mRelations;	///< Beziehungsmap (Rassen-ID, Beziehungswert)
+	map<CString, DIPLOMATIC_AGREEMENT::Typ>	m_mAgreement;	///< Diplomatischer Status gegenüber anderen Rassen (Rassen-ID, Status)
+	set<CString>		m_vInContact;	///< kennt die Rasse eine andere Rasse (Rassen-ID)
 	// diplomatische Nachrichten
-	CBotEVector<CDiplomacyInfo>	m_vDiplomacyNewsIn;	///< Vektor mit allen eingehenden diplomatischen Nachrichten
-	CBotEVector<CDiplomacyInfo>	m_vDiplomacyNewsOut;///< Vektor mit allen ausgehenden diplomatischen Nachrichten
+	vector<CDiplomacyInfo>	m_vDiplomacyNewsIn;	///< Vektor mit allen eingehenden diplomatischen Nachrichten
+	vector<CDiplomacyInfo>	m_vDiplomacyNewsOut;///< Vektor mit allen ausgehenden diplomatischen Nachrichten
 	map<CString, CDiplomacyInfo> m_mLastOffers;	///< Mep mit den von dieser Rasse gemachten Angeboten der letzten 2 Runden.
 
 	// grafische Attribute
