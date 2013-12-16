@@ -363,7 +363,7 @@ namespace network
 				// falls EndOfRound-Nachricht schon eingetroffen, die Verbindung vom Client
 				// aber während des Wartens auf andere EndOfRound-Nachrichten getrennt wird,
 				// die gepufferten EndOfRound-Daten freigeben
-				delete m_pEndOfRoundBuf[idx];
+				delete[] m_pEndOfRoundBuf[idx];
 				m_pEndOfRoundBuf[idx] = NULL;
 				m_pnEndOfRoundSize[idx] = 0;
 			}
@@ -596,7 +596,7 @@ namespace network
 		{
 			if (m_pEndOfRoundBuf[i])
 			{
-				delete m_pEndOfRoundBuf[i];
+				delete[] m_pEndOfRoundBuf[i];
 				m_pEndOfRoundBuf[i] = NULL;
 				m_pnEndOfRoundSize[i] = 0;
 			}
