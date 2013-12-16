@@ -43,6 +43,7 @@
 #include "ClientWorker.h"
 #include "SettingsDlg.h"
 #include "AssertBotE.h"
+#include "Races/Alien.h"
 
 
 #ifdef _DEBUG
@@ -5097,7 +5098,7 @@ void CBotEDoc::CalcAlienShipEffects()
 		if (!ship->second->IsAlien())
 			continue;
 
-		CMinor* pAlien = dynamic_cast<CMinor*>(ship->second->Owner().get());
+		const boost::shared_ptr<CAlien> pAlien = boost::dynamic_pointer_cast<CAlien>(ship->second->Owner());
 		if (!pAlien || !pAlien->IsAlien())
 		{
 			AssertBotE(FALSE);
@@ -5105,6 +5106,8 @@ void CBotEDoc::CalcAlienShipEffects()
 		}
 
 		const CPoint& co = ship->second->GetCo();
+		CSystem& system = GetSystem(co.x, co.y);
+		const boost::shared_ptr<CMajor> pOwner = boost::dynamic_pointer_cast<CMajor>(system.Owner());
 
 		// verschiedene Alienrassen unterscheiden
 		if (pAlien->GetRaceID() == StrToCStr(IONISIERENDES_GASWESEN))
@@ -5113,22 +5116,21 @@ void CBotEDoc::CalcAlienShipEffects()
 			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 				continue;
 
-			if(!GetSystem(co.x, co.y).Majorized())
+			if(!system.Majorized())
 				continue;
-			const CString& sSystemOwner = GetSystem(co.x, co.y).OwnerID();
-			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner));
+
 			AssertBotE(pOwner);
 
 			// Energie im System auf 0 setzen
-			GetSystem(co.x, co.y).SetDisabledProduction(WORKER::ENERGY_WORKER);
+			system.SetDisabledProduction(WORKER::ENERGY_WORKER);
 
 			// Wenn Energie vorhanden war, dann die Nachricht bringen über Energieausfall
-			if (GetSystem(co.x, co.y).GetProduction()->GetMaxEnergyProd() > 0)
+			if (system.GetProduction()->GetMaxEnergyProd() > 0)
 			{
 				// Nachricht und Event einfügen
-				CString s = CLoc::GetString("EVENT_IONISIERENDES_GASWESEN", FALSE, GetSystem(co.x, co.y).GetName());
+				CString s = CLoc::GetString("EVENT_IONISIERENDES_GASWESEN", FALSE, system.GetName());
 				CEmpireNews message;
-				message.CreateNews(s, EMPIRE_NEWS_TYPE::SOMETHING, GetSystem(co.x, co.y).GetName(), co);
+				message.CreateNews(s, EMPIRE_NEWS_TYPE::SOMETHING, system.GetName(), co);
 				pOwner->GetEmpire()->AddMsg(message);
 				if (pOwner->IsHumanPlayer())
 				{
@@ -5145,20 +5147,19 @@ void CBotEDoc::CalcAlienShipEffects()
 			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 				continue;
 
-			const CString& sSystemOwner = GetSystem(co.x, co.y).OwnerID();
-			if (CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner)))
+			if (system.Majorized())
 			{
 				// Nahrung im System auf 0 setzen
-				GetSystem(co.x, co.y).SetDisabledProduction(WORKER::FOOD_WORKER);
-				GetSystem(co.x, co.y).SetFoodStore(GetSystem(co.x, co.y).GetFoodStore() / 2);
+				system.SetDisabledProduction(WORKER::FOOD_WORKER);
+				system.SetFoodStore(system.GetFoodStore() / 2);
 
 				// Wenn Nahrung produziert oder vorhanden ist, dann die Nachricht bringen über Nahrung verseucht
-				if (GetSystem(co.x, co.y).GetProduction()->GetMaxFoodProd() > 0 || GetSystem(co.x, co.y).GetFoodStore() > 0)
+				if (system.GetProduction()->GetMaxFoodProd() > 0 || system.GetFoodStore() > 0)
 				{
 					// Nachricht und Event einfügen
-					CString s = CLoc::GetString("EVENT_GABALLIANER_SEUCHENSCHIFF", FALSE, GetSystem(co.x, co.y).GetName());
+					CString s = CLoc::GetString("EVENT_GABALLIANER_SEUCHENSCHIFF", FALSE, system.GetName());
 					CEmpireNews message;
-					message.CreateNews(s, EMPIRE_NEWS_TYPE::SOMETHING, GetSystem(co.x, co.y).GetName(), co);
+					message.CreateNews(s, EMPIRE_NEWS_TYPE::SOMETHING, system.GetName(), co);
 					pOwner->GetEmpire()->AddMsg(message);
 					if (pOwner->IsHumanPlayer())
 					{
@@ -5171,7 +5172,7 @@ void CBotEDoc::CalcAlienShipEffects()
 			}
 
 			// befinden sich Schiffe in diesem Sektor, so werden diese ebenfalls zu Seuchenschiffen (50%)
-			if (GetSystem(co.x, co.y).GetIsShipInSector() && rand()%2 == 0)
+			if (system.GetIsShipInSector() && rand()%2 == 0)
 			{
 				// alle Schiffe im Sektor zu Seuchenschiffen machen
 				for(CShipMap::iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
@@ -5226,21 +5227,19 @@ void CBotEDoc::CalcAlienShipEffects()
 			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 				continue;
 
-			const CString& sSystemOwner = GetSystem(co.x, co.y).OwnerID();
-			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner));
-			if (!pOwner)
+			if(!system.Majorized())
 				continue;
 
 			// Energie im System auf 0 setzen
-			GetSystem(co.x, co.y).SetDisabledProduction(WORKER::ENERGY_WORKER);
+			system.SetDisabledProduction(WORKER::ENERGY_WORKER);
 
 			// Wenn Energie vorhanden war, dann die Nachricht bringen über Energieausfall
-			if (GetSystem(co.x, co.y).GetProduction()->GetMaxEnergyProd() > 0)
+			if (system.GetProduction()->GetMaxEnergyProd() > 0)
 			{
 				// Nachricht und Event einfügen
-				CString s = CLoc::GetString("EVENT_BLIZZARD_PLASMAWESEN", FALSE, GetSystem(co.x, co.y).GetName());
+				CString s = CLoc::GetString("EVENT_BLIZZARD_PLASMAWESEN", FALSE, system.GetName());
 				CEmpireNews message;
-				message.CreateNews(s, EMPIRE_NEWS_TYPE::SOMETHING, GetSystem(co.x, co.y).GetName(), co);
+				message.CreateNews(s, EMPIRE_NEWS_TYPE::SOMETHING, system.GetName(), co);
 				pOwner->GetEmpire()->AddMsg(message);
 				if (pOwner->IsHumanPlayer())
 				{
@@ -5257,10 +5256,7 @@ void CBotEDoc::CalcAlienShipEffects()
 			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 				continue;
 
-			// Creditproduktion auf 0 stellen
-			CSystem* pSystem = &GetSystem(co.x, co.y);
-			CMajor* pOwner = dynamic_cast<CMajor*>(pSystem->Owner().get());
-			if (!pOwner)
+			if(!system.Majorized())
 				continue;
 
 			// existiert keine Freundschaft zum Major
@@ -5268,20 +5264,20 @@ void CBotEDoc::CalcAlienShipEffects()
 				continue;
 
 			// alte Credits merken und aktuell auf 0 stellen
-			short nCreditProd = pSystem->GetProduction()->GetCreditsProd();
+			short nCreditProd = system.GetProduction()->GetCreditsProd();
 			// Nichts machen wenn keine Credits im System produziert werden, z.B. durch einen
 			// vorherigen Raider.
 			if (nCreditProd <= 0)
 				continue;
 
-			pSystem->GetProduction()->DisableCreditsProduction();
+			system.GetProduction()->DisableCreditsProduction();
 
 			// Nachricht und Event einfügen
 			CString sCredits = "";
 			sCredits.Format("%d", nCreditProd);
-			CString s = CLoc::GetString("EVENT_MORLOCK_RAIDER", FALSE, sCredits, GetSystem(co.x, co.y).GetName());
+			CString s = CLoc::GetString("EVENT_MORLOCK_RAIDER", FALSE, sCredits, system.GetName());
 			CEmpireNews message;
-			message.CreateNews(s, EMPIRE_NEWS_TYPE::SOMETHING, GetSystem(co.x, co.y).GetName(), co);
+			message.CreateNews(s, EMPIRE_NEWS_TYPE::SOMETHING, system.GetName(), co);
 			pOwner->GetEmpire()->AddMsg(message);
 			if (pOwner->IsHumanPlayer())
 			{
@@ -5313,8 +5309,7 @@ void CBotEDoc::CalcAlienShipEffects()
 			// jeder Runde. Umso länger das Midway-Schlachtschiff über einem System steht, umso
 			// wahrscheinlicher ist es, dass Krieg erklärt wird (nur den Midways helfen indem man Credits
 			// übergibt kann dagegen helfen).
-			CSystem* pSystem = &GetSystem(co.x, co.y);
-			if (CMajor* pOwner = dynamic_cast<CMajor*>(pSystem->Owner().get()))
+			if (system.Majorized())
 			{
 				if (pOwner->GetAgreement(pAlien->GetRaceID()) != DIPLOMATIC_AGREEMENT::WAR)
 				{
@@ -5388,19 +5383,18 @@ void CBotEDoc::CalcAlienShipEffects()
 			}
 
 			// Wenn über einem System von einem Major, dann die Energie auf 0 setzen
-			const CString& sSystemOwner = GetSystem(co.x, co.y).OwnerID();
-			if (CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner)))
+			if (system.Majorized())
 			{
 				// Energie im System auf 0 setzen
-				GetSystem(co.x, co.y).SetDisabledProduction(WORKER::ENERGY_WORKER);
+				system.SetDisabledProduction(WORKER::ENERGY_WORKER);
 
 				// Wenn Energie vorhanden war, dann die Nachricht bringen über Energieausfall
-				if (GetSystem(co.x, co.y).GetProduction()->GetMaxEnergyProd() > 0)
+				if (system.GetProduction()->GetMaxEnergyProd() > 0)
 				{
 					// Nachricht und Event einfügen
-					CString s = CLoc::GetString("EVENT_ISOTOPOSPHAERISCHES_WESEN", FALSE, GetSystem(co.x, co.y).GetName());
+					CString s = CLoc::GetString("EVENT_ISOTOPOSPHAERISCHES_WESEN", FALSE, system.GetName());
 					CEmpireNews message;
-					message.CreateNews(s, EMPIRE_NEWS_TYPE::SOMETHING, GetSystem(co.x, co.y).GetName(), co);
+					message.CreateNews(s, EMPIRE_NEWS_TYPE::SOMETHING, system.GetName(), co);
 					pOwner->GetEmpire()->AddMsg(message);
 					if (pOwner->IsHumanPlayer())
 					{
