@@ -10,10 +10,26 @@
 #include "array_sort.h"
 #include "AssertBotE.h"
 
-class CShips;
-
 /// Deklaration einer Struktur zum Speichern aller relevanten Daten
 struct CShipHistoryStruct {
+
+	CShipHistoryStruct() :
+		m_strShipName(), m_strShipType(), m_strShipClass(), m_strSectorName(), m_strCurrentSector(),
+		m_strCurrentTask(), m_strKindOfDestroy(), m_strTarget(), m_iBuildRound(0), m_iDestroyRound(0),
+		m_iExperiance(0)
+	{}
+
+	CShipHistoryStruct(const CString& name, const CString& type, const CString& ship_class,
+			const CString& sector_name, const CString& current_sector, const CString& current_task,
+			const CString& kind_of_destroy, const CString& target,
+			int build_round, int destroy_round, int experience) :
+
+		m_strShipName(name), m_strShipType(type), m_strShipClass(ship_class),
+		m_strSectorName(sector_name), m_strCurrentSector(current_sector), m_strCurrentTask(current_task),
+		m_strKindOfDestroy(kind_of_destroy), m_strTarget(target),
+		m_iBuildRound(build_round), m_iDestroyRound(destroy_round), m_iExperiance(experience)
+	{}
+
 	/// Der Schiffsname des Schiffes
 	CString m_strShipName;
 
@@ -97,7 +113,7 @@ public:
 	 * Zusätzlich müssen als Parameter noch der Name des Systems übergeben werden, in dem das Schiff gebaut wurde,
 	 * sowie die aktuelle Runde.
 	 */
-	void AddShip(const boost::shared_ptr<const CShips>& ship, const CString& buildsector, short round);
+	void AddShip(const CShipHistoryStruct& ship, const CString& buildsector, short round);
 
 	/**
 	 * Funktion modifiziert den Eintrag in dem Feld <code>m_ShipHistory<code>. Dabei wird das Schiff übergeben, dessen
@@ -107,11 +123,7 @@ public:
 	 * Status des Schiffes im Parameter <code>status<code> übergeben, z.B. zerstört, vermisst usw.
 	 * Konnte das Schiff modifiziert werden, so gibt die Funktion <code>true</code> zurück, sonst <code>false</code>
 	 */
-	bool ModifyShip(const boost::shared_ptr<const CShips>& ship, const CString& sector, short destroyRound = 0, const CString& destroyType = "", const CString& status = "");
-
-	/// Funktion entfernt ein bestimmtes Schiff aus der Schiffshistory.
-	/// @param ship Zeiger auf das zu entfernende Schiff.
-	void RemoveShip(const CShips* ship);
+	bool ModifyShip(const CShipHistoryStruct& ship, const CString& sector, short destroyRound = 0, const CString& destroyType = "", const CString& status = "");
 
 	/**
 	 * Funktion gibt einen Zeiger auf ein CShipHistory Objekt zurück, und zwar das, welches an <code>i<code>-ter

@@ -30,6 +30,7 @@
 #include "Races/Starmap.h"
 #include "Troops/TroopInfo.h"
 #include "General/InGameEntity.h"
+#include "ShipHistory.h"
 
 // forward declaration
 class CGraphicPool;
@@ -277,6 +278,8 @@ public:
 	bool BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major,  short id);
 
 	void Scrap(CMajor& major, CSystem& sy, bool disassembly);
+
+	CShipHistoryStruct ShipHistoryInfo() const;
 
 	CString SanityCheckUniqueness(std::set<CString>& already_encountered) const;
 	bool SanityCheckOrdersConsistency(const CShip& with) const;

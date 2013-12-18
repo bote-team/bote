@@ -572,7 +572,7 @@ bool CShip::RemoveDestroyed(CRace& owner, unsigned short round, const CString& s
 	if(IsAlive())
 		return true;
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-	owner.AddToLostShipHistory(CShips(*this), sEvent, sStatus, round);
+	owner.AddToLostShipHistory(ShipHistoryInfo(), sEvent, sStatus, round, m_Co);
 	if(destroyedShips)
 		destroyedShips->Add(m_sName + " (" + GetShipTypeAsString() + ", " + m_strShipClass + ")");
 	if(m_bIsFlagShip)
@@ -1491,8 +1491,7 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 		// Schiffunterstützungkosten dem jeweiligen Imperium hinzufügen.
 		pMajor->GetEmpire()->AddShipCosts(GetMaintenanceCosts());
 		// die Schiffe in der Flotte beim modifizieren der Schiffslisten der einzelnen Imperien beachten
-		const boost::shared_ptr<const CShips> s(new CShips(*this));
-		pMajor->GetShipHistory()->ModifyShip(s, sector.GetLongName());
+		pMajor->GetShipHistory()->ModifyShip(ShipHistoryInfo(), sector.GetLongName());
 	}
 	// Erfahrungspunkte der Schiffe anpassen
 	CalcExp();
@@ -1517,8 +1516,8 @@ bool CShip::BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major, 
 		: ((order == SHIP_ORDER::UPGRADE_OUTPOST) ? "OUTPOST_UPGRADE"
 		: "STARBASE_UPGRADE" ));
 	CBotEDoc* pDoc = resources::pDoc;
-	major.AddToLostShipHistory(CShips(*this), CLoc::GetString(s2),
-		CLoc::GetString("DESTROYED"), pDoc->GetCurrentRound());
+	major.AddToLostShipHistory(ShipHistoryInfo(), CLoc::GetString(s2),
+		CLoc::GetString("DESTROYED"), pDoc->GetCurrentRound(), m_Co);
 	resources::pClientWorker->CalcStationReady(type, major);
 	pDoc->BuildShip(id, sector.GetCo(), OwnerID());
 	// Wenn hier ein Au?enposten gebaut wurde den Befehl f?r die Flotte auf Meiden stellen
@@ -1528,8 +1527,7 @@ bool CShip::BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major, 
 
 void CShip::Scrap(CMajor& major, CSystem& sy, bool disassembly) {
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-	const boost::shared_ptr<const CShips> s(new CShips(*this));
-	major.GetShipHistory()->ModifyShip(s, sy.GetLongName(),
+	major.GetShipHistory()->ModifyShip(ShipHistoryInfo(), sy.GetLongName(),
 		resources::pDoc->GetCurrentRound(), CLoc::GetString(disassembly ?
 		"DISASSEMBLY" : "UPGRADE"), CLoc::GetString("DESTROYED"));
 	if(sy.OwnerID() != OwnerID())
@@ -1547,6 +1545,12 @@ void CShip::Scrap(CMajor& major, CSystem& sy, bool disassembly) {
 	res *= factor;
 	sy.SetStores(res);
 	major.GetEmpire()->SetCredits(si.GetNeededIndustry() * factor);
+}
+
+CShipHistoryStruct CShip::ShipHistoryInfo() const
+{
+	return CShipHistoryStruct(m_sName, GetShipTypeAsString(), m_strShipClass, "", "", GetCurrentOrderAsString(), "",
+		GetCurrentTargetAsString(), 0, 0, m_iCrewExperiance);
 }
 
 CString CShip::SanityCheckUniqueness(std::set<CString>& already_encountered) const {

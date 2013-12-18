@@ -2096,7 +2096,7 @@ CShipMap::iterator CBotEDoc::BuildShip(int nID, const CPoint& KO, const CString&
 	// Spezialforschungsboni dem Schiff hinzufügen
 	AddSpecialResearchBoniToShip(it->second.get(), pMajor);
 
-	pMajor->GetShipHistory()->AddShip(it->second, GetSystem(KO.x, KO.y).GetName(), m_iRound);
+	pMajor->GetShipHistory()->AddShip(it->second->ShipHistoryInfo(), GetSystem(KO.x, KO.y).GetName(), m_iRound);
 	return it;
 }
 
@@ -3627,7 +3627,8 @@ void CBotEDoc::CalcShipOrders()
 			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 			CString s;
 			s.Format("%s %s",CLoc::GetString("COLONIZATION"), pSystem->GetName());
-			pMajor->AddToLostShipHistory(*y->second, s, CLoc::GetString("DESTROYED"), m_iRound);
+			pMajor->AddToLostShipHistory(y->second->ShipHistoryInfo(), s, CLoc::GetString("DESTROYED"), m_iRound,
+				y->second->GetCo());
 			// Schiff entfernen
 			y->second->UnsetCurrentOrder();
 			RemoveShip(y);
@@ -4703,7 +4704,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 				if (j->second->OwnerID() == pMajor->GetRaceID())
 				{
 					// Alle noch "lebenden" Schiffe aus der Schiffshistory ebenfalls als zerstört ansehen
-					pMajor->GetShipHistory()->ModifyShip(j->second,
+					pMajor->GetShipHistory()->ModifyShip(j->second->ShipHistoryInfo(),
 								GetSystem(j->second->GetCo().x, j->second->GetCo().y).GetLongName(), m_iRound,
 								CLoc::GetString("UNKNOWN"), CLoc::GetString("DESTROYED"));
 					m_ShipMap.EraseAt(j);
@@ -5209,7 +5210,7 @@ void CBotEDoc::CalcAlienShipEffects()
 
 						// für jedes Schiff eine Meldung über den Verlust machen
 						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-						pShipOwner->AddToLostShipHistory(*pShip, CLoc::GetString("COMBAT"), CLoc::GetString("MISSED"), m_iRound);
+						pShipOwner->AddToLostShipHistory(pShip->ShipHistoryInfo(), CLoc::GetString("COMBAT"), CLoc::GetString("MISSED"), m_iRound, pShip->GetCo());
 						CString s;
 						s.Format("%s", CLoc::GetString("DESTROYED_SHIPS_IN_COMBAT",0,pShip->GetName()));
 						CEmpireNews message;

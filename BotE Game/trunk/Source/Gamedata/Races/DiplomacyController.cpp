@@ -178,7 +178,7 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 
 						i->second->SetOwner(pMajor->GetRaceID());
 						// Schiff in die Shiphistory stecken
-						pMajor->GetShipHistory()->AddShip(i->second, pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).GetLongName(), pDoc->GetCurrentRound());
+						pMajor->GetShipHistory()->AddShip(i->second->ShipHistoryInfo(), pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).GetLongName(), pDoc->GetCurrentRound());
 					}
 				}
 			}

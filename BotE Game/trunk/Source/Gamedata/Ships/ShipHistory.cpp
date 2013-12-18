@@ -95,29 +95,19 @@ void CShipHistory::Serialize(CArchive &ar)
 /// dabei automatisch gemacht. Es wird ebenfalls überprüft, dass dieses Schiff nicht schon hinzugefügt wurde.
 /// Zusätzlich müssen als Parameter noch der Name des Systems übergeben werden, in dem das Schiff gebaut wurde,
 /// sowie die aktuelle Runde.
-void CShipHistory::AddShip(const boost::shared_ptr<const CShips>& ship, const CString& buildsector, short round)
+void CShipHistory::AddShip(const CShipHistoryStruct& ship, const CString& buildsector, short round)
 {
 	// Überprüfen, das dieses Schiff nicht schon in der Liste der Schiffe vorhanden ist
 	for (int i = 0; i < m_ShipHistory.GetSize(); i++)
-		if (ship->GetName() == m_ShipHistory.GetAt(i).m_strShipName)
+		if (ship.m_strShipName == m_ShipHistory.GetAt(i).m_strShipName)
 		{
-			//AfxMessageBox("BUG: Ship -" + ship->GetName() + "-  allready exists in shiphistory!\nPlease post a bugreport at www.birth-of-the-empires.de");
-			MYTRACE("general")(MT::LEVEL_INFO, "Ship already exists in shiphistory: %d\n", ship->GetName());
+			MYTRACE("general")(MT::LEVEL_INFO, "Ship already exists in shiphistory: %d\n", ship.m_strShipName);
 			return;
 		}
-	CShipHistoryStruct temp;
-	temp.m_strShipName = ship->GetName();
-	temp.m_strShipType = ship->GetShipTypeAsString();
-	temp.m_strShipClass = ship->GetShipClass();
+	CShipHistoryStruct temp(ship);
 	temp.m_strSectorName = buildsector;
 	temp.m_strCurrentSector = buildsector;
-	temp.m_strCurrentTask = ship->GetCurrentOrderAsString();
-	temp.m_strTarget = ship->GetCurrentTargetAsString();
-	temp.m_strKindOfDestroy = "";
 	temp.m_iBuildRound = round;
-	temp.m_iDestroyRound = 0;
-	temp.m_iExperiance = ship->GetCrewExperience();
-
 
 	m_ShipHistory.Add(temp);
 }
@@ -128,48 +118,29 @@ void CShipHistory::AddShip(const boost::shared_ptr<const CShips>& ship, const CS
 /// für den Parameter <code>destroyType<code> die Art der Zerstörung als CString übergeben. Außerdem wird der neue
 /// Status des Schiffes im Parameter <code>status<code> übergeben, z.B. zerstört, vermisst usw.
 /// Konnte das Schiff modifiziert werden, so gibt die Funktion <code>true</code> zurück, sonst <code>false</code>
-bool CShipHistory::ModifyShip(const boost::shared_ptr<const CShips>& ship, const CString& sector, short destroyRound, const CString& destroyType, const CString& status)
+bool CShipHistory::ModifyShip(const CShipHistoryStruct& ship, const CString& sector, short destroyRound,
+	const CString& destroyType, const CString& status)
 {
 	for (int i = 0; i < m_ShipHistory.GetSize(); i++)
 	{
-		if (m_ShipHistory.GetAt(i).m_strShipName == ship->GetName())
+		if (m_ShipHistory.GetAt(i).m_strShipName == ship.m_strShipName)
 		{
-			m_ShipHistory.ElementAt(i).m_strCurrentSector = sector;
-			m_ShipHistory.ElementAt(i).m_strCurrentTask = ship->GetCurrentOrderAsString();
-			m_ShipHistory.ElementAt(i).m_iExperiance = ship->GetCrewExperience();
-			m_ShipHistory.ElementAt(i).m_strTarget = ship->GetCurrentTargetAsString();
+			CShipHistoryStruct temp(ship);
+			temp.m_strCurrentSector = sector;
 
 			if (destroyRound != 0)
 			{
-				m_ShipHistory.ElementAt(i).m_iDestroyRound = destroyRound;
-				m_ShipHistory.ElementAt(i).m_strKindOfDestroy = destroyType;
-				m_ShipHistory.ElementAt(i).m_strSectorName = sector;
-				m_ShipHistory.ElementAt(i).m_strCurrentTask = status;
+				temp.m_iDestroyRound = destroyRound;
+				temp.m_strKindOfDestroy = destroyType;
+				temp.m_strSectorName = sector;
+				temp.m_strCurrentTask = status;
 			}
-			else
-			{
-				m_ShipHistory.ElementAt(i).m_iDestroyRound = 0;
-				m_ShipHistory.ElementAt(i).m_strKindOfDestroy = "";
-			}
+			m_ShipHistory.ElementAt(i) = temp;
 
 			return true;
 		}
 	}
 	return false;
-}
-
-/// Funktion entfernt ein bestimmtes Schiff aus der Schiffshistory.
-void CShipHistory::RemoveShip(const CShips* ship)
-{
-	for (int i = 0; i < m_ShipHistory.GetSize(); i++)
-		if (m_ShipHistory.GetAt(i).m_strShipName == ship->GetName())
-		{
-			m_ShipHistory.RemoveAt(i);
-			return;
-		}
-
-	//AfxMessageBox("BUG: Ship -" + ship->GetName() + "- doesn't exist in shiphistory!\nPlease post a bugreport at www.birth-of-the-empires.de");
-	MYTRACE("general")(MT::LEVEL_INFO, "Ship doesn't exist in shiphistory: %d\n", ship->GetName());
 }
 
 /// Funktion gibt die Anzahl der noch lebenden Schiffe zurück, wenn der Parameter <code>shipAlive</code> wahr ist.

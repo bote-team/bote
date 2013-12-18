@@ -8,7 +8,6 @@
 #include "RaceController.h"
 #include "Ships/Ships.h"
 #include "ClientWorker.h"
-#include "boost/make_shared.hpp"
 
 
 
@@ -485,13 +484,11 @@ bool CMajor::AHumanPlays() const {
 	return doc.GetCurrentRound() > clp.GetAutoTurns();
 }
 
-void CMajor::AddToLostShipHistory(const CShips& Ship, const CString& sEvent,
-	const CString& sStatus, unsigned short round)
+void CMajor::AddToLostShipHistory(const CShipHistoryStruct& ship, const CString& sEvent,
+	const CString& sStatus, unsigned short round, const CPoint& co)
 {
-	const CPoint& co = Ship.GetCo();
 	const CBotEDoc& doc = *resources::pDoc;
-	const boost::shared_ptr<const CShips> s(boost::make_shared<CShips>(Ship));
-	m_ShipHistory.ModifyShip(s, doc.GetSystem(co.x, co.y).GetLongName(), round, sEvent, sStatus);
+	m_ShipHistory.ModifyShip(ship, doc.GetSystem(co.x, co.y).GetLongName(), round, sEvent, sStatus);
 }
 
 void CMajor::LostFlagShip(const CShip& ship)

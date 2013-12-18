@@ -18,6 +18,7 @@
 class CShips;
 class CShip;
 class CEmpire;
+struct CShipHistoryStruct;
 
 using namespace std;
 
@@ -211,8 +212,8 @@ public:
 	bool CanBeContactedBy(const CString& sRaceID) const;
 	virtual void Contact(const CRace& Race, const CPoint& p);
 
-	virtual void AddToLostShipHistory(const CShips&, const CString&,
-		const CString&, unsigned short) {};
+	virtual void AddToLostShipHistory(const CShipHistoryStruct&, const CString&,
+		const CString&, unsigned short, const CPoint&) {};
 
 	virtual void LostFlagShip(const CShip&) {};
 	virtual void LostStation(SHIP_TYPE::Typ) {};
