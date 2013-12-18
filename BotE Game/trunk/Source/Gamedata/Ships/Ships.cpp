@@ -573,14 +573,6 @@ void CShips::Scrap(CMajor& major, CSystem& sy, bool disassembly)
 	for(CShips::const_iterator x = begin(); x != end(); ++x)
 		x->second->Scrap(major, sy, disassembly);
 	CShip::Scrap(major, sy, disassembly);
-
-	// Wenn es ein Au?enposten oder eine Sternbasis ist,
-	// dann dem Sektor bekanntgeben, dass in ihm keine Station mehr ist
-	if (IsStation() && disassembly)
-	{
-		sy.UnsetOutpost(OwnerID());
-		sy.UnsetStarbase(OwnerID());
-	}
 }
 
 CString CShips::SanityCheckUniqueness(std::set<CString>& already_encountered) const {
