@@ -3538,7 +3538,8 @@ bool CBotEDoc::BuildStation(CShips& ship, SHIP_ORDER::Typ order, CSystem& system
 			if (k->second->IsStation() && k->second->GetCo() == system.GetCo())
 			{
 				AssertBotE(k->second->Key() != ship.Key());
-				k->second->Scrap(*pMajor, system, false);
+				if(order != SHIP_ORDER::BUILD_STARBASE)
+					k->second->Scrap(*pMajor, system, false);
 				m_ShipMap.EraseAt(k);
 				break;
 			}
