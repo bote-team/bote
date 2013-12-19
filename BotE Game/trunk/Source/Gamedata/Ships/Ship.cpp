@@ -509,6 +509,7 @@ static bool ShouldUnsetOrder(SHIP_ORDER::Typ order) {
 	switch(order) {
 		case SHIP_ORDER::ATTACK_SYSTEM:
 		case SHIP_ORDER::BLOCKADE_SYSTEM:
+		case SHIP_ORDER::DESTROY_SHIP:
 		case SHIP_ORDER::COLONIZE:
 		case SHIP_ORDER::TERRAFORM:
 		case SHIP_ORDER::BUILD_OUTPOST:
