@@ -341,17 +341,24 @@ bool CMapTile::IsStationBuildable(SHIP_ORDER::Typ order, const CString& race) co
 	if(order == SHIP_ORDER::UPGRADE_OUTPOST && GetOutpost(race)
 		|| order == SHIP_ORDER::UPGRADE_STARBASE && GetStarbase(race)) {
 		const CBotEDoc* pDoc = resources::pDoc;
-		CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(race));
-		SHIP_TYPE::Typ type = (order == SHIP_ORDER::UPGRADE_OUTPOST)
+		const CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(race));
+		const SHIP_TYPE::Typ type = (order == SHIP_ORDER::UPGRADE_OUTPOST)
 			? SHIP_TYPE::OUTPOST : SHIP_TYPE::STARBASE;
-		USHORT bestbuildableID = pMajor->BestBuildableVariant(type, pDoc->m_ShipInfoArray);
-		USHORT industry = pDoc->m_ShipInfoArray.GetAt(bestbuildableID-10000).GetBaseIndustry();
+		const int bestbuildableID = pMajor->BestBuildableVariant(type, pDoc->m_ShipInfoArray);
+		if(bestbuildableID == -1)
+			return false;
+		const CShipInfo& bestbuildableinfo = pDoc->m_ShipInfoArray.GetAt(bestbuildableID-10000);
 		for(CShipMap::const_iterator k = pDoc->m_ShipMap.begin(); k != pDoc->m_ShipMap.end(); ++k)
-			if (k->second->GetShipType() == type && k->second->GetCo() == m_Co) {
-				if (pDoc->m_ShipInfoArray.GetAt(k->second->GetID()-10000).GetBaseIndustry()
-					< industry) {
+			if (k->second->GetShipType() == type && k->second->GetCo() == m_Co)
+			{
+				const CShipInfo& info = pDoc->m_ShipInfoArray.GetAt(k->second->GetID()-10000);
+				if (info.GetBaseIndustry() < bestbuildableinfo.GetBaseIndustry()) {
 					return StationBuildContinuable(race, *this);
 				}
+				CShips temp(bestbuildableinfo);
+				pDoc->AddSpecialResearchBoniToShip(&temp, pMajor);
+				if(k->second->IsWorseThan(temp))
+					return StationBuildContinuable(race, *this);
 				break;
 			}
 	}

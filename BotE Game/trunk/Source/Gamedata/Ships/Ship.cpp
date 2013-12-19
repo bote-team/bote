@@ -811,6 +811,41 @@ unsigned CShip::GetMaxMaxShield() const {
 // bool statements about this ship
 //////////////////////////////////////////////////////////////////////
 
+/*
+ * Judge whether this ship is "worse" than the passed one.
+ * Currently only used for special techs which can improve stations,
+ * extend with missing things if needed.
+ */
+bool CShip::IsWorseThan(const CShip& o) const
+{
+	if(m_Shield.GetMaxShield() < o.m_Shield.GetMaxShield() ||
+		m_Hull.GetMaxHull() < o.m_Hull.GetMaxHull() ||
+		m_iScanPower < o.m_iScanPower)
+	return true;
+
+	if(m_BeamWeapons.GetSize() < o.m_BeamWeapons.GetSize())
+		return true;
+	if(!m_BeamWeapons.IsEmpty())
+	{
+		const CBeamWeapons& ours = m_BeamWeapons.GetAt(0);
+		const CBeamWeapons& theirs = o.m_BeamWeapons.GetAt(0);
+		if(ours.GetBeamPower() < theirs.GetBeamPower() || ours.GetRechargeTime() > theirs.GetRechargeTime())
+			return true;
+	}
+
+	if(m_TorpedoWeapons.GetSize() < o.m_TorpedoWeapons.GetSize())
+		return true;
+	if(!m_TorpedoWeapons.IsEmpty())
+	{
+		const CTorpedoWeapons& ours = m_TorpedoWeapons.GetAt(0);
+		const CTorpedoWeapons& theirs = o.m_TorpedoWeapons.GetAt(0);
+		if(ours.GetAccuracy() < theirs.GetAccuracy() || ours.GetTupeFirerate() > theirs.GetTupeFirerate())
+			return true;
+	}
+
+	return false;
+}
+
 bool CShip::IonstormCanImproveShields() const {
 	return GetMaxMaxShield() > m_Shield.GetMaxShield();
 }

@@ -214,6 +214,13 @@ public:
 	// bool statements about this ship
 	//////////////////////////////////////////////////////////////////////
 
+	/*
+	 * Judge whether this ship is "worse" than the passed one.
+	 * Currently only used for special techs which can improve stations,
+	 * extend with missing things if needed.
+	 */
+	bool IsWorseThan(const CShip& o) const;
+
 	bool IonstormCanImproveShields() const;
 
 	//is this a civil ship (colony, transport, probe)

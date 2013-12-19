@@ -2117,12 +2117,12 @@ void CBotEDoc::RemoveShip(CShipMap::iterator& ship)
 /// Eigenschaften der übergebenen Schiffes.
 /// @param pShip Schiff welches durch Spezialforschungen eventuell verbessert wird
 /// @param pShipOwner Zeiger auf den Besitzer des Schiffes
-void CBotEDoc::AddSpecialResearchBoniToShip(CShips* pShip, CMajor* pShipOwner) const
+void CBotEDoc::AddSpecialResearchBoniToShip(CShips* pShip, const CMajor* pShipOwner) const
 {
 	if (!pShip || !pShipOwner)
 		return;
 
-	CResearchInfo* pInfo = pShipOwner->GetEmpire()->GetResearch()->GetResearchInfo();
+	const CResearchInfo* pInfo = pShipOwner->GetEmpire()->GetResearch()->GetResearchInfo();
 	if (!pInfo)
 		return;
 

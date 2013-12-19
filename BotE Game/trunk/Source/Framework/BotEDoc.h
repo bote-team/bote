@@ -186,7 +186,7 @@ public:
 	/// Eigenschaften der übergebenen Schiffes.
 	/// @param pShip Schiff welches durch Spezialforschungen eventuell verbessert wird
 	/// @param pShipOwner Zeiger auf den Besitzer des Schiffes
-	void AddSpecialResearchBoniToShip(CShips* pShip, CMajor* pShipOwner) const;
+	void AddSpecialResearchBoniToShip(CShips* pShip, const CMajor* pShipOwner) const;
 
 	/// Funktion generiert die Starmaps, so wie sie nach Rundenberechnung auch angezeigt werden können.
 	/// @param sOnlyForRaceID wenn dieser Wert gesetzt, wird die Starmap nur für diese Rasse neu berechnet
