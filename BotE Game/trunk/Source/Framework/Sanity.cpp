@@ -193,6 +193,37 @@ void CSanity::SanityCheckRacePtrUseCounts(const CBotEDoc& doc)
 	AssertBotE(count == use_counts.end());
 }
 
+void CSanity::SanityCheckShipsInSectors(const CBotEDoc& doc)
+{
+	const std::vector<CSystem>& systems = doc.m_Systems;
+	const CShipMap& shipmap = doc.m_ShipMap;
+
+	for(std::vector<CSystem>::const_iterator it = systems.begin(); it != systems.end(); ++it)
+	{
+		const std::map<CString, CShipMap>& ships = it->ShipsInSector();
+		for(std::map<CString, CShipMap>::const_iterator itt = ships.begin(); itt != ships.end(); ++itt)
+			for(CShipMap::const_iterator ittt = itt->second.begin(); ittt != itt->second.end(); ++ittt)
+			{
+				const CShipMap::const_iterator found = shipmap.find(ittt->second->Key());
+				AssertBotE(found != shipmap.end());
+				AssertBotE(found->second->GetCo() == it->GetCo());
+				AssertBotE(found->second == ittt->second);
+			}
+	}
+
+	for(CShipMap::const_iterator it = shipmap.begin(); it != shipmap.end(); ++it)
+	{
+		const CPoint& co = it->second->GetCo();
+		const std::map<CString, CShipMap> ships = systems.at(CoordsToIndex(co.x, co.y)).ShipsInSector();
+		const std::map<CString, CShipMap>::const_iterator found_race = ships.find(it->second->OwnerID());
+		AssertBotE(found_race != ships.end());
+		const CShipMap::const_iterator found_ship = found_race->second.find(it->second->MapTileKey());
+		AssertBotE(found_ship != found_race->second.end());
+		AssertBotE(found_ship->second == it->second);
+	}
+
+}
+
 //void CSanity::ShipInfo(const CArray<CShip, CShip>& shiparray, int index, const CString& indexname) {
 //	if(!MT::CMyTrace::IsLoggingEnabledFor("shipindices"))
 //		return;
