@@ -123,6 +123,11 @@ CShipMap::iterator CShipMap::Add(const boost::shared_ptr<CShips>& ship) {
 	//}
 
 	const unsigned key = NextKey();
+#ifdef CONSISTENCY_CHECKS
+	//no duplicates
+	for(const_iterator it = begin(); it != end(); ++it)
+		AssertBotE(it->second != ship);
+#endif
 	CShipMap::iterator result = m_Ships.insert(end(), std::make_pair(key, ship));
 	if(m_Systems)
 	{
