@@ -100,6 +100,7 @@ void CSanity::SanityCheckShip(const CShips& ship)
 void CSanity::SanityCheckFleet(const CShips& ship)
 {
 	SanityCheckShip(ship);
+	AssertBotE(resources::pDoc->m_ShipMap.at(ship.Key()).get() == &ship);
 	for(CShips::const_iterator i = ship.begin(); i != ship.end(); ++i) {
 		AssertBotE(!i->second->HasFleet());
 		SanityCheckShip(*i->second);
