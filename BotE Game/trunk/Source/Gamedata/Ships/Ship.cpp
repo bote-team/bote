@@ -281,6 +281,20 @@ void CShip::Serialize(CArchive &ar)
 // getting
 //////////////////////////////////////////////////////////////////////
 
+const boost::shared_ptr<CRace> CShip::Owner() const
+{
+	const boost::shared_ptr<CRace>& owner = CInGameEntity::Owner();
+	AssertBotE(owner);
+	return owner;
+}
+
+CString CShip::OwnerID() const
+{
+	const CString& owner = CInGameEntity::OwnerID();
+	AssertBotE(!owner.IsEmpty());
+	return owner;
+}
+
 // Funktion gibt den Schiffstyp als char* zurück
 CString CShip::GetShipTypeAsString(BOOL plural) const
 {

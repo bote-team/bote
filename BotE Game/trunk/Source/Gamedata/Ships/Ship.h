@@ -90,6 +90,8 @@ public:
 	const CArray<CTroop>* GetTransportedTroops(void) const {return &m_Troops;}
 
 	USHORT GetID() const {return m_iID;}
+	const boost::shared_ptr<CRace> Owner() const;
+	CString OwnerID() const;
 	CPoint GetTargetKO() const {return m_TargetKO;}
 	CArray<Sector>* GetPath() {return &m_Path;}
 	const CArray<Sector>* GetPath() const {return &m_Path;}
