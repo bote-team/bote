@@ -125,13 +125,9 @@ public:
 
 	// zum Schreiben der Membervariablen
 	void SetID(USHORT ID) {m_iID = ID+10000;}
-	void SetCo(int x, int y)
-	{
-		m_Co = CPoint(x, y);
-		AssertBotE(PT_IN_RECT(m_Co, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT));
-	}
+	void SetCo(int x, int y);
+	void SetOwner(const CString& id) { CInGameEntity::SetOwner(id); }
 	void SetTargetKO(const CPoint& TargetKO, const bool simple_setter = false);
-	void SetOwner(const CString& id);
 	void SetMaintenanceCosts(USHORT MaintenanceCosts) {m_iMaintenanceCosts = MaintenanceCosts;}
 	void SetShipType(SHIP_TYPE::Typ nShipType) {m_iShipType = nShipType;}
 	void SetShipSize(SHIP_SIZE::Typ nSize) {m_nShipSize = nSize;}

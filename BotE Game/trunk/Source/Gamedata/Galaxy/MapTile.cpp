@@ -14,6 +14,7 @@
 #include "BotEDoc.h"
 #include "Races/Major.h"
 #include "boost/make_shared.hpp"
+#include "Ships/ShipMap.h"
 
 
 
@@ -28,6 +29,7 @@ static char THIS_FILE[]=__FILE__;
 //////////////////////////////////////////////////////////////////////
 CMapTile::CMapTile(void) :
 	CInGameEntity(),
+	m_Ships(),
 	m_pAnomaly()
 {
 	Reset(false);
@@ -35,6 +37,7 @@ CMapTile::CMapTile(void) :
 
 CMapTile::CMapTile(int x, int y) :
 	CInGameEntity(x, y),
+	m_Ships(),
 	m_pAnomaly()
 {
 	Reset(false);
@@ -47,8 +50,7 @@ CMapTile::CMapTile(const CMapTile& other) :
 	m_bShipPort(other.m_bShipPort),
 	m_Outpost(other.m_Outpost),
 	m_Starbase(other.m_Starbase),
-	m_bWhoIsOwnerOfShip(other.m_bWhoIsOwnerOfShip),
-	m_mNumbersOfShips(other.m_mNumbersOfShips),
+	m_Ships(other.m_Ships),
 	m_IsStationBuild(other.m_IsStationBuild),
 	m_iScanPower(other.m_iScanPower),
 	m_iNeededScanPower(other.m_iNeededScanPower),
@@ -69,8 +71,7 @@ CMapTile& CMapTile::operator=(const CMapTile& other){
 		m_bShipPort = other.m_bShipPort;
 		m_Outpost = other.m_Outpost;
 		m_Starbase = other.m_Starbase;
-		m_bWhoIsOwnerOfShip = other.m_bWhoIsOwnerOfShip;
-		m_mNumbersOfShips = other.m_mNumbersOfShips;
+		m_Ships = other.m_Ships;
 		m_IsStationBuild = other.m_IsStationBuild;
 		m_iScanPower = other.m_iScanPower;
 		m_iNeededScanPower = other.m_iNeededScanPower;
@@ -128,12 +129,6 @@ void CMapTile::Serialize(CArchive &ar)
 		for (std::map<CString, SHIP_ORDER::Typ>::const_iterator it = m_IsStationBuild.begin();
 				it != m_IsStationBuild.end(); ++it)
 			ar << it->first << static_cast<unsigned>(it->second);
-		ar << m_bWhoIsOwnerOfShip.size();
-		for (set<CString>::const_iterator it = m_bWhoIsOwnerOfShip.begin(); it != m_bWhoIsOwnerOfShip.end(); ++it)
-			ar << *it;
-		ar << m_mNumbersOfShips.size();
-		for(std::map<CString, unsigned>::const_iterator it = m_mNumbersOfShips.begin(); it != m_mNumbersOfShips.end(); ++it)
-			ar << it->first << it->second;
 		ar << m_iNeededStationPoints.size();
 		for (map<CString, short>::const_iterator it = m_iNeededStationPoints.begin(); it != m_iNeededStationPoints.end(); ++it)
 			ar << it->first << it->second;
@@ -192,26 +187,6 @@ void CMapTile::Serialize(CArchive &ar)
 			unsigned value;
 			ar >> value;
 			m_IsStationBuild.insert(std::pair<CString, SHIP_ORDER::Typ>(key, static_cast<SHIP_ORDER::Typ>(value)));
-		}
-		m_bWhoIsOwnerOfShip.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString value;
-			ar >> value;
-			m_bWhoIsOwnerOfShip.insert(value);
-		}
-		m_mNumbersOfShips.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for(unsigned i = 0; i < mapSize; ++i)
-		{
-			CString key;
-			ar >> key;
-			unsigned value;
-			ar >> value;
-			m_mNumbersOfShips.insert(std::pair<CString, unsigned>(key, value));
 		}
 		m_iNeededStationPoints.clear();
 		mapSize = 0;
@@ -301,6 +276,17 @@ CString CMapTile::GetLongName() const
 	return s;
 }
 
+BOOLEAN CMapTile::GetOwnerOfShip(const CString& sRace) const
+{
+	std::map<CString, CShipMap>::const_iterator found = m_Ships.find(sRace);
+	if(found == m_Ships.end())
+		return false;
+	for(CShipMap::const_iterator it = found->second.begin(); it != found->second.end(); ++it)
+		if(!it->second->IsStation())
+			return true;
+	return false;
+}
+
 /// Diese Funktion gibt die Scanpower zurück, die die Majorrace <code>Race</code> in diesem Sektor hat.
 short CMapTile::GetScanPower(const CString& sRace, bool bWith_ships) const
 {
@@ -313,9 +299,14 @@ short CMapTile::GetScanPower(const CString& sRace, bool bWith_ships) const
 		const CBotEDoc* pDoc = resources::pDoc;
 		const CRaceController* pCtrl = pDoc->GetRaceCtrl();
 		const CRace* pRace = pCtrl->GetRace(sRace);
-		for(std::map<CString, unsigned>::const_iterator it = m_mNumbersOfShips.begin(); it != m_mNumbersOfShips.end(); ++ it) {
+		for(std::map<CString, CShipMap>::const_iterator it = m_Ships.begin(); it != m_Ships.end(); ++it) {
 			if(pRace->GetRaceID() == it->first || pRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
-				scan_power_due_to_ship_number += it->second;
+			{
+				scan_power_due_to_ship_number += it->second.GetSize();
+				for(CShipMap::const_iterator itt = it->second.begin(); itt != it->second.end(); ++itt)
+					scan_power_due_to_ship_number += itt->second->GetFleetSize();
+			}
+
 		}
 	}
 	map<CString, short>::const_iterator it = m_iScanPower.find(sRace);
@@ -386,15 +377,6 @@ void CMapTile::BuildStation(SHIP_TYPE::Typ station, const CString& race) {
 //////////////////////////////////////////////////////////////////////
 // scanning
 //////////////////////////////////////////////////////////////////////
-
-void CMapTile::IncrementNumberOfShips(const CString& race) {
-	const std::map<CString, unsigned>::iterator found = m_mNumbersOfShips.find(race);
-	if(found == m_mNumbersOfShips.end()) {
-		m_mNumbersOfShips.insert(std::pair<CString, unsigned>(race, 1));
-		return;
-	}
-	++(found->second);
-}
 
 /// Funktion legt die Scanpower <code>scanpower</code>, welche die Majorrace <code>Race</code>
 /// in diesem Sektor hat, fest.
@@ -655,8 +637,6 @@ void CMapTile::ClearAllPoints(bool /*call_up*/)
 	}
 	m_IsStationBuild.clear();
 
-	m_bWhoIsOwnerOfShip.clear();
-	m_mNumbersOfShips.clear();
 	// Die benötigte Scanpower um Schiffe sehen zu können wieder auf NULL setzen
 	m_iNeededScanPower.clear();
 	m_iScanPower.clear();
@@ -664,4 +644,31 @@ void CMapTile::ClearAllPoints(bool /*call_up*/)
 	m_Outpost.Empty();
 	m_Starbase.Empty();
 	m_bShipPort.clear();
+}
+
+void CMapTile::AddShip(const boost::shared_ptr<CShips>& ship)
+{
+	std::map<CString, CShipMap>::iterator race_ships =
+		m_Ships.insert(std::pair<CString, CShipMap>(ship->OwnerID(), CShipMap(NULL, true))).first;
+	race_ships->second.Add(ship);
+}
+
+void CMapTile::EraseShip(const boost::shared_ptr<const CShips>& ship)
+{
+	std::map<CString, CShipMap>::iterator race_ships = m_Ships.find(ship->OwnerID());
+	AssertBotE(race_ships != m_Ships.end());
+	CShipMap::iterator to_erase = race_ships->second.find(ship->MapTileKey());
+	AssertBotE(to_erase != race_ships->second.end());
+	race_ships->second.EraseAt(to_erase);
+	if(race_ships->second.empty())
+		m_Ships.erase(race_ships);
+}
+
+void CMapTile::ClearShips()
+{
+	while(!m_Ships.empty())
+	{
+		CShipMap& ships = m_Ships[m_Ships.begin()->first];
+		EraseShip(ships.front());
+	}
 }

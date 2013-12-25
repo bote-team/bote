@@ -37,7 +37,7 @@
 class CBotEDoc;
 class CMajor;
 
-class CShips : public CShip
+class CShips : public CShip, public boost::enable_shared_from_this<CShips>
 {
 public:
 	enum RETREAT_MODE
@@ -96,6 +96,7 @@ public:
 	int GetFleetSize() const { return m_Fleet.GetSize(); }
 	const CShipMap& Fleet() const { return m_Fleet; }
 	unsigned Key() const { return m_Key; }
+	unsigned MapTileKey() const { return m_MapTileKey; }
 
 	// zum Lesen der Membervariablen
 	bool LeaderIsCurrent() const { return m_bLeaderIsCurrent; }
@@ -137,10 +138,13 @@ public:
 	bool UnassignFlagship();
 
 	void SetKey(unsigned key) { m_Key = key; }
+	void SetMapTileKey(unsigned key) { m_MapTileKey = key; }
 
 	// zum Schreiben der Membervariablen
 	//simple setting
+	struct NotifySector;
 	void SetKO(int x, int y);
+	void SetOwner(const CString& id);
 	void SetCloak(bool bCloakOn);
 	void SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder);
 	void SetTerraform(short planetNumber = -1);
@@ -216,6 +220,7 @@ public:
 
 	//Perform actions to retreat this ship to the given sector.
 	void RetreatFleet(const CPoint& RetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic = NULL);
+	void Retreat(const CPoint& ptRetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic = NULL);
 
 	void CalcEffects(CSector& sector, CRace* pRace,
 			bool bDeactivatedShipScanner, bool bBetterScanner);
@@ -266,6 +271,7 @@ private:
 	// Wenn wir eine Gruppe bilden und dieses Schiff hier Gruppenleader ist, dann werden die anderen Schiffe in die Fleet genommen
 	CShipMap m_Fleet;//other ships in this fleet
 	unsigned m_Key; //index of this CShip in the shipmap
+	unsigned m_MapTileKey;
 	bool m_bLeaderIsCurrent;
 };
 

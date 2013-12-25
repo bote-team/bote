@@ -406,10 +406,9 @@ bool CShip::GetCloak() const {
 // setting
 //////////////////////////////////////////////////////////////////////
 
-void CShip::SetOwner(const CString& id)
+void CShip::SetCo(int x, int y)
 {
-	AssertBotE(!id.IsEmpty());
-	CInGameEntity::SetOwner(id);
+	m_Co = CPoint(x, y);
 }
 
 void CShip::AdoptOrdersFrom(const CShip& ship)
@@ -420,7 +419,7 @@ void CShip::AdoptOrdersFrom(const CShip& ship)
 	SetTerraform(ship.m_nTerraformingPlanet);
 	m_iCurrentOrder = order;
 	m_nCombatTactic = ship.GetCombatTactic();
-	m_Co = ship.m_Co;
+	AssertBotE(m_Co == ship.m_Co);
 	m_TargetKO = ship.GetTargetKO();
 }
 
@@ -1498,7 +1497,6 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 		// Scanstärke auf die Sektoren abhängig von der Scanrange übertragen
 		sector.PutScannedSquare(GetScanRange(), GetScanPower(),
 			*pRace, bBetterScanner, HasSpecial(SHIP_SPECIAL::PATROLSHIP));
-		sector.IncrementNumberOfShips(sRace);
 	}
 	// Schiffe, wenn wir dort nicht eine ausreichend hohe Scanpower haben. Ab Stealthstufe 4 muss das Schiff getarnt
 	// sein, ansonsten gilt dort nur Stufe 3.

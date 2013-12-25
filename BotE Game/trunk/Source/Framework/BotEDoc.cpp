@@ -76,6 +76,8 @@ CBotEDoc::CBotEDoc() :
 	m_fDifficultyLevel(1.0f),
 	m_fStardate(121000.0f),
 	m_ptKO(0, 0),
+	m_Systems(),
+	m_ShipMap(&m_Systems),
 	m_bDataReceived(false),
 	m_bRoundEndPressed(false),
 	m_bDontExit(false),
@@ -2077,13 +2079,14 @@ CShipMap::iterator CBotEDoc::BuildShip(int nID, const CPoint& KO, const CString&
 	AssertBotE(nID >= 10000);
 	nID -= 10000;
 
-	const boost::shared_ptr<CShips> ship(new CShips(m_ShipInfoArray.GetAt(nID)));
-	const CShipMap::iterator it = m_ShipMap.Add(ship);
-	it->second->SetOwner(pOwner->GetRaceID());
-	it->second->SetKO(KO.x, KO.y);
-
+	CShipInfo ship_info(m_ShipInfoArray.GetAt(nID));
+	ship_info.SetCo(KO.x, KO.y);
+	ship_info.SetOwner(pOwner->GetRaceID());
 	// Schiffsnamen vergeben
-	it->second->SetName(m_GenShipName.GenerateShipName(pOwner->GetRaceID(), pOwner->GetName(), it->second->IsStation()));
+	ship_info.SetName(m_GenShipName.GenerateShipName(pOwner->GetRaceID(), pOwner->GetName(), ship_info.IsStation()));
+	const boost::shared_ptr<CShips> ships(new CShips(ship_info));
+	const CShipMap::iterator it = m_ShipMap.Add(ships);
+
 
 	// den Rest nur machen, wenn das Schiff durch eine Majorrace gebaut wurde
 	if (!pOwner->IsMajor())
@@ -4436,10 +4439,6 @@ void CBotEDoc::CalcShipEffects()
 			else
 				system.SetStarbase(sRace);
 		}
-		else {
-			// Dem Sektor bekanntgeben, dass in ihm ein Schiff ist
-			system.SetOwnerOfShip(TRUE, sRace);
-		}
 	}
 }
 
@@ -4726,7 +4725,6 @@ void CBotEDoc::CalcEndDataForNextRound()
 				// in allen Sektoren alle Schiffe aus den Sektoren nehmen
 				sy->SetIsStationBuilding(SHIP_ORDER::NONE, ID);
 				sy->UnsetOutpost(ID);
-				sy->SetOwnerOfShip(false, ID);
 				sy->SetShipPort(false, ID);
 				sy->UnsetStarbase(ID);
 			}

@@ -4,17 +4,22 @@
 
 #include "ShipMap.h"
 #include "Ships.h"
+#include "System/System.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 
-CShipMap::CShipMap() :
+CShipMap::CShipMap(std::vector<CSystem>* const systems, bool map_tile) :
 	m_Ships(),
-	m_NextKey(0)
+	m_NextKey(0),
+	m_Systems(systems),
+	m_bMapTile(map_tile)
 {
 	m_CurrentShip = begin();
 	m_FleetShip = begin();
+
+	AssertBotE(!m_Systems || !m_bMapTile);
 }
 
 CShipMap::~CShipMap(void)
@@ -23,9 +28,11 @@ CShipMap::~CShipMap(void)
 }
 
 CShipMap::CShipMap(const CShipMap& o) :
-	m_NextKey(o.m_NextKey)
+	m_Systems(o.m_Systems),
+	m_bMapTile(o.m_bMapTile)
 {
 	Copy(o);
+	AssertBotE(!m_Systems || !m_bMapTile);
 }
 
 CShipMap& CShipMap::operator=(const CShipMap& o)
@@ -34,19 +41,19 @@ CShipMap& CShipMap::operator=(const CShipMap& o)
 		return *this;
 
 	Reset();
-	m_NextKey = o.m_NextKey;
 	Copy(o);
 
+	AssertBotE(m_Systems == o.m_Systems && m_bMapTile == o.m_bMapTile);
+	AssertBotE(!m_Systems || !m_bMapTile);
 	return *this;
 }
 
 void CShipMap::Copy(const CShipMap& o)
 {
-	for(CShipMap::const_iterator i = o.begin(); i != o.end(); ++i)
-	{
-		const boost::shared_ptr<CShips> s(new CShips(*i->second));
-		m_Ships.insert(end(), std::make_pair(i->first, s));
-	}
+	m_NextKey = o.m_NextKey;
+
+	m_Ships = o.m_Ships;
+
 	m_CurrentShip = begin();
 	m_FleetShip = begin();
 	if(!o.empty()) {
@@ -117,13 +124,18 @@ CShipMap::iterator CShipMap::Add(const boost::shared_ptr<CShips>& ship) {
 
 	const unsigned key = NextKey();
 	CShipMap::iterator result = m_Ships.insert(end(), std::make_pair(key, ship));
+	if(m_Systems)
+	{
+		const CPoint& co = result->second->GetCo();
+		m_Systems->at(CoordsToIndex(co.x, co.y)).AddShip(result->second);
+	}
 	if(GetSize() == 1)
 	{
 		m_CurrentShip = result;
 		m_FleetShip = result;
 	}
 	CShipMap::iterator temp = result;
-	result->second->SetKey(key);
+	m_bMapTile ? result->second->SetMapTileKey(key) : result->second->SetKey(key);
 	++temp;
 	AssertBotE(temp == end());
 	return result;
@@ -153,6 +165,10 @@ void CShipMap::Reset() {
 	m_NextKey = 0;
 	m_CurrentShip = begin();
 	m_FleetShip = begin();
+
+	if(m_Systems)
+		for(std::vector<CSystem>::iterator it = m_Systems->begin(); it != m_Systems->end(); ++it)
+			it->ClearShips();
 }
 void CShipMap::EraseAt(CShipMap::iterator& index) {
 	//if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
@@ -171,7 +187,11 @@ void CShipMap::EraseAt(CShipMap::iterator& index) {
 	if(to_erase == index)
 		++index;
 	AssertBotE(to_erase->second);
-	to_erase->second.reset();
+	if(m_Systems)
+	{
+		const CPoint& co = to_erase->second->GetCo();
+		m_Systems->at(CoordsToIndex(co.x, co.y)).EraseShip(to_erase->second);
+	}
 	m_Ships.erase(to_erase);
 	if(empty())
 		Reset();
@@ -224,6 +244,13 @@ int CShipMap::index_of(const CShipMap::const_iterator& position) const {
 const CShips& CShipMap::GetAt(int index) const {
 	AssertBotE(index < GetSize());
 	return *iterator_at(index)->second;
+}
+
+const boost::shared_ptr<const CShips> CShipMap::front() const
+{
+	const CShipMap::const_iterator it = iterator_at(0);
+	AssertBotE(it != end());
+	return iterator_at(0)->second;
 }
 
 //////////////////////////////////////////////////////////////////////

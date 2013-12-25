@@ -7,6 +7,7 @@
 #include "Races/race.h"
 #include "Loc.h"
 #include "system/System.h"
+#include "BoteDoc.h"
 
 
 
@@ -25,6 +26,7 @@ CShips::CShips() :
 	CShip(),
 	m_Fleet(),
 	m_Key(0),
+	m_MapTileKey(0),
 	m_bLeaderIsCurrent(true)
 {
 }
@@ -33,6 +35,7 @@ CShips::CShips(const CShip& ship) :
 	CShip(ship),
 	m_Fleet(),
 	m_Key(0),
+	m_MapTileKey(0),
 	m_bLeaderIsCurrent(true)
 {
 }
@@ -45,6 +48,7 @@ CShips::CShips(const CShips& o) :
 	CShip(o),
 	m_Fleet(o.m_Fleet),
 	m_Key(o.m_Key),
+	m_MapTileKey(o.m_MapTileKey),
 	m_bLeaderIsCurrent(o.m_bLeaderIsCurrent)
 {
 }
@@ -62,6 +66,7 @@ CShips& CShips::operator=(const CShips& o)
 
 	m_Fleet = o.m_Fleet;
 	m_Key = o.m_Key;
+	m_MapTileKey = o.m_MapTileKey;
 	m_bLeaderIsCurrent = o.m_bLeaderIsCurrent;
 	return *this;
 }
@@ -145,10 +150,46 @@ CString CShips::GetRangeAsString() const {
 // setting
 //////////////////////////////////////////////////////////////////////
 
+struct CShips::NotifySector
+{
+	boost::shared_ptr<CShips> m_Ships;
+	NotifySector(const boost::shared_ptr<CShips>& ships) :
+		m_Ships(ships)
+	{
+		const CPoint& co = m_Ships->GetCo();
+		AssertBotE(IsOnMap(co.x, co.y) && m_Ships->m_Owner);
+		CSystem& system = resources::pDoc->m_Systems.at(CoordsToIndex(co.x, co.y));
+		system.EraseShip(m_Ships);
+	}
+
+	~NotifySector()
+	{
+		const CPoint& co = m_Ships->GetCo();
+		CSystem& system = resources::pDoc->m_Systems.at(CoordsToIndex(co.x, co.y));
+		system.AddShip(m_Ships);
+	}
+};
+
 void CShips::SetKO(int x, int y) {
+	NotifySector temp(shared_from_this());
 	CShip::SetCo(x, y);
 	for(CShips::iterator i = begin(); i != end(); ++i)
-		i->second->SetKO(x, y);
+	{
+		const boost::shared_ptr<CShip> s = boost::static_pointer_cast<CShip>(i->second);
+		s->SetCo(x, y);
+	}
+}
+
+void CShips::SetOwner(const CString& id)
+{
+	AssertBotE(!id.IsEmpty());
+	NotifySector temp(shared_from_this());
+	CShip::SetOwner(id);
+	for(CShips::iterator i = begin(); i != end(); ++i)
+	{
+		const boost::shared_ptr<CShip> s = boost::static_pointer_cast<CShip>(i->second);
+		s->SetOwner(id);
+	}
 }
 
 //removes the element pointed to by the passed iterator from this fleet
@@ -528,8 +569,18 @@ void CShips::RepairCommand(BOOL bAtShipPort, bool bFasterShieldRecharge, CShipMa
 }
 
 void CShips::RetreatFleet(const CPoint& RetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic) {
+	NotifySector temp(shared_from_this());
 	for(CShips::iterator j = begin(); j != end(); ++j)
-		j->second->Retreat(RetreatSector, NewCombatTactic);
+	{
+		boost::shared_ptr<CShip> ship = boost::static_pointer_cast<CShip>(j->second);
+			ship->Retreat(RetreatSector, NewCombatTactic);
+	}
+}
+
+void CShips::Retreat(const CPoint& ptRetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic)
+{
+	NotifySector temp(shared_from_this());
+	CShip::Retreat(ptRetreatSector, NewCombatTactic);
 }
 
 void CShips::CalcEffects(CSector& sector, CRace* pRace,

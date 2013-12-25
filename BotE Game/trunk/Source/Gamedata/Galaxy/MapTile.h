@@ -27,6 +27,7 @@ class CAnomaly;
 class CRace;
 class CShips;
 class CShip;
+class CShipMap;
 
 class CMapTile : public CInGameEntity
 {
@@ -171,18 +172,13 @@ public:
 //// ships in sector ////
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Rasse <code>Race</code> ein
 	/// bzw. mehrere Schiffe in diesem Sektor hat.
-	BOOLEAN GetOwnerOfShip(const CString& sRace) const
-	{
-		if (m_bWhoIsOwnerOfShip.find(sRace) != m_bWhoIsOwnerOfShip.end())
-			return true;
-		return false;
-	}
+	BOOLEAN GetOwnerOfShip(const CString& sRace) const;
 
-	std::set<CString> ShipsInSector() const { return m_bWhoIsOwnerOfShip; }
+	const std::map<CString, CShipMap>& ShipsInSector() const { return m_Ships; }
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob von irgendwem ein Schiff in diesem
 	/// Sektor ist
-	BOOLEAN GetIsShipInSector(void) const {return !m_bWhoIsOwnerOfShip.empty();}
+	BOOLEAN GetIsShipInSector(void) const {return !m_Ships.empty();}
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob von irgendwem eine Station in diesem
 	/// Sektor ist
@@ -262,15 +258,6 @@ public:
 	/// Diese Funktion legt fest, ob die Majorrace <code>Race</code> den Sektor kompletten Sektor
 	/// (inkl. der ganzen Planeten) kennt.
 	void SetFullKnown(const CString& Race) {m_Status[Race] = CMapTile::DISCOVER_STATUS_FULL_KNOWN;}
-
-	/// Funktion legt fest, ob die Majorrace <code>Race</code> ein oder auch mehrer Schiffe in diesem Sektor hat.
-	void SetOwnerOfShip(BOOLEAN is, const CString& sOwner)
-	{
-		if (is)
-			m_bWhoIsOwnerOfShip.insert(sOwner);
-		else
-			m_bWhoIsOwnerOfShip.erase(sOwner);
-	}
 
 //////////////////////////////////////////////////////////////////////
 // stations
@@ -355,8 +342,6 @@ public:
 // scanning
 //////////////////////////////////////////////////////////////////////
 
-	//Add 1 to the number of race's ships in this sector
-	void IncrementNumberOfShips(const CString& race);
 
 	/// Funktion legt die Scanpower <code>scanpower</code>, welche die Majorrace <code>Race</code>
 	/// in diesem Sektor hat, fest.
@@ -428,6 +413,10 @@ public:
 	/// Funktion erzeugt eine zufällige Anomalie im Sektor.
 	void CreateAnomaly(void);
 
+	void AddShip(const boost::shared_ptr<CShips>& ship);
+	void EraseShip(const boost::shared_ptr<const CShips>& ship);
+	void ClearShips();
+
 protected:
 	/// In jeder neuen Runde die IsTerraforming und IsStationBuilding Variablen auf FALSE setzen, wenn Schiffe eine Aktion
 	/// machen, werden diese Variablen später ja wieder korrekt gesetzt. Außerdem werden auch die Besitzerpunkte wieder
@@ -457,11 +446,9 @@ private:
 	/// Besitzt die jeweilige Rasse in dem Sektor eine Sternbasis?
 	CString m_Starbase;
 
-	/// Hat eine Majorrace ein Schiff in diesem Sektor?
-	set<CString> m_bWhoIsOwnerOfShip;
-
-	//race CString has this many ships in this sector
-	std::map<CString, unsigned> m_mNumbersOfShips;
+	//The ships currently in this map tile, by race
+	//main shipmap responsible for updating, ships in fleets included inside of the ships in this variable
+	std::map<CString, CShipMap> m_Ships;
 
 	/// Baut eine bestimmte Majorrasse gerade eine Station in dem Sektor?
 	std::map<CString, SHIP_ORDER::Typ> m_IsStationBuild;

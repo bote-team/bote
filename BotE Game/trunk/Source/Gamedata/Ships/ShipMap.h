@@ -11,19 +11,23 @@
 #pragma once
 
 #include <map>
+#include <vector>
 #include "AssertBotE.h"
 
 class CShips;
+class CSystem;
 
 class CShipMap
 {
 public:
+
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 
-	CShipMap();
+	CShipMap(std::vector<CSystem>* const systems = NULL, bool map_tile = false);
 	virtual ~CShipMap(void);
+
 	CShipMap(const CShipMap& o);
 	CShipMap& operator=(const CShipMap& o);
 
@@ -99,6 +103,8 @@ private:
 	//complexity: linear, avoid usage
 	const CShips& GetAt(int index) const;
 public:
+
+	const boost::shared_ptr<const CShips> front() const;
 
 	//get the CShips with the given key
 	//complexity: logarithmic
@@ -192,4 +198,6 @@ private:
 	//dereferencable should be if this shipmap is completely empty. This can be checked for with the empty()
 	//member function.
 
+	std::vector<CSystem>* const m_Systems;
+	const bool m_bMapTile;
 };

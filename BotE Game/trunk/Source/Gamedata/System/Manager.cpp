@@ -677,36 +677,31 @@ public:
 
 	bool BomberInSector() const
 	{
-		const CRaceController& race_ctrl = *resources::pDoc->GetRaceCtrl();
-		std::set<CString> races = m_pSystem->ShipsInSector();
-		for(std::set<CString>::const_iterator it = races.begin(); it != races.end();)
+		std::map<CString, CShipMap> ships = m_pSystem->ShipsInSector();
+		for(std::map<CString, CShipMap>::const_iterator it = ships.begin(); it != ships.end();)
 		{
-			const DIPLOMATIC_AGREEMENT::Typ agreement = race_ctrl.GetRace(*it)
+			const DIPLOMATIC_AGREEMENT::Typ agreement = it->second.iterator_at(0)->second->Owner()
 				->GetAgreement(m_pSystem->OwnerID());
 			if(agreement != DIPLOMATIC_AGREEMENT::WAR)
 			{
-				it = races.erase(it);
+				it = ships.erase(it);
 				continue;
 			}
 			++it;
 		}
-		return races.empty() ? false : CheckShips(races);
+		return ships.empty() ? false : CheckShips(ships);
 	}
 
 private:
 	CSystem* m_pSystem;
 
-	bool CheckShips(const std::set<CString>& enemies) const
+	bool CheckShips(const std::map<CString, CShipMap>& ships) const
 	{
-		const CShipMap& ships = resources::pDoc->m_ShipMap;
 		const int scan_power = m_pSystem->GetScanPower(m_pSystem->OwnerID(), true);
-		for(CShipMap::const_iterator it = ships.begin(); it != ships.end(); ++it)
-		{
-			if(it->second->GetCo() != m_pSystem->GetCo() || enemies.find(it->second->OwnerID()) == enemies.end())
-				continue;
-			if(!it->second->GetCloak() && m_pSystem->GetNeededScanPower(it->second->OwnerID()) <= scan_power)
-				return true;
-		}
+		for(std::map<CString, CShipMap>::const_iterator race = ships.begin(); race != ships.end(); ++race)
+			for(CShipMap::const_iterator ship = race->second.begin(); ship != race->second.end(); ++ship)
+				if(!ship->second->GetCloak() && m_pSystem->GetNeededScanPower(ship->second->OwnerID()) <= scan_power)
+					return true;
 		return false;
 	}
 

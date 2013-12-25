@@ -492,9 +492,14 @@ inline bool PT_IN_RECT(const CPoint& pt, int x1, int y1, int x2, int y2)
 	return (x1 <= pt.x && pt.x < x2) && (y1 <= pt.y && pt.y < y2);
 }
 
+inline bool IsOnMap(int x, int y)
+{
+	return PT_IN_RECT(CPoint(x, y), 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT);
+}
+
 inline int CoordsToIndex(int x, int y)
 {
-	AssertBotE(PT_IN_RECT(CPoint(x, y), 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT));
+	AssertBotE(IsOnMap(x, y));
 	return x + STARMAP_SECTORS_HCOUNT * y;
 }
 
