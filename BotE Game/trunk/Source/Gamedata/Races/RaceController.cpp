@@ -23,7 +23,7 @@ CRaceController::~CRaceController(void)
 	//races, as the inner shared ptr would only be resetted by CRace's destructor which isn't called
 	//due to use count not being 1 (circular causality trap)
 	for(const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
-		it->second->Reset(true);
+		it->second->ResetDiplomacyAI();
 }
 
 ///////////////////////////////////////////////////////////////////////
