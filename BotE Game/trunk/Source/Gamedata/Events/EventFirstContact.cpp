@@ -13,10 +13,12 @@ IMPLEMENT_SERIAL (CEventFirstContact, CObject, 1)
 CEventFirstContact::CEventFirstContact(const CString &sPlayersRaceID, const CString &sRaceID) : m_sRaceID(sRaceID),
 	CEventScreen(sPlayersRaceID, "FirstContact")
 {
+	m_Type = EVENT_SCREEN_TYPE_FIRST_CONTACT;
 }
 
 CEventFirstContact::CEventFirstContact(void) : m_sRaceID("")
 {
+	m_Type = EVENT_SCREEN_TYPE_FIRST_CONTACT;
 }
 
 CEventFirstContact::~CEventFirstContact(void)

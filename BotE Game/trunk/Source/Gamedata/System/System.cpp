@@ -2028,8 +2028,8 @@ void CSystem::Colonize(const CShips& ship, CMajor& major)
 		{
 			resources::pClientWorker->AddSoundMessage(SNDMGR_MSG_CLAIMSYSTEM, major , 0);
 			resources::pClientWorker->SetToEmpireViewFor(major);
-			CEventColonization* eventScreen = new CEventColonization(major.GetRaceID(), CLoc::GetString("COLOEVENT_HEADLINE", FALSE, GetName()), CLoc::GetString("COLOEVENT_TEXT_" + major.GetRaceID(), FALSE, GetName()));
-			empire->GetEvents()->Add(eventScreen);
+			const boost::shared_ptr<CEventColonization> eventScreen = boost::make_shared<CEventColonization>(major.GetRaceID(), CLoc::GetString("COLOEVENT_HEADLINE", FALSE, GetName()), CLoc::GetString("COLOEVENT_TEXT_" + major.GetRaceID(), FALSE, GetName()));
+			empire->PushEvent(eventScreen);
 			s.Format("Added Colonization-Eventscreen for Race %s in System %s", major.GetName(), GetName());
 			MYTRACE("general")(MT::LEVEL_INFO, s);
 		}

@@ -146,7 +146,7 @@ void CClientWorker::DoViewWorkOnNewRound(const CMajor& PlayersRace)
 
 	// anzuzeigende View in neuer Runde auswählen
 	// Wenn EventScreens für den Spieler vorhanden sind, so werden diese angezeigt.
-	if (PlayersRace.GetEmpire()->GetEvents()->GetSize() > 0)
+	if (!PlayersRace.GetEmpire()->GetEvents()->empty())
 	{
 		resources::pMainFrame->FullScreenMainView(true);
 		resources::pMainFrame->SelectMainView(VIEWS::EVENT_VIEW, PlayersRace.GetRaceID());

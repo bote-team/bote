@@ -16,6 +16,21 @@ class CEventScreen : public CObject
 public:
 	DECLARE_SERIAL (CEventScreen)
 
+	enum EVENT_SCREEN_TYPE
+	{
+		EVENT_SCREEN_TYPE_ALIEN_ENTITY,
+		EVENT_SCREEN_TYPE_BLOCKADE,
+		EVENT_SCREEN_TYPE_BOMBARDMENT,
+		EVENT_SCREEN_TYPE_COLONIZATION,
+		EVENT_SCREEN_TYPE_FIRST_CONTACT,
+		EVENT_SCREEN_TYPE_GAME_OVER,
+		EVENT_SCREEN_TYPE_RACE_KILLED,
+		EVENT_SCREEN_TYPE_RANDOM,
+		EVENT_SCREEN_TYPE_RESEARCH,
+		EVENT_SCREEN_TYPE_VICTORY,
+		EVENT_SCREEN_TYPE_NONE
+	};
+
 	/// Standardkonstruktor
 	CEventScreen(void);
 
@@ -41,6 +56,8 @@ public:
 	/// @return	der erstellte Tooltip-Text
 	virtual CString GetTooltip(const CPoint &) const {return "";}
 
+	EVENT_SCREEN_TYPE GetType() const { return m_Type; }
+
 // Attribute
 protected:
 	CString m_sRace;
@@ -54,4 +71,6 @@ protected:
 	CString m_strText;
 
 	CArray<CMyButton*> m_Buttons;
+
+	EVENT_SCREEN_TYPE m_Type;
 };

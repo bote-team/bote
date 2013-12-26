@@ -10,6 +10,7 @@ IMPLEMENT_SERIAL (CEventBombardment, CObject, 1)
 CEventBombardment::CEventBombardment(const CString& sPlayersRace, const CString &imageName, const CString &headline, const CString &text)
 	: CEventScreen(sPlayersRace, imageName, headline, text)
 {
+	m_Type = EVENT_SCREEN_TYPE_BOMBARDMENT;
 }
 
 CEventBombardment::~CEventBombardment(void)

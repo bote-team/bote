@@ -15,6 +15,7 @@ CEventResearch::CEventResearch(const CString &sPlayersRaceID, const CString &hea
 	_graphic(),
 	m_byTechlevel(0)
 {
+	m_Type = EVENT_SCREEN_TYPE_RESEARCH;
 }
 
 CEventResearch::CEventResearch(void) :
@@ -22,6 +23,7 @@ CEventResearch::CEventResearch(void) :
 	_graphic(),
 	m_byTechlevel(0)
 {
+	m_Type = EVENT_SCREEN_TYPE_RESEARCH;
 }
 
 CEventResearch::~CEventResearch(void)

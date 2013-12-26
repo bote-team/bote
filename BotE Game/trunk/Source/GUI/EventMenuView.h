@@ -33,7 +33,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 	/// Funktion schlieﬂt das derzeit angezeigte Event.
-	void CloseScreen(CEventScreen* eventScreen);
+	void CloseScreen(const boost::shared_ptr<CEventScreen>& eventScreen);
 
 	/// Funktion l‰dt die rassenspezifischen Grafiken.
 	virtual void LoadRaceGraphics() {};

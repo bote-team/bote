@@ -12,6 +12,7 @@ CEventAlienEntity::CEventAlienEntity(const CString& sPlayersRace, const CString&
 	: CEventScreen(sPlayersRace, "AlienEntity", sHeadline, sText)
 {
 	m_sAlienEntityID = sAlienEntityID;
+	m_Type = EVENT_SCREEN_TYPE_ALIEN_ENTITY;
 }
 
 CEventAlienEntity::~CEventAlienEntity(void)

@@ -8,12 +8,14 @@
 
 IMPLEMENT_SERIAL (CEventScreen, CObject, 1)
 
-CEventScreen::CEventScreen(void)
+CEventScreen::CEventScreen(void) :
+	m_Type(EVENT_SCREEN_TYPE_NONE)
 {
 	m_pBGImage = NULL;
 }
 
-CEventScreen::CEventScreen(const CString &sPlayersRaceID, const CString &imageName, const CString &headline, const CString &text)
+CEventScreen::CEventScreen(const CString &sPlayersRaceID, const CString &imageName, const CString &headline, const CString &text) :
+	m_Type(EVENT_SCREEN_TYPE_NONE)
 {
 	m_sRace	   = sPlayersRaceID;
 	m_strImagePath = "Graphics\\Events\\" + imageName + ".boj";

@@ -2798,11 +2798,11 @@ void CBotEDoc::CalcSystemAttack()
 
 				// erfolgreiches Invasionsevent für den Angreifer einfügen (sollte immer ein Major sein)
 				if (!attacker.IsEmpty() && pMajor && pMajor->IsHumanPlayer())
-					pMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(attacker, "InvasionSuccess", CLoc::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, GetSystem(p.x, p.y).GetName()), CLoc::GetString("INVASIONSUCCESSEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, GetSystem(p.x, p.y).GetName())));
+					pMajor->GetEmpire()->PushEvent(boost::make_shared<CEventBombardment>(attacker, "InvasionSuccess", CLoc::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, GetSystem(p.x, p.y).GetName()), CLoc::GetString("INVASIONSUCCESSEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, GetSystem(p.x, p.y).GetName())));
 
 				// Invasionsevent für den Verteidiger einfügen
 				if (defender != NULL && defender->IsMajor() && dynamic_cast<CMajor*>(defender)->IsHumanPlayer() && pSystemAttack->IsDefenderNotAttacker(sDefender, &attackers))
-					dynamic_cast<CMajor*>(defender)->GetEmpire()->GetEvents()->Add(new CEventBombardment(sDefender, "InvasionSuccess", CLoc::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, GetSystem(p.x, p.y).GetName()), CLoc::GetString("INVASIONSUCCESSEVENT_TEXT_" + defender->GetRaceID(), FALSE, GetSystem(p.x, p.y).GetName())));
+					dynamic_cast<CMajor*>(defender)->GetEmpire()->PushEvent(boost::make_shared<CEventBombardment>(sDefender, "InvasionSuccess", CLoc::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, GetSystem(p.x, p.y).GetName()), CLoc::GetString("INVASIONSUCCESSEVENT_TEXT_" + defender->GetRaceID(), FALSE, GetSystem(p.x, p.y).GetName())));
 			}
 			// Wurde nur bombardiert, nicht erobert
 			else
@@ -2968,10 +2968,10 @@ void CBotEDoc::CalcSystemAttack()
 					if (pMajor->IsHumanPlayer())
 					{
 						if (!pSystemAttack->IsTroopsInvolved())
-							pMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(pMajor->GetRaceID(), "Bombardment", CLoc::GetString("BOMBARDEVENT_HEADLINE", FALSE, GetSystem(p.x, p.y).GetName()), CLoc::GetString("BOMBARDEVENT_TEXT_AGRESSOR_" + pMajor->GetRaceID(), FALSE, GetSystem(p.x, p.y).GetName())));
+							pMajor->GetEmpire()->PushEvent(boost::make_shared<CEventBombardment>(pMajor->GetRaceID(), "Bombardment", CLoc::GetString("BOMBARDEVENT_HEADLINE", FALSE, GetSystem(p.x, p.y).GetName()), CLoc::GetString("BOMBARDEVENT_TEXT_AGRESSOR_" + pMajor->GetRaceID(), FALSE, GetSystem(p.x, p.y).GetName())));
 						// gescheitere Invasion
 						else if (GetSystem(p.x, p.y).GetHabitants() > 0.000001f)
-							pMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(pMajor->GetRaceID(), "InvasionFailed", CLoc::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, GetSystem(p.x, p.y).GetName()), CLoc::GetString("INVASIONFAILUREEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, GetSystem(p.x, p.y).GetName())));
+							pMajor->GetEmpire()->PushEvent(boost::make_shared<CEventBombardment>(pMajor->GetRaceID(), "InvasionFailed", CLoc::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, GetSystem(p.x, p.y).GetName()), CLoc::GetString("INVASIONFAILUREEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, GetSystem(p.x, p.y).GetName())));
 					}
 
 				}
@@ -2983,10 +2983,10 @@ void CBotEDoc::CalcSystemAttack()
 					{
 						// reine Bombardierung
 						if (!pSystemAttack->IsTroopsInvolved())
-							pDefenderMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(defender->GetRaceID(), "Bombardment", CLoc::GetString("BOMBARDEVENT_HEADLINE", FALSE, GetSystem(p.x, p.y).GetName()), CLoc::GetString("BOMBARDEVENT_TEXT_DEFENDER_" + defender->GetRaceID(), FALSE, GetSystem(p.x, p.y).GetName())));
+							pDefenderMajor->GetEmpire()->PushEvent(boost::make_shared<CEventBombardment>(defender->GetRaceID(), "Bombardment", CLoc::GetString("BOMBARDEVENT_HEADLINE", FALSE, GetSystem(p.x, p.y).GetName()), CLoc::GetString("BOMBARDEVENT_TEXT_DEFENDER_" + defender->GetRaceID(), FALSE, GetSystem(p.x, p.y).GetName())));
 						// gescheitere Invasion
 						else if (GetSystem(p.x, p.y).GetHabitants() > 0.000001f)
-							pDefenderMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(defender->GetRaceID(), "InvasionFailed", CLoc::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, GetSystem(p.x, p.y).GetName()), CLoc::GetString("INVASIONFAILUREEVENT_TEXT_" + defender->GetRaceID(), FALSE, GetSystem(p.x, p.y).GetName())));
+							pDefenderMajor->GetEmpire()->PushEvent(boost::make_shared<CEventBombardment>(defender->GetRaceID(), "InvasionFailed", CLoc::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, GetSystem(p.x, p.y).GetName()), CLoc::GetString("INVASIONFAILUREEVENT_TEXT_" + defender->GetRaceID(), FALSE, GetSystem(p.x, p.y).GetName())));
 					}
 				}
 			}
@@ -3165,7 +3165,7 @@ void CBotEDoc::CalcResearch()
 						// Eventscreen für Forschung erstellen
 						// gilt nur für die sechs normalen Forschungen
 						if (j < 6)
-							pMajor->GetEmpire()->GetEvents()->Add(new CEventResearch(pMajor->GetRaceID(), CLoc::GetString("RESEARCHEVENT_HEADLINE"), j));
+							pMajor->GetEmpire()->PushEvent(boost::make_shared<CEventResearch>(pMajor->GetRaceID(), CLoc::GetString("RESEARCHEVENT_HEADLINE"), j));
 					}
 					message.CreateNews(news[j], EMPIRE_NEWS_TYPE::RESEARCH);
 				}
@@ -3827,8 +3827,9 @@ void CBotEDoc::CalcShipOrders()
 				CMajor* pShipOwnerMajor = NULL;
 				if (pShipOwner != NULL && pShipOwner->IsMajor() && (pShipOwnerMajor = dynamic_cast<CMajor*>(pShipOwner))->IsHumanPlayer())
 				{
-					CEventBlockade* eventScreen = new CEventBlockade(y->second->OwnerID(), CLoc::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSystem->GetName()), CLoc::GetString("BLOCKADEEVENT_TEXT_" + pShipOwner->GetRaceID(), FALSE, pSystem->GetName()));
-					pShipOwnerMajor->GetEmpire()->GetEvents()->Add(eventScreen);
+					const boost::shared_ptr<CEventBlockade> eventScreen = boost::make_shared<CEventBlockade>(
+						y->second->OwnerID(), CLoc::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSystem->GetName()), CLoc::GetString("BLOCKADEEVENT_TEXT_" + pShipOwner->GetRaceID(), FALSE, pSystem->GetName()));
+					pShipOwnerMajor->GetEmpire()->PushEvent(eventScreen);
 				}
 				if (pSystem->Majorized())
 				{
@@ -3836,8 +3837,9 @@ void CBotEDoc::CalcShipOrders()
 					AssertBotE(pSystemOwnerMajor);
 					if (pSystemOwnerMajor->IsHumanPlayer())
 					{
-						CEventBlockade* eventScreen = new CEventBlockade(pSystem->OwnerID(), CLoc::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSystem->GetName()), CLoc::GetString("BLOCKADEEVENT_TEXT_" + pSystemOwnerMajor->GetRaceID(), FALSE, pSystem->GetName()));
-						pSystemOwnerMajor->GetEmpire()->GetEvents()->Add(eventScreen);
+						const boost::shared_ptr<CEventBlockade> eventScreen = boost::make_shared<CEventBlockade>(
+							pSystem->OwnerID(), CLoc::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSystem->GetName()), CLoc::GetString("BLOCKADEEVENT_TEXT_" + pSystemOwnerMajor->GetRaceID(), FALSE, pSystem->GetName()));
+						pSystemOwnerMajor->GetEmpire()->PushEvent(eventScreen);
 					}
 				}
 			}
@@ -4579,8 +4581,9 @@ void CBotEDoc::CalcEffectsMinorEleminated(const boost::shared_ptr<CMinor>& pMino
 			if (pMajor->IsHumanPlayer())
 			{
 				// Event über die Rassenauslöschung einfügen
-				CEventRaceKilled* eventScreen = new CEventRaceKilled(it->first, pMinor->GetRaceID(), pMinor->GetName(), pMinor->GetGraphicFileName());
-				pMajor->GetEmpire()->GetEvents()->Add(eventScreen);
+				const boost::shared_ptr<CEventRaceKilled> eventScreen = boost::make_shared<CEventRaceKilled>(
+					it->first, pMinor->GetRaceID(), pMinor->GetName(), pMinor->GetGraphicFileName());
+				pMajor->GetEmpire()->PushEvent(eventScreen);
 
 				m_pClientWorker->SetToEmpireViewFor(*it->second);
 			}
@@ -4638,8 +4641,9 @@ void CBotEDoc::CalcEndDataForNextRound()
 					if (itt->second->IsHumanPlayer())
 					{
 						// Event über die Rassenauslöschung einfügen
-						CEventRaceKilled* eventScreen = new CEventRaceKilled(itt->first, pMajor->GetRaceID(), pMajor->GetName(), pMajor->GetGraphicFileName());
-						itt->second->GetEmpire()->GetEvents()->Add(eventScreen);
+						const boost::shared_ptr<CEventRaceKilled> eventScreen = boost::make_shared<CEventRaceKilled>(
+							itt->first, pMajor->GetRaceID(), pMajor->GetName(), pMajor->GetGraphicFileName());
+						itt->second->GetEmpire()->PushEvent(eventScreen);
 
 						m_pClientWorker->SetToEmpireViewFor(*itt->second);
 					}
@@ -4647,11 +4651,8 @@ void CBotEDoc::CalcEndDataForNextRound()
 			}
 
 			// Alle Nachrichten und Events löschen
-			for (int i = 0; i < pMajor->GetEmpire()->GetEvents()->GetSize(); i++)
-				delete pMajor->GetEmpire()->GetEvents()->GetAt(i);
+			pMajor->GetEmpire()->ClearMessagesAndEvents();
 
-			pMajor->GetEmpire()->GetEvents()->RemoveAll();
-			pMajor->GetEmpire()->GetMsgs()->RemoveAll();
 			m_pClientWorker->ClearSoundMessages(*pMajor);
 
 			// alle anderen Rassen durchgehen und die vernichtete Rasse aus deren Maps entfernen
@@ -4737,8 +4738,9 @@ void CBotEDoc::CalcEndDataForNextRound()
 			if (pMajor->IsHumanPlayer())
 			{
 				// einen neuen (und auch einzigen Event) einfügen
-				CEventGameOver* eventScreen = new CEventGameOver(pMajor->GetRaceID());
-				pMajor->GetEmpire()->GetEvents()->Add(eventScreen);
+				const boost::shared_ptr<CEventGameOver> eventScreen = boost::make_shared<CEventGameOver>(
+					pMajor->GetRaceID());
+				pMajor->GetEmpire()->PushEvent(eventScreen);
 			}
 		}
 	}
@@ -4894,11 +4896,8 @@ void CBotEDoc::CalcEndDataForNextRound()
 		{
 			CMajor* pMajor = it->second;
 			// Alle Nachrichten und Events löschen
-			for (int i = 0; i < pMajor->GetEmpire()->GetEvents()->GetSize(); i++)
-				delete pMajor->GetEmpire()->GetEvents()->GetAt(i);
+			pMajor->GetEmpire()->ClearMessagesAndEvents();
 
-			pMajor->GetEmpire()->GetEvents()->RemoveAll();
-			pMajor->GetEmpire()->GetMsgs()->RemoveAll();
 			m_pClientWorker->ClearSoundMessages(*pMajor);
 
 			// Wenn es ein menschlicher Spieler ist, so bekommt er den Eventscreen für den Sieg angezeigt
@@ -4910,8 +4909,9 @@ void CBotEDoc::CalcEndDataForNextRound()
 					sImageName = "Victory" + pMajor->GetRaceID();
 				else
 					sImageName = "GameOver";
-				CEventVictory* eventScreen = new CEventVictory(pMajor->GetRaceID(), m_VictoryObserver.GetVictoryRace(), (int)m_VictoryObserver.GetVictoryType(), sImageName);
-				pMajor->GetEmpire()->GetEvents()->Add(eventScreen);
+				const boost::shared_ptr<CEventVictory> eventScreen = boost::make_shared<CEventVictory>(
+					pMajor->GetRaceID(), m_VictoryObserver.GetVictoryRace(), (int)m_VictoryObserver.GetVictoryType(), sImageName);
+				pMajor->GetEmpire()->PushEvent(eventScreen);
 			}
 		}
 	}
@@ -5138,8 +5138,9 @@ void CBotEDoc::CalcAlienShipEffects()
 				pOwner->GetEmpire()->AddMsg(message);
 				if (pOwner->IsHumanPlayer())
 				{
-					CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetName(), s);
-					pOwner->GetEmpire()->GetEvents()->Add(eventScreen);
+					boost::shared_ptr<CEventAlienEntity> eventScreen = boost::make_shared<CEventAlienEntity>(
+						pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetName(), s);
+					pOwner->GetEmpire()->PushEvent(eventScreen);
 
 					m_pClientWorker->SetToEmpireViewFor(*pOwner);
 				}
@@ -5167,8 +5168,9 @@ void CBotEDoc::CalcAlienShipEffects()
 					pOwner->GetEmpire()->AddMsg(message);
 					if (pOwner->IsHumanPlayer())
 					{
-						CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetName(), s);
-						pOwner->GetEmpire()->GetEvents()->Add(eventScreen);
+						const boost::shared_ptr<CEventAlienEntity> eventScreen = boost::make_shared<CEventAlienEntity>
+							(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetName(), s);
+						pOwner->GetEmpire()->PushEvent(eventScreen);
 
 						m_pClientWorker->SetToEmpireViewFor(*pOwner);
 					}
@@ -5247,8 +5249,9 @@ void CBotEDoc::CalcAlienShipEffects()
 				pOwner->GetEmpire()->AddMsg(message);
 				if (pOwner->IsHumanPlayer())
 				{
-					CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetName(), s);
-					pOwner->GetEmpire()->GetEvents()->Add(eventScreen);
+					const boost::shared_ptr<CEventAlienEntity> eventScreen = boost::make_shared<CEventAlienEntity>
+						(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetName(), s);
+					pOwner->GetEmpire()->PushEvent(eventScreen);
 
 					m_pClientWorker->SetToEmpireViewFor(*pOwner);
 				}
@@ -5285,8 +5288,9 @@ void CBotEDoc::CalcAlienShipEffects()
 			pOwner->GetEmpire()->AddMsg(message);
 			if (pOwner->IsHumanPlayer())
 			{
-				CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetName(), s);
-				pOwner->GetEmpire()->GetEvents()->Add(eventScreen);
+				const boost::shared_ptr<CEventAlienEntity> eventScreen = boost::make_shared<CEventAlienEntity>
+					(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetName(), s);
+				pOwner->GetEmpire()->PushEvent(eventScreen);
 
 				m_pClientWorker->SetToEmpireViewFor(*pOwner);
 			}
@@ -5402,8 +5406,9 @@ void CBotEDoc::CalcAlienShipEffects()
 					pOwner->GetEmpire()->AddMsg(message);
 					if (pOwner->IsHumanPlayer())
 					{
-						CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetName(), s);
-						pOwner->GetEmpire()->GetEvents()->Add(eventScreen);
+						boost::shared_ptr<CEventAlienEntity> eventScreen = boost::make_shared<CEventAlienEntity>
+							(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetName(), s);
+						pOwner->GetEmpire()->PushEvent(eventScreen);
 
 						m_pClientWorker->SetToEmpireViewFor(*pOwner);
 					}

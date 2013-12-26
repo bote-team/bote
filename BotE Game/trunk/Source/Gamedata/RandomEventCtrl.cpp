@@ -139,8 +139,9 @@ void CRandomEventCtrl::GlobalEventResearch(CMajor *pRace)
 
 		resources::pClientWorker->SetToEmpireViewFor(*pRace);
 
-		CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"Breakthrough",CLoc::GetString("BREAKTHROUGH"),CLoc::GetString("GLOBALEVENTRESEARCH"));
-		pRace->GetEmpire()->GetEvents()->Add(EmpireEvent);
+		const boost::shared_ptr<CEventRandom> EmpireEvent = boost::make_shared<CEventRandom>(
+			pRace->GetRaceID(),"Breakthrough",CLoc::GetString("BREAKTHROUGH"),CLoc::GetString("GLOBALEVENTRESEARCH"));
+		pRace->GetEmpire()->PushEvent(EmpireEvent);
 	}
 }
 
@@ -185,8 +186,9 @@ void CRandomEventCtrl::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMa
 
 		if (pRace->IsHumanPlayer())
 		{
-			CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"alientech",CLoc::GetString("ALIENTECHEADLINE"),CLoc::GetString("ALIENTECLONG",false,sSectorName));
-			pRace->GetEmpire()->GetEvents()->Add(EmpireEvent);
+			const boost::shared_ptr<CEventRandom> EmpireEvent = boost::make_shared<CEventRandom>(
+				pRace->GetRaceID(),"alientech",CLoc::GetString("ALIENTECHEADLINE"),CLoc::GetString("ALIENTECLONG",false,sSectorName));
+			pRace->GetEmpire()->PushEvent(EmpireEvent);
 		}
 	}
 	else if(eventnumber == EVENTSHIPXP)
@@ -279,9 +281,7 @@ void CRandomEventCtrl::CalcShipEvents() const
 				if (pMajor->IsHumanPlayer())
 				{
 					resources::pClientWorker->SetToEmpireViewFor(*pMajor);
-
-					CEventRandom* EmpireEvent = new CEventRandom(pMajor->GetRaceID(), "HullVirus", sMessageText, "");
-					pMajor->GetEmpire()->GetEvents()->Add(EmpireEvent);
+					pMajor->GetEmpire()->PushEvent(boost::make_shared<CEventRandom>(pMajor->GetRaceID(), "HullVirus", sMessageText, ""));
 				}
 			}
 		}

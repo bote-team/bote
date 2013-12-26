@@ -29,6 +29,26 @@ CEmpire::~CEmpire()
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
+
+static boost::shared_ptr<CEventScreen> make_screen(CEventScreen::EVENT_SCREEN_TYPE type)
+{
+	switch(type)
+	{
+		case CEventScreen::EVENT_SCREEN_TYPE_ALIEN_ENTITY: return boost::make_shared<CEventAlienEntity>();
+		case CEventScreen::EVENT_SCREEN_TYPE_BLOCKADE: return boost::make_shared<CEventBlockade>();
+		case CEventScreen::EVENT_SCREEN_TYPE_BOMBARDMENT: return boost::make_shared<CEventBombardment>();
+		case CEventScreen::EVENT_SCREEN_TYPE_COLONIZATION: return boost::make_shared<CEventColonization>();
+		case CEventScreen::EVENT_SCREEN_TYPE_FIRST_CONTACT: return boost::make_shared<CEventFirstContact>();
+		case CEventScreen::EVENT_SCREEN_TYPE_GAME_OVER: return boost::make_shared<CEventGameOver>();
+		case CEventScreen::EVENT_SCREEN_TYPE_RACE_KILLED: return boost::make_shared<CEventRaceKilled>();
+		case CEventScreen::EVENT_SCREEN_TYPE_RANDOM: return boost::make_shared<CEventRandom>();
+		case CEventScreen::EVENT_SCREEN_TYPE_RESEARCH: return boost::make_shared<CEventResearch>();
+		case CEventScreen::EVENT_SCREEN_TYPE_VICTORY: return boost::make_shared<CEventVictory>();
+	}
+	AssertBotE(false);
+	return boost::shared_ptr<CEventScreen>();
+}
+
 void CEmpire::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
@@ -51,6 +71,13 @@ void CEmpire::Serialize(CArchive &ar)
 		ar << m_vMessages.GetSize();
 		for (int i = 0; i < m_vMessages.GetSize(); i++)
 			m_vMessages.GetAt(i).Serialize(ar);
+		ar << m_Events.size();
+		for(std::vector<boost::shared_ptr<CEventScreen>>::iterator it = m_Events.begin();
+				it != m_Events.end(); ++it)
+		{
+			ar << static_cast<int>((*it)->GetType());
+			(*it)->Serialize(ar);
+		}
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
@@ -70,9 +97,18 @@ void CEmpire::Serialize(CArchive &ar)
 		m_vMessages.SetSize(number);
 		for (int i = 0; i < number; i++)
 			m_vMessages.GetAt(i).Serialize(ar);
-	}
+		unsigned size = 0;
+		ar >> size;
+		m_Events.resize(size);
+		for(std::vector<boost::shared_ptr<CEventScreen>>::iterator it = m_Events.begin(); it != m_Events.end(); ++it)
+		{
+			int type = 0;
+			ar >> type;
+			*it = make_screen(static_cast<CEventScreen::EVENT_SCREEN_TYPE>(type));
+			(*it)->Serialize(ar);
+		}
 
-	m_Events.Serialize(ar);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -109,9 +145,7 @@ void CEmpire::ClearAllPoints(void)
 void CEmpire::ClearMessagesAndEvents(void)
 {
 	m_vMessages.RemoveAll();
-	for (int i = 0; i < m_Events.GetSize(); i++)
-		delete m_Events.GetAt(i);
-	m_Events.RemoveAll();
+	m_Events.clear();
 }
 
 void CEmpire::Reset(void)
@@ -131,4 +165,12 @@ void CEmpire::Reset(void)
 	ClearMessagesAndEvents();
 
 	m_SystemList.RemoveAll();
+}
+
+const boost::shared_ptr<CEventScreen> CEmpire::FirstEvent(bool pop)
+{
+	const boost::shared_ptr<CEventScreen> screen = m_Events.at(0);
+	if(pop)
+		m_Events.erase(m_Events.begin());
+	return screen;
 }

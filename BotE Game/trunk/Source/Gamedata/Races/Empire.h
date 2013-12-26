@@ -91,8 +91,9 @@ public:
 
 	/// Funktion gibt einen Zeiger auf das Feld mit den Eventnachrichten für das Imperium zurück.
 	/// @return Pointer auf <code>CObArray</code>
-	CObArray* GetEvents() {return &m_Events;}
-	const CObArray* GetEvents() const {return &m_Events;}
+	const std::vector<boost::shared_ptr<CEventScreen>>* const GetEvents() const {return &m_Events;}
+	void PushEvent(const boost::shared_ptr<CEventScreen>& event_screen) { m_Events.push_back(event_screen); }
+	const boost::shared_ptr<CEventScreen> FirstEvent(bool pop);
 
 	/// Funktion gibt einen Zeiger auf das Forschungsobjekt des Imperiums zurück.
 	CResearch* GetResearch(void) {return &m_Research;}
@@ -188,7 +189,7 @@ private:
 
 	EmpiresNews m_vMessages;		///< alle Nachrichten an das Imperium
 
-	CObArray m_Events;				///< alle Events für das Imperium
+	std::vector<boost::shared_ptr<CEventScreen>> m_Events; ///< alle Events für das Imperium
 
 	CResearch m_Research;			///< die Forschung des Imperiums
 

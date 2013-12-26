@@ -433,7 +433,11 @@ void CMajor::Contact(const CRace& Race, const CPoint& p)
 
 	// Eventscreen einfügen
 	if (IsHumanPlayer())
-		m_Empire.GetEvents()->Add(new CEventFirstContact(m_sID, Race.GetRaceID()));
+	{
+		const boost::shared_ptr<CEventFirstContact> event_screen =
+			boost::make_shared<CEventFirstContact>(m_sID, Race.GetRaceID());
+		m_Empire.PushEvent(event_screen);
+	}
 }
 
 bool CMajor::AHumanPlays() const {

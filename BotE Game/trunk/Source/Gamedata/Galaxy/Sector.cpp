@@ -664,8 +664,9 @@ void CSector::SystemEventDemographic(CString& message, CMajor& major)
 				{
 					resources::pClientWorker->SetToEmpireViewFor(major);
 
-					CEventRandom* EmpireEvent=new CEventRandom(major.GetRaceID(),"demographic",CLoc::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),message);
-					major.GetEmpire()->GetEvents()->Add(EmpireEvent);
+					const boost::shared_ptr<CEventRandom> EmpireEvent = boost::make_shared<CEventRandom>(
+						major.GetRaceID(),"demographic",CLoc::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),message);
+					major.GetEmpire()->PushEvent(EmpireEvent);
 				}
 			}
 			break;
