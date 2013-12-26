@@ -3298,7 +3298,8 @@ void CSystem::ExecuteManager(CMajor& owner, bool turn_change, bool energy)
 
 bool CSystem::CheckSanity() const
 {
-	AssertBotE(!HasOutpost() || !HasStarbase());
+	if(!CMapTile::CheckSanity())
+		return false;
 
 	if(m_HomeOf)
 	{

@@ -422,6 +422,8 @@ protected:
 	/// machen, werden diese Variablen später ja wieder korrekt gesetzt. Außerdem werden auch die Besitzerpunkte wieder
 	/// gelöscht.
 	void ClearAllPoints(bool call_up);
+
+	bool CheckSanity() const;
 public:
 
 //////////////////////////////////////////////////////////////////////

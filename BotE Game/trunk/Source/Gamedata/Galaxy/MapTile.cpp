@@ -672,3 +672,13 @@ void CMapTile::ClearShips()
 		EraseShip(ships.front());
 	}
 }
+
+bool CMapTile::CheckSanity() const
+{
+	AssertBotE(!HasOutpost() || !HasStarbase());
+	for(std::map<CString, CShipMap>::const_iterator it = m_Ships.begin(); it != m_Ships.end(); ++it)
+		for(CShipMap::const_iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
+			if(it2->second->GetCo() != m_Co)
+				return false;
+	return true;
+}
