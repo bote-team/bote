@@ -17,13 +17,18 @@ IMPLEMENT_SERIAL (CEmpire, CObject, 1)
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 
-CEmpire::CEmpire()
+CEmpire::CEmpire() :
+	m_iCredits(1000),
+	m_iCreditsChange(0),
+	m_iShipCosts(0),
+	m_iPopSupportCosts(0),
+	m_sEmpireID(),
+	m_nNumberOfSystems(1)
 {
-	Reset();
+	ClearAllPoints();
 }
 CEmpire::~CEmpire()
 {
-	Reset();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -146,25 +151,6 @@ void CEmpire::ClearMessagesAndEvents(void)
 {
 	m_vMessages.RemoveAll();
 	m_Events.clear();
-}
-
-void CEmpire::Reset(void)
-{
-	m_nNumberOfSystems = 1;
-	m_sEmpireID = "";
-	m_iCredits = 1000;
-	m_iCreditsChange = 0;
-	m_iShipCosts = 0;
-	m_iPopSupportCosts = 0;
-
-	m_Research.Reset();
-	m_Intelligence.Reset();
-	m_GlobalStorage.Reset();
-
-	ClearAllPoints();
-	ClearMessagesAndEvents();
-
-	m_SystemList.RemoveAll();
 }
 
 const boost::shared_ptr<CEventScreen> CEmpire::FirstEvent(bool pop)

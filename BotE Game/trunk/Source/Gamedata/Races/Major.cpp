@@ -403,7 +403,6 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 	// Hier die aktuellen Kursdaten initial in die History schreiben
 	m_Trade.GetTradeHistory()->SaveCurrentPrices(m_Trade.GetRessourcePrice(), m_Trade.GetTax());
 
-	m_Empire.Reset();
 	m_Empire.SetEmpireID(m_sID);
 
 	// Majorrace - KI anlegen

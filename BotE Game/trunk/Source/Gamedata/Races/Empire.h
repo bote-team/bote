@@ -154,10 +154,6 @@ public:
 	/// @param message Nachricht
 	void AddMsg(const CEmpireNews &msg) {m_vMessages.Add(msg);}
 
-	// Sonstige Funktionen
-	/// Resetfunktion für das CEmpire-Objekt.
-	void Reset(void);
-
 	/// Funktion generiert die Liste der Systeme für das Imperium anhand aller Systeme.
 	/// @param systems Feld aller Systeme
 	void GenerateSystemList(const std::vector<CSystem>& systems);
