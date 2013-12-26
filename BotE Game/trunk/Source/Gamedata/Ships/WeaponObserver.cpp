@@ -259,17 +259,3 @@ TupeWeaponsObserverStruct CWeaponObserver::GetNextTupe(const CString& currentTup
 	}
 	return twos;
 }
-
-// Resetfunktion für die Klasse CWeaponObserver
-void CWeaponObserver::Reset()
-{
-	for (int i = 0; i < m_BeamWeapons.GetSize(); i++)
-		m_BeamWeapons.RemoveAt(i--);
-	for (int i = 0; i < m_TupeWeapons.GetSize(); i++)
-		m_TupeWeapons.RemoveAt(i--);
-	m_BeamWeapons.RemoveAll();
-	m_TupeWeapons.RemoveAll();
-	for (int i = 0; i < DIFFERENT_TORPEDOS; i++)
-		m_BuildableTorpedos[i] = FALSE;
-	m_MaxShieldLevel = 0;
-}

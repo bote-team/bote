@@ -15,6 +15,9 @@
 //////////////////////////////////////////////////////////////////////
 CRace::CRace(RACE_TYPE type) :
 	CInGameEntity(),
+	m_sID(),
+	m_sHomeSystem(),
+	m_sNameArticle(),
 	m_RaceType(type),
 	m_nProperty(0),
 	m_byShipNumber(0),
@@ -22,14 +25,13 @@ CRace::CRace(RACE_TYPE type) :
 	m_byMoralNumber(0),
 	m_nSpecialAbility(0),
 	m_bDeleted(false),
+	m_sGraphicFile(),
 	m_pDiplomacyAI()
 {
-	Reset(false);
 }
 
 CRace::~CRace(void)
 {
-	Reset(false);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -343,37 +345,6 @@ void CRace::ReactOnOfferAI(CDiplomacyInfo* pOffer)
 	}
 	else
 		AfxMessageBox("CRace::ReactOnOfferAI(): Could not react on non diplomacy offers!");
-}
-
-/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
-void CRace::Reset(bool call_up)
-{
-	if(call_up)
-		CInGameEntity::Reset();
-	m_Co = CPoint(-1,-1);			// Koordinaten der Rasse
-
-	m_sID				= "";		// Rassen-ID
-	m_sHomeSystem		= "";		// Name des Heimatsystems
-	m_sNameArticle		= "";		// Artikel für Rassenname
-	m_nProperty			= 0;		// Rasseneigenschaften
-	m_nSpecialAbility	= 0;		// Spezialfähigkeiten der Rasse
-	m_byShipNumber		= 0;		// zugewiesene Nummer welche Schiffe verwendet werden sollen
-	m_byBuildingNumber	= 0;		// zugewiesene Nummer welche Gebäude verwendet werden sollen
-	m_byMoralNumber		= 0;		// zugewiesene Nummer welche Moralwerte verwendet werden sollen
-
-	// Ingame-Attribute (Rassenwechselwirkung)
-	m_mRelations.clear();			// Beziehungsmap (Rassen-ID, Beziehungswert)
-	m_mAgreement.clear();			// Diplomatischer Status gegenüber anderen Rassen (Rassen-ID, Status)
-	m_vInContact.clear();			// kennt die Rasse eine andere Rasse (Rassen-ID, Wahrheitswert)
-	// diplomatische Nachrichten
-	m_vDiplomacyNewsIn.clear();
-	m_vDiplomacyNewsOut.clear();
-	m_mLastOffers.clear();
-
-	// grafische Attribute
-	m_sGraphicFile	= "";			// Name der zugehörigen Grafikdatei
-
-	ResetDiplomacyAI();
 }
 
 void CRace::ResetDiplomacyAI()

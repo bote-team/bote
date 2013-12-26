@@ -14,7 +14,6 @@ CShipHistory::CShipHistory(void)
 
 CShipHistory::~CShipHistory(void)
 {
-	m_ShipHistory.RemoveAll();
 }
 /*
 //////////////////////////////////////////////////////////////////////
@@ -158,10 +157,3 @@ UINT CShipHistory::GetNumberOfShips(BOOLEAN shipAlive) const
 	return number;
 }
 
-/// Resetfunktion für die CShipHistory Klasse
-void CShipHistory::Reset(void)
-{
-	for (int i = 0; i < m_ShipHistory.GetSize(); )
-		m_ShipHistory.RemoveAt(i);
-	m_ShipHistory.RemoveAll();
-}

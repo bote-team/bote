@@ -238,8 +238,6 @@ public:
 	/// @param pOffer diplomatisches Angebot
 	void ReactOnOfferAI(CDiplomacyInfo* pOffer);
 
-	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
-	virtual void Reset(bool call_up);
 	void ResetDiplomacyAI();
 public:
 

@@ -68,9 +68,6 @@ public:
 	// Observerobjekt gehört. Der Parameter <code>info</code> muß ein derzeit baubares Schiff des Imperium sein.
 	void CheckTorpedoWeapons(CShipInfo* info);
 
-	// Resetfunktion für diese Klasse, welche alle Werte wieder auf den Ausgangswert setzt
-	void Reset();
-
 private:
 	// dynamisches Feld speichert alle baubaren Beamwaffen eines Imperiums
 	CArray<BeamWeaponsObserverStruct,BeamWeaponsObserverStruct> m_BeamWeapons;

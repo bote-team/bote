@@ -12,20 +12,25 @@
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CMinor::CMinor(void) :
-	CRace(RACE_TYPE_MINOR)
+	CRace(RACE_TYPE_MINOR),
+	m_iTechnologicalProgress(0),
+	m_iCorruptibility(0),
+	m_bSpaceflight(false),
+	m_bSubjugated(false)
 {
-	Reset(false);
 }
 
 CMinor::CMinor(RACE_TYPE type) :
-	CRace(type)
+	CRace(type),
+	m_iTechnologicalProgress(0),
+	m_iCorruptibility(0),
+	m_bSpaceflight(false),
+	m_bSubjugated(false)
 {
-	Reset(false);
 }
 
 CMinor::~CMinor(void)
 {
-	Reset(false);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -604,8 +609,6 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 {
 	AssertBotE(nPos >= 0);
 
-	Reset(true);
-
 	// Minorrace nun anlegen
 	m_sID				= saInfo[nPos++];				// Rassen-ID
 	m_sID.Remove(':');
@@ -651,19 +654,6 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 
 	// Minorrace - KI anlegen
 	m_pDiplomacyAI = boost::make_shared<CMinorAI>(shared_from_this());
-}
-
-/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
-void CMinor::Reset(bool call_up)
-{
-	if(call_up)
-		CRace::Reset(call_up);
-
-	m_iTechnologicalProgress = 0;			// wie fortschrittlich ist die Minorrace?
-	m_iCorruptibility = 0;					// wie stark ändert sich die Beziehung beim Geschenke geben?
-	m_bSpaceflight = false;					// Spaceflightnation (hat Schiffe)
-	m_bSubjugated = false;					// wurde die Rasse unterworfen
-	m_mAcceptance.clear();					// Punkte die eine MajorRace durch längere Beziehung mit der Rasse ansammelt, wird schwerer diese Rasse wegzukaufen
 }
 
 bool CMinor::IsMemberTo(const CString& MajorID) const {

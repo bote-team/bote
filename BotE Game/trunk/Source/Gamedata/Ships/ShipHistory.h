@@ -155,8 +155,6 @@ public:
 	 */
 	UINT GetNumberOfShips(BOOLEAN shipAlive) const;
 
-	// Resetfunktion für die Klasse CShipHistory
-	void Reset(void);
 
 private:
 	/// Das Feld mit der gesamten Schiffshistorie eines Imperiums

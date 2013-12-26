@@ -166,7 +166,7 @@ CRaceController::const_iterator CRaceController::RemoveRaceInternal(const const_
 	const CPoint& co = it->second->GetCo();
 	if(co != CPoint(-1, -1))
 		resources::pDoc->GetSystem(co.x, co.y).SetHomeOf("");
-	it->second->Reset(true);
+	it->second->ResetDiplomacyAI();
 	return m_mRaces.erase(it);
 }
 

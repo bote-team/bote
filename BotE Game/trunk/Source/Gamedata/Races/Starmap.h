@@ -268,11 +268,6 @@ public:
 	static void SynchronizeWithAnomalies(const std::vector<CSystem>& systems);
 
 	/**
-	 * Löscht alle Basen und setzt die Einträge in der Rangemap wieder auf Ausgangswert
-	 */
-	void ClearAll();
-
-	/**
 	 * Berechnet den kürzesten Weg von position nach target innerhalb der durch range angegebenen Reichweite. Liefert den
 	 * kompletten Weg in path zurück. Rückgabewert ist der entsprechend speed als nächstes zu erreichende Punkt auf
 	 * dem berechneten Weg. Tritt ein Fehler auf (z.B. wenn das Ziel nicht erreichbar ist), liefert die Funktion ein

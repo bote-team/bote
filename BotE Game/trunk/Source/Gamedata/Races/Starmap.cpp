@@ -219,16 +219,6 @@ void CStarmap::SynchronizeWithAnomalies(const std::vector<CSystem>& systems)
 	}
 }
 
-void CStarmap::ClearAll()
-{
-	m_lBases.clear();
-
-	InitSomeMembers();
-
-	m_lAIKnownSystems.clear();
-	m_lAITargets.clear();
-}
-
 void CStarmap::InitSomeMembers()
 {
 	const int size = STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT;

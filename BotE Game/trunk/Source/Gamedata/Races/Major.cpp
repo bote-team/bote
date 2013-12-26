@@ -16,14 +16,18 @@
 //////////////////////////////////////////////////////////////////////
 CMajor::CMajor(void) :
 	CRace(RACE_TYPE_MAJOR),
+	m_bPlayer(false),
+	m_sEmpireName(),
+	m_sEmpireWithArticle(),
+	m_sEmpireWithAssignedArticle(),
+	m_sPrefix(),
+	m_nDiplomacyBonus(0),
 	m_pStarmap()
 {
-	Reset(false);
 }
 
 CMajor::~CMajor(void)
 {
-	Reset(false);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -108,10 +112,6 @@ void CMajor::Serialize(CArchive &ar)
 		// Diplomatie neu anlegen
 		m_pDiplomacyAI = boost::make_shared<CMajorAI>(shared_from_this());
 
-		// Starmap löschen (wird neu generiert)
-		if(m_pStarmap)
-			m_pStarmap->ClearAll();
-		m_pStarmap.reset();
 	}
 
 	// Objekt welches gestalterische Informationen zur Rasse beinhaltet
@@ -330,8 +330,6 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 {
 	AssertBotE(nPos >= 0);
 
-	Reset(true);
-
 	// Majorrace nun anlegen
 	m_sID			= saInfo[nPos++];				// Rassen-ID
 	m_sHomeSystem	= saInfo[nPos++];				// Name des Heimatsystems
@@ -410,43 +408,6 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 
 	// Majorrace - KI anlegen
 	m_pDiplomacyAI = boost::make_shared<CMajorAI>(shared_from_this());
-}
-
-/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
-void CMajor::Reset(bool call_up)
-{
-	if(call_up)
-		CRace::Reset(call_up);
-
-	m_bPlayer					= false;	// wird die Rasse von einem menschlichen Spieler gespielt?
-
-	m_sEmpireName				= "";		// längerer Imperiumsname
-	m_sEmpireWithArticle		= "";		// Artikel für Imperiumsnamen
-	m_sEmpireWithAssignedArticle= "";		// bestimmter Artikel für den Imperiumsnamen
-	m_sPrefix					= "";		// Rassenprefix
-
-	m_nDiplomacyBonus			= 0;		// Bonus bei diplomatischen Verhandlungen, NULL == kein Bonus/kein Malus
-
-	m_mAgrDuration.clear();					// noch verbleibende Runden des Vertrags (NULL == unbegrenzt)
-	m_vDefencePact.clear();					// besitzt die Majorrace eines Verteidigungspakt mit einer anderen Majorrace (Rassen-ID, Wahrheitswert)
-	m_mDefDuration.clear();					// Dauer des Verteidigungspaktes, einzeln speichern, weil er separat zu anderen Verträgen abgeschlossen werden kann.
-
-	// grafische Attribute
-	m_RaceDesign.Reset();					// Objekt welches gestalterische Informationen zur Rasse beinhaltet
-
-	// größere Objekte
-	m_Trade.Reset();						// der Börsenhandel für diese Rasse
-	m_Empire.Reset();						// das Imperium (Reich) der Hauptrasse
-	m_ShipHistory.Reset();					// alle statistischen Daten aller Schiffe sind hier zu finden
-
-	// Observer-Objekte
-	m_WeaponObserver.Reset();				// beobachtet die baubaren Waffen für Schiffe. Wird benötigt wenn wir Schiffe designen wollen
-
-	// Starmap
-	// Die Starmap des Majors, beinhaltet Reichweiteninformationen (muss nicht serialisiert werden)
-	if(m_pStarmap)
-		m_pStarmap->ClearAll();
-	m_pStarmap.reset();
 }
 
 void CMajor::CreateStarmap(void)

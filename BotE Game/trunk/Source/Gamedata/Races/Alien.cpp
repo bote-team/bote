@@ -23,8 +23,6 @@ void CAlien::Create(const CStringArray& saInfo, int& nPos)
 {
 	AssertBotE(nPos >= 0);
 
-	CMinor::Reset(true);
-
 	// Minorrace nun anlegen
 	m_sID				= saInfo[nPos++];				// Rassen-ID
 	m_sID.Remove(':');
