@@ -518,6 +518,12 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 		research.GetWeaponTech()
 	};
 
+	//don't continue spitting out ships if we're already on negative income
+	if(pRace->GetEmpire()->GetCreditsChange() < m_pDoc->m_iRound)
+		if(chooseCombatship || research.GetResearchInfo()->GetResearchComplex(
+				RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY)->GetFieldStatus(2) != RESEARCH_STATUS::RESEARCHED)
+			return 0;
+
 	// Wenn ein Kolonieschiff gebaut werden sollte
 	if (chooseColoship && min > 0)
 	{
