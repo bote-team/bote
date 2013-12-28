@@ -127,6 +127,18 @@ public:
 
 	void SetOwner(const boost::shared_ptr<CMajor>& race);
 
+	enum RACE_MOD_TYPE
+	{
+		RACE_MOD_TYPE_FOOD,
+		RACE_MOD_TYPE_INDUSTRY,
+		RACE_MOD_TYPE_ENERGY,
+		RACE_MOD_TYPE_SECURITY,
+		RACE_MOD_TYPE_RESEARCH,
+		RACE_MOD_TYPE_ALL_RESOURCES,
+		RACE_MOD_TYPE_CREDITS
+	};
+	double RaceMod(RACE_MOD_TYPE type) const;
+
 protected:
 
 	// Attribute

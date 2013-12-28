@@ -904,11 +904,12 @@ void CSystem::CalculateVariables()
 		m_Production.m_iIridiumProd *= 2;
 
 	// Die Boni auf die einzelnen Produktionen berechnen
-	short tmpFoodBoni		= m_Owner->GetEmpire()->GetResearch()->GetBioTech() * TECHPRODBONUS;
-	short tmpIndustryBoni	= m_Owner->GetEmpire()->GetResearch()->GetConstructionTech() * TECHPRODBONUS;
-	short tmpEnergyBoni		= m_Owner->GetEmpire()->GetResearch()->GetEnergyTech() * TECHPRODBONUS;
-	short tmpSecurityBoni	= 0;
-	short tmpResearchBoni	= 0;
+	const CResearch* const research = m_Owner->GetEmpire()->GetResearch();
+	short tmpFoodBoni		= research->GetBioTech() * TECHPRODBONUS;
+	short tmpIndustryBoni	= research->GetConstructionTech() * TECHPRODBONUS;
+	short tmpEnergyBoni		= research->GetEnergyTech() * TECHPRODBONUS;
+	short tmpSecurityBoni	= research->GetWeaponTech() * TECHPRODBONUS;
+	short tmpResearchBoni	= research->GetCompTech() * TECHPRODBONUS;
 	short tmpTitanBoni		= 0;
 	short tmpDeuteriumBoni	= 0;
 	short tmpDuraniumBoni	= 0;
@@ -976,6 +977,25 @@ void CSystem::CalculateVariables()
 			deritiumProdMulti += 1;
 	}
 	m_Production.m_iDeritiumProd	*= deritiumProdMulti;
+
+
+	//modify boni according to race properties
+	if(GetMinorRace())
+	{
+		const boost::shared_ptr<const CMinor> minor = boost::dynamic_pointer_cast<CMinor>(m_HomeOf);
+		tmpFoodBoni			+= minor->RaceMod(CMinor::RACE_MOD_TYPE_FOOD);
+		tmpIndustryBoni		+= minor->RaceMod(CMinor::RACE_MOD_TYPE_INDUSTRY);
+		tmpEnergyBoni		+= minor->RaceMod(CMinor::RACE_MOD_TYPE_ENERGY);
+		tmpSecurityBoni		+= minor->RaceMod(CMinor::RACE_MOD_TYPE_SECURITY);
+		tmpResearchBoni		+= minor->RaceMod(CMinor::RACE_MOD_TYPE_RESEARCH);
+		tmpAllRessourcesBoni = minor->RaceMod(CMinor::RACE_MOD_TYPE_ALL_RESOURCES);
+		tmpTitanBoni		+= tmpAllRessourcesBoni;
+		tmpDeuteriumBoni	+= tmpAllRessourcesBoni;
+		tmpDuraniumBoni		+= tmpAllRessourcesBoni;
+		tmpCrystalBoni		+= tmpAllRessourcesBoni;
+		tmpIridiumBoni		+= tmpAllRessourcesBoni;
+		tmpCreditsBoni		+= minor->RaceMod(CMinor::RACE_MOD_TYPE_CREDITS);
+	}
 
 	AddBonusToProd(m_Production.m_iFoodProd, tmpFoodBoni);
 	AddBonusToProd(m_Production.m_iIndustryProd, tmpIndustryBoni);

@@ -672,3 +672,51 @@ void CMinor::SetOwner(const boost::shared_ptr<CMajor>& race)
 {
 	m_Owner = race;
 }
+
+double CMinor::RaceMod(RACE_MOD_TYPE type) const
+{
+	double bonus = 0;
+	switch(type)
+	{
+		case RACE_MOD_TYPE_FOOD:
+			if(IsRaceProperty(RACE_PROPERTY::AGRARIAN))
+				bonus += 25;
+			if(IsRaceProperty(RACE_PROPERTY::PACIFIST))
+				bonus += 15;
+		break;
+		case RACE_MOD_TYPE_INDUSTRY:
+			if(IsRaceProperty(RACE_PROPERTY::WARLIKE) || IsRaceProperty(RACE_PROPERTY::HOSTILE))
+				bonus += 15;
+			if(IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
+				bonus += 25;
+			if(IsRaceProperty(RACE_PROPERTY::SNEAKY))
+				bonus += 10;
+		break;
+		case RACE_MOD_TYPE_ENERGY:
+			if(IsRaceProperty(RACE_PROPERTY::WARLIKE) || IsRaceProperty(RACE_PROPERTY::HOSTILE))
+				bonus += 10;
+		break;
+		case RACE_MOD_TYPE_SECURITY:
+			if(IsRaceProperty(RACE_PROPERTY::SECRET))
+				bonus += 25;
+			if(IsRaceProperty(RACE_PROPERTY::SNEAKY))
+				bonus += 15;
+		break;
+		case RACE_MOD_TYPE_RESEARCH:
+			if(IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
+				bonus += 25;
+			if(IsRaceProperty(RACE_PROPERTY::PACIFIST))
+				bonus += 10;
+		break;
+		case RACE_MOD_TYPE_ALL_RESOURCES:
+			if(IsRaceProperty(RACE_PROPERTY::PRODUCER))
+				bonus += 10;
+		break;
+		case RACE_MOD_TYPE_CREDITS:
+			if (IsRaceProperty(RACE_PROPERTY::FINANCIAL))
+				bonus += 25;
+		break;
+
+	}
+	return bonus;
+}
