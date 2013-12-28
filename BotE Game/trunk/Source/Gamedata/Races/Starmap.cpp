@@ -959,3 +959,50 @@ BaseSector CStarmap::CalcAIBaseSector(double variance)
 	return BaseSector();
 }
 
+static bool CheckCoords(int x, int y, const CString& owned_by, const std::vector<CSystem>& systems)
+{
+	if(!IsOnMap(x, y))
+		return false;
+	const CSystem& system = systems.at(CoordsToIndex(x, y));
+	return system.OwnerID() == owned_by && system.GetShipPort(owned_by);
+}
+
+CPoint CStarmap::NearestPort(const std::vector<CSystem>& systems, const CPoint& start, const CString& owned_by)
+{
+	AssertBotE(IsOnMap(start.x, start.y));
+	if(CheckCoords(start.x, start.y, owned_by, systems))
+		return start;
+
+	for(int radius = 1; radius < max(STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT); ++radius)
+	{
+		const int from_x = start.x - radius;
+		const int to_x = start.x + radius;
+		const int from_y = start.y - radius;
+		const int to_y = start.y + radius;
+		int x = from_x;
+		int y = from_y;
+		for(; x < to_x; ++x)
+		{
+			if(CheckCoords(x, y, owned_by, systems))
+				return CPoint(x, y);
+		}
+		for(; y < to_y; ++y)
+		{
+			if(CheckCoords(x, y, owned_by, systems))
+				return CPoint(x, y);
+		}
+		for(; x > from_x; --x)
+		{
+			if(CheckCoords(x, y, owned_by, systems))
+				return CPoint(x, y);
+		}
+		for(; y > from_y; --y)
+		{
+			if(CheckCoords(x, y, owned_by, systems))
+				return CPoint(x, y);;
+		}
+	}
+
+	return CPoint(0, 0);
+}
+

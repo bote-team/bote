@@ -320,6 +320,9 @@ public:
 	 */
 	short GetPoints(const Sector &sector) const;
 
+	//find nearest ship port to start owned by passed race
+	static CPoint NearestPort(const std::vector<CSystem>& systems, const CPoint& start, const CString& owned_by);
+
 private:
 	/// Diese Funktion berechnet die Reichweitenkarte anhand der aktuellen Techstufe <code>propTech</code> und schreibt
 	/// das Ergebnis in den Parameter <code>rangeMap</code>. Zusätzlich werden Referenzen auf paar Hilfsvariablen
