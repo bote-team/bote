@@ -2678,6 +2678,7 @@ void CBotEDoc::CalcSystemAttack()
 								boost::dynamic_pointer_cast<CMinor>(GetSystem(p.x, p.y).HomeOf());
 							AssertBotE(pMinor);
 							pMinor->SetSubjugated(true);
+							pMinor->SetOwner(pMajor);
 							// Beziehung zu dieser Minorrace verschlechtert sich auf 0 Punkte
 							pMinor->SetRelation(attacker, -100);
 
