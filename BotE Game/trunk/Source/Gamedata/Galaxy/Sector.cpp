@@ -14,6 +14,7 @@
 #include "ClientWorker.h"
 #include "Races/Major.h"
 #include "Races/RaceController.h"
+#include "float.h"
 
 
 
@@ -545,7 +546,7 @@ void CSector::DistributeColonists(const float colonists)
 			it->SetCurrentHabitant(max_hab);
 		else {
 			it->SetCurrentHabitant(try_new_hab);
-			AssertBotE(oddHab <= 0);
+			AssertBotE(oddHab <= FLT_EPSILON);
 			break;
 		}
 	}
