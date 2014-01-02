@@ -80,6 +80,7 @@ void CEmpire::Serialize(CArchive &ar)
 		for(std::vector<boost::shared_ptr<CEventScreen>>::iterator it = m_Events.begin();
 				it != m_Events.end(); ++it)
 		{
+			AssertBotE((*it)->GetType() != CEventScreen::EVENT_SCREEN_TYPE_NONE);
 			ar << static_cast<int>((*it)->GetType());
 			(*it)->Serialize(ar);
 		}

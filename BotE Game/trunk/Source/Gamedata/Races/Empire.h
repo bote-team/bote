@@ -20,6 +20,7 @@
 #include "Events\EventVictory.h"
 #include "Events\EventAlienEntity.h"
 #include "Events\EventRandom.h"
+#include "AssertBotE.h"
 
 /**
  * Struktur, die die wichtigsten Informationen eines Systems aufnehmen kann. Dies wird benötigt, wenn wir in einer
@@ -92,7 +93,10 @@ public:
 	/// Funktion gibt einen Zeiger auf das Feld mit den Eventnachrichten für das Imperium zurück.
 	/// @return Pointer auf <code>CObArray</code>
 	const std::vector<boost::shared_ptr<CEventScreen>>* const GetEvents() const {return &m_Events;}
-	void PushEvent(const boost::shared_ptr<CEventScreen>& event_screen) { m_Events.push_back(event_screen); }
+	void PushEvent(const boost::shared_ptr<CEventScreen>& event_screen) {
+		AssertBotE(event_screen->GetType() != CEventScreen::EVENT_SCREEN_TYPE_NONE);
+		m_Events.push_back(event_screen);
+	}
 	const boost::shared_ptr<CEventScreen> FirstEvent(bool pop);
 
 	/// Funktion gibt einen Zeiger auf das Forschungsobjekt des Imperiums zurück.
