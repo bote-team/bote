@@ -850,8 +850,9 @@ void CSystem::CalculateVariables()
 		m_Production.m_iCreditsProd += workers.at(static_cast<int>(WORKER::INDUSTRY_WORKER));
 
 	// Die einzelnen Produktionen berechnen
-	int ind_buildings_used = 0;//tracking variables for industry/energy potentials to not use more than ALL_WORKERS
-	int energy_buildings_used = 0;
+	int usable_ind_buildings = 0;//tracking variables for industry/energy potentials to not use
+	//more than ALL_WORKERS
+	int usable_energy_buildings = 0;
 	for (int i = 0; i < NumberOfBuildings; i++)
 	{
 		const CBuildingInfo* buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
@@ -874,14 +875,14 @@ void CSystem::CalculateVariables()
 					building.SetIsBuildingOnline(TRUE);
 				}
 			if(buildingInfo->GetEnergyProd() > 0)
-				++energy_buildings_used;
+				++usable_energy_buildings;
 			if(buildingInfo->GetIPProd() > 0)
-				++ind_buildings_used;
+				++usable_ind_buildings;
 		}
 		// Die einzelnen Produktionen berechnen (ohne Boni)
 		m_Production.CalculateProduction(buildingInfo, building.GetIsBuildingOnline(),
-			ind_buildings_used <= m_Workers.GetWorker(WORKER::ALL_WORKER),
-			energy_buildings_used <= m_Workers.GetWorker(WORKER::ALL_WORKER));
+			usable_ind_buildings <= m_Workers.GetWorker(WORKER::ALL_WORKER) || !buildingInfo->GetWorker(),
+			usable_energy_buildings <= m_Workers.GetWorker(WORKER::ALL_WORKER) || !buildingInfo->GetWorker());
 	}
 
 	// falls vorhanden, deaktiverte Produktionen auf 0 setzen
