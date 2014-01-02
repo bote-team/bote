@@ -700,8 +700,17 @@ private:
 		const int scan_power = m_pSystem->GetScanPower(m_pSystem->OwnerID(), true);
 		for(std::map<CString, CShipMap>::const_iterator race = ships.begin(); race != ships.end(); ++race)
 			for(CShipMap::const_iterator ship = race->second.begin(); ship != race->second.end(); ++ship)
+			{
+				if(ship->second->GetTorpedoWeapons()->IsEmpty())
+				{
+					const boost::shared_ptr<CMajor> owner =
+						boost::dynamic_pointer_cast<CMajor>(ship->second->Owner());
+					if(owner && !owner->IsHumanPlayer())
+						continue;
+				}
 				if(!ship->second->GetCloak() && m_pSystem->GetNeededScanPower(ship->second->OwnerID()) <= scan_power)
 					return true;
+			}
 		return false;
 	}
 
