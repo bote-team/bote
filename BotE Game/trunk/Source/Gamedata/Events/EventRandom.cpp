@@ -7,6 +7,10 @@
 
 IMPLEMENT_SERIAL (CEventRandom, CObject, 1)
 
+CEventRandom::CEventRandom(void)
+{
+	m_Type = EVENT_SCREEN_TYPE_RANDOM;
+}
 
 CEventRandom::~CEventRandom(void)
 {

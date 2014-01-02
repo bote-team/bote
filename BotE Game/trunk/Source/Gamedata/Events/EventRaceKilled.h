@@ -15,7 +15,7 @@ public:
 	DECLARE_SERIAL (CEventRaceKilled)
 
 	/// Standardkonstruktor
-	CEventRaceKilled(void) {};
+	CEventRaceKilled(void);
 
 	/// Standardkonstruktor mit Parameterübergabe
 	CEventRaceKilled(const CString& sPlayersRace, const CString& sKilledRace, const CString& sKilledRaceName, const CString& sKilledRaceImage);

@@ -7,6 +7,11 @@
 
 IMPLEMENT_SERIAL (CEventBlockade, CObject, 1)
 
+CEventBlockade::CEventBlockade(void)
+{
+	m_Type = EVENT_SCREEN_TYPE_BLOCKADE;
+}
+
 CEventBlockade::CEventBlockade(const CString &sPlayersRaceID, const CString &headline, const CString &text)
 	: CEventScreen(sPlayersRaceID, "Blockade", headline, text)
 {

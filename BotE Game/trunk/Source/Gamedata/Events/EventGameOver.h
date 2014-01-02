@@ -15,7 +15,7 @@ public:
 	DECLARE_SERIAL (CEventGameOver)
 
 	/// Standardkonstruktor
-	CEventGameOver(void) {};
+	CEventGameOver(void);
 
 	/// Standardkonstruktor mit Parameterübergabe
 	CEventGameOver(const CString& sPlayersRace);

@@ -15,7 +15,7 @@ public:
 	DECLARE_SERIAL (CEventAlienEntity)
 
 	/// Standardkonstruktor
-	CEventAlienEntity(void) {};
+	CEventAlienEntity(void);
 
 	/// Standardkonstruktor mit Parameterübergabe
 	CEventAlienEntity(const CString& sPlayersRace, const CString& sAlienEntityID, const CString &sHeadline, const CString &sText);

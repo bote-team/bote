@@ -31,11 +31,14 @@ public:
 		EVENT_SCREEN_TYPE_NONE
 	};
 
+protected:
 	/// Standardkonstruktor
 	CEventScreen(void);
 
 	/// Standardkonstruktor mit Parameterübergabe
 	CEventScreen(const CString &sPlayersRaceID, const CString &imageName, const CString &headline = "", const CString &text = "");
+
+public:
 
 	/// Standarddestruktor
 	virtual ~CEventScreen(void);

@@ -15,7 +15,7 @@ public:
 	DECLARE_SERIAL (CEventBombardment)
 
 	/// Standardkonstruktor
-	CEventBombardment(void) {};
+	CEventBombardment(void);
 
 	/// Standardkonstruktor mit Parameterübergabe
 	CEventBombardment(const CString& sPlayersRace, const CString &imageName, const CString &headline = "", const CString &text = "");

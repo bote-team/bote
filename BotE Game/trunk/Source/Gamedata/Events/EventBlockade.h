@@ -15,7 +15,7 @@ public:
 	DECLARE_SERIAL (CEventBlockade)
 
 	/// Standardkonstruktor
-	CEventBlockade(void) {};
+	CEventBlockade(void);
 
 	/// Standardkonstruktor mit Parameterübergabe
 	CEventBlockade(const CString &sPlayersRaceID, const CString &headline = "", const CString &text = "");

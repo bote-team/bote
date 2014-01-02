@@ -15,7 +15,7 @@ public:
 	DECLARE_SERIAL (CEventColonization)
 
 	/// Standardkonstruktor
-	CEventColonization(void) {};
+	CEventColonization(void);
 
 	/// Standardkonstruktor mit Parameterübergabe
 	CEventColonization(const CString& sPlayersRaceID, const CString &headline = "", const CString &text = "");

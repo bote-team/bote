@@ -10,6 +10,11 @@
 
 IMPLEMENT_SERIAL (CEventGameOver, CObject, 1)
 
+CEventGameOver::CEventGameOver(void)
+{
+	m_Type = EVENT_SCREEN_TYPE_GAME_OVER;
+}
+
 CEventGameOver::CEventGameOver(const CString& sPlayersRace)
 	: CEventScreen(sPlayersRace, "GameOver")
 {

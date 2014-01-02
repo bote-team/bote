@@ -7,6 +7,11 @@
 
 IMPLEMENT_SERIAL (CEventColonization, CObject, 1)
 
+CEventColonization::CEventColonization(void)
+{
+	m_Type = EVENT_SCREEN_TYPE_COLONIZATION;
+}
+
 CEventColonization::CEventColonization(const CString& sPlayersRaceID, const CString &headline, const CString &text)
 	: CEventScreen(sPlayersRaceID, "Colonization", headline, text)
 {

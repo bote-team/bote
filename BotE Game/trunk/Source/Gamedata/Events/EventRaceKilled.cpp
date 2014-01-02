@@ -9,6 +9,11 @@
 
 IMPLEMENT_SERIAL (CEventRaceKilled, CObject, 1)
 
+CEventRaceKilled::CEventRaceKilled(void)
+{
+	m_Type = EVENT_SCREEN_TYPE_RACE_KILLED;
+}
+
 CEventRaceKilled::CEventRaceKilled(const CString& sPlayersRace, const CString& sKilledRace, const CString& sKilledRaceName, const CString& sKilledRaceImage)
 	: CEventScreen(sPlayersRace, "RaceKilled")
 {

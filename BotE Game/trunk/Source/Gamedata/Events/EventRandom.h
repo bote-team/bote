@@ -7,7 +7,7 @@ public:
 	DECLARE_SERIAL (CEventRandom)
 
 	/// Standardkonstruktor
-	CEventRandom(void) {};
+	CEventRandom(void);
 
 	/// Standardkonstruktor mit Parameterübergabe
 	CEventRandom(const CString& sPlayersRace, const CString &imageName, const CString &headline = "", const CString &text = "");

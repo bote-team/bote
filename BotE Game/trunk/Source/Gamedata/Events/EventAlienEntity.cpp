@@ -8,6 +8,11 @@
 
 IMPLEMENT_SERIAL (CEventAlienEntity, CObject, 1)
 
+CEventAlienEntity::CEventAlienEntity()
+{
+	m_Type = EVENT_SCREEN_TYPE_ALIEN_ENTITY;
+}
+
 CEventAlienEntity::CEventAlienEntity(const CString& sPlayersRace, const CString& sAlienEntityID, const CString &sHeadline, const CString &sText)
 	: CEventScreen(sPlayersRace, "AlienEntity", sHeadline, sText)
 {
