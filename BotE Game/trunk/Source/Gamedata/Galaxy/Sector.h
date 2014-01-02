@@ -100,7 +100,7 @@ public:
 	BYTE GetNumberOfPlanets(void) const {return m_Planets.size();}
 
 	/// Diese Funktion gibt einen Zeiger auf einen Planeten in diesem System zurück.
-	const CPlanet* GetPlanet(BYTE nPlanetIndex) const {return &m_Planets[nPlanetIndex];}
+	const CPlanet* GetPlanet(BYTE nPlanetIndex) const {return &m_Planets.at(nPlanetIndex);}
 
 	/// Funktion gibt alle Einwohner aller Planeten in dem Sektor zurück.
 	float GetCurrentHabitants() const;
