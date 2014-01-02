@@ -8257,7 +8257,7 @@ con_5767.bop
 0
 0
 0
-5
+2
 60
 1
 Primitive Deuterium Raffinerie
@@ -9377,7 +9377,7 @@ con_6776.bop
 0
 0
 0
-6
+3
 68
 1
 Primitive Duraniummine
@@ -10217,7 +10217,7 @@ con_7683.bop
 0
 0
 0
-7
+4
 74
 1
 Primitive Kristallmine
@@ -10777,7 +10777,7 @@ con_8388.bop
 1
 0
 0
-8
+5
 78
 1
 Primitive Iridiummine
@@ -11477,7 +11477,7 @@ con_8891.bop
 0
 1
 0
-9
+6
 83
 1
 Deritium-Extraktor
@@ -12317,7 +12317,7 @@ con_b92.bop
 0
 0
 1
-10
+7
 89
 1
 Handelszentrum
@@ -24497,7 +24497,7 @@ con_5767.bop
 0
 0
 0
-5
+2
 176
 2
 Primitive Deuterium Raffinerie
@@ -25617,7 +25617,7 @@ con_6776.bop
 0
 0
 0
-6
+3
 184
 2
 Primitive Duraniummine
@@ -26457,7 +26457,7 @@ con_7683.bop
 0
 0
 0
-7
+4
 190
 2
 Primitive Kristallmine
@@ -27017,7 +27017,7 @@ con_8388.bop
 1
 0
 0
-8
+5
 194
 2
 Primitive Iridiummine
@@ -27717,7 +27717,7 @@ con_8891.bop
 0
 1
 0
-9
+6
 199
 2
 Deritium-Extraktor
@@ -28557,7 +28557,7 @@ han_b90.bop
 0
 0
 1
-10
+7
 205
 2
 Bank von Han
@@ -41997,7 +41997,7 @@ con_5767.bop
 0
 0
 0
-5
+2
 301
 3
 Primitive Deuterium Raffinerie
@@ -43117,7 +43117,7 @@ con_6776.bop
 0
 0
 0
-6
+3
 309
 3
 Primitive Duraniummine
@@ -43957,7 +43957,7 @@ con_7683.bop
 0
 0
 0
-7
+4
 315
 3
 Primitive Kristallmine
@@ -44517,7 +44517,7 @@ con_8388.bop
 1
 0
 0
-8
+5
 319
 3
 Primitive Iridiummine
@@ -45217,7 +45217,7 @@ con_8891.bop
 0
 1
 0
-9
+6
 324
 3
 Deritium-Extraktor
@@ -46057,7 +46057,7 @@ kha_b90.bop
 0
 0
 1
-10
+7
 330
 3
 Gefängnismine
@@ -58797,7 +58797,7 @@ con_5767.bop
 0
 0
 0
-5
+2
 421
 4
 Primitive Deuterium Raffinerie
@@ -59917,7 +59917,7 @@ con_6776.bop
 0
 0
 0
-6
+3
 429
 4
 Primitive Duraniummine
@@ -60757,7 +60757,7 @@ con_7683.bop
 0
 0
 0
-7
+4
 435
 4
 Primitive Kristallmine
@@ -61317,7 +61317,7 @@ con_8388.bop
 1
 0
 0
-8
+5
 439
 4
 Primitive Iridiummine
@@ -62017,7 +62017,7 @@ con_8891.bop
 0
 1
 0
-9
+6
 444
 4
 Deritium-Extraktor
@@ -62857,7 +62857,7 @@ rot_b93.bop
 0
 0
 1
-10
+7
 450
 4
 Singularitäts-Anlage
@@ -75177,7 +75177,7 @@ con_5767.bop
 0
 0
 0
-5
+2
 538
 5
 Primitive Deuterium Raffinerie
@@ -76297,7 +76297,7 @@ con_6776.bop
 0
 0
 0
-6
+3
 546
 5
 Primitive Duraniummine
@@ -77137,7 +77137,7 @@ con_7683.bop
 0
 0
 0
-7
+4
 552
 5
 Primitive Kristallmine
@@ -77697,7 +77697,7 @@ con_8388.bop
 1
 0
 0
-8
+5
 556
 5
 Primitive Iridiummine
@@ -78397,7 +78397,7 @@ con_8891.bop
 0
 1
 0
-9
+6
 561
 5
 Deritium-Extraktor
@@ -79237,7 +79237,7 @@ car_b90.bop
 0
 0
 1
-10
+7
 567
 5
 Arbeitslager
@@ -91557,7 +91557,7 @@ con_5767.bop
 0
 0
 0
-5
+2
 655
 6
 Primitive Deuterium Raffinerie
@@ -92677,7 +92677,7 @@ con_6776.bop
 0
 0
 0
-6
+3
 663
 6
 Primitive Duraniummine
@@ -93517,7 +93517,7 @@ con_7683.bop
 0
 0
 0
-7
+4
 669
 6
 Primitive Kristallmine
@@ -94077,7 +94077,7 @@ con_8388.bop
 1
 0
 0
-8
+5
 673
 6
 Primitive Iridiummine
@@ -94777,7 +94777,7 @@ con_8891.bop
 0
 1
 0
-9
+6
 678
 6
 Deritium-Extraktor
@@ -95617,7 +95617,7 @@ ome_b90.bop
 0
 0
 1
-10
+7
 684
 6
 Die Omega-Ratssitzung
