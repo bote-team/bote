@@ -725,7 +725,7 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system)
 		if(needed == 0)
 			continue;
 		bool should_be_online = building.GetIsBuildingOnline();
-		if(info.GetShipYard())
+		if(info.GetShipYard() || info.GetShipBuildSpeed() > 0)
 		{
 			AssertBotE(!info.IsDefenseBuilding());
 			should_be_online = checker.ShouldTakeShipyardOnline();
@@ -768,7 +768,9 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system)
 		}
 
 		should_be_online = should_be_online || info.IsUsefulForProduction();
-		should_be_online = should_be_online && info.OnlyImprovesProduction(minus_moral);
+		should_be_online = should_be_online &&
+			(info.OnlyImprovesProduction(minus_moral) ||
+				(info.GetShipBuildSpeed() > 0 && checker.ShouldTakeShipyardOnline()));
 		should_be_online = should_be_online || info.IsUsefulMoral();
 
 		const bool is_online = building.GetIsBuildingOnline();
