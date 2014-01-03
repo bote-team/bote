@@ -1277,6 +1277,8 @@ Sentry
 Repair
 [IMPROVE_SHIELDS_SHIP_ORDER]
 Improve shields
+[EXTRACT_DEUTERIUM_SHIP_ORDER]
+Deuterium extraction
 [NO_SHIP_ORDER]
 Nothing
 
@@ -2209,7 +2211,7 @@ Total loss of crew experience
 [METNEBULA_GAME]
 Shields down in battle
 [DEUTNEBULA_GAME]
-Shield and scanner malfunction
+Deuterium extraction, Shield and scanner malfunction
 [IONSTORM_GAME]
 Maximum shield power increases by 3% per turn, total loss of crew experience, scanner malfunction
 [BINEBULA_GAME]

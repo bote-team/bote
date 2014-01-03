@@ -244,7 +244,7 @@ bool CAnomaly::IsShipScannerDeactivated(void) const
 	return (m_byType == NEUTRONSTAR || m_byType == RADIOPULSAR || m_byType == XRAYPULSAR || m_byType == MAGNETAR || m_byType == DEUTNEBULA || m_byType == IONSTORM);
 }
 
-void CAnomaly::CalcShipEffects(CShips* pShip) const
+void CAnomaly::CalcShipEffects(CShips* pShip, CShipMap& ships_from_fleets) const
 {
 	if (m_byType == NEUTRONSTAR || m_byType == RADIOPULSAR || m_byType == XRAYPULSAR || m_byType == MAGNETAR)
 	{
@@ -286,6 +286,8 @@ void CAnomaly::CalcShipEffects(CShips* pShip) const
 		}
 		// Schiff selbst
 		pShip->GetShield()->SetCurrentShield(pShip->GetShield()->GetCurrentShield() * (-1));
+		if(pShip->GetCurrentOrder() == SHIP_ORDER::EXTRACT_DEUTERIUM)
+			pShip->ExtractDeuterium(ships_from_fleets);
 	}
 	else if (m_byType == RADIONEBULA)
 	{

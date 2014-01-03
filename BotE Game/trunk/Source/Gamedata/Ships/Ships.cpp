@@ -568,6 +568,27 @@ void CShips::RepairCommand(BOOL bAtShipPort, bool bFasterShieldRecharge, CShipMa
 	}
 }
 
+void CShips::ExtractDeuterium(CShipMap& ships)
+{
+	AssertBotE(GetCurrentOrder() == SHIP_ORDER::EXTRACT_DEUTERIUM);
+	for(CShips::iterator i = begin(); i != end();) {
+		i->second->ExtractDeuterium(ships);
+		if(!i->second->CanExtractDeuterium()) {
+			ships.Add(i->second);
+			i->second->UnsetCurrentOrder();
+			RemoveShipFromFleet(i);
+			continue;
+		}
+		++i;
+	}
+	CShip::ExtractDeuterium();
+	if(!CShip::CanExtractDeuterium()) {
+		CShip::UnsetCurrentOrder();
+		if(HasFleet())
+			ships.Add(GiveFleetToFleetsFirstShip());
+	}
+}
+
 void CShips::RetreatFleet(const CPoint& RetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic) {
 	NotifySector temp(shared_from_this());
 	for(CShips::iterator j = begin(); j != end(); ++j)

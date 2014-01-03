@@ -1277,6 +1277,8 @@ Stationieren
 Reparieren
 [IMPROVE_SHIELDS_SHIP_ORDER]
 Schilde verbessern
+[EXTRACT_DEUTERIUM_SHIP_ORDER]
+Deuteriumextraktion
 [NO_SHIP_ORDER]
 Nichts
 
@@ -2209,7 +2211,7 @@ Verlust der kompletten Crewerfahrung
 [METNEBULA_GAME]
 Schilde sind im Kampf deaktiviert
 [DEUTNEBULA_GAME]
-Ausfall von Schilden und Scanner
+Deuteriumextraktion, Ausfall von Schilden und Scanner
 [IONSTORM_GAME]
 Maximale Schildstärke erhöht sich um 3% pro Runde, Verlust der kompletten Crewerfahrung, Ausfall aller Scanner
 [BINEBULA_GAME]

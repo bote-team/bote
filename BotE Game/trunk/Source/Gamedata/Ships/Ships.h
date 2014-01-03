@@ -217,6 +217,8 @@ public:
 	void TraditionalRepair(BOOL bAtShipPort, bool bFasterShieldRecharge);
 	void RepairCommand(BOOL bAtShipPort, bool bFasterShieldRecharge, CShipMap& ships);
 
+	void ExtractDeuterium(CShipMap& ships);
+
 
 	//Perform actions to retreat this ship to the given sector.
 	void RetreatFleet(const CPoint& RetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic = NULL);

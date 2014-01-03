@@ -10,6 +10,7 @@
 
 // forward declaration
 class CShips;
+class CShipMap;
 
 // Eigenschaften aller Anomalien
 /*
@@ -123,7 +124,7 @@ public:
 
 	bool IsShipScannerDeactivated(void) const;
 
-	void CalcShipEffects(CShips* pShip) const;
+	void CalcShipEffects(CShips* pShip, CShipMap& ships_from_fleets) const;
 
 protected:
 	// Attribute

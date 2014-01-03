@@ -374,6 +374,7 @@ CString CShip::GetCurrentOrderAsString() const
 	case SHIP_ORDER::SENTRY_SHIP_ORDER: order = CLoc::GetString("SENTRY_SHIP_ORDER"); break;
 	case SHIP_ORDER::REPAIR: order = CLoc::GetString("REPAIR_SHIP_ORDER"); break;
 	case SHIP_ORDER::IMPROVE_SHIELDS: order = CLoc::GetString("IMPROVE_SHIELDS_SHIP_ORDER"); break;
+	case SHIP_ORDER::EXTRACT_DEUTERIUM: order = CLoc::GetString("EXTRACT_DEUTERIUM_SHIP_ORDER"); break;
 	case SHIP_ORDER::NONE: order = CLoc::GetString("NO_SHIP_ORDER"); break;
 	default: AssertBotE(false); break;
 	}
@@ -534,6 +535,7 @@ static bool ShouldUnsetOrder(SHIP_ORDER::Typ order) {
 		case SHIP_ORDER::SENTRY_SHIP_ORDER:
 		case SHIP_ORDER::REPAIR:
 		case SHIP_ORDER::IMPROVE_SHIELDS:
+		case SHIP_ORDER::EXTRACT_DEUTERIUM:
 			return true;
 	}
 	return false;
@@ -781,6 +783,13 @@ USHORT CShip::GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo) const
 	return usedStorage;
 }
 
+int CShip::GetFreeStorageRoom() const
+{
+	const int result = m_iStorageRoom - GetUsedStorageRoom(&resources::pDoc->m_TroopInfo);
+	AssertBotE(result >= 0);
+	return result;
+}
+
 unsigned CShip::GetStealthPower() const {
 	unsigned level = m_iStealthGrade;
 	if(!GetCloak())
@@ -880,6 +889,11 @@ bool CShip::NeedsRepair() const {
 	return m_Hull.GetCurrentHull() < m_Hull.GetMaxHull() || m_Shield.GetCurrentShield() < m_Shield.GetMaxShield();
 }
 
+bool CShip::CanExtractDeuterium() const
+{
+	return m_iShipType == SHIP_TYPE::TRANSPORTER && GetFreeStorageRoom() > 0;
+}
+
 bool CShip::IsNonCombat() const {
 	return m_iShipType <= SHIP_TYPE::PROBE;
 }
@@ -910,6 +924,8 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
 			return true;
 		case SHIP_ORDER::IMPROVE_SHIELDS:
 			return IonstormCanImproveShields();
+		case SHIP_ORDER::EXTRACT_DEUTERIUM:
+			return CanExtractDeuterium();
 		case SHIP_ORDER::WAIT_SHIP_ORDER:
 		case SHIP_ORDER::SENTRY_SHIP_ORDER:
 		case SHIP_ORDER::CREATE_FLEET:
@@ -1480,6 +1496,19 @@ void CShip::Repair(BOOL bAtShipPort, bool bFasterShieldRecharge) {
 	// Wenn wir in diesem Sektor einen Shipport haben, dann wird die H?lle repariert
 	if(bAtShipPort)
 		m_Hull.RepairHull();
+}
+
+void CShip::ExtractDeuterium()
+{
+	int deut = 50;
+	const CResearch& research = *m_Owner->GetEmpire()->GetResearch();
+	deut *= min(research.GetEnergyTech(), research.GetPropulsionTech());
+	if(CTrade::GetMonopolOwner(RESOURCES::DEUTERIUM) == OwnerID())
+		deut *= 2;
+	if(const int bonus = research.GetResearchInfo()->IsResearchedThenGetBonus(RESEARCH_COMPLEX::PRODUCTION, 2))
+		deut += bonus * deut / 100;
+	deut = min(deut, GetFreeStorageRoom());
+	m_iLoadedResources[RESOURCES::DEUTERIUM] += deut;
 }
 
 void CShip::Retreat(const CPoint& ptRetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic)

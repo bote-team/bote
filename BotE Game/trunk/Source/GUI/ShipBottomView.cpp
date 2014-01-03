@@ -47,7 +47,7 @@ CShipBottomView::CShipBottomView() :
 {
 	m_pShipOrderButton = NULL;
 	m_vMainShipOrders.reserve(MAIN_BUTTON_CANCEL);
-	m_vSecondaryShipOrders.resize(SHIP_ORDER::UPGRADE_STARBASE + 1);
+	m_vSecondaryShipOrders.resize(SHIP_ORDER::EXTRACT_DEUTERIUM + 1);
 }
 
 CShipBottomView::~CShipBottomView()
@@ -91,6 +91,9 @@ static bool ShipCanHaveOrder(const CShips& ships, SHIP_ORDER::Typ order, const C
 		case SHIP_ORDER::IMPROVE_SHIELDS:
 			return ships.CanHaveOrder(order, true) && system->GetAnomaly() && system->GetAnomaly()
 				->GetType() == IONSTORM;
+		case SHIP_ORDER::EXTRACT_DEUTERIUM:
+			return ships.CanHaveOrder(order, true) && system->GetAnomaly() && system->GetAnomaly()
+				->GetType() == DEUTNEBULA;
 	}
 	return ships.CanHaveOrder(order, true);
 }
@@ -517,6 +520,14 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 		DrawSmallButton("IMPROVE_SHIELDS_SHIP_ORDER",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::IMPROVE_SHIELDS);
 		counter++;
 	}
+	//deuterium extraction
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::EXTRACT_DEUTERIUM,
+			&m_dc.pDoc->GetSystem(pShip.GetCo().x, pShip.GetCo().y)))
+	{
+		DrawSmallButton("EXTRACT_DEUTERIUM_SHIP_ORDER",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::EXTRACT_DEUTERIUM);
+		counter++;
+	}
+
 	// Repairing
 	// Only possible if
 	// 1) the ship or any of the ships in its fleet are actually damaged.

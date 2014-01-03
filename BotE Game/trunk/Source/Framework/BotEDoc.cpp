@@ -3778,7 +3778,7 @@ void CBotEDoc::CalcShipMovement()
 #ifdef CONSISTENCY_CHECKS
 	std::set<CString> already_encountered_ships_for_sanity_check;
 #endif
-	CShipMap repaired_ships;
+	CShipMap ships_from_fleets;
 	// Hier kommt die Schiffsbewegung (also keine anderen Befehle werden hier noch ausgewertet, lediglich wird überprüft,
 	// dass manche Befehle noch ihre Gültigkeit haben
 	for(CShipMap::iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
@@ -3931,18 +3931,19 @@ void CBotEDoc::CalcShipMovement()
 		const CSystem& system = GetSystem(co.x, co.y);
 		const bool port = system.GetShipPort(y->second->OwnerID());
 		if(y->second->GetCurrentOrder() == SHIP_ORDER::REPAIR)
-			y->second->RepairCommand(port, bFasterShieldRecharge, repaired_ships);
+			y->second->RepairCommand(port, bFasterShieldRecharge, ships_from_fleets);
 		else
 			y->second->TraditionalRepair(port, bFasterShieldRecharge);
 
 		// wenn eine Anomalie vorhanden, deren m?gliche Auswirkungen auf das Schiff berechnen
 		if (GetSystem(y->second->GetCo().x, y->second->GetCo().y).GetAnomaly())
 		{
-			GetSystem(y->second->GetCo().x, y->second->GetCo().y).GetAnomaly()->CalcShipEffects(y->second.get());
+			GetSystem(y->second->GetCo().x, y->second->GetCo().y).GetAnomaly()->CalcShipEffects(
+				y->second.get(), ships_from_fleets);
 			bAnomaly = true;
 		}
 	}
-	m_ShipMap.Append(repaired_ships);
+	m_ShipMap.Append(ships_from_fleets);
 
 	if (!bAnomaly)
 		return;

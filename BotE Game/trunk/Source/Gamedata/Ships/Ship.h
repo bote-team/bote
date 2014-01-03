@@ -203,6 +203,7 @@ public:
 	BYTE GetExpLevel() const;
 
 	USHORT GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo) const;
+	int GetFreeStorageRoom() const;
 
 	unsigned GetStealthPower() const;
 
@@ -246,6 +247,8 @@ public:
 	//@return false if yes
 	bool NeedsRepair() const;
 
+	bool CanExtractDeuterium() const;
+
 	/// Funktion gibt einen Wahrheitswert zurück, ob das Schiffsobjekt eine bestimmte Spezialfähigkeit besitzt.
 	/// @param ability Spezialfähigkeit
 	/// @return <code>true</code> wenn es diese Fähigkeit besitzt, ansonsten <code>false</code>
@@ -271,6 +274,8 @@ public:
 
 	//Execute a 1-turn shield (always) and hull (if bAtShipPort == TRUE) repairing step
 	void Repair(BOOL bAtShipPort, bool bFasterShieldRecharge);
+
+	void ExtractDeuterium();
 
 	//Perform actions to retreat this ship to the given sector.
 	void Retreat(const CPoint& ptRetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic = NULL);
