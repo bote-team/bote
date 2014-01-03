@@ -187,7 +187,7 @@ void CSanity::SanityCheckRacePtrUseCounts(const CBotEDoc& doc)
 		{
 			CString s;
 			s.Format("race pointer use count for %s inconsistent; is: %i, should be: %i", it->first, use_count, count->second);
-			Notify(s, true, true);
+			Notify(s, true);
 		}
 		++count;
 	}
