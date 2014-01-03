@@ -332,7 +332,8 @@ bool CMapTile::IsStationBuildable(SHIP_ORDER::Typ order, const CString& race) co
 	if(order == SHIP_ORDER::UPGRADE_OUTPOST && GetOutpost(race)
 		|| order == SHIP_ORDER::UPGRADE_STARBASE && GetStarbase(race)) {
 		const CBotEDoc* pDoc = resources::pDoc;
-		const CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(race));
+		const boost::shared_ptr<const CMajor> pMajor =
+			boost::dynamic_pointer_cast<CMajor>(pDoc->GetRaceCtrl()->GetRaceSafe(race));
 		const SHIP_TYPE::Typ type = (order == SHIP_ORDER::UPGRADE_OUTPOST)
 			? SHIP_TYPE::OUTPOST : SHIP_TYPE::STARBASE;
 		const int bestbuildableID = pMajor->BestBuildableVariant(type, pDoc->m_ShipInfoArray);
@@ -347,7 +348,7 @@ bool CMapTile::IsStationBuildable(SHIP_ORDER::Typ order, const CString& race) co
 					return StationBuildContinuable(race, *this);
 				}
 				CShips temp(bestbuildableinfo);
-				pDoc->AddSpecialResearchBoniToShip(&temp, pMajor);
+				temp.AddSpecialResearchBoni(pMajor);
 				if(k->second->IsWorseThan(temp))
 					return StationBuildContinuable(race, *this);
 				break;

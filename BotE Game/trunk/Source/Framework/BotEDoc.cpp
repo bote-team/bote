@@ -2101,7 +2101,7 @@ CShipMap::iterator CBotEDoc::BuildShip(int nID, const CPoint& KO, const CString&
 	MYTRACE("general")(MT::LEVEL_DEBUG, "New Ship for Major %d\n", pMajor);
 
 	// Spezialforschungsboni dem Schiff hinzufügen
-	AddSpecialResearchBoniToShip(it->second.get(), pMajor);
+	it->second->AddSpecialResearchBoni();
 
 	pMajor->GetShipHistory()->AddShip(it->second->ShipHistoryInfo(), GetSystem(KO.x, KO.y).GetName(), m_iRound);
 	return it;
@@ -2118,117 +2118,6 @@ void CBotEDoc::RemoveShip(CShipMap::iterator& ship)
 		m_ShipMap.Add(new_fleetship);
 	}
 	m_ShipMap.EraseAt(ship);
-}
-
-/// Funktion beachtet die erforschten Spezialforschungen einer Rasse und verbessert die
-/// Eigenschaften der übergebenen Schiffes.
-/// @param pShip Schiff welches durch Spezialforschungen eventuell verbessert wird
-/// @param pShipOwner Zeiger auf den Besitzer des Schiffes
-void CBotEDoc::AddSpecialResearchBoniToShip(CShips* pShip, const CMajor* pShipOwner) const
-{
-	if (!pShip || !pShipOwner)
-		return;
-
-	const CResearchInfo* pInfo = pShipOwner->GetEmpire()->GetResearch()->GetResearchInfo();
-	if (!pInfo)
-		return;
-
-	// mögliche Verbesserungen durch die Spezialforschung werden hier beachtet
-	// Spezialforschung #0: "Waffentechnik"
-	if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY)->GetComplexStatus() == RESEARCH_STATUS::RESEARCHED)
-	{
-		// 20% erhoehter Phaserschaden
-		if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
-		{
-			for (int i = 0; i < pShip->GetBeamWeapons()->GetSize(); i++)
-			{
-				USHORT oldPower = pShip->GetBeamWeapons()->GetAt(i).GetBeamPower();
-				pShip->GetBeamWeapons()->GetAt(i).SetBeamPower(oldPower + (oldPower * pInfo->GetResearchComplex(RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY)->GetBonus(1) / 100));
-			}
-		}
-		// 20% erhoehte Torpedogenauigkeit
-		else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
-		{
-			for (int i = 0; i < pShip->GetTorpedoWeapons()->GetSize(); i++)
-			{
-				BYTE oldAcc = pShip->GetTorpedoWeapons()->GetAt(i).GetAccuracy();
-				pShip->GetTorpedoWeapons()->GetAt(i).SetAccuracy(oldAcc + (oldAcc * pInfo->GetResearchComplex(RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY)->GetBonus(2) / 100));
-			}
-		}
-		// 20% erhoehte Schussfreuquenz
-		else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
-		{
-			for (int i = 0; i < pShip->GetBeamWeapons()->GetSize(); i++)
-			{
-				BYTE oldRate = pShip->GetBeamWeapons()->GetAt(i).GetRechargeTime();
-				pShip->GetBeamWeapons()->GetAt(i).SetRechargeTime(oldRate	- (oldRate * pInfo->GetResearchComplex(RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY)->GetBonus(3) / 100));
-			}
-			for (int i = 0; i < pShip->GetTorpedoWeapons()->GetSize(); i++)
-			{
-				BYTE oldRate = pShip->GetTorpedoWeapons()->GetAt(i).GetTupeFirerate();
-				pShip->GetTorpedoWeapons()->GetAt(i).SetTubeFirerate(oldRate - (oldRate * pInfo->GetResearchComplex(RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY)->GetBonus(3) / 100));
-			}
-		}
-	}
-	// Spezialforschung #1: "Konstruktionstechnik"
-	if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetComplexStatus() == RESEARCH_STATUS::RESEARCHED)
-	{
-		// 20% bessere Schilde
-		if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
-		{
-			UINT maxShield = pShip->GetShield()->GetMaxShield();
-			BYTE shieldType = pShip->GetShield()->GetShieldType();
-			BOOLEAN regenerative = pShip->GetShield()->GetRegenerative();
-			pShip->GetShield()->ModifyShield((maxShield + (maxShield * pInfo->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetBonus(1) / 100)), shieldType, regenerative);
-		}
-		// 20% bessere Hülle
-		else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
-		{
-			BOOLEAN doubleHull = pShip->GetHull()->GetDoubleHull();
-			BOOLEAN ablative = pShip->GetHull()->GetAblative();
-			BOOLEAN polarisation = pShip->GetHull()->GetPolarisation();
-			UINT baseHull = pShip->GetHull()->GetBaseHull();
-			BYTE hullMaterial = pShip->GetHull()->GetHullMaterial();
-			pShip->GetHull()->ModifyHull(doubleHull, (baseHull + (baseHull * pInfo->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetBonus(2) / 100)), hullMaterial,ablative,polarisation);
-		}
-		// 50% stärkere Scanner
-		else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
-		{
-			USHORT scanPower = pShip->GetScanPower();
-			pShip->SetScanPower(scanPower + (scanPower * pInfo->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetBonus(3) / 100));
-		}
-	}
-	// Spezialforschung #2: "allgemeine Schiffstechnik"
-	if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetComplexStatus() == RESEARCH_STATUS::RESEARCHED)
-	{
-		// erhoehte Reichweite für Schiffe mit zuvor kurzer Reichweite
-		if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
-		{
-			if (pShip->GetRange(false) == SHIP_RANGE::SHORT)
-				pShip->SetRange((SHIP_RANGE::Typ)(pInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetBonus(1)));
-		}
-		// erhoehte Geschwindigkeit für Schiffe mit Geschwindigkeit 1
-		else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
-		{
-			if (pShip->GetSpeed(false) == 1)
-				pShip->SetSpeed((BYTE)(pInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetBonus(2)));
-		}
-	}
-	// Spezialforschung #3: "friedliche Schiffstechnik"
-	if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY)->GetComplexStatus() == RESEARCH_STATUS::RESEARCHED && pShip->GetShipType() <= SHIP_TYPE::COLONYSHIP)
-	{
-		// 25% erhoehte Transportkapazitaet
-		if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
-		{
-			USHORT storage = pShip->GetStorageRoom();
-			pShip->SetStorageRoom(storage + (storage * pInfo->GetResearchComplex(RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY)->GetBonus(1) / 100));
-		}
-		// keine Unterhaltskosten
-		if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
-		{
-			pShip->SetMaintenanceCosts(0);
-		}
-	}
 }
 
 /// Die Truppe mit der ID <code>ID</code> wird im System mit der Koordinate <code>ko</code> gebaut.

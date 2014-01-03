@@ -279,6 +279,10 @@ public:
 	void CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 			bool bDeactivatedShipScanner, bool bBetterScanner, bool fleetship);
 
+	/// Funktion beachtet die erforschten Spezialforschungen einer Rasse und verbessert die
+	/// Eigenschaften des Schiffes.
+	void AddSpecialResearchBoni(const boost::shared_ptr<const CRace> owner = boost::shared_ptr<CRace>());
+
 	// @return true in case outpost/starbase was finished by this ship
 	bool BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major,  short id);
 

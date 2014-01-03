@@ -4053,7 +4053,7 @@ CString CSystemMenuView::CreateTooltip(void)
 		{
 			// Schiff erzeugen und Spezialforschungen einbeziehen
 			CShips ship(pDoc->m_ShipInfoArray[nID - 10000]);
-			pDoc->AddSpecialResearchBoniToShip(&ship, m_pPlayersRace);
+			ship.AddSpecialResearchBoni(pDoc->GetRaceCtrl()->GetRaceSafe(m_pPlayersRace->GetRaceID()));
 			return ship.GetTooltip();
 		}
 		// Truppe
