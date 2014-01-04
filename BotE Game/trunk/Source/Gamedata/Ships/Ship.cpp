@@ -1502,7 +1502,7 @@ void CShip::ExtractDeuterium()
 {
 	int deut = 50;
 	const CResearch& research = *m_Owner->GetEmpire()->GetResearch();
-	deut *= min(research.GetEnergyTech(), research.GetPropulsionTech());
+	deut += deut * min(research.GetEnergyTech(), research.GetPropulsionTech());
 	if(CTrade::GetMonopolOwner(RESOURCES::DEUTERIUM) == OwnerID())
 		deut *= 2;
 	if(const int bonus = research.GetResearchInfo()->IsResearchedThenGetBonus(RESEARCH_COMPLEX::PRODUCTION, 2))
