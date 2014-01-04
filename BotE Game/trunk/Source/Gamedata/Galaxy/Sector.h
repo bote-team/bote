@@ -157,6 +157,8 @@ public:
 
 	bool Terraform(const CShips& ship);
 
+	void OnTerraformPossibleMinor(const CMajor& major);
+
 	void SystemEventPlanetMovement(CString& message);
 	void SystemEventDemographic(CString& message, CMajor& major);
 

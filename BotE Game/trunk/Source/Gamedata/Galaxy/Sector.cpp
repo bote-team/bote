@@ -625,6 +625,15 @@ bool CSector::Terraform(const CShips& ship)
 	return m_Planets.at(ship.GetTerraform()).SetNeededTerraformPoints(ship.GetColonizePoints()) ? true : false;
 }
 
+void CSector::OnTerraformPossibleMinor(const CMajor& major)
+{
+	if(!GetMinorRace())
+		return;
+	boost::shared_ptr<CMinor> minor = boost::dynamic_pointer_cast<CMinor>(m_HomeOf);
+	if(!minor->IsMemberTo() || minor->IsMemberTo(major.GetRaceID()))
+		minor->SetRelation(major.GetRaceID(), rand()%11);
+}
+
 void CSector::SystemEventPlanetMovement(CString& message)
 {
 	const int nSize = m_Planets.size();

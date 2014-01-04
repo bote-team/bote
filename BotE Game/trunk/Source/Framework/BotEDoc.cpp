@@ -3587,8 +3587,7 @@ void CBotEDoc::CalcShipOrders()
 					m_pClientWorker->AddSoundMessage(SNDMGR_MSG_TERRAFORM_COMPLETE, *pMajor, 0);
 					m_pClientWorker->SetToEmpireViewFor(*pMajor);
 					// Wenn wir einer Rasse beim Terraformen helfen, so gibt es einen Beziehungsboost
-					if (pSystem->GetMinorRace() && !pSystem->Majorized())
-						pSystem->Owner()->SetRelation(pMajor->GetRaceID(), +rand()%11);
+					pSystem->OnTerraformPossibleMinor(*pMajor);
 				}
 			}
 			else	// wenn der Plani aus irgendeinen Grund schon geterraformed ist
@@ -3622,8 +3621,7 @@ void CBotEDoc::CalcShipOrders()
 							m_pClientWorker->AddSoundMessage(SNDMGR_MSG_TERRAFORM_COMPLETE, *pMajor, 0);
 							m_pClientWorker->SetToEmpireViewFor(*pMajor);
 							// Wenn wir einer Rasse beim Terraformen helfen, so gibt es einen Beziehungsboost
-							if (pSystem->GetMinorRace() && !pSystem->Majorized())
-								pSystem->Owner()->SetRelation(pMajor->GetRaceID(), +rand()%11);
+							pSystem->OnTerraformPossibleMinor(*pMajor);
 
 							break;
 						}
