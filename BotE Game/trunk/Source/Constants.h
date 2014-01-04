@@ -216,8 +216,14 @@ static const std::string MIDWAY_ZEITREISENDE		("Midway-Zeitreisende");
 static const std::string ANAEROBE_MAKROBE			("Anaerobe Makrobe");
 static const std::string ISOTOPOSPHAERISCHES_WESEN	("Isotoposphärisches Wesen");
 
-#define StrToCStr(str) \
-	CString(str.c_str())
+
+inline std::string CStrToStr(const CString& cs) {
+	return std::string(static_cast<LPCTSTR>(cs));
+}
+
+inline CString StrToCStr(const std::string& s) {
+	return CString(s.c_str());
+}
 
 // ------------- Planeteneigenschaften -----------------------------------------
 // Zonen

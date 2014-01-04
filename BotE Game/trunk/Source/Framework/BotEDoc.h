@@ -324,6 +324,9 @@ protected:
 	/// Funktion berechnet Auswirkungen von Alienschiffe auf Systeme, über denen sie sich befinden.
 	void CalcAlienShipEffects();
 
+private:
+	std::vector<std::string> GetForcedMinors() const;
+public:
 	/// Funktion generiert die Galaxiemap inkl. der ganzen Systeme und Planeten zu Beginn eines neuen Spiels.
 	void GenerateGalaxy();
 

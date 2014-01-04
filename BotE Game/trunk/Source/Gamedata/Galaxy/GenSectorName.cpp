@@ -6,7 +6,7 @@
 #include "IOData.h"
 #include "GenSectorName.h"
 #include "Loc.h"
-#include <set>
+#include "Constants.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -39,7 +39,7 @@ CGenSectorName* CGenSectorName::GetInstance(void)
 
 /// Funktion initialisiert alle möglichen Systemnamen.
 /// @pram vMinorRaceSystemNames Namen aller Minorracesysteme
-void CGenSectorName::Init(const CStringArray& vMinorRaceSystemNames)
+void CGenSectorName::Init(const CStringArray& vMinorRaceSystemNames, const std::vector<std::string>& forced_minors)
 {
 	ReadSectorNames();
 
@@ -63,6 +63,8 @@ void CGenSectorName::Init(const CStringArray& vMinorRaceSystemNames)
 
 		m_strRaceNames.Add(sMinorRaceSystemName);
 	}
+
+	m_ForcedMinors = forced_minors;
 }
 
 // Funktion zur Generierung der Sonnensystemnamen
@@ -72,9 +74,26 @@ CString CGenSectorName::GetNextRandomSectorName(const CPoint& ptKO, bool& bMinor
 
 	if (bMinor && m_strRaceNames.GetSize() > 0)
 	{
-		int nRandom = rand()%m_strRaceNames.GetSize();
-		sName = m_strRaceNames.GetAt(nRandom);
-		m_strRaceNames.RemoveAt(nRandom);
+		if(!m_ForcedMinors.empty())
+		{
+			sName = StrToCStr(*m_ForcedMinors.begin());
+			m_ForcedMinors.erase(m_ForcedMinors.begin());
+			for(int i = 0; i < m_strRaceNames.GetSize(); ++i)
+			{
+				if(m_strRaceNames.GetAt(i) == sName)
+				{
+					m_strRaceNames.RemoveAt(i);
+					return sName;
+				}
+			}
+			AssertBotE(false);
+		}
+		else
+		{
+			int nRandom = rand()%m_strRaceNames.GetSize();
+			sName = m_strRaceNames.GetAt(nRandom);
+			m_strRaceNames.RemoveAt(nRandom);
+		}
 		return sName;
 	}
 

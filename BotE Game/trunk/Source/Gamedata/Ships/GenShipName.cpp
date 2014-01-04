@@ -162,13 +162,6 @@ void CGenShipName::Init(CBotEDoc* pDoc)
 	}
 }
 
-static std::string CStringToStdString(const CString& cs) {
-	return std::string(static_cast<LPCTSTR>(cs));
-}
-static CString StdStringToCString(const std::string& s) {
-	return CString(s.c_str());
-}
-
 /// Diese Funktion generiert einen einmaligen Schiffsnamen.
 /// @param sRaceID ID der Rasse, um nach einem Schiffsnamen aus einer ...ShipNames.data Datei zu suchen
 /// @param sRaceName Rassenname mit Postfix (wird verwendet, wenn kein zugehörige ShipNames.data Datei vorhanden ist)
@@ -199,12 +192,12 @@ CString CGenShipName::GenerateShipName(const CString& sRaceID, const CString &sR
 	std::stringstream name;
 	if (mStillAvailableNames.empty())
 	{
-		name << CStringToStdString(sRaceName);
+		name << CStrToStr(sRaceName);
 	}
 	else
 	{
 		const unsigned random = rand() % mStillAvailableNames.size();
-		name << CStringToStdString(mStillAvailableNames.at(random));
+		name << CStrToStr(mStillAvailableNames.at(random));
 		mStillAvailableNames.erase(mStillAvailableNames.begin() + random);
 	}
 
@@ -214,5 +207,5 @@ CString CGenShipName::GenerateShipName(const CString& sRaceID, const CString &sR
 	if (bIsStation)
 		name << " Station";
 	AssertBotE(name);
-	return StdStringToCString(name.str());
+	return StrToCStr(name.str());
 }

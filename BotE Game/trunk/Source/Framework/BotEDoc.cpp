@@ -843,6 +843,40 @@ void CBotEDoc::PrepareData()
 		m_pClientWorker->SetMajorsToHumanOrAi(*m_pRaceCtrl->GetMajors());
 }
 
+std::vector<std::string> CBotEDoc::GetForcedMinors() const
+{
+	std::vector<std::string> result;
+	CString forced_minors;
+	if(CIniLoader::GetInstance()->ReadValue("Special", "MINORS", forced_minors))
+	{
+		const std::string minors(CStrToStr(forced_minors));
+		std::string::const_iterator s = minors.begin();
+		std::string::const_iterator i = s;
+		for(;;)
+		{
+			if(i != minors.end() && *i != ',')
+			{
+				++i;
+				continue;
+			}
+			std::string minor(s, i);
+			if(!m_pRaceCtrl->GetMinorRace(StrToCStr(minor)))
+			{
+				CString text;
+				text.Format("Error: Minorrace not found: %s, ignoring.\n It needs to be that minor's home system name.", StrToCStr(minor));
+				AfxMessageBox(text);
+			}
+			else
+				result.push_back(minor);
+			if(i == minors.end())
+				break;
+			++i;
+			s = i;
+		}
+	}
+	return result;
+}
+
 /// Funktion generiert die Galaxiemap inkl. der ganzen Systeme und Planeten zu Beginn eines neuen Spiels.
 void CBotEDoc::GenerateGalaxy()
 {
@@ -975,7 +1009,7 @@ void CBotEDoc::GenerateGalaxy()
 	}
 
 	// Namensgenerator initialisieren
-	CGenSectorName::GetInstance()->Init(vMinorRaceSystemNames);
+	CGenSectorName::GetInstance()->Init(vMinorRaceSystemNames, GetForcedMinors());
 
 	int nStarDensity = 35;
 	int nMinorDensity = 30;

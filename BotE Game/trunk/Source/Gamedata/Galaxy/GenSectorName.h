@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <vector>
+
 // Klasse zum Einlesen aller möglichen Sektornamen.
 class CGenSectorName
 {
@@ -28,7 +30,7 @@ public:
 
 	/// Funktion initialisiert alle möglichen Systemnamen.
 	/// @pram vMinorRaceSystemNames Namen aller Minorracesysteme
-	void Init(const CStringArray& vMinorRaceSystemNames);
+	void Init(const CStringArray& vMinorRaceSystemNames, const std::vector<std::string>& forced_minors);
 
 	/// Diese Funktion gibt uns einen einzigartigen Systemnamen zurück. Dieser Name wurde vorher noch nicht vergeben.
 	/// @param ptKO Sektorkoordinate
@@ -44,4 +46,5 @@ private:
 	// Attribute
 	CStringArray m_strNames;		///< Feld aller Namen der Planetensysteme ohne Minor- und Majorracesysteme
 	CStringArray m_strRaceNames;	///< Feld aller Namen der Minorracesysteme
+	std::vector<std::string> m_ForcedMinors;
 };

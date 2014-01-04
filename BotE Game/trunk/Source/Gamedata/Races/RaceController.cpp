@@ -146,7 +146,6 @@ boost::shared_ptr<CMinor> CRaceController::GetMinorRace(const CString& sMinorsHo
 		if (it->second->IsMinor() && it->second->GetHomesystemName() == sMinorsHome)
 			return boost::dynamic_pointer_cast<CMinor>(it->second);
 
-	AssertBotE(false);
 	return boost::shared_ptr<CMinor>();
 }
 
