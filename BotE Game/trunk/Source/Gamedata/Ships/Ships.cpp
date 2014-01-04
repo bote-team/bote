@@ -282,21 +282,31 @@ void CShips::ApplyTraining(int XP) {
 	}
 }
 
-bool CShips::ApplyIonstormEffects() {
-	//conveniantly set the ship back to idle in case we can not improve further
-	//doesn't work for fleets however, since that would require removing the finished ships from the fleet
-	//to keep orders consistent, so unset the order for all once the first ship can no longer improve
-	bool improvement_finished = false;
-	if(CShip::ApplyIonstormEffects() && GetCurrentOrder() == SHIP_ORDER::IMPROVE_SHIELDS) {
-		UnsetCurrentOrder();
-		improvement_finished = true;
-	}
-	for(CShips::iterator i = begin(); i != end(); ++i)
-		if(i->second->ApplyIonstormEffects() && GetCurrentOrder() == SHIP_ORDER::IMPROVE_SHIELDS) {
-			UnsetCurrentOrder();
-			improvement_finished = true;
+void CShips::ApplyIonstormEffects(CShipMap& ships)
+{
+	for(CShips::iterator i = begin(); i != end();)
+	{
+		if(boost::static_pointer_cast<CShip>(i->second)->ApplyIonstormEffects())
+		{
+			if(i->second->GetCurrentOrder() == SHIP_ORDER::IMPROVE_SHIELDS)
+			{
+				i->second->UnsetCurrentOrder();
+				ships.Add(i->second);
+				RemoveShipFromFleet(i);
+				continue;
+			}
 		}
-	return improvement_finished;
+		++i;
+	}
+	if(CShip::ApplyIonstormEffects())
+	{
+		if(CShip::GetCurrentOrder() == SHIP_ORDER::IMPROVE_SHIELDS)
+		{
+			CShip::UnsetCurrentOrder();
+			if(HasFleet())
+				ships.Add(GiveFleetToFleetsFirstShip());
+		}
+	}
 }
 
 bool CShips::UnassignFlagship() {

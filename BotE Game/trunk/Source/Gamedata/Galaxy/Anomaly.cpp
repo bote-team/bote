@@ -317,7 +317,7 @@ void CAnomaly::CalcShipEffects(CShips* pShip, CShipMap& ships_from_fleets) const
 		MakeHullDmg(50, 50, pShip);
 	}
 	else if (m_byType == IONSTORM)
-		pShip->ApplyIonstormEffects();
+		pShip->ApplyIonstormEffects(ships_from_fleets);
 }
 
 void CAnomaly::MakeShieldDmg(int nMinDmgValue, int nMaxDmgPercent, CShips* pShip)
