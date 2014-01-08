@@ -276,11 +276,14 @@ CString CMapTile::GetLongName() const
 	return s;
 }
 
-BOOLEAN CMapTile::GetOwnerOfShip(const CString& sRace) const
+bool CMapTile::GetOwnerOfShip(const CString& sRace, bool consider_stations_ships) const
 {
 	std::map<CString, CShipMap>::const_iterator found = m_Ships.find(sRace);
 	if(found == m_Ships.end())
 		return false;
+	AssertBotE(!found->second.empty());
+	if(consider_stations_ships)
+		return true;
 	for(CShipMap::const_iterator it = found->second.begin(); it != found->second.end(); ++it)
 		if(!it->second->IsStation())
 			return true;
@@ -470,7 +473,7 @@ void CMapTile::DrawSectorsName(CDC *pDC, CBotEDoc* pDoc, CMajor* pPlayer)
 }
 
 bool CMapTile::ShouldDrawShip(const CMajor& our_race, const CString& their_race_id) const {
-	if(!GetOwnerOfShip(their_race_id))
+	if(!GetOwnerOfShip(their_race_id, false))
 		return false;
 	const CString& our_id = our_race.GetRaceID();
 	if(our_id == their_race_id)

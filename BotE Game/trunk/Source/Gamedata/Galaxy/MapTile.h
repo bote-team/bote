@@ -172,7 +172,9 @@ public:
 //// ships in sector ////
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Rasse <code>Race</code> ein
 	/// bzw. mehrere Schiffe in diesem Sektor hat.
-	BOOLEAN GetOwnerOfShip(const CString& sRace) const;
+	/// @param consider_stations_ships if false, will return false for the owner race of this station,
+	// unless the owner race also has non-station (neither outpost nor starbase) ships in this sector
+	bool GetOwnerOfShip(const CString& sRace, bool consider_stations_ships) const;
 
 	const std::map<CString, CShipMap>& ShipsInSector() const { return m_Ships; }
 

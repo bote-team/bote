@@ -4386,7 +4386,7 @@ void CBotEDoc::CalcContactShipToMajorShip(CRace& Race, const CSector& sector, co
 		CMajor* pMajor = it->second;
 		// kann der andere Schiffsbesitzer Rassen kennenlernen?
 		const CString& sMajorID = it->first;
-		if (!sector.GetOwnerOfShip(sMajorID) || !pMajor->CanBeContactedBy(Race.GetRaceID()) ||
+		if (!sector.GetOwnerOfShip(sMajorID, true) || !pMajor->CanBeContactedBy(Race.GetRaceID()) ||
 			Race.GetRaceID() == sMajorID)
 			continue;
 		CalcContactCommutative(*pMajor, Race, p);

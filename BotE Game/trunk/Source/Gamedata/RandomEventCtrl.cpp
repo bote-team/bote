@@ -263,7 +263,7 @@ void CRandomEventCtrl::CalcShipEvents() const
 			const std::map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			{
-				if (!pSector->GetOwnerOfShip(it->first))
+				if (!pSector->GetOwnerOfShip(it->first, true))
 					continue;
 
 				CMajor* pMajor = it->second;

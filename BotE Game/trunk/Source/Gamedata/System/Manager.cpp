@@ -760,7 +760,7 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system)
 			should_be_online = !system.Taken();
 
 		if(info.GetShipTraining() > 0)
-			should_be_online = system.GetOwnerOfShip(system.OwnerID());
+			should_be_online = system.GetOwnerOfShip(system.OwnerID(), true);
 
 		if(info.GetTroopTraining() > 0)
 			should_be_online = !system.GetTroops()->IsEmpty();
