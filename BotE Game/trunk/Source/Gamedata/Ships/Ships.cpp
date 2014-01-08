@@ -352,8 +352,7 @@ void CShips::SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder) {
 
 void CShips::SetCurrentOrderAccordingToType() {
 	CShip::SetCurrentOrderAccordingToType();
-	for(CShips::iterator i = begin(); i != end(); ++i)
-		i->second->SetCurrentOrderAccordingToType();
+	AdoptOrdersFrom(*this);
 }
 
 void CShips::SetCombatTacticAccordingToType() {
