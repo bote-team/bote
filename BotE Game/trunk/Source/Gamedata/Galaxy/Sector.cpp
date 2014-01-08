@@ -630,7 +630,7 @@ void CSector::OnTerraformPossibleMinor(const CMajor& major)
 	if(!GetMinorRace())
 		return;
 	boost::shared_ptr<CMinor> minor = boost::dynamic_pointer_cast<CMinor>(m_HomeOf);
-	if(!minor->IsMemberTo() || minor->IsMemberTo(major.GetRaceID()))
+	if((!minor->IsMemberTo() || minor->IsMemberTo(major.GetRaceID())) && !minor->GetSubjugated())
 		minor->SetRelation(major.GetRaceID(), rand()%11);
 }
 
