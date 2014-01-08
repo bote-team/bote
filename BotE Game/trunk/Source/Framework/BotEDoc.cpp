@@ -2740,6 +2740,10 @@ void CBotEDoc::CalcSystemAttack()
 					// Erstmal die Beziehung zu der Rasse verschlechtern, der das System gehört
 					if (defender != NULL && defender->GetRaceID() != pMajor->GetRaceID())
 						defender->SetRelation(pMajor->GetRaceID(), -rand()%10);
+
+					CSystem& system = GetSystem(p.x, p.y);
+					if(!defender->IsMinor() && system.GetMinorRace())
+						system.HomeOf()->SetRelation(pMajor->GetRaceID(), -rand()%5);
 				}
 
 				// Wenn die Bevölkerung des Systems auf NULL geschrumpft ist, dann ist dieses System verloren
