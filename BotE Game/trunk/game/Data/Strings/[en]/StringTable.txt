@@ -919,7 +919,7 @@ Suggestion
 [ANSWER]
 Answer
 [SUBJUGATED]
-Subjugated
+Subjugated by §
 
 // treaty offers
 [TRADE_AGREEMENT_OFFER]

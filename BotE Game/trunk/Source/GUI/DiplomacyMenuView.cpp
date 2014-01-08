@@ -1537,7 +1537,7 @@ CString CDiplomacyMenuView::PrintDiplomacyStatus(const CString& sOurRace, const 
 	// wurde die Minorrace unterworfen?
 	if (pRace->IsMinor() && ((CMinor*)pRace)->GetSubjugated())
 	{
-		status = CLoc::GetString("SUBJUGATED");
+		status = CLoc::GetString("SUBJUGATED", FALSE, pRace->Owner()->GetName());
 		color.SetFromCOLORREF(RGB(178,0,255));
 		return status;
 	}

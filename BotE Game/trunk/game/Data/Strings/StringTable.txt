@@ -919,7 +919,7 @@ Vorschlag
 [ANSWER]
 Antwort
 [SUBJUGATED]
-Unterworfen
+Unterworfen durch §
 
 // Vertragsangebote
 [TRADE_AGREEMENT_OFFER]
