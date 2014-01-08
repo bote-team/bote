@@ -80,7 +80,8 @@ void CRandomEventCtrl::CalcEvents(CMajor* pRace)
 		for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 		{
 			CMinor* pMinor = it->second;
-			if(pRace->IsRaceContacted(pMinor->GetRaceID())&& pMinor->GetRelation(pRace->GetRaceID())<85)
+			if(pRace->IsRaceContacted(pMinor->GetRaceID())&& pMinor->GetRelation(pRace->GetRaceID())<85
+					&& !pMinor->GetSubjugated())
 				PossibleMinors.insert(PossibleMinors.end(),pMinor);
 		}
 		const unsigned size = PossibleMinors.size();
