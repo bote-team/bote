@@ -156,19 +156,15 @@ public:
 		return false;
 	}
 
-	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
-	/// einen Aussenposten in diesem Sektor besitzt.
-	bool GetOutpost(const CString& sRace) const
-	{
-		return m_Outpost == sRace;
-	}
+	/// @ param sRace if empty, returns specified station type of any race, otherwise of that race
+	/// @ return empty shared_ptr if none found
+	boost::shared_ptr<const CShips> GetStation(SHIP_TYPE::Typ type, const CString& sRace = "") const;
 
-	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
-	/// eine Sternbasis in diesem Sektor besitzt.
-	bool GetStarbase(const CString& sRace) const
-	{
-		return m_Starbase == sRace;
-	}
+	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob von irgendwem eine Station in diesem
+	/// Sektor ist
+	/// @ param sRace if not empty, returns any station of this race
+	/// @ return empty shared_ptr if none found
+	boost::shared_ptr<const CShips> GetStation(const CString& sRace = "") const;
 
 //// ships in sector ////
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Rasse <code>Race</code> ein
@@ -183,12 +179,6 @@ public:
 	/// Sektor ist
 	BOOLEAN GetIsShipInSector(void) const {return !m_Ships.empty();}
 
-	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob von irgendwem eine Station in diesem
-	/// Sektor ist
-	BOOLEAN GetIsStationInSector(void) const {return HasOutpost() || HasStarbase();}
-
-	bool HasOutpost() const { return !m_Outpost.IsEmpty(); }
-	bool HasStarbase() const { return !m_Starbase.IsEmpty(); }
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// gerade eine Station in diesem Sektor baut.
@@ -286,28 +276,6 @@ public:
 			m_bShipPort.insert(Race);
 		else
 			m_bShipPort.erase(Race);
-	}
-
-	/// Diese Funktion legt fest, ob die Majorrace <code>Race</code> einen Aussenposten in diesem Sektor unterhält.
-	void SetOutpost(const CString& Race)
-	{
-		m_Outpost = Race;
-	}
-	void UnsetOutpost(const CString& Race)
-	{
-		if(m_Outpost == Race)
-			m_Outpost.Empty();
-	}
-
-	/// Diese Funktion legt fest, ob die Majorrace <code>Race</code> eine Sternbasis in diesem Sektor unterhält.
-	void SetStarbase(const CString& Race)
-	{
-		m_Starbase = Race;
-	}
-	void UnsetStarbase(const CString& Race)
-	{
-		if(m_Starbase == Race)
-			m_Starbase.Empty();
 	}
 
 	void BuildStation(SHIP_TYPE::Typ station, const CString& race);
@@ -444,12 +412,6 @@ private:
 
 	/// Gibts in diesem Sektor eine online Werft (bzw. auch Station)
 	set<CString> m_bShipPort;
-
-	/// Besitzt die jeweilige Rasse in dem Sektor einen Außenposten?
-	CString m_Outpost;
-
-	/// Besitzt die jeweilige Rasse in dem Sektor eine Sternbasis?
-	CString m_Starbase;
 
 	//The ships currently in this map tile, by race
 	//main shipmap responsible for updating, ships in fleets included inside of the ships in this variable

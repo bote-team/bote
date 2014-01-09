@@ -48,8 +48,6 @@ CMapTile::CMapTile(const CMapTile& other) :
 	m_bSunSystem(other.m_bSunSystem),
 	m_Status(other.m_Status),
 	m_bShipPort(other.m_bShipPort),
-	m_Outpost(other.m_Outpost),
-	m_Starbase(other.m_Starbase),
 	m_Ships(other.m_Ships),
 	m_IsStationBuild(other.m_IsStationBuild),
 	m_iScanPower(other.m_iScanPower),
@@ -69,8 +67,6 @@ CMapTile& CMapTile::operator=(const CMapTile& other){
 		m_bSunSystem = other.m_bSunSystem;
 		m_Status = other.m_Status;
 		m_bShipPort = other.m_bShipPort;
-		m_Outpost = other.m_Outpost;
-		m_Starbase = other.m_Starbase;
 		m_Ships = other.m_Ships;
 		m_IsStationBuild = other.m_IsStationBuild;
 		m_iScanPower = other.m_iScanPower;
@@ -146,8 +142,6 @@ void CMapTile::Serialize(CArchive &ar)
 			ar << it->first << it->second;
 
 		ar << m_bSunSystem;
-		ar << m_Outpost;
-		ar << m_Starbase;
 		bool anomaly = m_pAnomaly;
 		ar << anomaly;
 		if(anomaly)
@@ -245,10 +239,6 @@ void CMapTile::Serialize(CArchive &ar)
 		}
 
 		ar >> m_bSunSystem;
-		m_Outpost.Empty();
-		ar >> m_Outpost;
-		m_Starbase.Empty();
-		ar >> m_Starbase;
 		bool anomaly(false);
 		ar >> anomaly;
 		if(anomaly)
@@ -288,6 +278,40 @@ CString CMapTile::GenerateName(const CString& pure_name, const CPoint& co)
 	else
 		s.Format("%s %s", pure_name, CPointToCString(co));
 	return s;
+}
+
+boost::shared_ptr<const CShips> CMapTile::GetStation(const CString& sRace) const
+{
+	boost::shared_ptr<const CShips>& outpost = GetStation(SHIP_TYPE::OUTPOST, sRace);
+	boost::shared_ptr<const CShips>& starbase = GetStation(SHIP_TYPE::STARBASE, sRace);
+	AssertBotE(!outpost || !starbase);
+	if(outpost)
+		return outpost;
+	else
+		return starbase;
+}
+
+boost::shared_ptr<const CShips> CMapTile::GetStation(SHIP_TYPE::Typ type, const CString& sRace) const
+{
+	if(sRace.IsEmpty())
+	{
+		for(std::map<CString, CShipMap>::const_iterator i = m_Ships.begin(); i != m_Ships.end(); ++i)
+			for(CShipMap::const_iterator i2 = i->second.begin(); i2 != i->second.end(); ++i2)
+				if(i2->second->GetShipType() == type)
+					return i2->second;
+
+	}
+	else
+	{
+		std::map<CString, CShipMap>::const_iterator found = m_Ships.find(sRace);
+		if(found == m_Ships.end())
+			return boost::shared_ptr<CShips>();
+		AssertBotE(!found->second.empty());
+		for(CShipMap::const_iterator i = found->second.begin(); i != found->second.end(); ++i)
+			if(i->second->GetShipType() == type)
+				return i->second;
+	}
+	return boost::shared_ptr<CShips>();
 }
 
 bool CMapTile::GetOwnerOfShip(const CString& sRace, bool consider_stations_ships) const
@@ -342,12 +366,12 @@ static bool StationBuildContinuable(const CString& race, const CMapTile& sector)
 }
 
 bool CMapTile::IsStationBuildable(SHIP_ORDER::Typ order, const CString& race) const {
-	if(order == SHIP_ORDER::BUILD_OUTPOST && !GetIsStationInSector())
+	if(order == SHIP_ORDER::BUILD_OUTPOST && !GetStation())
 		return StationBuildContinuable(race, *this);
-	if(order == SHIP_ORDER::BUILD_STARBASE && GetOutpost(race))
+	if(order == SHIP_ORDER::BUILD_STARBASE && GetStation(SHIP_TYPE::OUTPOST, race))
 		return StationBuildContinuable(race, *this);
-	if(order == SHIP_ORDER::UPGRADE_OUTPOST && GetOutpost(race)
-		|| order == SHIP_ORDER::UPGRADE_STARBASE && GetStarbase(race)) {
+	if(order == SHIP_ORDER::UPGRADE_OUTPOST && GetStation(SHIP_TYPE::OUTPOST, race)
+		|| order == SHIP_ORDER::UPGRADE_STARBASE && GetStation(SHIP_TYPE::STARBASE, race)) {
 		const CBotEDoc* pDoc = resources::pDoc;
 		const boost::shared_ptr<const CMajor> pMajor =
 			boost::dynamic_pointer_cast<CMajor>(pDoc->GetRaceCtrl()->GetRaceSafe(race));
@@ -375,13 +399,11 @@ bool CMapTile::IsStationBuildable(SHIP_ORDER::Typ order, const CString& race) co
 }
 
 void CMapTile::BuildStation(SHIP_TYPE::Typ station, const CString& race) {
-	if(station == SHIP_TYPE::OUTPOST)
-		m_Outpost = race;
-	else {
-		AssertBotE(station == SHIP_TYPE::STARBASE);
-		AssertBotE(m_Outpost == race || m_Starbase == race);
-		m_Outpost.Empty();
-		m_Starbase = race;
+	if(station == SHIP_TYPE::STARBASE)
+	{
+		boost::shared_ptr<const CShips>& outpost = GetStation(SHIP_TYPE::OUTPOST, race);
+		boost::shared_ptr<const CShips>& starbase = GetStation(SHIP_TYPE::STARBASE, race);
+		AssertBotE(outpost && outpost->OwnerID() == race || starbase && starbase->OwnerID() == race);
 	}
 	SetScanned(race);
 	SetShipPort(TRUE, race);
@@ -499,8 +521,8 @@ bool CMapTile::ShouldDrawShip(const CMajor& our_race, const CString& their_race_
 
 bool CMapTile::ShouldDrawOutpost(const CMajor& our_race, const CString& their_race_id) const {
 	if(!GetIsStationBuilding(their_race_id)
-		&& !GetOutpost(their_race_id)
-		&& !GetStarbase(their_race_id))
+		&& !GetStation(SHIP_TYPE::OUTPOST, their_race_id)
+		&& !GetStation(SHIP_TYPE::STARBASE, their_race_id))
 		return false;
 	const CString& our_id = our_race.GetRaceID();
 	if(our_id == their_race_id)
@@ -589,14 +611,10 @@ void CMapTile::DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlay
 /// gehört.
 void CMapTile::CalculateOwner()
 {
-	if(!m_Outpost.IsEmpty())
+	const boost::shared_ptr<const CShips>& station = GetStation();
+	if(station)
 	{
-		SetOwner(m_Outpost);
-		return;
-	}
-	if(!m_Starbase.IsEmpty())
-	{
-		SetOwner(m_Starbase);
+		SetOwner(station->OwnerID());
 		return;
 	}
 
@@ -658,9 +676,6 @@ void CMapTile::ClearAllPoints(bool /*call_up*/)
 	// Die benötigte Scanpower um Schiffe sehen zu können wieder auf NULL setzen
 	m_iNeededScanPower.clear();
 	m_iScanPower.clear();
-	// Sagen das erstmal kein Außenposten und keine Sternbasis in dem Sektor steht
-	m_Outpost.Empty();
-	m_Starbase.Empty();
 	m_bShipPort.clear();
 }
 
@@ -693,7 +708,7 @@ void CMapTile::ClearShips()
 
 bool CMapTile::CheckSanity() const
 {
-	AssertBotE(!HasOutpost() || !HasStarbase());
+	AssertBotE(!GetStation(SHIP_TYPE::OUTPOST) || !GetStation(SHIP_TYPE::STARBASE));
 	for(std::map<CString, CShipMap>::const_iterator it = m_Ships.begin(); it != m_Ships.end(); ++it)
 		for(CShipMap::const_iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
 			if(it2->second->GetCo() != m_Co)

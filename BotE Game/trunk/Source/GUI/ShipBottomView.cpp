@@ -234,7 +234,7 @@ void CShipBottomView::DrawShipContent()
 		// großes Bild der Station zeichnen
 		if (m_bShowStation)
 		{
-			if (m_dc.pDoc->CurrentSystem().GetIsStationInSector())
+			if (m_dc.pDoc->CurrentSystem().GetStation())
 			{
 				// gehört uns die Station oder kennen wir die andere Rasse
 				if (pMajor->GetRaceID() == pShip->OwnerID() || pMajor->IsRaceContacted(pShip->OwnerID()))

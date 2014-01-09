@@ -4366,14 +4366,8 @@ void CBotEDoc::CalcShipEffects()
 		// eine Station teilnahm, dann haben wir den Shipport in dem Sektor vorläufig entfernt. Es kann ja passieren,
 		// dass die Station zerstört wird. Haben wir jetzt aber immernoch eine Station, dann bleibt der Shipport dort auch
 		// bestehen
-		if (y->second->IsStation()) {
+		if (y->second->IsStation())
 			system.SetShipPort(TRUE, sRace);
-			const SHIP_TYPE::Typ ship_type = y->second->GetShipType();
-			if (ship_type == SHIP_TYPE::OUTPOST)
-				system.SetOutpost(sRace);
-			else
-				system.SetStarbase(sRace);
-		}
 	}
 }
 
@@ -4659,9 +4653,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 
 				// in allen Sektoren alle Schiffe aus den Sektoren nehmen
 				sy->SetIsStationBuilding(SHIP_ORDER::NONE, ID);
-				sy->UnsetOutpost(ID);
 				sy->SetShipPort(false, ID);
-				sy->UnsetStarbase(ID);
 			}
 
 			// Wenn es ein menschlicher Spieler ist, so bekommt er den Eventscreen für die Niederlage angezeigt
@@ -4725,9 +4717,9 @@ void CBotEDoc::CalcEndDataForNextRound()
 			int ownerPoints = 0;
 			if (it->Majorized() && it->OwnerID() == sID)
 				ownerPoints += 1;
-			if (it->GetOutpost(sID))
+			if (it->GetStation(SHIP_TYPE::OUTPOST, sID))
 				ownerPoints += 1;
-			if (it->GetStarbase(sID))
+			if (it->GetStation(SHIP_TYPE::STARBASE, sID))
 				ownerPoints += 2;
 			if (ownerPoints > 0)
 			{
