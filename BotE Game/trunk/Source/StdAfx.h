@@ -4,7 +4,7 @@
 
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS		// häufige Sicherheitswarnungen ausschalten
-#pragma warning( disable : 4244 )
+#pragma warning( disable : 4244 ) // 'conversion' conversion from 'type1' to 'type2', possible loss of data
 
 //These warnings seem good to enable, but there are way too many of them for now
 //due to the default warning level set to 4.

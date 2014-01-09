@@ -69,8 +69,6 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CBotEDoc Konstruktion/Destruktion
 
-#pragma warning(push)
-#pragma warning (disable:4351)
 CBotEDoc::CBotEDoc() :
 	m_iRound(1),
 	m_fDifficultyLevel(1.0f),
@@ -115,7 +113,6 @@ CBotEDoc::CBotEDoc() :
 	server.AddServerListener(m_pNetworkHandler);
 	client.AddClientListener(m_pNetworkHandler);
 }
-#pragma warning(pop)
 
 CBotEDoc::~CBotEDoc()
 {

@@ -7,8 +7,6 @@
  */
 #pragma once
 
-//#pragma warning(disable: 4204)
-
 #include "AssertBotE.h"
 #include "General\mytrace.h"
 
