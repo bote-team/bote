@@ -257,12 +257,17 @@ void CMapTile::Serialize(CArchive &ar)
 CString CMapTile::CoordsName(NAME_TYPE type) const
 {
 	CString s;
-	if(m_bSunSystem)
+	if(type == NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC)
 	{
-		AssertBotE(!m_sName.IsEmpty());
-		if (type == NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC)
+		if(m_bSunSystem)
 		{
+			AssertBotE(!m_sName.IsEmpty());
 			s = GenerateName(m_sName, m_Co);
+			return s;
+		}
+		else if(const boost::shared_ptr<const CShips>& station = GetStation())
+		{
+			s = GenerateName(station->GetName(), m_Co);
 			return s;
 		}
 	}
