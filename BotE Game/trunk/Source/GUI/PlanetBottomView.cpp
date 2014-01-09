@@ -65,12 +65,12 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	g.SetCompositingQuality(CompositingQualityHighSpeed);
 	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
-	g.Clear(Color::Black);
+	g.Clear(static_cast<Gdiplus::ARGB>(Color::Black));
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
 	StringFormat fontFormat;
-	SolidBrush fontBrush(Color::White);
+	SolidBrush fontBrush(static_cast<Gdiplus::ARGB>(Color::White));
 	Bitmap* graphic = NULL;
 
 	// alte Planetenrechtecke löschen

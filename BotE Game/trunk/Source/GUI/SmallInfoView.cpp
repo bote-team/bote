@@ -87,7 +87,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Bitmap bmp(client.Width(), client.Height());
 	Graphics* g = Graphics::FromImage(&bmp);
-	g->Clear(Color::Black);
+	g->Clear(static_cast<Gdiplus::ARGB>(Color::Black));
 	g->SetSmoothingMode(SmoothingModeHighQuality);
 	g->SetInterpolationMode(InterpolationModeHighQualityBicubic);
 	g->SetPixelOffsetMode(PixelOffsetModeHighQuality);
@@ -96,7 +96,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
 	StringFormat fontFormat;
-	SolidBrush fontBrush(Color::White);
+	SolidBrush fontBrush(static_cast<Gdiplus::ARGB>(Color::White));
 
 	////////////// Überprüfen, ob in der CSmallInfoView Planeten angezeigt werden //////////////////////
 	if (resources::pMainFrame->GetActiveView(1, 1) == VIEWS::PLANET_BOTTOM_VIEW && m_pPlanet != NULL

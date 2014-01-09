@@ -19,13 +19,13 @@ IMPLEMENT_SERIAL (CBeamWeapons, CObject, 1)
 
 CBeamWeapons::CBeamWeapons() :
 	//TODO diese Initialisierungen zu -1 sind vermutlich nicht sinnvoll
-	m_iBeamPower(-1),
-	m_iBeamType(-1),
-	m_iBeamNumber(-1),
-	m_byShootNumber(-1),
-	m_byBonus(-1),
-	m_byBeamLenght(-1),
-	m_byRechargeTime(-1),
+	m_iBeamPower(USHRT_MAX),
+	m_iBeamType(UCHAR_MAX),
+	m_iBeamNumber(UCHAR_MAX),
+	m_byShootNumber(UCHAR_MAX),
+	m_byBonus(UCHAR_MAX),
+	m_byBeamLenght(UCHAR_MAX),
+	m_byRechargeTime(UCHAR_MAX),
 	m_bPiercing(FALSE),
 	m_bModulating(FALSE)
 {

@@ -50,7 +50,7 @@ void CEventAlienEntity::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
 	StringFormat fontFormat;
-	SolidBrush fontBrush(Color::White);
+	SolidBrush fontBrush(static_cast<Gdiplus::ARGB>(Color::White));
 
 	CBotEDoc* pDoc = resources::pDoc;
 	AssertBotE(pDoc);

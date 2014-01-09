@@ -118,7 +118,7 @@ void CEmpireMenuView::OnDraw(CDC* dc)
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
 
-	g.Clear(Color::Black);
+	g.Clear(static_cast<Gdiplus::ARGB>(Color::Black));
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
@@ -535,7 +535,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				if (pDoc->GetSystem(KO.x, KO.y).GetAutoBuild())
 				{
 					s.Insert(0, CLoc::GetString("AUTOBUILD") + ": ");
-					fontBrush.SetColor(Color::Red);
+					fontBrush.SetColor(static_cast<Gdiplus::ARGB>(Color::Red));
 				}
 
 				fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);

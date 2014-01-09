@@ -1494,7 +1494,7 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 	if (bDrawFleet)
 	{
 		// Anzahl der Schiffe in der Flotte (+1 weil das Führerschiff mitgezählt werden muß)
-		fontBrush.SetColor(Color::White);
+		fontBrush.SetColor(static_cast<Gdiplus::ARGB>(Color::White));
 		s.Format("%d", FleetSize + 1);
 		g->DrawString(CComBSTR(s), -1, &font, PointF((REAL)pt.x + 35, (REAL)pt.y + 30), &fontFormat, &fontBrush);
 	}

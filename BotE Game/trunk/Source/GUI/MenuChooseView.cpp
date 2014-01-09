@@ -145,12 +145,12 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	g->SetInterpolationMode(InterpolationModeHighQualityBicubic);
 	g->SetPixelOffsetMode(PixelOffsetModeHighQuality);
 	g->ScaleTransform((REAL)clientRect.Width() / (REAL)m_TotalSize.cx, (REAL)clientRect.Height() / (REAL)m_TotalSize.cy);
-	g->Clear(Color::Black);
+	g->Clear(static_cast<Gdiplus::ARGB>(Color::Black));
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
 	StringFormat fontFormat;
-	SolidBrush fontBrush(Color::White);
+	SolidBrush fontBrush(static_cast<Gdiplus::ARGB>(Color::White));
 
 	// Die Rassenspezifischen Styles laden und zeichnen
 	Color color;

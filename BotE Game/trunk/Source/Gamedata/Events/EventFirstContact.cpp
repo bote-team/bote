@@ -73,7 +73,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
 	StringFormat fontFormat;
-	SolidBrush fontBrush(Color::White);
+	SolidBrush fontBrush(static_cast<Gdiplus::ARGB>(Color::White));
 
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentCenter);

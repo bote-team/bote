@@ -68,7 +68,7 @@ void CShipDesignMenuView::OnDraw(CDC* dc)
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
 
-	g.Clear(Color::Black);
+	g.Clear(static_cast<Gdiplus::ARGB>(Color::Black));
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);

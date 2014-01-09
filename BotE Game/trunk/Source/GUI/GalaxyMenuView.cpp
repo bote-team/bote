@@ -209,26 +209,26 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	if (picHeight < client.bottom)
 		posY = (client.bottom - picHeight) / 2;
 
-	g.Clear(Color::Black);
+	g.Clear(static_cast<Gdiplus::ARGB>(Color::Black));
 	g.DrawImage(m_pGalaxyBackground, posX, posY, picWidth, picHeight);
 
 	CString s;
 #ifdef _DEBUG
 	s.Format("scrollposition: %.0lf/%.0lf", pt.x / m_fZoom, pt.y / m_fZoom);
-	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y), &SolidBrush(Color::Aquamarine));
+	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y), &SolidBrush((static_cast<Gdiplus::ARGB>(Color::Aquamarine))));
 	int nMinRange, nMaxRange;
 	GetScrollRange(SB_HORZ, &nMinRange, &nMaxRange);
 	s.Format("scrollrange horz: %d/%d", nMinRange, nMaxRange);
-	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 10), &SolidBrush(Color::Aquamarine));
+	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 10), &SolidBrush((static_cast<Gdiplus::ARGB>(Color::Aquamarine))));
 	GetScrollRange(SB_VERT, &nMinRange, &nMaxRange);
 	s.Format("scrollrange vert: %d/%d", nMinRange, nMaxRange);
-	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 20), &SolidBrush(Color::Aquamarine));
+	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 20), &SolidBrush((static_cast<Gdiplus::ARGB>(Color::Aquamarine))));
 	s.Format("zoomlevel: %.1lf", m_fZoom);
-	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 30), &SolidBrush(Color::Aquamarine));
+	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 30), &SolidBrush((static_cast<Gdiplus::ARGB>(Color::Aquamarine))));
 	//s.Format("filename: \"test.boj\"");
-	//g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 20), &SolidBrush(Color::Aquamarine));
+	//g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 20), &SolidBrush((static_cast<Gdiplus::ARGB>(Color::Aquamarine))));
 	s.Format("resolution: %d * %d", m_pGalaxyBackground->GetWidth(), m_pGalaxyBackground->GetHeight());
-	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 40), &SolidBrush(Color::Aquamarine));
+	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 40), &SolidBrush((static_cast<Gdiplus::ARGB>(Color::Aquamarine))));
 	//s.Format("dpi: %.1lf * %.1lf", m_pGalaxyBackground->GetHorizontalResolution(), m_pGalaxyBackground->GetVerticalResolution());
 	//g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 40), &SolidBrush(Color::Orange));
 #endif

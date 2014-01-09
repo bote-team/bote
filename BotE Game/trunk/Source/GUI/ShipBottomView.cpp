@@ -115,7 +115,7 @@ void CShipBottomView::SetupDrawing() {
 	m_dc.g->SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	m_dc.g->SetCompositingQuality(CompositingQualityHighSpeed);
 	m_dc.g->ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
-	m_dc.g->Clear(Color::Black);
+	m_dc.g->Clear(static_cast<Gdiplus::ARGB>(Color::Black));
 
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(m_pPlayersRace, 2, m_dc.fontName, m_dc.fontSize);

@@ -90,7 +90,7 @@ void CIntelMenuView::OnDraw(CDC* dc)
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
 
-	g.Clear(Color::Black);
+	g.Clear(static_cast<Gdiplus::ARGB>(Color::Black));
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
@@ -243,7 +243,7 @@ void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 	// die einzelnen Rassensymbole zeichnen
 	DrawRaceLogosInIntelView(g);
 
-	SolidBrush timberBrush(Color::White);
+	SolidBrush timberBrush(static_cast<Gdiplus::ARGB>(Color::White));
 	int count = 1;
 	int nPos = 0;
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
@@ -1200,13 +1200,13 @@ void CIntelMenuView::DrawRaceLogosInIntelView(Graphics* g, BOOLEAN highlightPlay
 	{
 		CArray<CMyButton*> vButtons;
 		vButtons.Add(m_RaceLogoButtons[0]);
-		DrawGDIButtons(g, &vButtons, -1, Gdiplus::Font(NULL), SolidBrush(Color::Black));
+		DrawGDIButtons(g, &vButtons, -1, Gdiplus::Font(NULL), SolidBrush(static_cast<Gdiplus::ARGB>(Color::Black)));
 	}
 	if ((int)pmMajors->size() > m_nScrollPos + 6)
 	{
 		CArray<CMyButton*> vButtons;
 		vButtons.Add(m_RaceLogoButtons[1]);
-		DrawGDIButtons(g, &vButtons, -1, Gdiplus::Font(NULL), SolidBrush(Color::Black));
+		DrawGDIButtons(g, &vButtons, -1, Gdiplus::Font(NULL), SolidBrush(static_cast<Gdiplus::ARGB>(Color::Black)));
 	}
 }
 

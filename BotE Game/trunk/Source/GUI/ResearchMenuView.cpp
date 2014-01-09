@@ -62,7 +62,7 @@ void CResearchMenuView::OnDraw(CDC* dc)
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
 
-	g.Clear(Color::Black);
+	g.Clear(static_cast<Gdiplus::ARGB>(Color::Black));
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
@@ -402,7 +402,7 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 			fontBrush.SetColor(Color(255,0,0));
 		}
 		RectF lock(LockStatusRect[i].left, LockStatusRect[i].top, LockStatusRect[i].Width(), LockStatusRect[i].Height());
-		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), lock, &fontFormatCenter, &SolidBrush(Color::White));
+		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), lock, &fontFormatCenter, &SolidBrush(static_cast<Gdiplus::ARGB>(Color::White)));
 	}
 
 	// Die einzelnen Menübuttons für Spezialforschng, Datenbank und Schiffskonstruktion darstellen
@@ -608,7 +608,7 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 			fontBrush.SetColor(Color(255,0,0));
 		}
 		RectF lock(LockStatusRect[6].left, LockStatusRect[6].top, LockStatusRect[6].Width(), LockStatusRect[6].Height());
-		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), lock, &fontFormatCenter, &SolidBrush(Color::White));
+		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), lock, &fontFormatCenter, &SolidBrush(static_cast<Gdiplus::ARGB>(Color::White)));
 		fontFormatCenter.SetLineAlignment(StringAlignmentCenter);
 
 		// Den Namen des Unique Komplexes hinschreiben

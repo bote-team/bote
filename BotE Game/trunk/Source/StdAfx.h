@@ -9,7 +9,6 @@
 //These warnings seem good to enable, but there are way too many of them for now
 //due to the default warning level set to 4.
 #pragma warning(disable : 4238)//nonstandard extension used : class rvalue used as lvalue
-#pragma warning(disable : 4245)//'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
 #pragma warning(disable: 4800)//"BOOL variable is set to bool"
 
 #ifndef _SECURE_ATL

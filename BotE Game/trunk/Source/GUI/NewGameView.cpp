@@ -93,7 +93,7 @@ void CNewGameView::OnDraw(CDC* dc)
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
 
-	g.Clear(Color::Black);
+	g.Clear(static_cast<Gdiplus::ARGB>(Color::Black));
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
@@ -120,36 +120,36 @@ void CNewGameView::OnDraw(CDC* dc)
 	// Spielername schreiben
 	m_username.GetWindowRect(rect);
 	CString sUserName = CLoc::GetString("PLAYERNAME");
-	g.DrawString(CComBSTR(sUserName), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
+	g.DrawString(CComBSTR(sUserName), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(static_cast<Gdiplus::ARGB>(Color::WhiteSmoke)));
 
 	if (m_nMode == MODE_SERVER)
 	{
 		// Servername schreiben
 		CString sServerName = CLoc::GetString("SERVERNAME");
 		m_description.GetWindowRect(rect);
-		g.DrawString(CComBSTR(sServerName), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
+		g.DrawString(CComBSTR(sServerName), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(static_cast<Gdiplus::ARGB>(Color::WhiteSmoke)));
 
 		// Serverport schreiben
 		CString sServerPort = CLoc::GetString("PORT");
 		m_serverPort.GetWindowRect(rect);
-		g.DrawString(CComBSTR(sServerPort), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
+		g.DrawString(CComBSTR(sServerPort), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(static_cast<Gdiplus::ARGB>(Color::WhiteSmoke)));
 
 		// publish in local area network schreiben
 		CString sPublishInLAN = CLoc::GetString("PUBLISHLAN");
 		m_btPublish.GetWindowRect(rect);
-		g.DrawString(CComBSTR(sPublishInLAN), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
+		g.DrawString(CComBSTR(sPublishInLAN), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(static_cast<Gdiplus::ARGB>(Color::WhiteSmoke)));
 	}
 	else if (m_nMode == MODE_CLIENT)
 	{
 		// IP-Adresse schreiben
 		CString sIPAddr = CLoc::GetString("SERVERIP");
 		m_hostIP.GetWindowRect(rect);
-		g.DrawString(CComBSTR(sIPAddr), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
+		g.DrawString(CComBSTR(sIPAddr), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(static_cast<Gdiplus::ARGB>(Color::WhiteSmoke)));
 
 		// Hostport schreiben
 		CString sHostPort = CLoc::GetString("PORT");
 		m_hostPort.GetWindowRect(rect);
-		g.DrawString(CComBSTR(sHostPort), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
+		g.DrawString(CComBSTR(sHostPort), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(static_cast<Gdiplus::ARGB>(Color::WhiteSmoke)));
 	}
 
 	Gdiplus::Font font2(L"Calibri", 10, FontStyleBold);
@@ -159,7 +159,7 @@ void CNewGameView::OnDraw(CDC* dc)
 	CString sVersion = "Birth of the Empires Alpha7 V";
 	sVersion += CString(VERSION_INFORMATION.c_str());
 	sVersion += "\n© by Sir Pustekuchen 2013";
-	g.DrawString(CComBSTR(sVersion), -1, &font2, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
+	g.DrawString(CComBSTR(sVersion), -1, &font2, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(static_cast<Gdiplus::ARGB>(Color::WhiteSmoke)));
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
 }

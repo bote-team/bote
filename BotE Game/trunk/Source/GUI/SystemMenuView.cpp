@@ -115,7 +115,7 @@ void CSystemMenuView::OnDraw(CDC* dc)
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	g.SetCompositingQuality(CompositingQualityHighSpeed);
 	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
-	g.Clear(Color::Black);
+	g.Clear(static_cast<Gdiplus::ARGB>(Color::Black));
 
 	if (m_bySubMenu == 0)
 		DrawBuildMenue(&g);
@@ -297,7 +297,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
-	SolidBrush fontBrush(Color::White);
+	SolidBrush fontBrush(static_cast<Gdiplus::ARGB>(Color::White));
 
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
@@ -1275,7 +1275,7 @@ void CSystemMenuView::DrawBuildingsOverviewMenue(Graphics* g)
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(1011,490,63,52), &fontFormat, &fontBrush);
 	}
 
-	SolidBrush blackBrush(Color::Black);
+	SolidBrush blackBrush(static_cast<Gdiplus::ARGB>(Color::Black));
 	// prüfen, dass man nicht auf einer zu hohen Seite ist, wenn zu wenig Gebäude vorhanden sind
 	if (m_iBOPage * NOBIOL >= m_BuildingOverview.GetSize())
 		m_iBOPage = 0;
@@ -1434,7 +1434,7 @@ void CSystemMenuView::DrawEnergyMenue(Gdiplus::Graphics *g)
 	}
 
 	// Gebäude, welche Energie benötigen anzeigen
-	SolidBrush blackBrush(Color::Black);
+	SolidBrush blackBrush(static_cast<Gdiplus::ARGB>(Color::Black));
 	// prüfen, dass man nicht auf einer zu hohen Seite ist, wenn zu wenig Gebäude vorhanden sind
 	if (m_iELPage * NOBIEL >= m_EnergyList.GetSize())
 		m_iELPage = 0;
@@ -1478,13 +1478,13 @@ void CSystemMenuView::DrawEnergyMenue(Gdiplus::Graphics *g)
 			// Wenn es offline ist
 			if (!m_EnergyList.GetAt(i).status)
 			{
-				g->DrawString(L"offline", -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(tmpr.left, tmpr.top, tmpr.Width(), tmpr.Height()), &fontFormat, &SolidBrush(Color::Red));
+				g->DrawString(L"offline", -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(tmpr.left, tmpr.top, tmpr.Width(), tmpr.Height()), &fontFormat, &SolidBrush(static_cast<Gdiplus::ARGB>(Color::Red)));
 
 			}
 			// Wenn es online ist
 			else
 			{
-				g->DrawString(L"online", -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(tmpr.left, tmpr.top, tmpr.Width(), tmpr.Height()), &fontFormat, &SolidBrush(Color::Green));
+				g->DrawString(L"online", -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(tmpr.left, tmpr.top, tmpr.Width(), tmpr.Height()), &fontFormat, &SolidBrush(static_cast<Gdiplus::ARGB>(Color::Green)));
 			}
 
 			// Das Bild zu dem Gebäude zeichnen
@@ -1801,7 +1801,7 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	SolidBrush fontBrush(Color::White);
+	SolidBrush fontBrush(static_cast<Gdiplus::ARGB>(Color::White));
 
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
@@ -1955,7 +1955,7 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	s.Format("%i",pDoc->GetSystem(p.x,p.y).GetProduction()->GetFoodProd());
 	if (atoi(s) < 0)
 	{
-		fontBrush.SetColor(Color::Red);
+		fontBrush.SetColor(static_cast<Gdiplus::ARGB>(Color::Red));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 		fontBrush.SetColor(normalColor);
 	}
@@ -1997,7 +1997,7 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	s.Format("%i",pDoc->GetSystem(p.x,p.y).GetProduction()->GetEnergyProd());
 	if (atoi(s) < 0)
 	{
-		fontBrush.SetColor(Color::Red);
+		fontBrush.SetColor(static_cast<Gdiplus::ARGB>(Color::Red));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 		fontBrush.SetColor(normalColor);
 	}

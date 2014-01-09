@@ -142,7 +142,7 @@ void CDiplomacyInfo::Reset(void)
 	m_nFlag = -1;
 	for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 		m_nResources[res] = 0;
-	m_nSendRound = -1;
+	m_nSendRound = USHRT_MAX;
 	m_nType = DIPLOMATIC_AGREEMENT::NONE;
 	m_ptKO = CPoint(-1,-1);
 	m_sCorruptedRace = "";

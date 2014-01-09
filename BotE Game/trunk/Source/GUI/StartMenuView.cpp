@@ -113,7 +113,7 @@ void CStartMenuView::OnDraw(CDC* dc)
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
 
-	g.Clear(Color::Black);
+	g.Clear(static_cast<Gdiplus::ARGB>(Color::Black));
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
@@ -129,7 +129,7 @@ void CStartMenuView::OnDraw(CDC* dc)
 		format.SetLineAlignment(StringAlignmentCenter);
 
 		CString s= CLoc::GetString("PRESENTEDBY")+"\n\n"+CLoc::GetString("PRESENTED");
-		g.DrawString(CComBSTR(s), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
+		g.DrawString(CComBSTR(s), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(static_cast<Gdiplus::ARGB>(Color::WhiteSmoke)));
 
 		g.ReleaseHDC(pDC->GetSafeHdc());
 		// nichts weiter Zeichnen
@@ -147,7 +147,7 @@ void CStartMenuView::OnDraw(CDC* dc)
 	CString sVersion = "Birth of the Empires Alpha7 V";
 	sVersion += CString(VERSION_INFORMATION.c_str());
 	sVersion += "\n© by Sir Pustekuchen 2013";
-	g.DrawString(CComBSTR(sVersion), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
+	g.DrawString(CComBSTR(sVersion), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(static_cast<Gdiplus::ARGB>(Color::WhiteSmoke)));
 
 	// Hintergrundbild langsam einblenden
 	if (m_nTimeCounter < 255)
