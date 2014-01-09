@@ -1422,14 +1422,14 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				{
 					const int random = rand()%allShips.size();
 					const CPoint& n = allShips.at(random);
-					boost::shared_ptr<CShips>& s = m_pDoc->m_ShipMap.at(n.x);
+					const boost::shared_ptr<CShips>& s = m_pDoc->m_ShipMap.at(n.x);
 					// make the affected ship a ship without a fleet in case it had one,
 					// and a ship in the global shipmap in case it was a ship in a fleet
 					if (n.y == -1)
 					{
 						if (s->HasFleet())
 						{
-							boost::shared_ptr<CShips>& new_fleetship = s->GiveFleetToFleetsFirstShip();
+							const boost::shared_ptr<CShips>& new_fleetship = s->GiveFleetToFleetsFirstShip();
 							m_pDoc->m_ShipMap.Add(new_fleetship);
 						}
 						ship = s;
@@ -1466,7 +1466,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				ship->UnsetCurrentOrder();
 				ship->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 				// gestohlenes Schiff zum nächsten eigenen System verschieben
-				CPoint& newKO = CStarmap::NearestPort(m_pDoc->m_Systems, ship->GetCo(), pRace->GetRaceID());
+				const CPoint& newKO = CStarmap::NearestPort(m_pDoc->m_Systems, ship->GetCo(), pRace->GetRaceID());
 				ship->SetKO(newKO.x, newKO.y);
 				ship->SetTargetKO(CPoint(-1, -1));
 				// wurde dieses Schiff jedoch schonmal gestohlen, dann ist es in der Missed Shiphistory. Ist dies der Fall kann das Schiff

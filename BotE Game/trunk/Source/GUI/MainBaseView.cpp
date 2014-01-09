@@ -93,7 +93,7 @@ BOOL CMainBaseView::OnEraseBkgnd(CDC* /*pDC*/)
 	//return CView::OnEraseBkgnd(pDC);
 }
 
-void CMainBaseView::DrawGDIButtons(Graphics* g, CArray<CMyButton*>* buttonArray, int counter, Gdiplus::Font &font, Gdiplus::SolidBrush &fontBrush)
+void CMainBaseView::DrawGDIButtons(Graphics* g, const CArray<CMyButton*>* buttonArray, int counter, const Gdiplus::Font &font, const Gdiplus::SolidBrush &fontBrush)
 {
 	CBotEDoc* pDoc = resources::pDoc;
 	AssertBotE(pDoc);

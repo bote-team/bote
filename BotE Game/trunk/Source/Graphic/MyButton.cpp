@@ -31,7 +31,7 @@ bool CMyButton::ClickedOnButton(const CPoint& pt) const
 	return (CRect(m_ptKO.x, m_ptKO.y, m_ptKO.x+m_szSize.cx, m_ptKO.y+m_szSize.cy).PtInRect(pt) == TRUE);
 }
 
-void CMyButton::DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, Gdiplus::Font &font, Gdiplus::SolidBrush &brush) const
+void CMyButton::DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, const Gdiplus::Font &font, const Gdiplus::SolidBrush &brush) const
 {
 	AssertBotE(graphicPool);
 

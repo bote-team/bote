@@ -71,7 +71,7 @@ public:
 	/// @param graphicPool Zeiger auf die Sammlung aller Grafiken
 	/// @param font Referenz auf zu benutzende Schrift
 	/// @param brush Referenz auf Farbepinsel für Font (Schriftfarbe)
-	void DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, Gdiplus::Font &font, Gdiplus::SolidBrush &brush) const;
+	void DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, const Gdiplus::Font &font, const Gdiplus::SolidBrush &brush) const;
 
 	/// Funktion aktiviert den Button. Wenn dieser inaktiv ist, kann er nicht aktiviert werden.
 	bool Activate();

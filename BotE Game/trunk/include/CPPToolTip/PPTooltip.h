@@ -330,10 +330,10 @@ public:
 	void AddTool(CWnd * pWnd, PPTOOLTIP_INFO & ti);
 	//To compatible with old version of CPPToolTip
 	void AddTool(CWnd * pWnd, DWORD dwIdString, HICON hIcon, LPCRECT lpRectBounds = NULL, DWORD dwIDTool = 0);
-	void AddTool(CWnd * pWnd, DWORD dwIdString, DWORD dwIdIcon, CSize & szIcon = CSize(0, 0), LPCRECT lpRectBounds = NULL, DWORD dwIDTool = 0);
+	void AddTool(CWnd * pWnd, DWORD dwIdString, DWORD dwIdIcon, const CSize & szIcon = CSize(0, 0), LPCRECT lpRectBounds = NULL, DWORD dwIDTool = 0);
 	void AddTool(CWnd * pWnd, LPCTSTR lpszString, HICON hIcon, LPCRECT lpRectBounds = NULL, DWORD dwIDTool = 0);
-	void AddTool(CWnd * pWnd, LPCTSTR lpszString, DWORD dwIdIcon, CSize & szIcon = CSize(0, 0), LPCRECT lpRectBounds = NULL, DWORD dwIDTool = 0);
-	void AddTool(CWnd * pWnd, LPCTSTR lpszString, DWORD dwIdBitmap, COLORREF crMask, CSize & szBitmap = CSize(0, 0), LPCRECT lpRectBounds = NULL, DWORD dwIDTool = 0);
+	void AddTool(CWnd * pWnd, LPCTSTR lpszString, DWORD dwIdIcon, const CSize & szIcon = CSize(0, 0), LPCRECT lpRectBounds = NULL, DWORD dwIDTool = 0);
+	void AddTool(CWnd * pWnd, LPCTSTR lpszString, DWORD dwIdBitmap, COLORREF crMask, const CSize & szBitmap = CSize(0, 0), LPCRECT lpRectBounds = NULL, DWORD dwIDTool = 0);
 	void RemoveTool(CWnd * pWnd, LPCRECT lpRectBounds = NULL);
 	void RemoveAllTools();
 
@@ -345,9 +345,9 @@ public:
 
 	//Help tooltip
 	void ShowHelpTooltip (LPPOINT pt, DWORD dwIdText, HICON hIcon = NULL);
-	void ShowHelpTooltip (LPPOINT pt, DWORD dwIdText, DWORD dwIdIcon, CSize & szIcon = CSize(0, 0));
+	void ShowHelpTooltip (LPPOINT pt, DWORD dwIdText, DWORD dwIdIcon, const CSize & szIcon = CSize(0, 0));
 	void ShowHelpTooltip (LPPOINT pt, LPCTSTR lpszString, HICON hIcon = NULL);
-	void ShowHelpTooltip (LPPOINT pt, LPCTSTR lpszString, DWORD dwIdIcon, CSize & szIcon = CSize(0, 0));
+	void ShowHelpTooltip (LPPOINT pt, LPCTSTR lpszString, DWORD dwIdIcon, const CSize & szIcon = CSize(0, 0));
 	void ShowHelpTooltip (LPPOINT pt, PPTOOLTIP_INFO & ti);
 	void HideTooltip();
 

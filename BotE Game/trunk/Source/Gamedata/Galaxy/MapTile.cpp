@@ -285,10 +285,10 @@ CString CMapTile::GenerateName(const CString& pure_name, const CPoint& co)
 	return s;
 }
 
-boost::shared_ptr<const CShips> CMapTile::GetStation(const CString& sRace) const
+const boost::shared_ptr<const CShips> CMapTile::GetStation(const CString& sRace) const
 {
-	boost::shared_ptr<const CShips>& outpost = GetStation(SHIP_TYPE::OUTPOST, sRace);
-	boost::shared_ptr<const CShips>& starbase = GetStation(SHIP_TYPE::STARBASE, sRace);
+	const boost::shared_ptr<const CShips>& outpost = GetStation(SHIP_TYPE::OUTPOST, sRace);
+	const boost::shared_ptr<const CShips>& starbase = GetStation(SHIP_TYPE::STARBASE, sRace);
 	AssertBotE(!outpost || !starbase);
 	if(outpost)
 		return outpost;
@@ -406,8 +406,8 @@ bool CMapTile::IsStationBuildable(SHIP_ORDER::Typ order, const CString& race) co
 void CMapTile::BuildStation(SHIP_TYPE::Typ station, const CString& race) {
 	if(station == SHIP_TYPE::STARBASE)
 	{
-		boost::shared_ptr<const CShips>& outpost = GetStation(SHIP_TYPE::OUTPOST, race);
-		boost::shared_ptr<const CShips>& starbase = GetStation(SHIP_TYPE::STARBASE, race);
+		const boost::shared_ptr<const CShips>& outpost = GetStation(SHIP_TYPE::OUTPOST, race);
+		const boost::shared_ptr<const CShips>& starbase = GetStation(SHIP_TYPE::STARBASE, race);
 		AssertBotE(outpost && outpost->OwnerID() == race || starbase && starbase->OwnerID() == race);
 	}
 	SetScanned(race);

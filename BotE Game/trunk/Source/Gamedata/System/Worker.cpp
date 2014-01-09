@@ -163,7 +163,7 @@ CWorker::EmployedFreeAll CWorker::Workers() const
 // z.B. durch Nahrungsmangel kann so was passieren
 void CWorker::CheckWorkers()
 {
-	EmployedFreeAll& workers = Workers();
+	EmployedFreeAll workers = Workers();
 	if(workers.all < workers.employed)
 	{
 		int diff = workers.employed - workers.all;	// Differenz der zuvielen Arbeiter

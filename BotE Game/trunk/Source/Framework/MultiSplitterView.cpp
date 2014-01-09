@@ -44,7 +44,7 @@ CMultiSplitterView::~CMultiSplitterView()
 *******************************************************************************/
 bool CMultiSplitterView::AddSwitchableView(UINT id, CRuntimeClass * pView,
 								 CCreateContext* pContext,
-								 CRect & size, bool isFirstView, UINT altId)
+								 const CRect & size, bool isFirstView, UINT altId)
 {
    CWnd* pWin;
    DWORD style;

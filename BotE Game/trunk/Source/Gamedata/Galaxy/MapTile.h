@@ -159,7 +159,7 @@ public:
 	/// Sektor ist
 	/// @ param sRace if not empty, returns any station of this race
 	/// @ return empty shared_ptr if none found
-	boost::shared_ptr<const CShips> GetStation(const CString& sRace = "") const;
+	const boost::shared_ptr<const CShips> GetStation(const CString& sRace = "") const;
 
 //// ships in sector ////
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Rasse <code>Race</code> ein

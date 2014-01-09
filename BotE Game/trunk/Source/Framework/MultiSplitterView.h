@@ -28,7 +28,7 @@ public:
 	CWnd * GetViewPtr(UINT id);
 	bool SwitchView(UINT id, int paneRow, int paneCol);
 	bool AddSwitchableView(UINT id , CRuntimeClass*, CCreateContext* pContext,
-					CRect & size, bool isFirstView = false, UINT altId= 0);
+					const CRect & size, bool isFirstView = false, UINT altId= 0);
 	CMultiSplitterView();
 	~CMultiSplitterView();
 

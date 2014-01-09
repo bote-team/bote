@@ -60,7 +60,7 @@ protected:
 	/// @param counter Zählvariable die meinst angibt in welchem aktuellen Menü man sich befindet
 	/// @param font Referenz auf zu benutzende Schrift
 	/// @param fontBrush Referenz auf Farbepinsel für Font (Schriftfarbe)
-	void DrawGDIButtons(Graphics* g, CArray<CMyButton*>* buttonArray, int counter, Gdiplus::Font &font, Gdiplus::SolidBrush &fontBrush);
+	void DrawGDIButtons(Graphics* g, const CArray<CMyButton*>* buttonArray, int counter, const Gdiplus::Font &font, const Gdiplus::SolidBrush &fontBrush);
 
 	/// Funktion läßt einen Button auf ein MouseOver reagieren
 	/// @param point Referenz auf den Punkt, über dem sich die Maus aktuell befindet
