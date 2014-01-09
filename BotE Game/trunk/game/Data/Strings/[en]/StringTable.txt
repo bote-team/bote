@@ -1311,6 +1311,8 @@ Dreadnought
 Outpost
 [STARBASE]
 Starbase
+[STATION]
+Station
 [ALIEN]
 Alien
 
@@ -2140,6 +2142,8 @@ Production
 Defense
 
 // Anomalien
+[ANOMALY]
+Anomaly
 [RADIONEBULA]
 Radioactive nebula
 [METNEBULA]

@@ -1311,6 +1311,8 @@ Schlachtschiff
 Aussenposten
 [STARBASE]
 Sternenbasis
+[STATION]
+Station
 [ALIEN]
 Weltraummonster
 
@@ -2140,6 +2142,8 @@ Produktion
 Verteidigung
 
 // Anomalien
+[ANOMALY]
+Anomalie
 [RADIONEBULA]
 Radioaktiver Nebel
 [METNEBULA]

@@ -180,13 +180,22 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	fontBrush.SetColor(Color(170,170,170));
 
 	// Informationen zu dem System angeben
-	CString s;
-	float currentHabitants = pDoc->GetSystem(KO.x, KO.y).GetCurrentHabitants();
-	if (pDoc->GetSystem(KO.x, KO.y).GetAnomaly() && pDoc->GetSystem(KO.x, KO.y).GetScanned(pMajor->GetRaceID()))
-		s.Format("%s", pDoc->GetSystem(KO.x, KO.y).GetAnomaly()->GetMapName(KO));
-	else
-		s = pDoc->GetSystem(KO.x, KO.y).CoordsName(false);
+	CString s = pDoc->GetSystem(KO.x, KO.y).CoordsName(false);
 	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,25), &fontFormat, &fontBrush);
+	if (pDoc->GetSystem(KO.x, KO.y).GetAnomaly() && pDoc->GetSystem(KO.x, KO.y).GetScanned(pMajor->GetRaceID()))
+	{
+		AssertBotE(!pDoc->GetSystem(KO.x, KO.y).GetSunSystem());
+		s.Format("%s: %s", CLoc::GetString("ANOMALY"), pDoc->GetSystem(KO.x, KO.y).GetAnomaly()->GetMapName(KO));
+		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,47), &fontFormat, &fontBrush);
+	}
+	else if(const boost::shared_ptr<const CShips>& station = pDoc->GetSystem(KO.x, KO.y).GetStation())
+		if(pMajor->IsRaceContacted(station->OwnerID())
+			&& pDoc->GetSystem(KO.x, KO.y).ShouldDrawOutpost(*pMajor, station->OwnerID())
+			&& !pDoc->GetSystem(KO.x, KO.y).GetSunSystem())
+		{
+			s.Format("%s: %s", CLoc::GetString("STATION"), station->GetName());
+			g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,47), &fontFormat, &fontBrush);
+		}
 
 	if (pDoc->GetSystem(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) == FALSE)
 	{
@@ -233,6 +242,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 
 		s.Format("%s: %s",CLoc::GetString("SYSTEM"), pDoc->GetSystem(KO.x, KO.y).GetName());
 		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,47), &fontFormat, &fontBrush);
+		const float currentHabitants = pDoc->GetSystem(KO.x, KO.y).GetCurrentHabitants();
 		if (pDoc->GetSystem(KO.x, KO.y).GetFullKnown(pMajor->GetRaceID()))
 		{
 			s.Format("%s: %.3lf %s",CLoc::GetString("MAX_HABITANTS"), maxHabitants, CLoc::GetString("MRD"));
