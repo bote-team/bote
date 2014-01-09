@@ -533,9 +533,10 @@ boost::shared_ptr<CShips> CShips::GiveFleetToFleetsFirstShip() {
 CString CShips::GetTooltip(bool bShowFleet) const
 {
 	if(bShowFleet && HasFleet())
-		return CShip::GetTooltip(&CShip::FleetInfoForGetTooltip(
-			GetFleetShipType(), GetRange(true), GetSpeed(true))
-		);
+	{
+		const CShip::FleetInfoForGetTooltip info(GetFleetShipType(), GetRange(true), GetSpeed(true));
+		return CShip::GetTooltip(&info);
+	}
 	return CShip::GetTooltip();
 }
 
