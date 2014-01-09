@@ -1618,9 +1618,9 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	{
 		CPoint dest = pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetAt(i).GetDestKO();
 		if (pDoc->GetSystem(dest.x, dest.y).GetKnown(pDoc->GetSystem(p.x, p.y).OwnerID()) == TRUE)
-			s = pDoc->GetSystem(dest.x, dest.y).GetName();
+			s = pDoc->GetSystem(dest.x, dest.y).CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC);
 		else
-			s.Format("%s %c%i",CLoc::GetString("SECTOR"),(char)(dest.y+97),dest.x+1);
+			s = pDoc->GetSystem(dest.x, dest.y).CoordsName(CMapTile::NAME_TYPE_GENERIC);
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(70,260+i*30,125,25), &fontFormat, &fontBrush);
 
 		// Gewinn inkl. der Boni auf Handelsrouten ohne Boni auf Credits und Boni durch Moral

@@ -451,7 +451,7 @@ bool CRace::CanBeContactedBy(const CString& sRaceID) const {
 	return !IsRaceContacted(sRaceID) && !HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
 }
 
-void CRace::Contact(const CRace& Race, const CPoint& /*p*/) {
+void CRace::Contact(const CRace& Race, const CSector& /*p*/) {
 	const CString& sContactedRaceID = Race.GetRaceID();
 	AssertBotE(!IsRaceContacted(sContactedRaceID));
 	SetIsRaceContacted(sContactedRaceID, true);

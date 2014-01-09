@@ -120,7 +120,7 @@ public:
 	/// @param nNewAgreement neuer Vertrag
 	virtual void SetAgreement(const CString& sOtherRace, DIPLOMATIC_AGREEMENT::Typ nNewAgreement);
 
-	virtual void Contact(const CRace& Race, const CPoint& p);
+	virtual void Contact(const CRace& Race, const CSector& p);
 
 	/// Funktion fügt ein Schiff zur Liste der verlorenen Schiffe in der Schiffshistory ein.
 	/// @param sEvent Ereignis warum Schiff weg/zerstört/verschwunden ist

@@ -401,13 +401,25 @@ CString CShip::GetCombatTacticAsString() const
 }
 
 //Funktion gibt aktuelles Ziel als char* zurück
-CString CShip::GetCurrentTargetAsString() const
+CString CShip::GetCurrentTargetAsString(const boost::shared_ptr<const CRace>& for_race) const
 {
+	AssertBotE(for_race);
 	CString target;
-	if (!HasTarget())
-		target = "-";
+	if(for_race == m_Owner || for_race->GetAgreement(m_Owner->GetRaceID()) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
+	{
+		if(HasTarget())
+		{
+			const CSystem& system= resources::pDoc->GetSystem(m_TargetKO.x, m_TargetKO.y);
+			if(system.GetKnown(for_race->GetRaceID()))
+				target = system.CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC);
+			else
+				target = system.CoordsName(CMapTile::NAME_TYPE_GENERIC);
+		}
+		else
+			target = CLoc::GetString("NO_SHIP_ORDER");
+	}
 	else
-		target.Format("%c%i", (char)(m_TargetKO.y+97),m_TargetKO.x+1);
+		target = CLoc::GetString("UNKNOWN");
 	return target;
 }
 
@@ -1568,7 +1580,7 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 		// Schiffunterstützungkosten dem jeweiligen Imperium hinzufügen.
 		pMajor->GetEmpire()->AddShipCosts(GetMaintenanceCosts());
 		// die Schiffe in der Flotte beim modifizieren der Schiffslisten der einzelnen Imperien beachten
-		pMajor->GetShipHistory()->ModifyShip(ShipHistoryInfo(), sector.GetLongName());
+		pMajor->GetShipHistory()->ModifyShip(ShipHistoryInfo(), sector.CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC));
 	}
 	// Erfahrungspunkte der Schiffe anpassen
 	CalcExp();
@@ -1716,7 +1728,7 @@ bool CShip::BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major, 
 
 void CShip::Scrap(CMajor& major, CSystem& sy, bool disassembly) {
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-	major.GetShipHistory()->ModifyShip(ShipHistoryInfo(), sy.GetLongName(),
+	major.GetShipHistory()->ModifyShip(ShipHistoryInfo(), sy.CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC),
 		resources::pDoc->GetCurrentRound(), CLoc::GetString(disassembly ?
 		"DISASSEMBLY" : "UPGRADE"), CLoc::GetString("DESTROYED"));
 	if(sy.OwnerID() != OwnerID())
@@ -1739,7 +1751,7 @@ void CShip::Scrap(CMajor& major, CSystem& sy, bool disassembly) {
 CShipHistoryStruct CShip::ShipHistoryInfo() const
 {
 	return CShipHistoryStruct(m_sName, GetShipTypeAsString(), m_strShipClass, "", "", GetCurrentOrderAsString(), "",
-		GetCurrentTargetAsString(), 0, 0, m_iCrewExperiance);
+		GetCurrentTargetAsString(m_Owner), 0, 0, m_iCrewExperiance);
 }
 
 CString CShip::SanityCheckUniqueness(std::set<CString>& already_encountered) const {

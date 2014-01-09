@@ -7,6 +7,7 @@
 #include "GenSectorName.h"
 #include "Loc.h"
 #include "Constants.h"
+#include "Galaxy/MapTile.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -108,7 +109,7 @@ CString CGenSectorName::GetNextRandomSectorName(const CPoint& ptKO, bool& bMinor
 	}
 
 	// Standardname zurückgeben
-	sName.Format("%s %c%i", CLoc::GetString("SECTOR"), (char)(ptKO.y+97), ptKO.x + 1);
+	sName = CMapTile::GenerateName("", ptKO);
 	return sName;
 }
 

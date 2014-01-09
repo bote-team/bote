@@ -80,12 +80,13 @@ public:
 
 // Zugriffsfunktionen zum Lesen der Membervariablen
 
-	/**
-	 * Funktion gibt den Namen des Sektors zurück. Wenn in ihm kein Sonnensystem ist, dann wird "" zurückgegeben.
-	 * Wenn man aber den Parameter <code>longName<code> beim Aufruf der Funktion auf <code>TRUE<code> setzt, wird
-	 * versucht ein genauerer Sektorname zu generieren.
-	 */
-	CString GetLongName() const;
+	enum NAME_TYPE
+	{
+		NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC,
+		NAME_TYPE_GENERIC
+	};
+	CString CoordsName(NAME_TYPE type) const;
+	static CString GenerateName(const CString& pure_name, const CPoint& co);
 
 //// SectorAttributes ////
 	/// Diese Funktion gibt zurück, ob sich in diesem Sektor ein Sonnensystem befindet.

@@ -37,6 +37,18 @@ RESOURCES::TYPE WorkerToResource(WORKER::Typ type)
 	return it->second;
 }
 
+CString CPointToCString(const CPoint& p)
+{
+	CString result;
+	result.Format("(%i|%i)", p.x, p.y);
+	return result;
+}
 
-
+CPoint IndexToCoords(int index)
+{
+	const int y = index / STARMAP_SECTORS_HCOUNT; //integer devision on purpose
+	const int x = index - y * STARMAP_SECTORS_HCOUNT;
+	AssertBotE(IsOnMap(x, y));
+	return CPoint(x, y);
+}
 

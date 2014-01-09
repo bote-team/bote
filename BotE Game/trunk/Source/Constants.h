@@ -510,6 +510,8 @@ inline int CoordsToIndex(int x, int y)
 	return x + STARMAP_SECTORS_HCOUNT * y;
 }
 
+CPoint IndexToCoords(int index);
+
 inline void SetAttributes(BOOLEAN is, int attribute, int &variable)
 {
 	if (is)
@@ -518,6 +520,7 @@ inline void SetAttributes(BOOLEAN is, int attribute, int &variable)
 		variable &= ~attribute;
 }
 
+CString CPointToCString(const CPoint& p);
 
 // --- Künstliche Intelligenz ---------------------------------------------------
 static const int MINBASEPOINTS	= 120;	///< minimale Punkte für den Außenpostenbau, damit die KI überhaupt beginnt dort einen zu bauen

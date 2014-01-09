@@ -510,7 +510,7 @@ The § (§) has been assigned as flagship
 [GET_CONTACT_TO_MINOR]
 We have established contact with the §
 [GET_CONTACT_TO_MAJOR]
-We found the § in sector §
+We found the § in §
 
 //manager
 [MANAGER_MALFUNCTION]
@@ -1383,10 +1383,6 @@ Group
 mixed fleet
 [TARGET]
 Target
-[NO_TARGET]
-Target: none
-[UNKNOWN_TARGET]
-Target: unknown
 [ORDER]
 Order
 [COMBAT_BEHAVIOR]
@@ -2407,13 +2403,13 @@ Change of government at the people of §
 [ALIENTECHEADLINE]
 Alien artifact found
 [ALIENTEC]
-In sector § an extremely interesting alien technology was discovered
+In § an extremely interesting alien technology was discovered
 [ALIENTECLONG]
-In sector § alien technology has been discovered which promotes our research in all areas
+In § alien technology has been discovered which promotes our research in all areas
 [EVENTSHIPXP]
 During the exploration of §, the crew gained extra experience
 [EVENTHULLVIRUS]
-Hull-Virus infested all ships in sector §
+Hull-Virus infested all ships in §
 
 // Troops
 [MAJOR1_TROOP1_NAME]

@@ -1110,7 +1110,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 				if(pDoc->GetSystem(x,y).GetName()==s&&pDoc->GetSystem(x,y).GetKnown(pPlayer->GetRaceID()))
 				{
 					CString coords;
-					coords.Format(" (%c%i)", (char)y+97,x+1);
+					coords.Format(" %s", CPointToCString(CPoint(x, y)));
 					s += coords;
 					break;
 				}

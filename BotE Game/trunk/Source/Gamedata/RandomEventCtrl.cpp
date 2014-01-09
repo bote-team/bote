@@ -178,9 +178,7 @@ void CRandomEventCtrl::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMa
 		int nAdd = (50 + rand()%101) * nSystemCount;
 		pRace->GetEmpire()->AddFP(nAdd);
 
-		CString sSectorName = pDoc->GetSystem(ko.x, ko.y).GetName();
-		if (sSectorName.IsEmpty())
-			sSectorName.Format("%c%i", (char)(ko.y+97), ko.x + 1);
+		const CString& sSectorName = pDoc->GetSystem(ko.x, ko.y).CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC);
 
 		sMessageText = CLoc::GetString("ALIENTEC",false,sSectorName);
 		typ = EMPIRE_NEWS_TYPE::RESEARCH;
@@ -203,7 +201,7 @@ void CRandomEventCtrl::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMa
 			}
 		}
 
-		sMessageText = CLoc::GetString("EVENTSHIPXP",false,pDoc->GetSystem(ko.x, ko.y).GetLongName());
+		sMessageText = CLoc::GetString("EVENTSHIPXP",false,pDoc->GetSystem(ko.x, ko.y).CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC));
 		typ = EMPIRE_NEWS_TYPE::MILITARY;
 	}
 
@@ -270,9 +268,7 @@ void CRandomEventCtrl::CalcShipEvents() const
 				if (!pMajor)
 					continue;
 
-				CString sSectorName = pSector->GetName();
-				if (sSectorName.IsEmpty())
-					sSectorName.Format("%c%i", (char)(pSector->GetCo().y+97), pSector->GetCo().x + 1);
+				const CString& sSectorName = pSector->CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC);
 
 				CString sMessageText = CLoc::GetString("EVENTHULLVIRUS", false, sSectorName);
 				CEmpireNews message;

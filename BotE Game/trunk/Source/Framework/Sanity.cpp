@@ -225,18 +225,3 @@ void CSanity::SanityCheckShipsInSectors(const CBotEDoc& doc)
 
 }
 
-//void CSanity::ShipInfo(const CArray<CShip, CShip>& shiparray, int index, const CString& indexname) {
-//	if(!MT::CMyTrace::IsLoggingEnabledFor("shipindices"))
-//		return;
-//	CString s;
-//	s.Format("%s: %i", indexname, index);
-//	const int size = shiparray.GetSize();
-//	if(0 <= index && index < size) {
-//		const CShip& ship = shiparray.GetAt(index);
-//		const CPoint& p = ship.GetCo();
-//		CString sector;
-//		sector.Format("%c%i",(char)(p.y+97),p.x+1);
-//		s.Format("%s; %s; %s", s, ship.GetName(), sector);
-//	}
-//	MYTRACE_CHECKED("shipindices")(MT::LEVEL_INFO, s);
-//}

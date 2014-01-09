@@ -414,20 +414,19 @@ void CMajor::CreateStarmap(void)
 	m_pStarmap = boost::make_shared<CStarmap>(!m_bPlayer, 3 - SHIP_RANGE::MIDDLE);
 }
 
-void CMajor::Contact(const CRace& Race, const CPoint& p)
+void CMajor::Contact(const CRace& Race, const CSector& p)
 {
 	CRace::Contact(Race, p);
 
 	// Nachricht generieren, dass wir eine andere Rasse kennengelernt haben
-	CString sSectorKO;
-	sSectorKO.Format("%c%i",(char)(p.y+97),p.x+1);
+	const CString& sSectorKO = p.CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC);
 
 	//message to the involved major
 	CString sKey = Race.IsMajor() ? "GET_CONTACT_TO_MAJOR" : "GET_CONTACT_TO_MINOR";
 	CString sMsg = CLoc::GetString(sKey,FALSE, Race.GetName(),sSectorKO);
 
 	CEmpireNews message;
-	message.CreateNews(sMsg, EMPIRE_NEWS_TYPE::DIPLOMACY, "", p);
+	message.CreateNews(sMsg, EMPIRE_NEWS_TYPE::DIPLOMACY, "", p.GetCo());
 	m_Empire.AddMsg(message);
 
 	// Eventscreen einfügen
@@ -452,7 +451,7 @@ void CMajor::AddToLostShipHistory(const CShipHistoryStruct& ship, const CString&
 	const CString& sStatus, unsigned short round, const CPoint& co)
 {
 	const CBotEDoc& doc = *resources::pDoc;
-	m_ShipHistory.ModifyShip(ship, doc.GetSystem(co.x, co.y).GetLongName(), round, sEvent, sStatus);
+	m_ShipHistory.ModifyShip(ship, doc.GetSystem(co.x, co.y).CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC), round, sEvent, sStatus);
 }
 
 void CMajor::LostFlagShip(const CShip& ship)

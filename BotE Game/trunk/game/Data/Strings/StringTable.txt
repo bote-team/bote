@@ -508,9 +508,9 @@ Sternenbasisupgrade
 [ASSIGN_FLAGSHIP_MESSAGE]
 Die § (§) wurde zum Flaggschiff ernannt
 [GET_CONTACT_TO_MINOR]
-Wir haben die § in Sektor § kennengelernt
+Wir haben die § in § kennengelernt
 [GET_CONTACT_TO_MAJOR]
-Wir haben die § in Sektor § getroffen
+Wir haben die § in § getroffen
 
 //Verwalter
 [MANAGER_MALFUNCTION]
@@ -1383,10 +1383,6 @@ Gruppe
 gemischte Flotte
 [TARGET]
 Ziel
-[NO_TARGET]
-Ziel: keins
-[UNKNOWN_TARGET]
-Ziel: unbekannt
 [ORDER]
 Befehl
 [COMBAT_BEHAVIOR]
@@ -2318,7 +2314,7 @@ Siege
 
 // Kampfbildschirme
 [COMBAT_IN_SECTOR]
-Kampf im 
+Kampf in
 [PLEASE_WAIT]
 bitte warten
 [COMBATCALCULATION_IS_RUNNING]
@@ -2407,13 +2403,13 @@ Regierungswechsel bei den §
 [ALIENTECHEADLINE]
 Alien-Artefakt gefunden
 [ALIENTEC]
-Im Sektor § wurde äußerst interessante Alientechnologie entdeckt
+In § wurde äußerst interessante Alientechnologie entdeckt
 [ALIENTECLONG]
-Im Sektor § wurde Alientechnologie entdeckt, die unsere Forschung in allen Gebieten voranbringt
+In § wurde Alientechnologie entdeckt, die unsere Forschung in allen Gebieten voranbringt
 [EVENTSHIPXP]
 Beim Erkunden von § hat die Crew viel Erfahrung gesammelt
 [EVENTHULLVIRUS]
-Hüllenvirus in Sektor § hat Schiffe befallen
+Hüllenvirus in § hat Schiffe befallen
 
 // Truppen
 [MAJOR1_TROOP1_NAME]

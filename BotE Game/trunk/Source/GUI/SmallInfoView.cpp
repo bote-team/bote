@@ -60,7 +60,8 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		return;
 
 	CString sID = pDoc->GetPlayersRaceID();
-	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
+	const boost::shared_ptr<const CMajor> pMajor =
+		boost::dynamic_pointer_cast<CMajor>(pDoc->GetRaceCtrl()->GetRaceSafe(sID));
 	if (!pMajor)
 	{
 		AssertBotE(pMajor);
@@ -128,12 +129,12 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			}
 
 			// Ab hier werden die ganzen Statistiken gezeichnet
-			CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
+			CFontLoader::CreateGDIFont(pMajor.get(), 2, fontName, fontSize);
 			fontFormat.SetAlignment(StringAlignmentCenter);
 			fontFormat.SetLineAlignment(StringAlignmentFar);
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 			Color color;
-			CFontLoader::GetGDIFontColor(pMajor, 3, color);
+			CFontLoader::GetGDIFontColor(pMajor.get(), 3, color);
 			fontBrush.SetColor(color);
 
 			CString s;
@@ -272,7 +273,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 
 			g->DrawString(CComBSTR(CheckPlanetClassForInfoHead(PlanetClass)), -1, &Gdiplus::Font(L"Arial", 10), RectF(0,0,r.right,20), &fontFormat, &fontBrush);
 			Color color;
-			CFontLoader::GetGDIFontColor(pMajor, 3, color);
+			CFontLoader::GetGDIFontColor(pMajor.get(), 3, color);
 			fontBrush.SetColor(color);
 			fontFormat.SetAlignment(StringAlignmentNear);
 			fontFormat.SetLineAlignment(StringAlignmentNear);
@@ -289,9 +290,9 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		this->KillTimer(1);
 		m_nTimer = 0;
 
-		CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
+		CFontLoader::CreateGDIFont(pMajor.get(), 2, fontName, fontSize);
 		Color color;
-		CFontLoader::GetGDIFontColor(pMajor, 3, color);
+		CFontLoader::GetGDIFontColor(pMajor.get(), 3, color);
 		fontBrush.SetColor(Color(200,200,200));
 		fontFormat.SetAlignment(StringAlignmentCenter);
 		fontFormat.SetLineAlignment(StringAlignmentFar);
@@ -390,43 +391,48 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,125), &fontFormat, &fontBrush);
 		}
 
-		CPoint TargetKO = pShip->second->GetTargetKO();
-		if (TargetKO.x == -1 && pShip->second->OwnerID() != pMajor->GetRaceID())
-			s = CLoc::GetString("UNKNOWN_TARGET");
-		if (TargetKO.x != -1 && pShip->second->OwnerID() == pMajor->GetRaceID())
+		s.Format("%s: ", CLoc::GetString("TARGET"));
+		if(pMajor->GetRaceID() == pShip->second->OwnerID() || pMajor->GetAgreement(pShip->second->OwnerID())
+			>= DIPLOMATIC_AGREEMENT::AFFILIATION)
 		{
-			if(m_DisplayMode == DISPLAY_MODE_SHIP_BOTTEM_VIEW)
-				AssertBotE(pShip == pDoc->CurrentShip());
-			else//(m_ShipDisplayMode == SHIP_DISPLAY_MODE_FLEET_VIEW)
+			if(pShip->second->HasTarget())
 			{
-				const CShips::const_iterator& fleetship = pDoc->FleetShip();
-				if(fleetship->second->LeaderIsCurrent())
-					AssertBotE(pShip == pDoc->FleetShip());
+				if(m_DisplayMode == DISPLAY_MODE_SHIP_BOTTEM_VIEW)
+					AssertBotE(pShip == pDoc->CurrentShip());
+				else//(m_ShipDisplayMode == SHIP_DISPLAY_MODE_FLEET_VIEW)
+				{
+					const CShips::const_iterator& fleetship = pDoc->FleetShip();
+					if(fleetship->second->LeaderIsCurrent())
+						AssertBotE(pShip == pDoc->FleetShip());
+					else
+						AssertBotE(pShip == fleetship->second->CurrentShip());
+				}
+				short range = 3-pShip->second->GetRange(true);
+				short speed = pShip->second->GetSpeed(true);
+				CArray<Sector> path;
+				Sector position(pShip->second->GetCo().x, pShip->second->GetCo().y);
+				Sector target(pShip->second->GetTargetKO().x, pShip->second->GetTargetKO().y);
+				pMajor->GetStarmap()->CalcPath(position, target, range, speed, path);
+				short rounds = 0;
+				if (speed > 0)
+					rounds = ceil((float)path.GetSize() / (float)speed);
+				CString s2;
+				if (rounds > 1)
+					s2.Format("%s (%d %s)", pShip->second->GetCurrentTargetAsString(pMajor), rounds, CLoc::GetString("ROUNDS"));
 				else
-					AssertBotE(pShip == fleetship->second->CurrentShip());
+					s2.Format("%s (%d %s)", pShip->second->GetCurrentTargetAsString(pMajor), rounds, CLoc::GetString("ROUND"));
+				s += s2;
 			}
-			short range = 3-pShip->second->GetRange(true);
-			short speed = pShip->second->GetSpeed(true);
-			CArray<Sector> path;
-			Sector position(pShip->second->GetCo().x, pShip->second->GetCo().y);
-			Sector target(pShip->second->GetTargetKO().x, pShip->second->GetTargetKO().y);
-			pMajor->GetStarmap()->CalcPath(position, target, range, speed, path);
-			short rounds = 0;
-			if (speed > 0)
-				rounds = ceil((float)path.GetSize() / (float)speed);
-			if (rounds > 1)
-				s.Format("%s: %c%i (%d %s)", CLoc::GetString("TARGET"), (char)(TargetKO.y+97),TargetKO.x+1, rounds, CLoc::GetString("ROUNDS"));
 			else
-				s.Format("%s: %c%i (%d %s)", CLoc::GetString("TARGET"), (char)(TargetKO.y+97),TargetKO.x+1, rounds, CLoc::GetString("ROUND"));
+				s += pShip->second->GetCurrentTargetAsString(pMajor);
 		}
-		if (TargetKO.x == -1 && pShip->second->OwnerID() == pMajor->GetRaceID())
-			s = CLoc::GetString("NO_TARGET");
-		if (TargetKO.x != -1 && pShip->second->OwnerID() != pMajor->GetRaceID())
-			s = CLoc::GetString("UNKNOWN_TARGET");
-		if (TargetKO.x == pShip->second->GetCo().x &&
-			TargetKO.y == pShip->second->GetCo().y &&
-			pShip->second->OwnerID() == pMajor->GetRaceID())
-			s = CLoc::GetString("NO_TARGET");
+		else
+			s += pShip->second->GetCurrentTargetAsString(pMajor);
+
+		const CPoint& TargetKO = pShip->second->GetTargetKO();
+		if (TargetKO.x == pShip->second->GetCo().x && TargetKO.y == pShip->second->GetCo().y)
+			AssertBotE(false);
+
 		if (CGalaxyMenuView::IsMoveShip() == TRUE)
 		{
 			fontBrush.SetColor(Color(0,225,0));
@@ -436,8 +442,8 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		// bei eigenem Schiff aktuellen Befehl zeichnen
 		if (pShip->second->OwnerID() == pMajor->GetRaceID())
 		{
-			pDC->SetTextColor(CFontLoader::GetFontColor(pMajor, 4));
-			CFontLoader::GetGDIFontColor(pMajor, 4, color);
+			pDC->SetTextColor(CFontLoader::GetFontColor(pMajor.get(), 4));
+			CFontLoader::GetGDIFontColor(pMajor.get(), 4, color);
 			fontBrush.SetColor(color);
 			fontFormat.SetAlignment(StringAlignmentCenter);
 			fontFormat.SetLineAlignment(StringAlignmentNear);

@@ -25,7 +25,6 @@ class CSanity
 	void SanityCheckFleet(const CShips& ship);
 	static void SanityCheckSectorAndSystem(const CSystem& system);
 	void SanityCheckRacePtrUseCounts(const CBotEDoc& doc);
-	//static void ShipInfo(const CArray<CShip, CShip>& shiparray, int index, const CString& indexname);
 	void CheckShipUniqueness(const CShips& ship, std::set<CString>& already_encountered);
 	static void SanityCheckShipsInSectors(const CBotEDoc& doc);
 private:

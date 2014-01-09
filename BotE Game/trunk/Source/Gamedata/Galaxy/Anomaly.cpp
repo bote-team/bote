@@ -151,7 +151,7 @@ CString CAnomaly::GetMapName(const CPoint &pt) const
 	}
 
 	CString s;
-	s.Format("%s %c%i", sName, (char)(pt.y + 65), pt.x + 1);
+	s.Format("%s %c%i", sName, (char)(pt.x + 65), pt.y);
 	return s;
 }
 

@@ -19,6 +19,7 @@ class CShips;
 class CShip;
 class CEmpire;
 struct CShipHistoryStruct;
+class CSector;
 
 using namespace std;
 
@@ -210,7 +211,7 @@ public:
 	bool HasSpecialAbility(int ability) const;
 
 	bool CanBeContactedBy(const CString& sRaceID) const;
-	virtual void Contact(const CRace& Race, const CPoint& p);
+	virtual void Contact(const CRace& Race, const CSector& p);
 
 	virtual void AddToLostShipHistory(const CShipHistoryStruct&, const CString&,
 		const CString&, unsigned short, const CPoint&) {};

@@ -1681,9 +1681,9 @@ CString CGalaxyMenuView::CreateTooltip(void)
 		else if (pSector->GetAnomaly())
 			sTip.Format("%s", pSector->GetAnomaly()->GetMapName(CPoint(ko.x,ko.y)));
 		else if (pSector->GetKnown(pMajor->GetRaceID()) == FALSE)
-			sTip.Format("%s %c%i", CLoc::GetString("SECTOR"),(char)(ko.y+97), ko.x+1);
+			sTip = pDoc->GetSystem(ko.x, ko.y).CoordsName(CMapTile::NAME_TYPE_GENERIC);
 		else
-			sTip = pDoc->GetSystem(ko.x, ko.y).GetLongName();
+			sTip = pDoc->GetSystem(ko.x, ko.y).CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC);
 
 		sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
 		sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h5"));

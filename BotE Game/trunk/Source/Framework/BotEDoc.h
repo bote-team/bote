@@ -222,7 +222,7 @@ public:
 
 
 	// neu für Kampf
-	set<CString> m_sCombatSectors;		///< Sektoren in denen diese Runde schon ein Kampf stattgefunden hat
+	set<int> m_CombatSectors;		///< Sektoren in denen diese Runde schon ein Kampf stattgefunden hat
 
 	CPoint m_ptCurrentCombatSector;		///< aktueller Kampfsektor
 
@@ -307,9 +307,9 @@ protected:
 	void CalcEndDataForNextRound();
 private:
 	//helper functions for CalcContactNewRaces()
-	void CalcContactCommutative(CMajor& Major, CRace& ContactedRace, const CPoint& p);
-	void CalcContactShipToMajorShip(CRace& Race, const CSector& sector, const CPoint& p);
-	void CalcContactMinor(CMajor& Major, const CSector& sector, const CPoint& p);
+	void CalcContactCommutative(CMajor& Major, CRace& ContactedRace, const CSector& p);
+	void CalcContactShipToMajorShip(CRace& Race, const CSector& sector);
+	void CalcContactMinor(CMajor& Major, const CSector& sector);
 protected:
 	/// Diese Funktion überprüft, ob neue Rassen kennengelernt wurden.
 	void CalcContactNewRaces();

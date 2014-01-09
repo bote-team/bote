@@ -1210,7 +1210,7 @@ void CBotEDoc::NextRound()
 #endif
 
 	// gibt es für diese Runde Sektoren in welchen ein Kampf stattfand
-	bool bCombatInCurrentRound = !m_sCombatSectors.empty();
+	bool bCombatInCurrentRound = !m_CombatSectors.empty();
 
 	// Es fand noch kein Kampf die Runde statt. Dies tritt ein, wenn entweder wirklich kein Kampf diese Runde war
 	// oder das erste Mal in diese Funktion gesprungen wurde.
@@ -1375,7 +1375,7 @@ void CBotEDoc::NextRound()
 	}
 
 	// In dieser Runde stattgefundene Kämpfe löschen
-	m_sCombatSectors.clear();
+	m_CombatSectors.clear();
 	m_bCombatCalc = false;
 
 	bool bAutoSave = false;
@@ -1413,7 +1413,7 @@ void CBotEDoc::ApplyShipsAtStartup()
 			{
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 					// Sektornamen gefunden
-					if (GetSystem(x, y).GetLongName() == s)
+					if (GetSystem(x, y).GetName() == s)
 					{
 						bFoundSector = true;
 						// Schiffsklassen durchgehen, die dort stationiert werden sollen
@@ -2137,7 +2137,7 @@ CShipMap::iterator CBotEDoc::BuildShip(int nID, const CPoint& KO, const CString&
 	// Spezialforschungsboni dem Schiff hinzufügen
 	it->second->AddSpecialResearchBoni();
 
-	pMajor->GetShipHistory()->AddShip(it->second->ShipHistoryInfo(), GetSystem(KO.x, KO.y).GetName(), m_iRound);
+	pMajor->GetShipHistory()->AddShip(it->second->ShipHistoryInfo(), GetSystem(KO.x, KO.y).CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC), m_iRound);
 	return it;
 }
 
@@ -4023,11 +4023,11 @@ bool CBotEDoc::IsShipCombat()
 	for(CShipMap::const_iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
 	{
 		const CPoint& p = y->second->GetCo();
-		const CString& sector = GetSystem(p.x, p.y).GetLongName();
+		const CSystem& sector = GetSystem(p.x, p.y);
 		// Wenn unser Schiff auf Angreifen gestellt ist
 		// Wenn in dem Sektor des Schiffes schon ein Kampf stattgefunden hat, dann findet hier keiner mehr statt
 		if (y->second->GetCombatTactic() != COMBAT_TACTIC::CT_ATTACK
-			|| m_sCombatSectors.find(sector) != m_sCombatSectors.end())
+			|| m_CombatSectors.find(CoordsToIndex(sector.GetCo().x, sector.GetCo().y)) != m_CombatSectors.end())
 			continue;
 		// Wenn noch kein Kampf in dem Sektor stattfand, dann kommt es möglicherweise hier zum Kampf
 		for(CShipMap::const_iterator i = m_ShipMap.begin(); i != m_ShipMap.end(); ++i)
@@ -4045,7 +4045,7 @@ bool CBotEDoc::IsShipCombat()
 				continue;
 			m_bCombatCalc = true;
 			m_ptCurrentCombatSector = p;
-			m_sCombatSectors.insert(sector);
+			m_CombatSectors.insert(CoordsToIndex(sector.GetCo().x, sector.GetCo().y));
 			m_mCombatOrders.clear();
 			MYTRACE("general")(MT::LEVEL_INFO, "Combat in Sector %d/%d\n", p.x, p.y);
 			return true;
@@ -4129,12 +4129,11 @@ void CBotEDoc::CalcShipCombat()
 
 	for (CRaceController::const_iterator it = m_pRaceCtrl->begin(); it != m_pRaceCtrl->end(); ++it)
 	{
-		CString sSectorName;
+		const CSystem& system = GetSystem(p.x, p.y);
 		// ist der Sektor bekannt?
-		if (GetSystem(p.x, p.y).GetKnown(it->first))
-			sSectorName = GetSystem(p.x, p.y).GetLongName();
-		else
-			sSectorName.Format("%s %c%i", CLoc::GetString("SECTOR"), (char)(p.y+97), p.x + 1);
+		const CMapTile::NAME_TYPE type = system.GetKnown(it->first) ? CMapTile::
+			NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC : CMapTile::NAME_TYPE_GENERIC;
+		const CString& sSectorName = system.CoordsName(type);
 
 		// gewonnen
 		if (winner[it->first] == 1 && it->second->IsMajor())
@@ -4381,7 +4380,7 @@ void CBotEDoc::CalcShipEffects()
 ///////////////////////////////////////////////////////////////////////
 /////BEGINN: HELPER FUNCTIONS FOR void CBotEDoc::CalcContactNewRaces()
 
-void CBotEDoc::CalcContactShipToMajorShip(CRace& Race, const CSector& sector, const CPoint& p) {
+void CBotEDoc::CalcContactShipToMajorShip(CRace& Race, const CSector& sector) {
 	// treffen mit einem Schiff eines anderen Majors
 	// wenn zwei Schiffe verschiedener Rasse in diesem Sektor stationiert sind, so können sich die Besitzer auch kennenlernen
 	const std::map<CString, CMajor*>& mMajors = *m_pRaceCtrl->GetMajors();
@@ -4392,12 +4391,12 @@ void CBotEDoc::CalcContactShipToMajorShip(CRace& Race, const CSector& sector, co
 		if (!sector.GetOwnerOfShip(sMajorID, true) || !pMajor->CanBeContactedBy(Race.GetRaceID()) ||
 			Race.GetRaceID() == sMajorID)
 			continue;
-		CalcContactCommutative(*pMajor, Race, p);
+		CalcContactCommutative(*pMajor, Race, sector);
 	}
 }
 
 void CBotEDoc::CalcContactCommutative(CMajor& Major,
-	CRace& ContactedRace, const CPoint& p) {
+	CRace& ContactedRace, const CSector& p) {
 
 	Major.Contact(ContactedRace, p);
 	m_pClientWorker->CalcContact(Major, ContactedRace);
@@ -4406,7 +4405,7 @@ void CBotEDoc::CalcContactCommutative(CMajor& Major,
 		m_pClientWorker->CalcContact(dynamic_cast<CMajor&>(ContactedRace), Major);
 }
 
-void CBotEDoc::CalcContactMinor(CMajor& Major, const CSector& sector, const CPoint& p) {
+void CBotEDoc::CalcContactMinor(CMajor& Major, const CSector& sector) {
 	if(!sector.GetMinorRace())
 		return;
 	// in dem Sektor lebt eine Minorrace
@@ -4415,7 +4414,7 @@ void CBotEDoc::CalcContactMinor(CMajor& Major, const CSector& sector, const CPoi
 	// kann der Sektorbesitzer andere Rassen kennenlernen?
 	if (pMinor->CanBeContactedBy(Major.GetRaceID()))
 		// die Rasse ist noch nicht bekannt
-		CalcContactCommutative(Major, *pMinor, p);
+		CalcContactCommutative(Major, *pMinor, sector);
 }
 
 /////END: HELPER FUNCTIONS FOR void CBotEDoc::CalcContactNewRaces()
@@ -4434,7 +4433,7 @@ void CBotEDoc::CalcContactNewRaces()
 		const CPoint& p = y->second->GetCo();
 		const CSystem& system = GetSystem(p.x, p.y);
 		const CString& sOwnerOfSector = system.OwnerID();
-		CalcContactShipToMajorShip(*pRace, system, p);
+		CalcContactShipToMajorShip(*pRace, system);
 		if(sOwnerOfSector.IsEmpty() || sOwnerOfSector == sRace)
 			continue;
 		CRace* pOwnerOfSector = m_pRaceCtrl->GetRace(sOwnerOfSector);
@@ -4443,7 +4442,7 @@ void CBotEDoc::CalcContactNewRaces()
 			if(pOwnerOfSector->CanBeContactedBy(sRace) && pOwnerOfSector->IsMajor()) {
 				CMajor* pMajor = dynamic_cast<CMajor*>(pOwnerOfSector);
 				AssertBotE(pMajor);
-				CalcContactCommutative(*pMajor, *pRace, p);
+				CalcContactCommutative(*pMajor, *pRace, system);
 			}
 			continue;
 		}
@@ -4451,12 +4450,12 @@ void CBotEDoc::CalcContactNewRaces()
 		//If this changes, this code needs to be adapted.
 		CMajor* pMajor = dynamic_cast<CMajor*>(pRace);
 		AssertBotE(pMajor);
-		CalcContactMinor(*pMajor, system, p);
+		CalcContactMinor(*pMajor, system);
 		if (!pOwnerOfSector->CanBeContactedBy(sRace))
 			continue;
 		//At this point, pOwnerOfSector must be of type major, since independent or no diplo minors are handled.
 		AssertBotE(pOwnerOfSector->IsMajor());
-		CalcContactCommutative(*pMajor, *pOwnerOfSector, p);
+		CalcContactCommutative(*pMajor, *pOwnerOfSector, system);
 	}//for (int y = 0; y < m_ShipMap.GetSize(); y++)
 }
 
@@ -4640,8 +4639,9 @@ void CBotEDoc::CalcEndDataForNextRound()
 				{
 					// Alle noch "lebenden" Schiffe aus der Schiffshistory ebenfalls als zerstört ansehen
 					pMajor->GetShipHistory()->ModifyShip(j->second->ShipHistoryInfo(),
-								GetSystem(j->second->GetCo().x, j->second->GetCo().y).GetLongName(), m_iRound,
-								CLoc::GetString("UNKNOWN"), CLoc::GetString("DESTROYED"));
+						GetSystem(j->second->GetCo().x, j->second->GetCo().y).CoordsName(CMapTile::
+						NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC), m_iRound, CLoc::GetString("UNKNOWN"),
+						CLoc::GetString("DESTROYED"));
 					m_ShipMap.EraseAt(j);
 				}
 				else

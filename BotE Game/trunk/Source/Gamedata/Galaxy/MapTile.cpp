@@ -264,15 +264,29 @@ void CMapTile::Serialize(CArchive &ar)
 // getting
 //////////////////////////////////////////////////////////////////////
 
-/// Funktion gibt den Namen des Sektors zurück. Wenn in ihm kein Sonnensystem ist, dann wird "" zurückgegeben.
-/// Wenn man aber den Parameter <code>longName<code> beim Aufruf der Funktion auf <code>TRUE<code> setzt, wird
-/// versucht ein genauerer Sektorname zu generieren.
-CString CMapTile::GetLongName() const
+CString CMapTile::CoordsName(NAME_TYPE type) const
 {
-	if (m_bSunSystem)
-		return m_sName;
 	CString s;
-	s.Format("%s %c%i", CLoc::GetString("SECTOR"), (char)(m_Co.y+97), m_Co.x + 1);
+	if(m_bSunSystem)
+	{
+		AssertBotE(!m_sName.IsEmpty());
+		if (type == NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC)
+		{
+			s = GenerateName(m_sName, m_Co);
+			return s;
+		}
+	}
+	s = GenerateName("", m_Co);
+	return s;
+}
+
+CString CMapTile::GenerateName(const CString& pure_name, const CPoint& co)
+{
+	CString s;
+	if(pure_name.IsEmpty())
+		s.Format("%s %s", CLoc::GetString("SECTOR"), CPointToCString(co));
+	else
+		s.Format("%s %s", pure_name, CPointToCString(co));
 	return s;
 }
 

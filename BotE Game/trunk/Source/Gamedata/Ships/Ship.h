@@ -113,7 +113,7 @@ public:
 	CString GetShipTypeAsString(BOOL plural = FALSE) const;
 	CString GetCurrentOrderAsString() const;
 	CString GetCombatTacticAsString() const;
-	CString GetCurrentTargetAsString() const;
+	CString GetCurrentTargetAsString(const boost::shared_ptr<const CRace>& for_race) const;
 	bool GetIsShipFlagShip() const {return m_bIsFlagShip;}
 	USHORT GetCrewExperience() const {return m_iCrewExperiance;}
 	USHORT GetStorageRoom() const {return m_iStorageRoom;}

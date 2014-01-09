@@ -1457,7 +1457,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetCo(), ship->GetID(), 1, FALSE, TRUE, FALSE);
 				// die Station aus der ShipHistory der aktuellen Schiffe entfernen und den zerstörten Schiffen hinzufügen
-				pEnemyRace->GetShipHistory()->ModifyShip(ship->ShipHistoryInfo(), m_pDoc->GetSystem(ship->GetCo().x, ship->GetCo().y).GetLongName(),
+				pEnemyRace->GetShipHistory()->ModifyShip(ship->ShipHistoryInfo(), m_pDoc->GetSystem(ship->GetCo().x, ship->GetCo().y).CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC),
 					m_pDoc->GetCurrentRound(), CLoc::GetString("SABOTAGE"), CLoc::GetString("MISSED"));
 
 				// neuen Besitzer hinzufügen
@@ -1471,9 +1471,9 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				ship->SetTargetKO(CPoint(-1, -1));
 				// wurde dieses Schiff jedoch schonmal gestohlen, dann ist es in der Missed Shiphistory. Ist dies der Fall kann das Schiff
 				// wieder als aktives Schiff betrachtet werden.
-				if (pRace->GetShipHistory()->ModifyShip(ship->ShipHistoryInfo(), m_pDoc->GetSystem(ship->GetCo().x, ship->GetCo().y).GetLongName(), 0) == false)
+				if (pRace->GetShipHistory()->ModifyShip(ship->ShipHistoryInfo(), m_pDoc->GetSystem(ship->GetCo().x, ship->GetCo().y).CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC), 0) == false)
 					// dem neuen Besitzer das Schiff als aktives Schiff hinzufügen
-					pRace->GetShipHistory()->AddShip(ship->ShipHistoryInfo(), m_pDoc->GetSystem(ship->GetCo().x, ship->GetCo().y).GetLongName(), m_pDoc->GetCurrentRound());
+					pRace->GetShipHistory()->AddShip(ship->ShipHistoryInfo(), m_pDoc->GetSystem(ship->GetCo().x, ship->GetCo().y).CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC), m_pDoc->GetCurrentRound());
 
 				if (report)
 				{
@@ -1496,7 +1496,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetCo(), ship->GetID(), 1, FALSE, TRUE, FALSE);
 				// die Station aus der ShipHistory der aktuellen Schiffe entfernen und den zerstörten Schiffen hinzufügen
-				pEnemyRace->GetShipHistory()->ModifyShip(ship->ShipHistoryInfo(), m_pDoc->GetSystem(ship->GetCo().x, ship->GetCo().y).GetLongName(),
+				pEnemyRace->GetShipHistory()->ModifyShip(ship->ShipHistoryInfo(), m_pDoc->GetSystem(ship->GetCo().x, ship->GetCo().y).CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC),
 					m_pDoc->GetCurrentRound(), CLoc::GetString("SABOTAGE"), CLoc::GetString("DESTROYED"));
 
 				CShips::iterator destroyed_ship = m_pDoc->m_ShipMap.find(ship->Key());

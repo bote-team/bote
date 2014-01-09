@@ -371,8 +371,8 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 			}
 			else
 				fontBrush.SetColor(normalColor);
-			CPoint KO = pMajor->GetEmpire()->GetSystemList()->GetAt(i).ko;
-			s.Format("%c%i",(char)(KO.y+97),KO.x+1);
+			const CPoint& KO = pMajor->GetEmpire()->GetSystemList()->GetAt(i).ko;
+			s = CPointToCString(KO);
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(55,140+j*25,75,25), &fontFormat, &fontBrush);
 			s = pMajor->GetEmpire()->GetSystemList()->GetAt(i).name;
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(130,140+j*25,140,25), &fontFormat, &fontBrush);
@@ -1914,14 +1914,14 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		// Haben wir auf ein Schiff in der Liste geklickt
 		if (m_iClickedShipIndex != -1)
 		{
-			CShipHistoryStruct* pShipHistory = pMajor->GetShipHistory()->GetShipHistory(m_iClickedShipIndex);
+			const CShipHistoryStruct* pShipHistory = pMajor->GetShipHistory()->GetShipHistory(m_iClickedShipIndex);
 			if (pShipHistory)
 			{
 				// Sektorkoordinate finden
 				CPoint pt = CPoint(-1,-1);
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 					for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-						if (pDoc->GetSystem(x,y).GetLongName() == pShipHistory->m_strCurrentSector)
+						if (pDoc->GetSystem(x,y).CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC) == pShipHistory->m_strCurrentSector)
 						{
 							pt = CPoint(x,y);
 							break;
