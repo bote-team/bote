@@ -1921,7 +1921,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				CPoint pt = CPoint(-1,-1);
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 					for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-						if (pDoc->GetSystem(x,y).CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC) == pShipHistory->m_strCurrentSector)
+						if (pDoc->GetSystem(x,y).CoordsName(true) == pShipHistory->m_strCurrentSector)
 						{
 							pt = CPoint(x,y);
 							break;

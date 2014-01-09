@@ -421,10 +421,7 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
 
-	if (pDoc->GetSystem(p.x, p.y).GetKnown(pMajor->GetRaceID()))
-		s.Format("%s %s", CLoc::GetString("COMBAT_IN_SECTOR"), pDoc->GetSystem(p.x, p.y).CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC));
-	else
-		s.Format("%s %s", CLoc::GetString("COMBAT_IN_SECTOR"), pDoc->GetSystem(p.x, p.y).CoordsName(CMapTile::NAME_TYPE_GENERIC));
+	s.Format("%s %s", CLoc::GetString("COMBAT_IN_SECTOR"), pDoc->GetSystem(p.x, p.y).CoordsName(pDoc->GetSystem(p.x, p.y).GetKnown(pMajor->GetRaceID())));
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
@@ -680,10 +677,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
 
-	if (pDoc->GetSystem(p.x, p.y).GetKnown(pMajor->GetRaceID()))
-		s.Format("%s %s", CLoc::GetString("COMBAT_IN_SECTOR"), pDoc->GetSystem(p.x, p.y).CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC));
-	else
-		s.Format("%s %s", CLoc::GetString("COMBAT_IN_SECTOR"), pDoc->GetSystem(p.x, p.y).CoordsName(CMapTile::NAME_TYPE_GENERIC));
+	s.Format("%s %s", CLoc::GetString("COMBAT_IN_SECTOR"), pDoc->GetSystem(p.x, p.y).CoordsName(pDoc->GetSystem(p.x, p.y).GetKnown(pMajor->GetRaceID())));
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 

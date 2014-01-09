@@ -2137,7 +2137,7 @@ CShipMap::iterator CBotEDoc::BuildShip(int nID, const CPoint& KO, const CString&
 	// Spezialforschungsboni dem Schiff hinzufügen
 	it->second->AddSpecialResearchBoni();
 
-	pMajor->GetShipHistory()->AddShip(it->second->ShipHistoryInfo(), GetSystem(KO.x, KO.y).CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC), m_iRound);
+	pMajor->GetShipHistory()->AddShip(it->second->ShipHistoryInfo(), GetSystem(KO.x, KO.y).CoordsName(true), m_iRound);
 	return it;
 }
 
@@ -4131,9 +4131,7 @@ void CBotEDoc::CalcShipCombat()
 	{
 		const CSystem& system = GetSystem(p.x, p.y);
 		// ist der Sektor bekannt?
-		const CMapTile::NAME_TYPE type = system.GetKnown(it->first) ? CMapTile::
-			NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC : CMapTile::NAME_TYPE_GENERIC;
-		const CString& sSectorName = system.CoordsName(type);
+		const CString& sSectorName = system.CoordsName(system.GetKnown(it->first));
 
 		// gewonnen
 		if (winner[it->first] == 1 && it->second->IsMajor())
@@ -4633,8 +4631,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 				{
 					// Alle noch "lebenden" Schiffe aus der Schiffshistory ebenfalls als zerstört ansehen
 					pMajor->GetShipHistory()->ModifyShip(j->second->ShipHistoryInfo(),
-						GetSystem(j->second->GetCo().x, j->second->GetCo().y).CoordsName(CMapTile::
-						NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC), m_iRound, CLoc::GetString("UNKNOWN"),
+						GetSystem(j->second->GetCo().x, j->second->GetCo().y).CoordsName(true), m_iRound, CLoc::GetString("UNKNOWN"),
 						CLoc::GetString("DESTROYED"));
 					m_ShipMap.EraseAt(j);
 				}

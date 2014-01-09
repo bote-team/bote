@@ -185,7 +185,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	if (pDoc->GetSystem(KO.x, KO.y).GetAnomaly() && pDoc->GetSystem(KO.x, KO.y).GetScanned(pMajor->GetRaceID()))
 		s.Format("%s", pDoc->GetSystem(KO.x, KO.y).GetAnomaly()->GetMapName(KO));
 	else
-		s = pDoc->GetSystem(KO.x, KO.y).CoordsName(CMapTile::NAME_TYPE_GENERIC);
+		s = pDoc->GetSystem(KO.x, KO.y).CoordsName(false);
 	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,25), &fontFormat, &fontBrush);
 
 	if (pDoc->GetSystem(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) == FALSE)

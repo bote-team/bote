@@ -254,10 +254,10 @@ void CMapTile::Serialize(CArchive &ar)
 // getting
 //////////////////////////////////////////////////////////////////////
 
-CString CMapTile::CoordsName(NAME_TYPE type) const
+CString CMapTile::CoordsName(bool pretty) const
 {
 	CString s;
-	if(type == NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC)
+	if(pretty)
 	{
 		if(m_bSunSystem)
 		{

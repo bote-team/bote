@@ -419,7 +419,7 @@ void CMajor::Contact(const CRace& Race, const CSector& p)
 	CRace::Contact(Race, p);
 
 	// Nachricht generieren, dass wir eine andere Rasse kennengelernt haben
-	const CString& sSectorKO = p.CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC);
+	const CString& sSectorKO = p.CoordsName(true);
 
 	//message to the involved major
 	CString sKey = Race.IsMajor() ? "GET_CONTACT_TO_MAJOR" : "GET_CONTACT_TO_MINOR";
@@ -451,7 +451,7 @@ void CMajor::AddToLostShipHistory(const CShipHistoryStruct& ship, const CString&
 	const CString& sStatus, unsigned short round, const CPoint& co)
 {
 	const CBotEDoc& doc = *resources::pDoc;
-	m_ShipHistory.ModifyShip(ship, doc.GetSystem(co.x, co.y).CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC), round, sEvent, sStatus);
+	m_ShipHistory.ModifyShip(ship, doc.GetSystem(co.x, co.y).CoordsName(true), round, sEvent, sStatus);
 }
 
 void CMajor::LostFlagShip(const CShip& ship)

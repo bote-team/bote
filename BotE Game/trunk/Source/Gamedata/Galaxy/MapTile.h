@@ -80,12 +80,7 @@ public:
 
 // Zugriffsfunktionen zum Lesen der Membervariablen
 
-	enum NAME_TYPE
-	{
-		NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC,
-		NAME_TYPE_GENERIC
-	};
-	CString CoordsName(NAME_TYPE type) const;
+	CString CoordsName(bool pretty) const;
 	static CString GenerateName(const CString& pure_name, const CPoint& co);
 
 //// SectorAttributes ////

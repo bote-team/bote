@@ -410,10 +410,7 @@ CString CShip::GetCurrentTargetAsString(const boost::shared_ptr<const CRace>& fo
 		if(HasTarget())
 		{
 			const CSystem& system= resources::pDoc->GetSystem(m_TargetKO.x, m_TargetKO.y);
-			if(system.GetKnown(for_race->GetRaceID()))
-				target = system.CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC);
-			else
-				target = system.CoordsName(CMapTile::NAME_TYPE_GENERIC);
+			target = system.CoordsName(system.GetKnown(for_race->GetRaceID()));
 		}
 		else
 			target = CLoc::GetString("NO_SHIP_ORDER");
@@ -1580,7 +1577,7 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 		// Schiffunterstützungkosten dem jeweiligen Imperium hinzufügen.
 		pMajor->GetEmpire()->AddShipCosts(GetMaintenanceCosts());
 		// die Schiffe in der Flotte beim modifizieren der Schiffslisten der einzelnen Imperien beachten
-		pMajor->GetShipHistory()->ModifyShip(ShipHistoryInfo(), sector.CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC));
+		pMajor->GetShipHistory()->ModifyShip(ShipHistoryInfo(), sector.CoordsName(true));
 	}
 	// Erfahrungspunkte der Schiffe anpassen
 	CalcExp();
@@ -1728,7 +1725,7 @@ bool CShip::BuildStation(SHIP_ORDER::Typ order, CSector& sector, CMajor& major, 
 
 void CShip::Scrap(CMajor& major, CSystem& sy, bool disassembly) {
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-	major.GetShipHistory()->ModifyShip(ShipHistoryInfo(), sy.CoordsName(CMapTile::NAME_TYPE_NAME_WITH_COORDS_OR_GENERIC),
+	major.GetShipHistory()->ModifyShip(ShipHistoryInfo(), sy.CoordsName(true),
 		resources::pDoc->GetCurrentRound(), CLoc::GetString(disassembly ?
 		"DISASSEMBLY" : "UPGRADE"), CLoc::GetString("DESTROYED"));
 	if(sy.OwnerID() != OwnerID())
