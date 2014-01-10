@@ -6,6 +6,7 @@
 #include "ManagerSettingsDlg.h"
 #include "System/Manager.h"
 #include "System/system.h"
+#include "BotEDoc.h"
 
 
 
@@ -23,6 +24,7 @@ CManagerSettingsDlg::CManagerSettingsDlg(CWnd* pParent /*=NULL*/)
 	, m_bBombWarning(FALSE)
 	, m_bOnOffline(FALSE)
 	, m_System(NULL)
+	, m_IgnoredBuildings()
 {
 
 }
@@ -35,7 +37,8 @@ CManagerSettingsDlg::CManagerSettingsDlg(CSystemManager* manager, const CSystem&
 	m_bNeglectFood(FALSE),
 	m_bBombWarning(FALSE),
 	m_bOnOffline(FALSE),
-	m_System(&system)
+	m_System(&system),
+	m_IgnoredBuildings()
 {
 
 }
@@ -63,6 +66,7 @@ void CManagerSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SLIDER_MIN_MORAL, m_ctrlMinMoralSlider);
 	DDX_Control(pDX, IDC_SLIDER_MIN_MORAL_PROD, m_ctrlMinMoralProdSlider);
 	DDX_Check(pDX, IDC_CHECK_ON_OFFLINE, m_bOnOffline);
+	DDX_Control(pDX, IDC_LIST_IGNORED_BUILDINGS, m_ctrlListIgnoredBuildings);
 }
 
 
@@ -79,6 +83,10 @@ BEGIN_MESSAGE_MAP(CManagerSettingsDlg, CDialog)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_MIN_MORAL, &CManagerSettingsDlg::OnNMCustomdrawSliderMinMoral)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_MIN_MORAL_PROD, &CManagerSettingsDlg::OnNMCustomdrawSliderMinMoralProd)
 	ON_BN_CLICKED(IDC_CHECK_ON_OFFLINE, &CManagerSettingsDlg::OnBnClickedCheckOnOffline)
+	ON_BN_CLICKED(IDC_BUTTON_ADD_IGNORED_BUILDING, &CManagerSettingsDlg::OnBnClickedButtonAddIgnoredBuilding)
+	ON_BN_CLICKED(IDC_BUTTON_REMOVE_INGORED_BUILDING, &CManagerSettingsDlg::OnBnClickedButtonRemoveIngoredBuilding)
+	ON_BN_CLICKED(IDC_BUTTON_CLEAR_INGORED_BUILDINGS, &CManagerSettingsDlg::OnBnClickedButtonClearIngoredBuildings)
+	ON_LBN_SELCHANGE(IDC_LIST_IGNORED_BUILDINGS, &CManagerSettingsDlg::OnLbnSelchangeListIgnoredBuildings)
 END_MESSAGE_MAP()
 
 
@@ -150,6 +158,8 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 
 	SetDisplayedStaticText(IDC_SLIDER_MIN_MORAL, m_ctrlMinMoralSlider.GetPos(), true);
 	SetDisplayedStaticText(IDC_SLIDER_MIN_MORAL_PROD, m_ctrlMinMoralProdSlider.GetPos(), true);
+	m_IgnoredBuildings = m_Manager->IgnoredBuildings();
+	PopulateListIgnoredBuildings();
 
 	UpdateData(false);
 	SetStates(m_bActive);
@@ -184,6 +194,7 @@ void CManagerSettingsDlg::OnOK()
 
 	m_Manager->SetMinMoral(m_ctrlMinMoralSlider.GetPos());
 	m_Manager->SetMinMoralProd(m_ctrlMinMoralProdSlider.GetPos());
+	m_Manager->SetIgnoredBuildings(m_IgnoredBuildings);
 
 	CDialog::OnOK();
 }
@@ -213,8 +224,15 @@ void CManagerSettingsDlg::SetStates(BOOL active)
 	SetState(IDC_CHECK_BOMB_WARNING, active);
 	SetState(IDC_CHECK_ON_OFFLINE, active);
 
-	SetState(IDC_SLIDER_MIN_MORAL, m_bOnOffline && active);
-	SetState(IDC_SLIDER_MIN_MORAL_PROD, m_bOnOffline && active);
+	const BOOL energy_stuff_active = m_bOnOffline && active;
+	SetState(IDC_SLIDER_MIN_MORAL, energy_stuff_active);
+	SetState(IDC_SLIDER_MIN_MORAL_PROD, energy_stuff_active);
+	SetState(IDC_LIST_IGNORED_BUILDINGS, energy_stuff_active);
+	SetState(IDC_EDIT_IGNORED_BUILDING, energy_stuff_active);
+	SetState(IDC_BUTTON_ADD_IGNORED_BUILDING, energy_stuff_active);
+	SetState(IDC_BUTTON_REMOVE_INGORED_BUILDING, energy_stuff_active
+		&& m_ctrlListIgnoredBuildings.GetCurSel() != LB_ERR);
+	SetState(IDC_BUTTON_CLEAR_INGORED_BUILDINGS, energy_stuff_active);
 }
 
 void CManagerSettingsDlg::OnBnClickedCheckActive()
@@ -328,4 +346,52 @@ void CManagerSettingsDlg::OnBnClickedCheckOnOffline()
 {
 	UpdateData(true);
 	SetStates(m_bActive);
+}
+
+void CManagerSettingsDlg::PopulateListIgnoredBuildings()
+{
+	m_ctrlListIgnoredBuildings.ResetContent();
+	for(std::set<int>::const_iterator i = m_IgnoredBuildings.begin(); i != m_IgnoredBuildings.end(); ++i)
+		m_ctrlListIgnoredBuildings.AddString(resources::pDoc->GetBuildingName(*i));
+}
+
+void CManagerSettingsDlg::OnBnClickedButtonAddIgnoredBuilding()
+{
+	CString text;
+	GetDlgItemText(IDC_EDIT_IGNORED_BUILDING, text);
+	const CArray<CBuilding>& buildings = *m_System->GetAllBuildings();
+	for(int i = 0; i < buildings.GetSize(); ++i)
+	{
+		const CBuildingInfo& info = resources::pDoc->GetBuildingInfo(buildings.GetAt(i).GetRunningNumber());
+		if(info.GetNeededEnergy() == 0)
+			continue;
+		if(text != info.GetBuildingName())
+			continue;
+		m_IgnoredBuildings.insert(info.GetRunningNumber());
+		PopulateListIgnoredBuildings();
+		SetDlgItem(IDC_EDIT_IGNORED_BUILDING, "");
+		return;
+	}
+	AfxMessageBox("Building not found!");
+}
+
+void CManagerSettingsDlg::OnBnClickedButtonRemoveIngoredBuilding()
+{
+	const unsigned to_remove = m_ctrlListIgnoredBuildings.GetCurSel();
+	AssertBotE(to_remove < m_IgnoredBuildings.size());
+	std::set<int>::const_iterator i = m_IgnoredBuildings.begin();
+	std::advance(i, to_remove);
+	m_IgnoredBuildings.erase(i);
+	PopulateListIgnoredBuildings();
+}
+
+void CManagerSettingsDlg::OnBnClickedButtonClearIngoredBuildings()
+{
+	m_IgnoredBuildings.clear();
+	PopulateListIgnoredBuildings();
+}
+
+void CManagerSettingsDlg::OnLbnSelchangeListIgnoredBuildings()
+{
+	SetState(IDC_BUTTON_REMOVE_INGORED_BUILDING, m_ctrlListIgnoredBuildings.GetCurSel() != LB_ERR);
 }

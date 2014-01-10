@@ -28,7 +28,8 @@ CSystemManager::CSystemManager(const CSystemManager& o) :
 	m_iMinMoralProd(o.m_iMinMoralProd),
 	m_bBombWarning(o.m_bBombWarning),
 	m_bOnOffline(o.m_bOnOffline),
-	m_PriorityMap(o.m_PriorityMap)
+	m_PriorityMap(o.m_PriorityMap),
+	m_IgnoredBuildings(o.m_IgnoredBuildings)
 {
 }
 
@@ -50,6 +51,7 @@ CSystemManager& CSystemManager::operator=(const CSystemManager& o)
 	m_bBombWarning = o.m_bBombWarning;
 	m_PriorityMap = o.m_PriorityMap;
 	m_bOnOffline = o.m_bOnOffline;
+	m_IgnoredBuildings = o.m_IgnoredBuildings;
 
 	return *this;
 }
@@ -64,6 +66,7 @@ void CSystemManager::Reset()
 	m_iMinMoralProd = max_min_moral_prod;
 	m_bBombWarning = true;
 	m_bOnOffline = true;
+	m_IgnoredBuildings.clear();
 
 	ClearPriorities();
 }
@@ -92,6 +95,13 @@ void CSystemManager::Serialize(CArchive& ar)
 			ar << it->second;
 			ar << static_cast<int>(it->first);
 		}
+
+		ar << static_cast<int>(m_IgnoredBuildings.size());
+		for(std::set<int>::const_iterator i = m_IgnoredBuildings.begin();
+			i != m_IgnoredBuildings.end(); ++i)
+		{
+			ar << *i;
+		}
 	}
 	else
 	{
@@ -105,9 +115,9 @@ void CSystemManager::Serialize(CArchive& ar)
 		ar >> m_bOnOffline;
 
 		ClearPriorities();
-		int map_size;
-		ar >> map_size;
-		for(int i = 0; i < map_size; ++i)
+		int size;
+		ar >> size;
+		for(int i = 0; i < size; ++i)
 		{
 			int value;
 			ar >> value;
@@ -115,6 +125,15 @@ void CSystemManager::Serialize(CArchive& ar)
 			ar >> key;
 			AssertBotE(value > 0);
 			AddPriority(static_cast<WORKER::Typ>(key), value);
+		}
+
+		ar >> size;
+		m_IgnoredBuildings.clear();
+		for(int i = 0; i < size; ++i)
+		{
+			int value;
+			ar >> value;
+			m_IgnoredBuildings.insert(value);
 		}
 	}
 }
@@ -185,6 +204,11 @@ void CSystemManager::AddPriority(WORKER::Typ type, int value)
 	AssertBotE(min_priority <= value && value <= max_priority);
 	if(value > min_priority)
 		m_PriorityMap.insert(std::pair<WORKER::Typ, int>(type, value));
+}
+
+void CSystemManager::SetIgnoredBuildings(const std::set<int>& ignored)
+{
+	m_IgnoredBuildings = ignored;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -732,6 +756,8 @@ bool CSystemManager::CheckEnergyConsumers(CSystem& system)
 		const CBuildingInfo& info = resources::BuildingInfo->GetAt(building.GetRunningNumber() - 1);
 		const int needed = info.GetNeededEnergy();
 		if(needed == 0)
+			continue;
+		if(m_IgnoredBuildings.find(info.GetRunningNumber()) != m_IgnoredBuildings.end())
 			continue;
 		bool should_be_online = building.GetIsBuildingOnline();
 		if(info.GetShipYard() || info.GetShipBuildSpeed() > 0)

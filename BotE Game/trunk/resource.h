@@ -116,7 +116,7 @@
 #define IDC_STATIC_FOUND_BOTE_SERVERS   1067
 #define IDC_CHECK_RANDOMEVENTS          1068
 #define IDC_CHECK_ALIENENTITIES         1069
-#define IDC_CHECK_SHOWEVENTPICTURES 1070
+#define IDC_CHECK_SHOWEVENTPICTURES     1070
 #define IDC_CHECK_ACTIVE                1071
 #define IDC_SLIDER_SECURITY             1072
 #define IDC_CHECK_SAFE_MORAL            1073
@@ -142,6 +142,12 @@
 #define IDC_STATIC_MIN_MORAL_PROD       1089
 #define IDC_CHECK3                      1090
 #define IDC_CHECK_ON_OFFLINE            1090
+#define IDC_LIST_IGNORED_BUILDINGS      1091
+#define IDC_BUTTON_ADD_IGNORED_BUILDING 1092
+#define IDC_BUTTON_REMOVE_INGORED_BUILDING 1093
+#define IDC_BUTTON3                     1094
+#define IDC_BUTTON_CLEAR_INGORED_BUILDINGS 1094
+#define IDC_EDIT_IGNORED_BUILDING       1095
 #define ID_OPTIONEN                     32773
 #define ID_INFORMATION                  32774
 #define ID_DATENBANK                    32775
@@ -167,7 +173,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        191
 #define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1091
+#define _APS_NEXT_CONTROL_VALUE         1096
 #define _APS_NEXT_SYMED_VALUE           107
 #endif
 #endif

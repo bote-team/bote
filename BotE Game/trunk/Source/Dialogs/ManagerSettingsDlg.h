@@ -2,6 +2,7 @@
 #include "afxcmn.h"
 
 #include "Constants.h"
+#include "afxwin.h"
 
 // CManagerSettingsDlg-Dialogfeld
 
@@ -41,6 +42,11 @@ public:
 	afx_msg void OnNMCustomdrawSliderMinMoralProd(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnBnClickedCheckOnOffline();
 
+	afx_msg void OnBnClickedButtonAddIgnoredBuilding();
+	afx_msg void OnBnClickedButtonRemoveIngoredBuilding();
+	afx_msg void OnBnClickedButtonClearIngoredBuildings();
+	afx_msg void OnLbnSelchangeListIgnoredBuildings();
+
 protected:
 	virtual void OnOK();
 
@@ -50,6 +56,7 @@ private:
 	void SetDlgItem(int item, const CString& text);
 	void SetDisplayedStaticText(int item, int value, bool moral = false);
 	int SliderPos(WORKER::Typ type) const;
+	void PopulateListIgnoredBuildings();
 
 	static const int tick_frequ = 5;
 
@@ -75,5 +82,8 @@ private:
 	CSliderCtrl m_ctrlProductionSlider;
 	CSliderCtrl m_ctrlMinMoralSlider;
 	CSliderCtrl m_ctrlMinMoralProdSlider;
+
+	CListBox m_ctrlListIgnoredBuildings;
+	std::set<int> m_IgnoredBuildings;
 
 };

@@ -52,6 +52,8 @@ public:
 
 	int Priority(WORKER::Typ type) const;
 
+	const std::set<int>& IgnoredBuildings() const { return m_IgnoredBuildings; }
+
 //////////////////////////////////////////////////////////////////////
 // setting
 //////////////////////////////////////////////////////////////////////
@@ -69,6 +71,8 @@ public:
 	void ClearPriorities();
 
 	void AddPriority(WORKER::Typ type, int value);
+
+	void SetIgnoredBuildings(const std::set<int>& ignored);
 
 //////////////////////////////////////////////////////////////////////
 // other functions
@@ -108,5 +112,6 @@ private:
 	bool m_bOnOffline;
 	std::map<WORKER::Typ, int> m_PriorityMap;//min_priority + 1 till max_priority each, borders included
 	//priorities with min_priority are not added
+	std::set<int> m_IgnoredBuildings;
 
 };
