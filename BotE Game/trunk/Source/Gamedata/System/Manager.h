@@ -73,6 +73,7 @@ public:
 	void AddPriority(WORKER::Typ type, int value);
 
 	void SetIgnoredBuildings(const std::set<int>& ignored);
+	void UpgradeIgnoredBuilding(int old_id, int new_id);
 
 //////////////////////////////////////////////////////////////////////
 // other functions

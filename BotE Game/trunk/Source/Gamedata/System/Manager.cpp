@@ -211,6 +211,14 @@ void CSystemManager::SetIgnoredBuildings(const std::set<int>& ignored)
 	m_IgnoredBuildings = ignored;
 }
 
+void CSystemManager::UpgradeIgnoredBuilding(int old_id, int new_id)
+{
+	std::set<int>::iterator i = m_IgnoredBuildings.find(old_id);
+	if(i == m_IgnoredBuildings.end())
+		return;
+	*i = new_id;
+}
+
 //////////////////////////////////////////////////////////////////////
 // workers distribution
 //////////////////////////////////////////////////////////////////////

@@ -198,9 +198,13 @@ void COldRoundDataCalculator::FinishBuild(const int to_build, CSystem& system,
 			m_pDoc->BuildBuilding(list,co);
 
 			// falls das geupgradete Gebäude Energie benötigt wird versucht es gleich online zu setzen
-			const CSystemManager& manager = system.Manager();
-			if (m_pDoc->GetBuildingInfo(list).GetNeededEnergy() > 0 && system.SetNewBuildingOnline(&BuildingInfo) == 2 && !manager.Active())
-				SystemMessage(system, pMajor, "NOT_ENOUGH_ENERGY", EMPIRE_NEWS_TYPE::SOMETHING, 2);
+			CSystemManager& manager = system.Manager();
+			if (m_pDoc->GetBuildingInfo(list).GetNeededEnergy() > 0)
+			{
+				manager.UpgradeIgnoredBuilding(nPredecessorID, list);
+				if(system.SetNewBuildingOnline(&BuildingInfo) == 2 && !manager.Active())
+					SystemMessage(system, pMajor, "NOT_ENOUGH_ENERGY", EMPIRE_NEWS_TYPE::SOMETHING, 2);
+			}
 		}
 	}
 	else if (list >= 10000 && list < 20000)	// Es wird ein Schiff gebaut
