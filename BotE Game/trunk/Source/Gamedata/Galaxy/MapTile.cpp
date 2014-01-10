@@ -254,7 +254,7 @@ void CMapTile::Serialize(CArchive &ar)
 // getting
 //////////////////////////////////////////////////////////////////////
 
-CString CMapTile::CoordsName(bool pretty) const
+CString CMapTile::CoordsName(bool pretty, const boost::shared_ptr<const CRace>& for_race) const
 {
 	CString s;
 	if(pretty)
@@ -267,8 +267,11 @@ CString CMapTile::CoordsName(bool pretty) const
 		}
 		else if(const boost::shared_ptr<const CShips>& station = GetStation())
 		{
-			s = GenerateName(station->GetName(), m_Co);
-			return s;
+			if(for_race && for_race->IsRaceContacted(station->OwnerID()))
+			{
+				s = GenerateName(station->GetName(), m_Co);
+				return s;
+			}
 		}
 	}
 	s = GenerateName("", m_Co);

@@ -80,7 +80,8 @@ public:
 
 // Zugriffsfunktionen zum Lesen der Membervariablen
 
-	CString CoordsName(bool pretty) const;
+	CString CoordsName(bool pretty,
+		const boost::shared_ptr<const CRace>& for_race = boost::shared_ptr<CRace>()) const;
 	static CString GenerateName(const CString& pure_name, const CPoint& co);
 
 //// SectorAttributes ////
