@@ -994,6 +994,7 @@ bool CBuildingInfo::ProducesWorkerless() const
 
 	const bool does =
 		GreaterThanZero(m_iCredits) ||
+		GreaterThanZero(m_iScanPower) ||
 		GreaterThanZero(m_iScanPowerBoni) ||
 		GreaterThanZero(m_iScanRangeBoni) ||
 		GreaterThanZero(m_iAddedTradeRoutes) ||

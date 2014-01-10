@@ -161,6 +161,17 @@ BOOL CManagerSettingsDlg::OnInitDialog()
 	m_IgnoredBuildings = m_Manager->IgnoredBuildings();
 	PopulateListIgnoredBuildings();
 
+	const BuildingInfoArray& infos = *resources::BuildingInfo;
+	for(int i = 0; i < infos.GetSize(); ++i)
+	{
+		const CBuildingInfo& info = infos.GetAt(i);
+		if(info.GetScanPower() > 0)
+		{
+			SetDlgItem(IDC_EDIT_IGNORED_BUILDING, info.GetBuildingName());
+			break;
+		}
+	}
+
 	UpdateData(false);
 	SetStates(m_bActive);
 
