@@ -1308,7 +1308,7 @@ Kampfschiff
 [DREADNOUGHT]
 Schlachtschiff
 [OUTPOST]
-Aussenposten
+Auﬂenposten
 [STARBASE]
 Sternenbasis
 [ALIEN]
