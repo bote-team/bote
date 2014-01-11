@@ -180,6 +180,9 @@ public:
 	/// @return Name der Grafikdatei
 	const CString& GetGraphicFileName(void) const {return m_sGraphicFile;}
 
+	std::vector<CString> GetPropertiesAsStrings() const;
+	CString GetPropertiesAsString() const;
+
 	/// Funktion erstellt eine Tooltipinfo der Rasse.
 	/// @return	der erstellte Tooltip-Text
 	virtual CString GetTooltip(void) const;

@@ -83,16 +83,17 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	if (background)
 		g.DrawImage(background, 0, 0, 1075, 249);
 
-	CPoint KO = pDoc->GetCo();
+	const CPoint& KO = pDoc->GetCo();
+	const CSystem& system = pDoc->GetSystem(KO.x, KO.y);
 	float maxHabitants = 0.0f;
 	int nPosX = m_TotalSize.cx - 175;
 	int nVertCenter = m_TotalSize.cy / 2;
 
-	if (pDoc->GetSystem(KO.x, KO.y).GetFullKnown(pMajor->GetRaceID()) == TRUE)
+	if (system.GetFullKnown(pMajor->GetRaceID()) == TRUE)
 	{
-		for (int i = 0; i < pDoc->GetSystem(KO.x, KO.y).GetNumberOfPlanets(); i++)
+		for (int i = 0; i < system.GetNumberOfPlanets(); i++)
 		{
-			const CPlanet* planet = pDoc->GetSystem(KO.x, KO.y).GetPlanet(i);
+			const CPlanet* planet = system.GetPlanet(i);
 			maxHabitants += planet->GetMaxHabitant();
 
 			CRect rect;
@@ -153,13 +154,13 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			if (graphic)
 				g.DrawImage(graphic, 950, -10, 250, 261);
 		}
-		else if (pDoc->GetSystem(KO.x, KO.y).GetAnomaly())
+		else if (system.GetAnomaly())
 		{
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("MapStars\\" + pDoc->GetSystem(KO.x, KO.y).GetAnomaly()->GetImageFileName());
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("MapStars\\" + system.GetAnomaly()->GetImageFileName());
 
 			if (graphic)
 			{
-				if (pDoc->GetSystem(KO.x, KO.y).GetAnomaly()->GetImageFlipHorz())
+				if (system.GetAnomaly()->GetImageFlipHorz())
 				{
 					Bitmap* copy = graphic->Clone(0, 0, graphic->GetWidth(), graphic->GetHeight(), PixelFormat32bppPARGB);
 					copy->RotateFlip(Gdiplus::RotateNoneFlipX);
@@ -180,29 +181,25 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	fontBrush.SetColor(Color(170,170,170));
 
 	// Informationen zu dem System angeben
-	CString s = pDoc->GetSystem(KO.x, KO.y).CoordsName(false);
-	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,25), &fontFormat, &fontBrush);
-	if (pDoc->GetSystem(KO.x, KO.y).GetAnomaly() && pDoc->GetSystem(KO.x, KO.y).GetScanned(pMajor->GetRaceID()))
+	CString s = system.CoordsName(false);
+	int counter = 0;
+	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,25+counter*22), &fontFormat, &fontBrush);
+	++counter;
+	if (system.GetAnomaly() && system.GetScanned(pMajor->GetRaceID()))
 	{
-		AssertBotE(!pDoc->GetSystem(KO.x, KO.y).GetSunSystem());
-		s.Format("%s: %s", CLoc::GetString("ANOMALY"), pDoc->GetSystem(KO.x, KO.y).GetAnomaly()->GetMapName(KO));
-		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,47), &fontFormat, &fontBrush);
+		AssertBotE(!system.GetSunSystem());
+		s.Format("%s: %s", CLoc::GetString("ANOMALY"), system.GetAnomaly()->GetMapName(KO));
+		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,25+counter*22), &fontFormat, &fontBrush);
+		++counter;
 	}
-	else if(const boost::shared_ptr<const CShips>& station = pDoc->GetSystem(KO.x, KO.y).GetStation())
-		if(pMajor->IsRaceContacted(station->OwnerID())
-			&& pDoc->GetSystem(KO.x, KO.y).ShouldDrawOutpost(*pMajor, station->OwnerID())
-			&& !pDoc->GetSystem(KO.x, KO.y).GetSunSystem())
-		{
-			s.Format("%s: %s", CLoc::GetString("STATION"), station->GetName());
-			g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,47), &fontFormat, &fontBrush);
-		}
 
-	if (pDoc->GetSystem(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) == FALSE)
+	if (system.GetScanned(pMajor->GetRaceID()) == FALSE)
 	{
 		s = CLoc::GetString("UNKNOWN");
-		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,47), &fontFormat, &fontBrush);
+		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,25+counter*22), &fontFormat, &fontBrush);
+		++counter;
 	}
-	else if (pDoc->GetSystem(KO.x, KO.y).GetSunSystem() == TRUE && pDoc->GetSystem(KO.x, KO.y).GetKnown(pMajor->GetRaceID()) == TRUE)
+	else if (system.GetSunSystem() == TRUE && system.GetKnown(pMajor->GetRaceID()) == TRUE)
 	{
 		// vorhandene Rohstoffe auf allen Planeten zeichnen
 		s = CLoc::GetString("EXISTING_RES") + ":";
@@ -211,8 +208,8 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		g.MeasureString(CComBSTR(s), s.GetLength(), &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(735, 228), &fontFormat, &boundingBox);
 		// Symbole der vorhanden Ressourcen im System ermitteln
 		BOOLEAN res[RESOURCES::DERITIUM + 1] = {0},rescol[RESOURCES::DERITIUM + 1] = {0};
-		pDoc->GetSystem(KO.x, KO.y).GetAvailableResources(res, false);	//alle Ressourcen
-		pDoc->GetSystem(KO.x, KO.y).GetAvailableResources(rescol, true);//erschlossene Ressourcen
+		system.GetAvailableResources(res, false);	//alle Ressourcen
+		system.GetAvailableResources(rescol, true);//erschlossene Ressourcen
 		int nExist = 0;
 		for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 		{
@@ -240,10 +237,17 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			}
 		}
 
-		s.Format("%s: %s",CLoc::GetString("SYSTEM"), pDoc->GetSystem(KO.x, KO.y).GetName());
-		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,47), &fontFormat, &fontBrush);
-		const float currentHabitants = pDoc->GetSystem(KO.x, KO.y).GetCurrentHabitants();
-		if (pDoc->GetSystem(KO.x, KO.y).GetFullKnown(pMajor->GetRaceID()))
+		s.Format("%s: %s",CLoc::GetString("SYSTEM"), system.GetName());
+		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,25+counter*22), &fontFormat, &fontBrush);
+		++counter;
+		if(const boost::shared_ptr<const CMinor>& minor = system.GetMinorRace())
+		{
+			s.Format("%s (%s)", minor->GetName(), minor->GetPropertiesAsString());
+			g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,25+counter*22), &fontFormat, &fontBrush);
+			++counter;
+		}
+		const float currentHabitants = system.GetCurrentHabitants();
+		if (system.GetFullKnown(pMajor->GetRaceID()))
 		{
 			s.Format("%s: %.3lf %s",CLoc::GetString("MAX_HABITANTS"), maxHabitants, CLoc::GetString("MRD"));
 			g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,180), &fontFormat, &fontBrush);
@@ -257,12 +261,22 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 				g.DrawImage(graphic, 23, 202, 20, 16);
 		}
 	}
+
+	if(const boost::shared_ptr<const CShips>& station = system.GetStation())
+		if((pMajor->IsRaceContacted(station->OwnerID()) || pMajor->GetRaceID() == station->OwnerID() )
+			&& system.ShouldDrawOutpost(*pMajor, station->OwnerID()))
+		{
+			s.Format("%s: %s", station->GetShipTypeAsString(), station->GetName());
+			g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,25+counter*22), &fontFormat, &fontBrush);
+			++counter;
+		}
+
 	// Symbole zu Truppen zeichnen
-	if (pDoc->GetSystem(KO.x, KO.y).Majorized() &&
-		(pDoc->GetSystem(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) > 50 || pDoc->GetSystem(KO.x, KO.y).OwnerID() == pMajor->GetRaceID()))
+	if (system.Majorized() &&
+		(system.GetScanPower(pMajor->GetRaceID()) > 50 || system.OwnerID() == pMajor->GetRaceID()))
 	{
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\troopSmall.bop");
-		int nTroopNumber = pDoc->GetSystem(KO.x, KO.y).GetTroops()->GetSize();
+		int nTroopNumber = system.GetTroops()->GetSize();
 		if (graphic && nTroopNumber)
 		{
 			// soviel wie Truppen stationiert sind, so viele Symbole werden gezeichnet
@@ -278,18 +292,18 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		}
 	}
 	// Scannerstärke zeichnen
-	if (pDoc->GetSystem(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) == TRUE)
+	if (system.GetScanned(pMajor->GetRaceID()) == TRUE)
 	{
 		// Rassenspezifische Schrift auswählen
 		CFontLoader::CreateGDIFont(pMajor, 1, fontName, fontSize);
-		s.Format("%s: %i%%",CLoc::GetString("SCANPOWER"), pDoc->GetSystem(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()));
-		if (pDoc->GetSystem(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) >= 75)
+		s.Format("%s: %i%%",CLoc::GetString("SCANPOWER"), system.GetScanPower(pMajor->GetRaceID()));
+		if (system.GetScanPower(pMajor->GetRaceID()) >= 75)
 			fontBrush.SetColor(Color(0,245,0));
-		else if (pDoc->GetSystem(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) >= 50)
+		else if (system.GetScanPower(pMajor->GetRaceID()) >= 50)
 			fontBrush.SetColor(Color(50,180,50));
-		else if (pDoc->GetSystem(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) >= 25)
+		else if (system.GetScanPower(pMajor->GetRaceID()) >= 25)
 			fontBrush.SetColor(Color(230,230,20));
-		else if (pDoc->GetSystem(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) > 0)
+		else if (system.GetScanPower(pMajor->GetRaceID()) > 0)
 			fontBrush.SetColor(Color(230,100,0));
 		else
 			fontBrush.SetColor(Color(245,0,0));
@@ -297,10 +311,10 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(711,0), &fontFormat, &fontBrush);
 	}
 	// Namen des Besitzers des Sector unten rechts zeichnen
-	if (pDoc->GetSystem(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->GetSystem(KO.x, KO.y).OwnerID())
-		|| pDoc->GetSystem(KO.x, KO.y).OwnerID() == pMajor->GetRaceID())
+	if (system.GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(system.OwnerID())
+		|| system.OwnerID() == pMajor->GetRaceID())
 	{
-		const RacePtr& pOwner = pDoc->GetSystem(KO.x, KO.y).Owner();
+		const RacePtr& pOwner = system.Owner();
 		if (pOwner)
 		{
 			s = pOwner->GetName();
@@ -319,11 +333,11 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 
 		// Wir selbst und alle uns bekannten Rassen sehen, wenn das System blockiert wird.
 		// Dafür wird ein OverlayBanner über die Ansicht gelegt.
-		if (pDoc->GetSystem(KO.x, KO.y).GetBlockade() > 0)
+		if (system.GetBlockade() > 0)
 		{
 			CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 			CSize viewSize(m_TotalSize.cx - 160, m_TotalSize.cy - 120);
-			s.Format("%d", pDoc->GetSystem(KO.x, KO.y).GetBlockade());
+			s.Format("%d", system.GetBlockade());
 			COverlayBanner* banner = new COverlayBanner(CPoint(80,60), viewSize, CLoc::GetString("SYSTEM_IS_BLOCKED", FALSE, s), RGB(200,0,0));
 			banner->SetBorderWidth(1);
 			Gdiplus::Font font(CComBSTR(fontName), fontSize);

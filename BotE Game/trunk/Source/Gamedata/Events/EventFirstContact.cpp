@@ -115,31 +115,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontBrush.SetColor(color);
-	vector<CString> sProperties;
-	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
-		sProperties.push_back(CLoc::GetString("FINANCIAL"));
-	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))
-		sProperties.push_back(CLoc::GetString("WARLIKE"));
-	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
-		sProperties.push_back(CLoc::GetString("AGRARIAN"));
-	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
-		sProperties.push_back(CLoc::GetString("INDUSTRIAL"));
-	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::SECRET))
-		sProperties.push_back(CLoc::GetString("SECRET"));
-	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
-		sProperties.push_back(CLoc::GetString("SCIENTIFIC"));
-	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::PRODUCER))
-		sProperties.push_back(CLoc::GetString("PRODUCER"));
-	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
-		sProperties.push_back(CLoc::GetString("PACIFIST"));
-	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::SNEAKY))
-		sProperties.push_back(CLoc::GetString("SNEAKY"));
-	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
-		sProperties.push_back(CLoc::GetString("SOLOING"));
-	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
-		sProperties.push_back(CLoc::GetString("HOSTILE"));
-	if (sProperties.empty())
-		sProperties.push_back(CLoc::GetString("NONE"));
+	const std::vector<CString>& sProperties = pContactedRace->GetPropertiesAsStrings();
 
 	for (UINT i = 0; i < sProperties.size(); i++)
 		g->DrawString(CComBSTR(sProperties[i]), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(730,210 + i*30,540,30), &fontFormat, &fontBrush);

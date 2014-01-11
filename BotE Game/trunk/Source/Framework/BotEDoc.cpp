@@ -2417,7 +2417,7 @@ void CBotEDoc::CalcSystemAttack()
 				// Wenn in dem System eine Minorrace beheimatet ist und das System nicht vorher schon von jemand
 				// anderem militärisch erobert wurde oder die Minorace bei einem anderen Imperium schon vermitgliedelt
 				// wurde, dann muss diese zuerst die Gebäude bauen
-				if (GetSystem(p.x, p.y).GetMinorRace() == TRUE && !GetSystem(p.x, p.y).Taken() && defender != NULL && defender->IsMinor())
+				if (GetSystem(p.x, p.y).GetMinorRace() && !GetSystem(p.x, p.y).Taken() && defender != NULL && defender->IsMinor())
 				{
 					CMinor* pMinor = dynamic_cast<CMinor*>(defender);
 					AssertBotE(pMinor);
@@ -2476,7 +2476,7 @@ void CBotEDoc::CalcSystemAttack()
 					}
 				}
 				// Wenn das System einer Minorrace gehört, eingenommen wurde und somit befreit wird
-				else if (GetSystem(p.x, p.y).GetMinorRace() == TRUE && GetSystem(p.x, p.y).Taken() && defender != NULL && defender->IsMajor())
+				else if (GetSystem(p.x, p.y).GetMinorRace() && GetSystem(p.x, p.y).Taken() && defender != NULL && defender->IsMajor())
 				{
 					// Die Beziehung zur Majorrace, die das System vorher besaß verschlechtert sich
 					defender->SetRelation(attacker, -rand()%50);

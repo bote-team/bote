@@ -161,6 +161,13 @@ CSector::iterator CSector::end()
 // getting
 //////////////////////////////////////////////////////////////////////
 
+const boost::shared_ptr<const CMinor> CSector::GetMinorRace(void) const
+{
+	if(m_HomeOf && m_HomeOf->IsMinor())
+		return boost::dynamic_pointer_cast<CMinor>(m_HomeOf);
+	return boost::shared_ptr<const CMinor>();
+}
+
 CString CSector::HomeOfID() const
 {
 	if(!m_HomeOf)
@@ -418,7 +425,8 @@ void CSector::CreatePlanets(const CString& sMajorID)
 			for (int i = 0; i < number; i++)
 			{
 				CPlanet planet;
-				zone = planet.Create(m_sName, zone, i, GetMinorRace());
+				const bool minor = GetMinorRace();
+				zone = planet.Create(m_sName, zone, i, minor);
 				m_Planets.push_back(planet);
 
 				// nicht zu viele große Planeten generieren, da diese dann nicht mehr

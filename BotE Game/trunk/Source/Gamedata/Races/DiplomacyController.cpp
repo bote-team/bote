@@ -199,7 +199,7 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 			// Wenn wir eine Mitgliedschaft bei der kleinen Rasse hatten, sprich uns das System noch gehört, wir aber
 			// der kleinen Rasse den Krieg erklären bzw. den Vertrag aufheben (warum auch immer?!?) und das System nicht
 			// gewaltätig erobert wurde, dann gehört uns das System auch nicht mehr
-			if (pMinor->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP && pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).GetMinorRace() == TRUE &&
+			if (pMinor->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP && pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).GetMinorRace() &&
 				!pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).Taken())
 			{
 				pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).ChangeOwner(pMinor->GetRaceID(),

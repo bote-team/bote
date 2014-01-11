@@ -1311,8 +1311,6 @@ Schlachtschiff
 Aussenposten
 [STARBASE]
 Sternenbasis
-[STATION]
-Station
 [ALIEN]
 Weltraummonster
 

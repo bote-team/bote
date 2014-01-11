@@ -390,18 +390,9 @@ void CRace::SetIsRaceContacted(const CString& sRace, bool bKnown)
 		m_vInContact.insert(sRace);
 }
 
-/// Funktion erstellt eine Tooltipinfo der Rasse.
-/// @return	der erstellte Tooltip-Text
-CString CRace::GetTooltip(void) const
+std::vector<CString> CRace::GetPropertiesAsStrings() const
 {
-	CString sName = m_sName;
-	sName = CHTMLStringBuilder::GetHTMLColor(sName);
-	sName = CHTMLStringBuilder::GetHTMLHeader(sName, _T("h3"));
-	sName += CHTMLStringBuilder::GetHTMLStringNewLine();
-	sName += CHTMLStringBuilder::GetHTMLStringNewLine();
-
-	// Eigenschaften anzeigen
-	vector<CString> sProperties;
+	std::vector<CString> sProperties;
 	if (IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 		sProperties.push_back(CLoc::GetString("FINANCIAL"));
 	if (IsRaceProperty(RACE_PROPERTY::WARLIKE))
@@ -426,6 +417,37 @@ CString CRace::GetTooltip(void) const
 		sProperties.push_back(CLoc::GetString("HOSTILE"));
 	if (sProperties.empty())
 		sProperties.push_back(CLoc::GetString("NONE"));
+
+	return sProperties;
+}
+
+CString CRace::GetPropertiesAsString() const
+{
+	const std::vector<CString>& properties = GetPropertiesAsStrings();
+	CString result;
+	for(std::vector<CString>::const_iterator i = properties.begin();;)
+	{
+		result += *i;
+		++i;
+		if(i == properties.end())
+			break;
+		result += ", ";
+	}
+	return result;
+}
+
+/// Funktion erstellt eine Tooltipinfo der Rasse.
+/// @return	der erstellte Tooltip-Text
+CString CRace::GetTooltip(void) const
+{
+	CString sName = m_sName;
+	sName = CHTMLStringBuilder::GetHTMLColor(sName);
+	sName = CHTMLStringBuilder::GetHTMLHeader(sName, _T("h3"));
+	sName += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sName += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+	// Eigenschaften anzeigen
+	const std::vector<CString>& sProperties = GetPropertiesAsStrings();
 
 	CString sProb = CLoc::GetString("PROPERTIES");
 	sProb = CHTMLStringBuilder::GetHTMLColor(sProb, _T("silver"));

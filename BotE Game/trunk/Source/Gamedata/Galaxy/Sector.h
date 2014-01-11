@@ -23,6 +23,7 @@ using namespace std;
 
 // forward declaration
 class CMajor;
+class CMinor;
 class CAnomaly;
 class CShips;
 class CShip;
@@ -91,7 +92,7 @@ public:
 	BYTE GetSunColor() const {return m_bySunColor;}
 
 	/// Diese Funktion gibt zurück, ob sich in diesem Sektor eine Minorrace befindet.
-	bool GetMinorRace(void) const {return m_HomeOf && m_HomeOf->IsMinor();}
+	const boost::shared_ptr<const CMinor> GetMinorRace(void) const;
 
 	boost::shared_ptr<CRace> HomeOf() const { return m_HomeOf; }
 	CString HomeOfID() const;
