@@ -475,7 +475,6 @@ void CSector::LetPlanetsShrink(float Value)
 }
 
 void CSector::RecalcPlanetsTerraformingStatus() {
-	const CShipMap& sm = resources::pDoc->m_ShipMap;
 	std::set<unsigned> terraformable;
 	//unset terraforming status for all planets
 	for(std::vector<CPlanet>::iterator i = m_Planets.begin(); i != m_Planets.end(); ++i) {
@@ -484,21 +483,24 @@ void CSector::RecalcPlanetsTerraformingStatus() {
 			terraformable.insert(i - m_Planets.begin());
 	}
 	//reset it for those which are actually terraformed at present
-	for(CShipMap::const_iterator i = sm.begin(); i != sm.end(); ++i) {
-		if(terraformable.empty())
-			break;
-		if(i->second->GetCo() != m_Co || i->second->GetCurrentOrder() != SHIP_ORDER::TERRAFORM)
-			continue;
-		const unsigned planet = i->second->GetTerraform();
-		CPlanet& p = m_Planets.at(planet);
-		AssertBotE(p.GetHabitable());
-		//It is allowed to terraform the same planet with 2+ independent ships
-		if(p.GetIsTerraforming() || p.GetTerraformed())
-			continue;
-		p.SetIsTerraforming(TRUE);
-		unsigned erased = terraformable.erase(planet);
-		AssertBotE(erased == 1);
-	}
+	for(std::map<CString, CShipMap>::const_iterator r = m_Ships.begin(); r != m_Ships.end(); ++r)
+		for(CShipMap::const_iterator i = r->second.begin(); i != r->second.end(); ++i)
+		{
+			if(terraformable.empty())
+				break;
+			AssertBotE(i->second->GetCo() == m_Co);
+			if(i->second->GetCurrentOrder() != SHIP_ORDER::TERRAFORM)
+				continue;
+			const unsigned planet = i->second->GetTerraform();
+			CPlanet& p = m_Planets.at(planet);
+			AssertBotE(p.GetHabitable());
+			//It is allowed to terraform the same planet with 2+ independent ships
+			if(p.GetIsTerraforming() || p.GetTerraformed())
+				continue;
+			p.SetIsTerraforming(TRUE);
+			unsigned erased = terraformable.erase(planet);
+			AssertBotE(erased == 1);
+		}
 }
 
 int CSector::CountOfTerraformedPlanets() const

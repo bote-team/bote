@@ -389,19 +389,20 @@ bool CMapTile::IsStationBuildable(SHIP_ORDER::Typ order, const CString& race) co
 		if(bestbuildableID == -1)
 			return false;
 		const CShipInfo& bestbuildableinfo = pDoc->m_ShipInfoArray.GetAt(bestbuildableID-10000);
-		for(CShipMap::const_iterator k = pDoc->m_ShipMap.begin(); k != pDoc->m_ShipMap.end(); ++k)
-			if (k->second->GetShipType() == type && k->second->GetCo() == m_Co)
-			{
-				const CShipInfo& info = pDoc->m_ShipInfoArray.GetAt(k->second->GetID()-10000);
-				if (info.GetBaseIndustry() < bestbuildableinfo.GetBaseIndustry()) {
-					return StationBuildContinuable(race, *this);
+		for(std::map<CString, CShipMap>::const_iterator r = m_Ships.begin(); r != m_Ships.end(); ++r)
+			for(CShipMap::const_iterator k = r->second.begin(); k != r->second.end(); ++k)
+				if (k->second->GetShipType() == type)
+				{
+					const CShipInfo& info = pDoc->m_ShipInfoArray.GetAt(k->second->GetID()-10000);
+					if (info.GetBaseIndustry() < bestbuildableinfo.GetBaseIndustry()) {
+						return StationBuildContinuable(race, *this);
+					}
+					CShips temp(bestbuildableinfo);
+					temp.AddSpecialResearchBoni(pMajor);
+					if(k->second->IsWorseThan(temp))
+						return StationBuildContinuable(race, *this);
+					break;
 				}
-				CShips temp(bestbuildableinfo);
-				temp.AddSpecialResearchBoni(pMajor);
-				if(k->second->IsWorseThan(temp))
-					return StationBuildContinuable(race, *this);
-				break;
-			}
 	}
 	return false;
 }

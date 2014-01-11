@@ -409,9 +409,11 @@ private:
 	/// Gibts in diesem Sektor eine online Werft (bzw. auch Station)
 	set<CString> m_bShipPort;
 
+protected:
 	//The ships currently in this map tile, by race
 	//main shipmap responsible for updating, ships in fleets included inside of the ships in this variable
 	std::map<CString, CShipMap> m_Ships;
+private:
 
 	/// Baut eine bestimmte Majorrasse gerade eine Station in dem Sektor?
 	std::map<CString, SHIP_ORDER::Typ> m_IsStationBuild;
