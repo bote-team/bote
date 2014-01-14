@@ -291,7 +291,7 @@ void CAssemblyList::CalculateNeededRessources(const CBuildingInfo* buildingInfo,
 // Weil in der Zwischenzeit hätte der Spieler ein Gebäude bauen können, das die Kosten mancher Updates verändern
 // könnte. Übergeben wird ein Zeiger auf das Feld aller Gebäudeinformationen, ein Zeiger auf alle stehenden
 // Gebäude im System und ein Zeiger auf die Forschungsinformation.
-void CAssemblyList::CalculateNeededRessourcesForUpdate(const BuildingInfoArray* follower, BuildingArray* m_Buildings, CResearchInfo* ResearchInfo)
+void CAssemblyList::CalculateNeededRessourcesForUpdate(const BuildingInfoArray* follower, const BuildingArray* m_Buildings, const CResearchInfo* ResearchInfo)
 {
 	int NumberOfBuildings = m_Buildings->GetSize();
 	for (int j = 0; j < ALE; j++)

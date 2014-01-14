@@ -89,7 +89,7 @@ public:
 	// Weil in der Zwischenzeit hätte der Spieler ein Gebäude bauen können, das die Kosten mancher Updates verändern
 	// könnte. Übergeben wird ein Zeiger auf das Feld aller Gebäudeinformationen, ein Zeiger auf alle stehenden
 	// Gebäude im System und ein Zeiger auf die Forschungsinformation.
-	void CalculateNeededRessourcesForUpdate(const BuildingInfoArray* follower, BuildingArray* m_Buildings, CResearchInfo* ResearchInfo);
+	void CalculateNeededRessourcesForUpdate(const BuildingInfoArray* follower, const BuildingArray* m_Buildings, const CResearchInfo* ResearchInfo);
 
 	// Funktion	macht einen Eintrag in der Bauliste, dafür wird die RunningNumber des Auftrages übergeben.
 	// z.B. 1 = primitive Farm, -2 = Upgrade primitive Farm zu Typ 1 Automatikfarm.
