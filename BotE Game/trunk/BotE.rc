@@ -99,6 +99,14 @@ BEGIN
     END
 END
 
+IDR_MENU_ENERGY_BUILDINGS MENU 
+BEGIN
+    POPUP "Energy Buildings"
+    BEGIN
+        MENUITEM "Auto On-/Offline",            ID_MENU_ENERGY_BUILDINGS_AUTO_ONOFF, CHECKED
+    END
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

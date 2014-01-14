@@ -124,6 +124,7 @@ private:
 	struct ENERGYSTRUCT {CRect rect; USHORT index; BOOLEAN status;};
 	CArray<ENERGYSTRUCT> m_EnergyList;		// Feld, in dem die Anzahl der Gebäude, welche Energie benötigen, abgelegt werden
 	USHORT m_iELPage;						// aktuelle Seite im Energiemenü
+	int m_iRightClicked; //index in m_EnergyList of right-clicked energy building for popup menu
 
 	// Hier die Variablen in der Systemhandelsansicht
 	USHORT m_iSTPage;						// aktuelle Seite für die Anzeige der Handelsrouten
@@ -164,6 +165,7 @@ public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnXButtonDown(UINT nFlags, UINT nButton, CPoint point);
+	afx_msg void OnMenuEnergyBuildingsAutoOnoff();
 };
 
 

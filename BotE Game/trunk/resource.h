@@ -22,6 +22,7 @@
 #define IDD_SETTINGSDLG                 189
 #define IDD_MANAGER_SETTINGS_DLG        190
 #define IDD_MANAGER_SETTINGSDLG         190
+#define IDR_MENU_ENERGY_BUILDINGS       191
 #define IDC_CLIENT                      1001
 #define IDC_SERVER                      1002
 #define IDC_HOSTIP                      1003
@@ -165,14 +166,16 @@
 #define ID_HELP_README                  32787
 #define ID_HELP_CREDITS32788            32788
 #define ID_HELP_WIKI                    32789
+#define ID_ENERGYBUILDINGS_AUTOON       32790
+#define ID_MENU_ENERGY_BUILDINGS_AUTO_ONOFF 32791
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        191
-#define _APS_NEXT_COMMAND_VALUE         32790
+#define _APS_NEXT_RESOURCE_VALUE        192
+#define _APS_NEXT_COMMAND_VALUE         32792
 #define _APS_NEXT_CONTROL_VALUE         1096
 #define _APS_NEXT_SYMED_VALUE           107
 #endif

@@ -53,6 +53,7 @@ public:
 	int Priority(WORKER::Typ type) const;
 
 	const std::set<int>& IgnoredBuildings() const { return m_IgnoredBuildings; }
+	bool IsBuildingIgnored(int id) const { return m_IgnoredBuildings.find(id) != m_IgnoredBuildings.end(); }
 
 //////////////////////////////////////////////////////////////////////
 // setting
@@ -73,6 +74,7 @@ public:
 	void AddPriority(WORKER::Typ type, int value);
 
 	void SetIgnoredBuildings(const std::set<int>& ignored);
+	void ToggleBuildingIgnored(int id);
 	void UpgradeIgnoredBuilding(int old_id, int new_id);
 
 //////////////////////////////////////////////////////////////////////

@@ -33,6 +33,7 @@ CSystemMenuView::CSystemMenuView() :
 	m_byEndList(m_byStartList + NOEIBL),
 	m_iBOPage(0),
 	m_iELPage(0),
+	m_iRightClicked(-1),
 	m_iSTPage(0),
 	m_bySubMenu(0),
 	m_bClickedOnBuyButton(FALSE),
@@ -76,6 +77,7 @@ BEGIN_MESSAGE_MAP(CSystemMenuView, CMainBaseView)
 	ON_WM_MOUSEMOVE()
 	ON_WM_KEYDOWN()
 	ON_WM_XBUTTONDOWN()
+	ON_COMMAND(ID_MENU_ENERGY_BUILDINGS_AUTO_ONOFF, &CSystemMenuView::OnMenuEnergyBuildingsAutoOnoff)
 END_MESSAGE_MAP()
 
 void CSystemMenuView::OnNewRound()
@@ -3759,22 +3761,48 @@ void CSystemMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 
 	if (!pDoc->m_bDataReceived)
 		return;
-
 	CalcLogicalPoint(point);
+	const CPoint& p = pDoc->GetCo();
+	CSystem& system = pDoc->GetSystem(p.x, p.y);
 
+	if (m_bySubMenu == 2)
+	{
+		for (int i = m_iELPage * NOBIEL; i < m_EnergyList.GetSize(); i++)
+			// Wenn wir auf der richtigen Seite sind
+			if (i < m_iELPage * NOBIEL + NOBIEL)
+			{
+				const ENERGYSTRUCT& struct_building = m_EnergyList.GetAt(i);
+				if (struct_building.rect.PtInRect(point))
+				{
+					const CBuilding& building = system.GetAllBuildings()->GetAt(struct_building.index);
+					const bool ignored = system.Manager().IsBuildingIgnored(building.GetRunningNumber());
+					CMenu menu;
+					menu.LoadMenu(IDR_MENU_ENERGY_BUILDINGS);
+					CMenu* onoff = menu.GetSubMenu(0);
+					AssertBotE(onoff);
+					onoff->CheckMenuItem(ID_MENU_ENERGY_BUILDINGS_AUTO_ONOFF,
+						ignored ? MF_UNCHECKED : MF_CHECKED);
+					m_iRightClicked = i;
+					CRect r;
+					GetWindowRect(r);
+					onoff->TrackPopupMenu(TPM_RIGHTALIGN, r.left + point.x, r.top + point.y, this);
+					break;
+				}
+			}
+	}
 	// Das hier alles nur machen, wenn wir in der System-Ansicht sind
 	// Im Gebäudeübersichtsmenü
-	if (m_bySubMenu == 3)
+	else if (m_bySubMenu == 3)
 	{
 		// Wenn ich Gebäude nicht mehr abreißen will, mit rechts auf die Schaltfläche drücken
-		CPoint p = pDoc->GetCo();
+
 		for (int i = m_iBOPage * NOBIOL; i < m_BuildingOverview.GetSize(); i++)
 			// Wenn wir auf der richtigen Seite sind
 			if (i < m_iBOPage * NOBIOL + NOBIOL)
 				if (m_BuildingOverview.GetAt(i).rect.PtInRect(point))
 				{
 					USHORT ru = m_BuildingOverview.GetAt(i).runningNumber;
-					pDoc->GetSystem(p.x, p.y).SetBuildingDestroy(ru,FALSE);
+					system.SetBuildingDestroy(ru,FALSE);
 					CRect r = m_BuildingOverview.GetAt(i).rect;
 					CalcDeviceRect(r);
 					InvalidateRect(r);
@@ -4063,4 +4091,14 @@ CString CSystemMenuView::CreateTooltip(void)
 	}
 
 	return "";
+}
+
+void CSystemMenuView::OnMenuEnergyBuildingsAutoOnoff()
+{
+	AssertBotE(0 <= m_iRightClicked && m_iRightClicked < m_EnergyList.GetSize());
+	const ENERGYSTRUCT& struct_building = m_EnergyList.GetAt(m_iRightClicked);
+	CBotEDoc* pDoc = resources::pDoc;
+	CSystem& system = pDoc->CurrentSystem();
+	const CBuilding& building = system.GetAllBuildings()->GetAt(struct_building.index);
+	system.Manager().ToggleBuildingIgnored(building.GetRunningNumber());
 }

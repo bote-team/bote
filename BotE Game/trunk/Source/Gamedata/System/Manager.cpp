@@ -211,6 +211,15 @@ void CSystemManager::SetIgnoredBuildings(const std::set<int>& ignored)
 	m_IgnoredBuildings = ignored;
 }
 
+void CSystemManager::ToggleBuildingIgnored(int id)
+{
+	const std::set<int>::const_iterator i = m_IgnoredBuildings.find(id);
+	if(i == m_IgnoredBuildings.end())
+		m_IgnoredBuildings.insert(id);
+	else
+		m_IgnoredBuildings.erase(i);
+}
+
 void CSystemManager::UpgradeIgnoredBuilding(int old_id, int new_id)
 {
 	std::set<int>::iterator i = m_IgnoredBuildings.find(old_id);
