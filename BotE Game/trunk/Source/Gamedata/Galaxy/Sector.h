@@ -94,6 +94,8 @@ public:
 	/// Diese Funktion gibt zurück, ob sich in diesem Sektor eine Minorrace befindet.
 	const boost::shared_ptr<const CMinor> GetMinorRace(void) const;
 
+	bool IsColonizable(const CString& by_race) const;
+
 	boost::shared_ptr<CRace> HomeOf() const { return m_HomeOf; }
 	CString HomeOfID() const;
 

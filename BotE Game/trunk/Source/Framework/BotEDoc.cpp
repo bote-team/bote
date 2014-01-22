@@ -3506,11 +3506,6 @@ namespace //helpers for CBotEDoc::CalcShipOrders()
 		}
 		return true;
 	}
-
-	bool ColonizeStillValid(const CString& ownerofsector, const CShips& ship)
-	{
-		return  ownerofsector.IsEmpty() || ownerofsector == ship.OwnerID();
-	}
 }
 
 /////END: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
@@ -3552,7 +3547,7 @@ void CBotEDoc::CalcShipOrders()
 		{
 			const int terraformedPlanets = pSystem->CountOfTerraformedPlanets();
 			// Überprüfen das der Sector auch nur mir oder niemandem geh?rt
-			if(!ColonizeStillValid(pSystem->OwnerID(), *y->second) || terraformedPlanets <= 0)
+			if(!pSystem->IsColonizable(y->second->OwnerID()))
 			{
 				y->second->UnsetCurrentOrder();
 				continue;

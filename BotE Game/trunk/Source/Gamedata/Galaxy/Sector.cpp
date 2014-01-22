@@ -175,6 +175,18 @@ CString CSector::HomeOfID() const
 	return m_HomeOf->GetRaceID();
 }
 
+bool CSector::IsColonizable(const CString& by_race) const
+{
+	AssertBotE(!by_race.IsEmpty());
+	if(m_Owner && m_Owner->GetRaceID() != by_race)
+		return false;
+
+	for(std::vector<CPlanet>::const_iterator it = m_Planets.begin(); it != m_Planets.end(); ++it)
+		if(it->IsColonizable())
+			return true;
+	return false;
+}
+
 /// Funktion gibt alle Einwohner aller Planeten in dem Sektor zurück.
 float CSector::GetCurrentHabitants() const
 {

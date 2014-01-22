@@ -582,15 +582,11 @@ short CShipBottomView::DrawSingleTurnOrderMenu() {
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::COLONIZE))
 	{
 		// Wenn das System uns bzw. niemanden gehört können wir nur kolonisieren
-		if (!system.Majorized() || system.OwnerID() == pShip.OwnerID())
-			for (int l = 0; l < system.GetNumberOfPlanets(); l++)
-				if (system.GetPlanet(l)->GetTerraformed() == TRUE
-					&& system.GetPlanet(l)->GetCurrentHabitant() == 0.0f)
-				{
-					DrawSmallButton("BTN_COLONIZE", CalcSecondaryButtonTopLeft(counter), SHIP_ORDER::COLONIZE);
-					counter++;
-					break;
-				}
+		if (system.IsColonizable(pShip.OwnerID()))
+		{
+			DrawSmallButton("BTN_COLONIZE", CalcSecondaryButtonTopLeft(counter), SHIP_ORDER::COLONIZE);
+			counter++;
+		}
 	}
 	return counter;
 }
