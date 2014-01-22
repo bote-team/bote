@@ -285,7 +285,7 @@ bool CShipAI::DoTerraform(CShips* pShip)
 		if (pPlanet->GetTerraformed())
 		{
 			// und noch nicht kolonisiert?
-			if (!pPlanet->GetColonized())
+			if (!pPlanet->GetInhabited())
 				bColonizable = true;
 		}
 		else if (pPlanet->GetNeededTerraformPoints() < nMinTerraPoints)
@@ -333,7 +333,7 @@ bool CShipAI::DoColonize(CShips* pShip)
 	// Kolonisierungsbefehl geben
 	for (int i = 0; i < pSector->GetNumberOfPlanets(); i++)
 	{
-		if (pSector->GetPlanet(i)->GetTerraformed() && !pSector->GetPlanet(i)->GetColonized())
+		if (pSector->GetPlanet(i)->IsColonizable())
 		{
 			// Hier muss als erstes ein möglicher neuer Kurs gelöscht werden
 			pShip->SetTargetKO(CPoint(-1, -1));

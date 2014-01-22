@@ -953,7 +953,7 @@ void CSystem::CalculateVariables()
 	int deritiumProdMulti = 0;
 	for(std::vector<CPlanet>::const_iterator it = m_Planets.begin(); it != m_Planets.end(); ++it)
 	{
-		if(!it->GetColonized() || it->GetCurrentHabitant() <= 0.0f)
+		if(!it->GetInhabited())
 			continue;
 		const int size_plus_one = it->GetSize() + 1;
 		const BOOLEAN* boni = it->GetBoni();
@@ -1686,7 +1686,7 @@ namespace //helpers for CalculateBuildableBuildings()
 		for (int i = 0; i < number && Ok == FALSE; i++)
 		{
 			planet = *sector->GetPlanet(i);
-			if (planet.GetColonized())
+			if (planet.GetInhabited())
 			{
 				//{M,O,L,P,H,Q,K,G,R,F,C,N,A,B,E,Y,I,J,S,T}
 				if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_A) == 1 && planet.GetClass() == 'A' && Ok == FALSE)	// nach A suchen
@@ -1736,7 +1736,7 @@ namespace //helpers for CalculateBuildableBuildings()
 		if (building->GetDeritiumProd() > 0)
 		{
 			for (int i = 0; i < sector->GetNumberOfPlanets(); i++)
-				if (sector->GetPlanet(i)->GetColonized())
+				if (sector->GetPlanet(i)->GetInhabited())
 					deritium |= sector->GetPlanet(i)->GetBoni()[RESOURCES::DERITIUM];
 			if (!deritium || !Ok)
 				return 0;

@@ -39,6 +39,8 @@
 #pragma once
 #include "Constants.h"
 
+#include <map>
+
 // forward declaration
 class CGraphicPool;
 
@@ -69,13 +71,13 @@ public:
 	BYTE GetType() const {return m_iType;}
 	float GetMaxHabitant() const {return m_dMaxHabitant;}
 	float GetCurrentHabitant() const {return m_dCurrentHabitant;}
-	char GetClass() const {return m_cClass;}
+	char GetClass() const;
 	const CString& GetPlanetName() const {return m_strName;}
 	float GetPlanetGrowth() const {return m_dGrowing;}
-	BOOLEAN GetTerraformed() const {return m_bTerraformed;}
+	BOOLEAN GetTerraformed() const {return GetHabitable() && m_iNeededTerraformPoints == 0;}
 	BOOLEAN GetIsTerraforming() const {return m_bIsTerraforming;}
-	BOOLEAN GetHabitable() const {return m_bHabitable;}
-	BOOLEAN GetColonized() const {return m_bColonisized;}
+	BOOLEAN GetHabitable() const {return m_dMaxHabitant > 0;}
+	BOOLEAN GetInhabited() const {return m_dCurrentHabitant > 0;}
 	bool IsColonizable() const;
 	BYTE GetNeededTerraformPoints() const {return m_iNeededTerraformPoints;}
 	BYTE GetStartdTerraformPoints() const {return m_iStartTerraformPoints;}
@@ -94,12 +96,8 @@ public:
 	void SetMaxHabitant(float MaxHabitant) {m_dMaxHabitant = MaxHabitant;}
 	void SetCurrentHabitant(float CurrentHabitant) {m_dCurrentHabitant = CurrentHabitant;}
 	void SetType(BYTE Type) {m_iType = Type;}
-	void SetHabitable(BOOLEAN is) {m_bHabitable = is;}
-	void SetTerraformed(BOOLEAN is) {m_bTerraformed = is;}
 	void SetIsTerraforming(BOOLEAN is) {m_bIsTerraforming = is;}
-	void SetColonisized(BOOLEAN is) {m_bColonisized = is;}
 	void SetName(const CString& Name) {m_strName = Name;}
-	void SetClass(char Class) {m_cClass = Class;}
 	void SetPlanetGrowth() {m_dGrowing = m_dMaxHabitant/4;} // Wenn hier was geändert, auch in GeneratePlanet was ändern
 	BOOLEAN SetNeededTerraformPoints(const unsigned sub);				// Subtrahiert "sub" von den Terraformpoints, bei kleiner 0 wird der Plani auf m_bTerraformed = TRUE gesetzt
 	void SetBoni(BOOLEAN titan, BOOLEAN deuterium, BOOLEAN duranium, BOOLEAN crystal, BOOLEAN iridium, BOOLEAN deritium, BOOLEAN food, BOOLEAN energy);
@@ -153,13 +151,11 @@ private:
 	float m_dMaxHabitant;			///< maximale Anzahl der Bewohner
 	float m_dCurrentHabitant;		///< aktuelle Anzahl der Bewohner
 	float m_dGrowing;				///< Das prozentuale Wachstum der Bevölkerung des Planeten, z.B. 0.2%
-	BOOLEAN m_bHabitable;			///< Ist der Planet kolonisierbar?
-	BOOLEAN m_bColonisized;			///< Ist der Planet bewohnt?
-	BOOLEAN m_bTerraformed;			///< Wurde der Planet terraformt?
 	BOOLEAN m_bIsTerraforming;		///< Wird der Planet gerade geterraformt?
 	CString m_strName;				///< Name des Planeten
 	unsigned m_iNeededTerraformPoints;	///< nötige Terraformpunkte um den Planeten zu terraformen
 	BYTE m_iStartTerraformPoints;	///< nötigen Terraformpunkte am Anfang, brauchen wir um den prozentualen Fortschritt berechnen zu können
-	char m_cClass;					///< Die Klasse nochmal als Buchstabe
 	BOOLEAN m_bBoni[8];				///< Gibt es einen bestimmten Bonus auf dem Planeten, RESOURCES::TITAN, ..., IRDIUM, RESOURCES::DERITIUM, FOOD, ENERGY
+
+	static const std::map<PLANET_CLASSES::TYPE, char> m_TypeToChar;
 };

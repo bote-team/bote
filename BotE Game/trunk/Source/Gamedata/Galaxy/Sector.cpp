@@ -208,7 +208,7 @@ void CSector::GetAvailableResources(BOOLEAN bResources[RESOURCES::DERITIUM + 1],
 
 		// wenn nur kolonisierte Planeten betrachtet werden sollen und der Planet nicht kolonisiert ist,
 		// dann nächsten Planeten betrachten
-		if (bOnlyColonized && !pPlanet->GetColonized())
+		if (bOnlyColonized && !pPlanet->GetInhabited())
 			continue;
 
 		BOOLEAN bExists[RESOURCES::DERITIUM + 1] = {FALSE};
@@ -329,15 +329,11 @@ void CSector::CreatePlanets(const CString& sMajorID)
 						}
 						planet.SetName(data[0]);//Planeten Name
 						planet.SetType(atoi(data[1]));  //Planetentyp
-						planet.SetColonisized(atoi(data[2])); //Ist der Planet koloniesiert
 						float maxHabitant=atoi(data[3])/1000;//für Einwohnerzahlen mit Nachkommastellen
 						planet.SetMaxHabitant(maxHabitant); //Maximale Einwohner
 						float curHabitant=atoi(data[4])/1000;
 						planet.SetCurrentHabitant(curHabitant); //aktuelle Einwohner
-						planet.SetHabitable(atoi(data[5]));//bewohnbar
-						planet.SetTerraformed(atoi(data[6]));//terraformed
 						planet.SetSize((PLANT_SIZE::Typ)atoi(data[7]));//Größe
-						planet.SetClass(data[8][0]);//Planetenklasse Char
 						planet.SetPlanetGrowth();
 						planet.SetGraphicType(rand()%PLANET_CLASSES::GRAPHICNUMBER);
 						planet.SetBoni(atoi(data[9]),atoi(data[10]),atoi(data[11]),atoi(data[12]),atoi(data[13]),atoi(data[14]),atoi(data[15]),atoi(data[16]));//Boni 8 Zeilen
@@ -400,7 +396,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 						if (!bRes[RESOURCES::DERITIUM])
 						{
 							for(CSector::iterator it = begin(); it != end(); ++it)
-								if (it->GetCurrentHabitant() > 0 && it->GetColonized())
+								if (it->GetCurrentHabitant() > 0 && it->GetInhabited())
 								{
 									it->SetBoni(RESOURCES::DERITIUM, TRUE);
 									break;
@@ -470,7 +466,7 @@ void CSector::LetPlanetsGrowth()
 void CSector::LetPlanetsShrink(float Value)
 {
 	// aktuelle Einwohner auf den einzelnen Planeten
-	float* Habitants = new float[m_Planets.size()];
+	std::vector<float> Habitants(m_Planets.size(), 0);
 
 	// alle Einwohner im Sector
 	float allHabitants = 0.0f;
@@ -488,10 +484,8 @@ void CSector::LetPlanetsShrink(float Value)
 			if (m_Planets[i].GetCurrentHabitant() <= 0)
 			{
 				m_Planets[i].SetCurrentHabitant(0);
-				m_Planets[i].SetColonisized(FALSE);
 			}
 		}
-	delete[] Habitants;
 }
 
 void CSector::RecalcPlanetsTerraformingStatus() {
@@ -550,7 +544,6 @@ void CSector::DistributeColonists(const float colonists)
 		}
 		else
 			it->SetCurrentHabitant(colonists);
-		it->SetColonisized(TRUE);
 	}
 
 	if (oddHab <= 0.0f)
@@ -590,15 +583,14 @@ bool CSector::PerhapsMinorExtends(BYTE TechnologicalProgress)
 	for(CSector::iterator it = begin(); it != end(); ++it)
 	{
 		// ist der Planet noch nicht geterraformt
-		if (it->GetColonized() == FALSE && it->GetHabitable() == TRUE && it->GetTerraformed() == FALSE)
+		if (!it->GetTerraformed())
 		{
+			AssertBotE(!it->GetInhabited());
 			// mit einer gewissen Wahrscheinlichkeit wird der Planet geterraformt und kolonisiert
 			if (rand()%200 >= (200 - (TechnologicalProgress+1)))
 			{
 				bColonized = true;
 				it->SetNeededTerraformPoints(it->GetNeededTerraformPoints());
-				it->SetTerraformed(TRUE);
-				it->SetColonisized(TRUE);
 				it->SetIsTerraforming(FALSE);
 				if (it->GetMaxHabitant() < 1.0f)
 					it->SetCurrentHabitant(it->GetMaxHabitant());
@@ -607,13 +599,12 @@ bool CSector::PerhapsMinorExtends(BYTE TechnologicalProgress)
 			}
 		}
 		// ist der Planet schon geterraformt
-		else if (it->GetColonized() == FALSE && it->GetTerraformed() == TRUE)
+		else if (!it->GetInhabited() && it->GetTerraformed())
 		{
 			// dann wird mit einer größeren Wahrscheinlichkeit kolonisiert
 			if (rand()%200 >= (200 - 3*(TechnologicalProgress+1)))
 			{
 				bColonized = true;
-				it->SetColonisized(TRUE);
 				if (it->GetMaxHabitant() < 1.0f)
 					it->SetCurrentHabitant(it->GetMaxHabitant());
 				else
@@ -633,7 +624,7 @@ void CSector::CreateDeritiumForSpaceflightMinor()
 	{
 		for(CSector::iterator it = begin(); it != end(); ++it)
 		{
-			if (it->GetCurrentHabitant() > 0 && it->GetColonized())
+			if (it->GetInhabited())
 			{
 				it->SetBoni(RESOURCES::DERITIUM, TRUE);
 				break;

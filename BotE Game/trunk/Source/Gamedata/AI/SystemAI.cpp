@@ -1054,7 +1054,7 @@ void CSystemAI::CalcProd()
 	// Jetzt werden noch eventuelle Boni durch die Planetenklassen dazugerechnet
 	for(CSector::const_iterator it = sector.begin(); it != sector.end(); ++it)
 	{
-		if (it->GetColonized() == TRUE && it->GetCurrentHabitant() > 0.0f)
+		if (it->GetInhabited())
 		{
 			if (it->GetBoni()[6] == TRUE)	// food
 				tmpFoodBoni		+= (it->GetSize()+1) * 25;

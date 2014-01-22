@@ -32,16 +32,12 @@ CPlanet::~CPlanet(void)
 ///////////////////////////////////////////////////////////////////////
 CPlanet::CPlanet(const CPlanet & rhs)
 {
-	m_bColonisized = rhs.m_bColonisized;
-	m_bHabitable = rhs.m_bHabitable;
-	m_bTerraformed = rhs.m_bTerraformed;
 	m_bIsTerraforming = rhs.m_bIsTerraforming;
 	m_dCurrentHabitant = rhs.m_dCurrentHabitant;
 	m_dMaxHabitant = rhs.m_dMaxHabitant;
 	m_iSize = rhs.m_iSize;
 	m_iType = rhs.m_iType;
 	m_strName = rhs.m_strName;
-	m_cClass = rhs.m_cClass;
 	m_dGrowing = rhs.m_dGrowing;
 	m_iGraphicType = rhs.m_iGraphicType;
 	m_iNeededTerraformPoints = rhs.m_iNeededTerraformPoints;
@@ -58,16 +54,12 @@ CPlanet & CPlanet::operator=(const CPlanet & rhs)
 {
 	if (this == &rhs)
 		return *this;
-	m_bColonisized = rhs.m_bColonisized;
-	m_bHabitable = rhs.m_bHabitable;
-	m_bTerraformed = rhs.m_bTerraformed;
 	m_bIsTerraforming = rhs.m_bIsTerraforming;
 	m_dCurrentHabitant = rhs.m_dCurrentHabitant;
 	m_dMaxHabitant = rhs.m_dMaxHabitant;
 	m_iSize = rhs.m_iSize;
 	m_iType = rhs.m_iType;
 	m_strName = rhs.m_strName;
-	m_cClass = rhs.m_cClass;
 	m_dGrowing = rhs.m_dGrowing;
 	m_iGraphicType = rhs.m_iGraphicType;
 	m_iNeededTerraformPoints = rhs.m_iNeededTerraformPoints;
@@ -86,16 +78,12 @@ void CPlanet::Serialize(CArchive &ar)
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
-		ar << m_bColonisized;
-		ar << m_bHabitable;
-		ar << m_bTerraformed;
 		ar << m_bIsTerraforming;
 		ar << m_dCurrentHabitant;
 		ar << m_dMaxHabitant;
 		ar << m_iSize;
 		ar << m_iType;
 		ar << m_strName;
-		ar << m_cClass;
 		ar << m_dGrowing;
 		ar << m_iGraphicType;
 		ar << m_iNeededTerraformPoints;
@@ -107,9 +95,6 @@ void CPlanet::Serialize(CArchive &ar)
 	// wenn geladen wird
 	if (ar.IsLoading())
 	{
-		ar >> m_bColonisized;
-		ar >> m_bHabitable;
-		ar >> m_bTerraformed;
 		ar >> m_bIsTerraforming;
 		ar >> m_dCurrentHabitant;
 		ar >> m_dMaxHabitant;
@@ -118,7 +103,6 @@ void CPlanet::Serialize(CArchive &ar)
 		m_iSize = (PLANT_SIZE::Typ)nSize;
 		ar >> m_iType;
 		ar >> m_strName;
-		ar >> m_cClass;
 		ar >> m_dGrowing;
 		ar >> m_iGraphicType;
 		ar >> m_iNeededTerraformPoints;
@@ -134,7 +118,7 @@ void CPlanet::Serialize(CArchive &ar)
 CString CPlanet::GetGraphicFile() const
 {
 	CString fileName;
-	fileName.Format("Planets\\class%c%02d.bop", m_cClass, m_iGraphicType);
+	fileName.Format("Planets\\class%c%02d.bop", GetClass(), m_iGraphicType);
 	return fileName;
 }
 
@@ -250,19 +234,18 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 	m_iGraphicType = rand()%PLANET_CLASSES::GRAPHICNUMBER;
 
 	m_iSize = (PLANT_SIZE::Typ)m_iRandomSize;
+	bool habitable = true;
 	// Bestimmen, ob der Planet überhaupt bewohnbar ist! A,B,E,I,J,S,T,Y
 	if (m_iRandomType == PLANET_CLASSES::PLANETCLASS_A || m_iRandomType == PLANET_CLASSES::PLANETCLASS_B || m_iRandomType == PLANET_CLASSES::PLANETCLASS_E
 		|| m_iRandomType == PLANET_CLASSES::PLANETCLASS_I || m_iRandomType == PLANET_CLASSES::PLANETCLASS_J || m_iRandomType == PLANET_CLASSES::PLANETCLASS_S
 		|| m_iRandomType == PLANET_CLASSES::PLANETCLASS_T || m_iRandomType == PLANET_CLASSES::PLANETCLASS_Y)
-		m_bHabitable = FALSE;
+		habitable = false;
 	// Ein erdähnlicher Planet ist schon terraformed
-	else if (m_iRandomType == PLANET_CLASSES::PLANETCLASS_M)
-		m_bTerraformed = TRUE;
 
 	if (m_iRandomType == PLANET_CLASSES::PLANETCLASS_I || m_iRandomType == PLANET_CLASSES::PLANETCLASS_J || m_iRandomType == PLANET_CLASSES::PLANETCLASS_S || m_iRandomType == PLANET_CLASSES::PLANETCLASS_T)
 		m_iSize = PLANT_SIZE::GIANT;			// Gasriesen sind immer riesig
 
-	if (m_bHabitable == FALSE)
+	if (!habitable)
 	{
 		m_dMaxHabitant = 0;
 	}
@@ -300,48 +283,25 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 	}
 
 	// Wenn eine MinorRace da ist, dann ein paar Planeten schon geterraformt machen
-	if (bMinor && m_bHabitable)
+	if (bMinor && habitable)
 	{
 		BYTE random;
 		random = rand()%5+1;
 		if (random >= 5)
 		{
-			m_bTerraformed = TRUE;
 			m_iNeededTerraformPoints = 0;
 			m_iStartTerraformPoints = 0;
 		}
 	}
 	// Wenn eine MinorRace in dem System ist, dann gleich ein paar Einwohner generieren
-	if (bMinor && m_bTerraformed)
+	if (bMinor && GetTerraformed())
 	{
 		BYTE randDiv;
 		randDiv = rand()%8+1;
 		m_dCurrentHabitant = m_dMaxHabitant/randDiv;
-		m_bColonisized = TRUE;
 	}
 
 	m_iType = m_iRandomType;
-	// M,O,L,P,H,Q,K,G,R,F,C,N,A,B,E,N,Y,I,J,S,T
-	if (m_iType == PLANET_CLASSES::PLANETCLASS_M) {m_cClass = 'M';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_O) {m_cClass = 'O';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_L) {m_cClass = 'L';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_P) {m_cClass = 'P';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_H) {m_cClass = 'H';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_Q) {m_cClass = 'Q';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_K) {m_cClass = 'K';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_G) {m_cClass = 'G';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_R) {m_cClass = 'R';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_F) {m_cClass = 'F';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_C) {m_cClass = 'C';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_N) {m_cClass = 'N';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_A) {m_cClass = 'A';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_B) {m_cClass = 'B';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_E) {m_cClass = 'E';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_Y) {m_cClass = 'Y';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_I) {m_cClass = 'I';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_J) {m_cClass = 'J';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_S) {m_cClass = 'S';}
-	else if (m_iType == PLANET_CLASSES::PLANETCLASS_T) {m_cClass = 'T';}
 
 	// Wachstumsprozent des Planeten berechnen
 	SetPlanetGrowth();
@@ -369,9 +329,9 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 		g.DrawImage(planet, rect.left, rect.top, rect.Width(), rect.Height());
 
 	Color c;
-	if (m_bHabitable == FALSE)
+	if (!GetHabitable())
 		c.SetFromCOLORREF(RGB(0,0,255));
-	else if (m_bTerraformed == TRUE)
+	else if (GetTerraformed())
 	{
 		if (m_dCurrentHabitant > 0.0f)
 			c.SetFromCOLORREF(RGB(0,255,30));
@@ -404,7 +364,7 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 
 	CString s;
 	// Planetenklasse unter den Planeten zeichnen
-	s.Format("%c", m_cClass);
+	s.Format("%c", GetClass());
 	g.DrawString(CComBSTR(s), -1, &font, RectF((REAL)planetRect.left, (REAL)planetRect.top, (REAL)planetRect.Width(), (REAL)planetRect.Height()), &format, &brush);
 
 	// prozentuale Angabe des Terraformfortschrittes anzeigen
@@ -456,7 +416,7 @@ void CPlanet::PlanetGrowth(void)
 	float tempCurrentHabitant = m_dCurrentHabitant;
 	if (m_dCurrentHabitant < m_dMaxHabitant)
 		m_dCurrentHabitant = m_dCurrentHabitant+m_dCurrentHabitant*m_dGrowing/100;
-	if (m_dCurrentHabitant < (tempCurrentHabitant + 0.1f) && m_bColonisized == TRUE)
+	if (m_dCurrentHabitant < (tempCurrentHabitant + 0.1f) && GetInhabited())
 		m_dCurrentHabitant = tempCurrentHabitant + 0.1f;	// immer minimales Wachstum von 0.1 Mrd. pro Runde
 	if (m_dCurrentHabitant > m_dMaxHabitant)
 		m_dCurrentHabitant = m_dMaxHabitant;				// Wenn MaxHabitant erreicht ist, natürlich kein Wachstum mehr
@@ -472,7 +432,6 @@ BOOLEAN CPlanet::SetNeededTerraformPoints(const unsigned sub)
 	if (m_iNeededTerraformPoints == 0)
 	{
 		m_bIsTerraforming = FALSE;
-		m_bTerraformed = TRUE;
 		return TRUE;
 	}
 	m_bIsTerraforming = TRUE;
@@ -571,16 +530,12 @@ void CPlanet::GetAvailableResources(BOOLEAN res[RESOURCES::DERITIUM + 1]) const
 void CPlanet::Reset(void)
 {
 	// Standardwerte initialisieren
-	m_bHabitable = TRUE;
-	m_bColonisized = FALSE;
-	m_bTerraformed = FALSE;
 	m_bIsTerraforming = FALSE;
 	m_dCurrentHabitant = NULL;
 	m_dMaxHabitant = NULL;
 	m_iSize = PLANT_SIZE::NORMAL;
 	m_iType = PLANET_CLASSES::PLANETCLASS_I;
 	m_strName = "";
-	m_cClass = 'I';
 	m_dGrowing = 0;
 	m_iGraphicType = 0;
 	m_iNeededTerraformPoints = 0;
@@ -592,5 +547,42 @@ void CPlanet::Reset(void)
 
 bool CPlanet::IsColonizable() const
 {
-	return m_bTerraformed && !m_bColonisized;
+	return GetTerraformed() && !GetInhabited();
+}
+
+namespace
+{
+	// M,O,L,P,H,Q,K,G,R,F,C,N,A,B,E,N,Y,I,J,S,T
+	const std::pair<PLANET_CLASSES::TYPE, char> values[] = {
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_M, 'M'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_O, 'O'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_L, 'L'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_P, 'P'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_H, 'H'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_Q, 'Q'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_K, 'K'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_G, 'G'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_R, 'R'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_F, 'F'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_C, 'C'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_N, 'N'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_A, 'A'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_B, 'B'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_E, 'E'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_Y, 'Y'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_I, 'I'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_J, 'J'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_S, 'S'),
+		std::pair<PLANET_CLASSES::TYPE, char>(PLANET_CLASSES::PLANETCLASS_T, 'T')
+	};
+	const int num_elems = sizeof values / sizeof values[0];
+}
+const std::map<PLANET_CLASSES::TYPE, char> CPlanet::m_TypeToChar(values, values + num_elems);
+
+char CPlanet::GetClass() const
+{
+	const std::map<PLANET_CLASSES::TYPE, char>::const_iterator it =
+		m_TypeToChar.find(static_cast<PLANET_CLASSES::TYPE>(m_iType));
+	AssertBotE(it != m_TypeToChar.end());
+	return it->second;
 }

@@ -153,7 +153,7 @@ void CSectorAI::CalculateTerraformSectors(int x, int y)
 	// wieviel Bevölkerung kann man noch ins System bringen
 	for (int j = 0; j < m_pDoc->GetSystem(x, y).GetNumberOfPlanets(); j++)
 		if (m_pDoc->GetSystem(x, y).GetPlanet(j)->GetHabitable() == TRUE
-			&& m_pDoc->GetSystem(x, y).GetPlanet(j)->GetColonized() == FALSE)
+			&& !m_pDoc->GetSystem(x, y).GetPlanet(j)->GetInhabited())
 			pop += (BYTE)m_pDoc->GetSystem(x, y).GetPlanet(j)->GetMaxHabitant();
 
 	if (pop > 5)
