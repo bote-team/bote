@@ -149,7 +149,7 @@ public:
 	void SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder);
 	void SetTerraform(short planetNumber = -1);
 
-	void SetCombatTactic(COMBAT_TACTIC::Typ nTactic, bool bPropagateToFleet = true);
+	void SetCombatTactic(COMBAT_TACTIC::Typ nTactic, bool bPropagateToFleet = true, bool also_if_retreat = true);
 
 	//more complex setting
 	void SetTargetKO(const CPoint& TargetKO, const bool simple_setter = false);

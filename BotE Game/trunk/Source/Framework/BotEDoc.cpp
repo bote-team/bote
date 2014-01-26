@@ -4080,7 +4080,17 @@ void CBotEDoc::CalcShipCombat()
 	CCombatAI AI;
 	bool bCombat = AI.CalcCombatTactics(vInvolvedShips, m_pRaceCtrl, m_mCombatOrders, GetSystem(p.x, p.y).GetAnomaly().get());
 	if (!bCombat)
+	{
+		for(CShipMap::iterator i = m_ShipMap.begin(); i != m_ShipMap.end(); ++i)
+		{
+			if (i->second->GetCo() != m_ptCurrentCombatSector)
+				continue;
+			const COMBAT_TACTIC::Typ LeadersCombatTactic = i->second->GetCombatTactic();
+			if(LeadersCombatTactic != COMBAT_TACTIC::CT_RETREAT)
+				i->second->SetCombatTactic(LeadersCombatTactic, true, false);
+		}
 		return;
+	}
 
 	// Jetzt können wir einen Kampf stattfinden lassen
 	CCombat Combat;
@@ -4243,11 +4253,7 @@ void CBotEDoc::CalcShipCombat()
 		//retreat code
 		const COMBAT_TACTIC::Typ LeadersCombatTactic = i->second->GetCombatTactic();
 		if(LeadersCombatTactic != COMBAT_TACTIC::CT_RETREAT)
-			for(CShipMap::const_iterator j = i->second->begin(); j != i->second->end(); ++j)
-			{
-				if(j->second->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT)
-					j->second->SetCombatTactic(LeadersCombatTactic);
-			}
+			i->second->SetCombatTactic(LeadersCombatTactic, true, false);
 
 			CRace* pOwner = i->second->Owner().get();
 		AssertBotE(pOwner);

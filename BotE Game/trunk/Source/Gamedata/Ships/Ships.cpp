@@ -329,12 +329,12 @@ void CShips::SetTargetKO(const CPoint& TargetKO, const bool simple_setter) {
 		i->second->SetTargetKO(TargetKO, simple_setter);
 }
 
-void CShips::SetCombatTactic(COMBAT_TACTIC::Typ nTactic, bool bPropagateToFleet) {
-	CShip::SetCombatTactic(nTactic);
+void CShips::SetCombatTactic(COMBAT_TACTIC::Typ nTactic, bool bPropagateToFleet, bool also_if_retreat) {
+	CShip::SetCombatTactic(nTactic, also_if_retreat);
 	if(bPropagateToFleet)
 	{
 		for(CShips::iterator i = begin(); i != end(); ++i)
-			i->second->SetCombatTactic(nTactic);
+			i->second->SetCombatTactic(nTactic, false, also_if_retreat);
 	}
 }
 

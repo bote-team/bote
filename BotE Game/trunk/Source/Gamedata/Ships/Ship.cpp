@@ -565,6 +565,13 @@ void CShip::SetTargetKO(const CPoint& TargetKO, const bool simple_setter)
 	}
 }
 
+void CShip::SetCombatTactic(COMBAT_TACTIC::Typ nTactic, bool also_if_retreat)
+{
+	if(!also_if_retreat && m_nCombatTactic == COMBAT_TACTIC::CT_RETREAT)
+		return;
+	m_nCombatTactic = nTactic;
+}
+
 void CShip::SetCurrentOrderAccordingToType() {
 	UnsetCurrentOrder();
 	SetCombatTacticAccordingToType();

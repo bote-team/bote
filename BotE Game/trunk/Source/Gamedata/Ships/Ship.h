@@ -149,7 +149,7 @@ public:
 	void SetTerraform(short planetNumber = -1);
 	void SetShipClass(const CString& ShipClass) {m_strShipClass = ShipClass;}
 	void SetIsShipFlagShip(bool bIs) {m_bIsFlagShip = bIs;}
-	void SetCombatTactic(COMBAT_TACTIC::Typ nTactic) {m_nCombatTactic = nTactic;}
+	void SetCombatTactic(COMBAT_TACTIC::Typ nTactic, bool also_if_retreat);
 
 	//more complex setting
 
