@@ -292,7 +292,6 @@ const boost::shared_ptr<const CShips> CMapTile::GetStation(const CString& sRace)
 {
 	const boost::shared_ptr<const CShips>& outpost = GetStation(SHIP_TYPE::OUTPOST, sRace);
 	const boost::shared_ptr<const CShips>& starbase = GetStation(SHIP_TYPE::STARBASE, sRace);
-	AssertBotE(!outpost || !starbase);
 	if(outpost)
 		return outpost;
 	else
