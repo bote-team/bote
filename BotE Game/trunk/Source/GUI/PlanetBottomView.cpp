@@ -281,14 +281,10 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		{
 			// soviel wie Truppen stationiert sind, so viele Symbole werden gezeichnet
 			s.Format("%d x", nTroopNumber);
-			int nPosX = 0;
-			if (nTroopNumber >= 10)
-				nPosX = 10;
-			if (nTroopNumber >= 100)
-				nPosX = 20;
-			g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,69), &fontFormat, &fontBrush);
+			const int nPosX = 10 * floor(log10(static_cast<float>(nTroopNumber)));
+			g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40, 25+counter*22), &fontFormat, &fontBrush);
 			// Bild zeichnen
-			g.DrawImage(graphic, 62 + nPosX, 64, 24, 24);
+			g.DrawImage(graphic, 62 + nPosX, 25+counter*22, 24, 24);
 		}
 	}
 	// Scannerstärke zeichnen
