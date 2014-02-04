@@ -334,7 +334,7 @@ public:
 
 	// Funktion lˆscht alle Geb‰ude, die die ¸bergebene RunningNumber haben und gibt deren Anzahl zur¸ck.
 	// -> Danach muﬂ AddBuilding() mit dem Nachfolger gleich der Anzahl aufgerufen werden.
-	int UpdateBuildings(int nRunningNumber, int nNeededEnergy);
+	int UpdateBuildings(int nRunningNumber, int nNeededEnergy, bool& was_online);
 
 	void Colonize(const CShips& ship, CMajor& major);
 

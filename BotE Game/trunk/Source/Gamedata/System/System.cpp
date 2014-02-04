@@ -2005,7 +2005,7 @@ void CSystem::CalculateBuildableBuildings(CGlobalBuildings* globals)
 
 // Funktion löscht alle Gebäude, die die übergebene RunningNumber haben und gibt deren Anzahl zurück.
 // -> Danach muß AddBuilding() mit dem Nachfolger gleich der Anzahl aufgerufen werden.
-int CSystem::UpdateBuildings(int nRunningNumber, int nNeededEnergy)
+int CSystem::UpdateBuildings(int nRunningNumber, int nNeededEnergy, bool& was_online)
 {
 	int nCount = 0;
 	for (int i = 0; i < m_Buildings.GetSize(); i++)
@@ -2013,7 +2013,10 @@ int CSystem::UpdateBuildings(int nRunningNumber, int nNeededEnergy)
 		{
 			// Wenn das Gebäude online war, dann Energie freigeben
 			if (nNeededEnergy > 0 && m_Buildings.GetAt(i).GetIsBuildingOnline())
+			{
+				was_online = true;
 				m_Production.m_iEnergyProd += nNeededEnergy;
+			}
 
 			// Gebäude aus der Liste löschen
 			m_Buildings.RemoveAt(i--);

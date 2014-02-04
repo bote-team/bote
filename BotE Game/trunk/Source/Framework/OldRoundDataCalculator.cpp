@@ -191,7 +191,8 @@ void COldRoundDataCalculator::FinishBuild(const int to_build, CSystem& system,
 		AssertBotE(nPredecessorID > 0);
 		const CBuildingInfo* pPredecessorBuilding = &(BuildingInfo[nPredecessorID - 1]);
 		AssertBotE(pPredecessorBuilding->GetRunningNumber() == nPredecessorID);
-		int nNumberOfNewBuildings = system.UpdateBuildings(nPredecessorID, pPredecessorBuilding->GetNeededEnergy());
+		bool was_online = false;
+		int nNumberOfNewBuildings = system.UpdateBuildings(nPredecessorID, pPredecessorBuilding->GetNeededEnergy(), was_online);
 		// So, nun bauen wir so viel mal das nächste
 		for (int z = 0; z < nNumberOfNewBuildings; z++)
 		{
@@ -202,7 +203,7 @@ void COldRoundDataCalculator::FinishBuild(const int to_build, CSystem& system,
 			if (m_pDoc->GetBuildingInfo(list).GetNeededEnergy() > 0)
 			{
 				manager.UpgradeIgnoredBuilding(nPredecessorID, list);
-				if(system.SetNewBuildingOnline(&BuildingInfo) == 2 && !manager.Active())
+				if(was_online && system.SetNewBuildingOnline(&BuildingInfo) == 2 && !manager.Active())
 					SystemMessage(system, pMajor, "NOT_ENOUGH_ENERGY", EMPIRE_NEWS_TYPE::SOMETHING, 2);
 			}
 		}
