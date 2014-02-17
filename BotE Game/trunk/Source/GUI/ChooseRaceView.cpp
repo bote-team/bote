@@ -520,6 +520,8 @@ void CChooseRaceView::OnBnCancelClicked()
 	}
 
 	resources::pMainFrame->SelectStartMenuView(VIEWS::START_VIEW);
+	pDoc->m_ShipMap.Reset();
+	pDoc->GetRaceCtrl()->ReInit();
 }
 
 void CChooseRaceView::AddChatMsg(const CString& name, const CString& msg)

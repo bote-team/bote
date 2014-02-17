@@ -89,6 +89,16 @@ bool CRaceController::Init(int nSource/* = RACESOURCE_DATAFILE*/)
 	return true;
 }
 
+void CRaceController::ReInit()
+{
+	const_iterator it = m_mRaces.begin();
+	while(!m_mRaces.empty())
+		it = RemoveRaceInternal(it);
+	AssertBotE(m_mMajors.empty());
+	AssertBotE(m_mMinors.empty());
+	Init();
+}
+
 /// Funktion gibt eine bestimmte Rasse zurück.
 /// @param sID ID der gewünschten Rassen
 /// @return Zeiger auf gewünschte Rasse

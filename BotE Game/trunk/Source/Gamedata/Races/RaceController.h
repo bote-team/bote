@@ -53,6 +53,7 @@ public:
 	/// @param nSource Datenquelle der Rasseninformationen
 	/// @return <code>true</code> wenn Initalisierung erfolgreich war, sonst <code>false</code>
 	bool Init(int nSource = RACESOURCE_DATAFILE);
+	void ReInit();
 
 	/// Funktion gibt eine bestimmte Rasse zurück.
 	/// @param sID ID der gewünschten Rassen
