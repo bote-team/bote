@@ -3888,7 +3888,7 @@ void CBotEDoc::CalcShipMovement()
 			// Weltraummonster gesondert behandeln
 			if (y->second->IsAlien())
 			{
-				CStarmap* pStarmap = new CStarmap(0);
+				boost::scoped_ptr<CStarmap> pStarmap(new CStarmap(0));
 				vector<Sector> vExceptions;
 				// Anaerobe Makroben fliegen nur im freien Raum oder in Sektoren mit grünen Sonnen
 				if (y->second->OwnerID() == StrToCStr(ANAEROBE_MAKROBE))
@@ -3907,9 +3907,6 @@ void CBotEDoc::CalcShipMovement()
 				// Anomalien werden schon beachtet, da dies eine statische Variable ist und in NextRound() schon
 				// berechnet wurde.
 				nextKO = pStarmap->CalcPath(shipKO,targetKO,range,speed,*y->second->GetPath());
-
-				delete pStarmap;
-				pStarmap = NULL;
 			}
 			else
 			{
@@ -3947,10 +3944,12 @@ void CBotEDoc::CalcShipMovement()
 			}
 		}
 
+		const CPoint& co = y->second->GetCo();
+		const CSystem& system = GetSystem(co.x, co.y);
 		// Gibt es eine Anomalie, wodurch die Schilde schneller aufgeladen werden
 		bool bFasterShieldRecharge = false;
-		if (GetSystem(y->second->GetCo().x, y->second->GetCo().y).GetAnomaly())
-			if (GetSystem(y->second->GetCo().x, y->second->GetCo().y).GetAnomaly()->GetType() == BINEBULA)
+		if (system.GetAnomaly())
+			if (system.GetAnomaly()->GetType() == BINEBULA)
 				bFasterShieldRecharge = true;
 
 		// Nach der Bewegung, aber noch vor einem möglichen Kampf werden die Schilde nach ihrem Typ wieder aufgeladen,
@@ -3958,8 +3957,6 @@ void CBotEDoc::CalcShipMovement()
 		//FIXME: The shipports are not yet updated for changes due to diplomacy at this spot.
 		//If we declared war and are on a shipport of the former friend, the ship is repaired,
 		//and a possible repair command isn't unset though it can no longer be set by the player this turn then.
-		const CPoint& co = y->second->GetCo();
-		const CSystem& system = GetSystem(co.x, co.y);
 		const bool port = system.GetShipPort(y->second->OwnerID());
 		if(y->second->GetCurrentOrder() == SHIP_ORDER::REPAIR)
 			y->second->RepairCommand(port, bFasterShieldRecharge, ships_from_fleets);
@@ -3967,10 +3964,9 @@ void CBotEDoc::CalcShipMovement()
 			y->second->TraditionalRepair(port, bFasterShieldRecharge);
 
 		// wenn eine Anomalie vorhanden, deren m?gliche Auswirkungen auf das Schiff berechnen
-		if (GetSystem(y->second->GetCo().x, y->second->GetCo().y).GetAnomaly())
+		if (system.GetAnomaly())
 		{
-			GetSystem(y->second->GetCo().x, y->second->GetCo().y).GetAnomaly()->CalcShipEffects(
-				y->second.get(), ships_from_fleets);
+			system.GetAnomaly()->CalcShipEffects(y->second.get(), ships_from_fleets);
 			bAnomaly = true;
 		}
 	}
