@@ -153,8 +153,8 @@ void CMajor::SetAgreement(const CString& sOtherRace, DIPLOMATIC_AGREEMENT::Typ n
 
 		if (GetAgreement(sOtherRace) == DIPLOMATIC_AGREEMENT::WAR)
 			nNewAgreement = DIPLOMATIC_AGREEMENT::NONE;
-		else if (GetAgreement(sOtherRace) == DIPLOMATIC_AGREEMENT::AFFILIATION)
-			nNewAgreement = DIPLOMATIC_AGREEMENT::AFFILIATION;
+		else if (GetAgreement(sOtherRace) == DIPLOMATIC_AGREEMENT::ALLIANCE)
+			nNewAgreement = DIPLOMATIC_AGREEMENT::ALLIANCE;
 	}
 
 	// wenn kein Vertrag besteht, so kann der Eintrag auch aus der Map entfernt werden
@@ -167,7 +167,7 @@ void CMajor::SetAgreement(const CString& sOtherRace, DIPLOMATIC_AGREEMENT::Typ n
 		m_mAgreement[sOtherRace] = nNewAgreement;
 
 	// Bei Krieg erlischt der Verteidigungspakt und bei einem Bündnis bekommen wir den automatisch
-	if (nNewAgreement == DIPLOMATIC_AGREEMENT::WAR || nNewAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION)
+	if (nNewAgreement == DIPLOMATIC_AGREEMENT::WAR || nNewAgreement == DIPLOMATIC_AGREEMENT::ALLIANCE)
 	{
 		for (vector<CString>::iterator it = m_vDefencePact.begin(); it != m_vDefencePact.end(); ++it)
 			if (*it == sOtherRace)
@@ -254,7 +254,7 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 			case DIPLOMATIC_AGREEMENT::TRADE:		{sAgreement = CLoc::GetString("TRADE_AGREEMENT"); break;}
 			case DIPLOMATIC_AGREEMENT::FRIENDSHIP:	{sAgreement = CLoc::GetString("FRIENDSHIP"); break;}
 			case DIPLOMATIC_AGREEMENT::COOPERATION:	{sAgreement = CLoc::GetString("COOPERATION"); break;}
-			case DIPLOMATIC_AGREEMENT::AFFILIATION:	{sAgreement = CLoc::GetString("AFFILIATION"); break;}
+			case DIPLOMATIC_AGREEMENT::ALLIANCE:	{sAgreement = CLoc::GetString("ALLIANCE"); break;}
 			case DIPLOMATIC_AGREEMENT::NAP:			{sAgreement = CLoc::GetString("NON_AGGRESSION"); break;}
 			}
 

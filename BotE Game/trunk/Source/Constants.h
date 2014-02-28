@@ -171,7 +171,7 @@ namespace DIPLOMATIC_AGREEMENT
 		TRADE			= 2,	// Handel mgl. & Rohstoffe als Zugabe möglich
 		FRIENDSHIP		= 3,	// sehen dipl. Verträge mit anderen Rassen
 		COOPERATION		= 4,	// gemeinsame Nutzung der Werften und Basen
-		AFFILIATION		= 5,	// Zusammenarbeit auf dipl. Ebene
+		ALLIANCE		= 5,	// Zusammenarbeit auf dipl. Ebene
 		MEMBERSHIP		= 6,
 		PRESENT			= 10,
 		CORRUPTION		= 11,

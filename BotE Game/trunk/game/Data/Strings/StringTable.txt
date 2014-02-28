@@ -141,7 +141,7 @@ Handelsvertrag
 Freundschaft
 [BTN_COOPERATION]
 Kooperation
-[BTN_AFFILIATION]
+[BTN_ALLIANCE]
 Bündnis
 [BTN_MEMBERSHIP]
 Mitgliedschaft
@@ -894,7 +894,7 @@ Freundschaftsvertrag
 Freundschaft
 [COOPERATION]
 Kooperation
-[AFFILIATION]
+[ALLIANCE]
 Bündnis
 [MEMBERSHIP]
 Mitgliedschaft
@@ -928,7 +928,7 @@ Handelsvertragsangebot
 Freundschaftsangebot
 [COOPERATION_OFFER]
 Kooperationsangebot
-[AFFILIATION_OFFER]
+[ALLIANCE_OFFER]
 Bündnisangebot
 [MEMBERSHIP_OFFER]
 Mitgliedschaftsangebot
@@ -948,7 +948,7 @@ einen Handelsvertrag
 einen Freundschaftsvertrag
 [COOPERATION_WITH_ARTICLE]
 eine Kooperation
-[AFFILIATION_WITH_ARTICLE]
+[ALLIANCE_WITH_ARTICLE]
 ein Bündnis
 [MEMBERSHIP_WITH_ARTICLE]
 eine Mitgliedschaft
@@ -974,9 +974,9 @@ Ablehnung des Freundschaftsangebots
 Annahme des Kooperationsvorschlags
 [DECLINE_COOPERATION]
 Ablehnung des Kooperationsvorschlags
-[ACCEPT_AFFILIATION]
+[ACCEPT_ALLIANCE]
 Annahme des Bündnisvorschlags
-[DECLINE_AFFILIATION]
+[DECLINE_ALLIANCE]
 Ablehnung des Bündnissvorschlags
 [ACCEPT_MEMBERSHIP]
 Annahme des Mitgliedschaftsangebots
@@ -1146,7 +1146,7 @@ Die § kündigten unseren Handelsvertrag
 Die § kündigten unseren Freundschaftsvertrag
 [CANCEL_COOPERATION]
 Die § kündigten unsere Kooperation
-[CANCEL_AFFILIATION]
+[CANCEL_ALLIANCE]
 Die § kündigten unser Bündnis
 [CANCEL_MEMBERSHIP]
 Die § kündigten ihre Mitgliedschaft

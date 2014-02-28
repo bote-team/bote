@@ -300,7 +300,7 @@ void CSystem::Serialize(CArchive &ar, bool end_of_round)
 
 const bool CSystem::Majorized() const
 {
-	return m_OwningStatus == OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME
+	return m_OwningStatus == OWNING_STATUS_COLONIZED_MEMBERSHIP_OR_HOME
 		|| m_OwningStatus == OWNING_STATUS_TAKEN;
 }
 
@@ -2035,7 +2035,7 @@ void CSystem::Colonize(const CShips& ship, CMajor& major)
 	if (!Majorized())
 	{
 		// Sector- und Systemwerte ändern
-		ChangeOwner(shipowner, OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME);
+		ChangeOwner(shipowner, OWNING_STATUS_COLONIZED_MEMBERSHIP_OR_HOME);
 		m_sColonyOwner = shipowner;
 		// Gebäude nach einer Kolonisierung bauen
 		BuildBuildingsAfterColonization(resources::BuildingInfo,ship.GetColonizePoints());
@@ -3256,7 +3256,7 @@ void CSystem::ChangeOwner(const CString& new_one, OWNING_STATUS status, bool res
 	if(new_one.IsEmpty())
 		AssertBotE(status == OWNING_STATUS_EMPTY || status == OWNING_STATUS_REBELLED);
 	else
-		AssertBotE(status == OWNING_STATUS_TAKEN || status == OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME
+		AssertBotE(status == OWNING_STATUS_TAKEN || status == OWNING_STATUS_COLONIZED_MEMBERSHIP_OR_HOME
 			|| status == OWNING_STATUS_INDEPENDENT_MINOR);
 
 	m_OwningStatus = status;
@@ -3345,7 +3345,7 @@ bool CSystem::CheckSanity() const
 						return false;
 				break;
 				case OWNING_STATUS_TAKEN:
-				case OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME:
+				case OWNING_STATUS_COLONIZED_MEMBERSHIP_OR_HOME:
 					if(!m_Owner->IsMajor())
 						return false;
 				break;
@@ -3377,7 +3377,7 @@ bool CSystem::CheckSanity() const
 		case OWNING_STATUS_REBELLED:
 			return !m_Owner && GetCurrentHabitants() > 0;
 		case OWNING_STATUS_TAKEN:
-		case OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME:
+		case OWNING_STATUS_COLONIZED_MEMBERSHIP_OR_HOME:
 			return GetCurrentHabitants() > 0 && m_Owner->IsMajor();
 	}
 	AssertBotE(false);

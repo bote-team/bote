@@ -161,7 +161,7 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 			{
 				pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).SetFullKnown(pMajor->GetRaceID());
 				pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).ChangeOwner(pMajor->GetRaceID(),
-					CSystem::OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME);
+					CSystem::OWNING_STATUS_COLONIZED_MEMBERSHIP_OR_HOME);
 				pMinor->SetOwner(pMajor);
 				// Nun Gebäude in neuen System bauen
 				pDoc->GetSystem(pMinor->GetCo().x, pMinor->GetCo().y).BuildBuildingsForMinorRace(&pDoc->BuildingInfo, pDoc->GetStatistics()->GetAverageTechLevel(), pMinor);
@@ -261,7 +261,7 @@ void CDiplomacyController::SendToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDiplom
 	case DIPLOMATIC_AGREEMENT::TRADE:		{sAgreement = CLoc::GetString("TRADE_AGREEMENT_WITH_ARTICLE");	break;}
 	case DIPLOMATIC_AGREEMENT::FRIENDSHIP:	{sAgreement = CLoc::GetString("FRIENDSHIP_WITH_ARTICLE");		break;}
 	case DIPLOMATIC_AGREEMENT::COOPERATION:	{sAgreement = CLoc::GetString("COOPERATION_WITH_ARTICLE");		break;}
-	case DIPLOMATIC_AGREEMENT::AFFILIATION:	{sAgreement = CLoc::GetString("AFFILIATION_WITH_ARTICLE");		break;}
+	case DIPLOMATIC_AGREEMENT::ALLIANCE:	{sAgreement = CLoc::GetString("ALLIANCE_WITH_ARTICLE");		break;}
 	case DIPLOMATIC_AGREEMENT::MEMBERSHIP:	{sAgreement = CLoc::GetString("MEMBERSHIP_WITH_ARTICLE");		break;}
 	case DIPLOMATIC_AGREEMENT::NAP:			{sAgreement = CLoc::GetString("NON_AGGRESSION_WITH_ARTICLE");	break;}
 	case DIPLOMATIC_AGREEMENT::DEFENCEPACT:	{sAgreement = CLoc::GetString("DEFENCE_PACT_WITH_ARTICLE");		break;}
@@ -368,7 +368,7 @@ void CDiplomacyController::SendToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDiplom
 				case DIPLOMATIC_AGREEMENT::TRADE:		s = CLoc::GetString("MIN_OFFER_TRADE", FALSE, pFromRace->GetName());	break;
 				case DIPLOMATIC_AGREEMENT::FRIENDSHIP:s = CLoc::GetString("MIN_OFFER_FRIEND", FALSE, pFromRace->GetName());	break;
 				case DIPLOMATIC_AGREEMENT::COOPERATION:			s = CLoc::GetString("MIN_OFFER_COOP", FALSE, pFromRace->GetName());		break;
-				case DIPLOMATIC_AGREEMENT::AFFILIATION:			s = CLoc::GetString("MIN_OFFER_AFFI", FALSE, pFromRace->GetName());		break;
+				case DIPLOMATIC_AGREEMENT::ALLIANCE:			s = CLoc::GetString("MIN_OFFER_AFFI", FALSE, pFromRace->GetName());		break;
 				case DIPLOMATIC_AGREEMENT::MEMBERSHIP:			s = CLoc::GetString("MIN_OFFER_MEMBER", FALSE, pFromRace->GetName());	break;
 				}
 				message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY, 2);
@@ -412,7 +412,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 	case DIPLOMATIC_AGREEMENT::TRADE:		{sAgreement = CLoc::GetString("TRADE_AGREEMENT_WITH_ARTICLE");	break;}
 	case DIPLOMATIC_AGREEMENT::FRIENDSHIP:	{sAgreement = CLoc::GetString("FRIENDSHIP_WITH_ARTICLE");		break;}
 	case DIPLOMATIC_AGREEMENT::COOPERATION:	{sAgreement = CLoc::GetString("COOPERATION_WITH_ARTICLE");		break;}
-	case DIPLOMATIC_AGREEMENT::AFFILIATION:	{sAgreement = CLoc::GetString("AFFILIATION_WITH_ARTICLE");		break;}
+	case DIPLOMATIC_AGREEMENT::ALLIANCE:	{sAgreement = CLoc::GetString("ALLIANCE_WITH_ARTICLE");		break;}
 	case DIPLOMATIC_AGREEMENT::MEMBERSHIP:	{sAgreement = CLoc::GetString("MEMBERSHIP_WITH_ARTICLE");		break;}
 	case DIPLOMATIC_AGREEMENT::NAP:			{sAgreement = CLoc::GetString("NON_AGGRESSION_WITH_ARTICLE");	break;}
 	case DIPLOMATIC_AGREEMENT::DEFENCEPACT:	{sAgreement = CLoc::GetString("DEFENCE_PACT_WITH_ARTICLE");		break;}
@@ -451,7 +451,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						case DIPLOMATIC_AGREEMENT::TRADE:		{sAgreement2 = CLoc::GetString("TRADE_AGREEMENT");	break;}
 						case DIPLOMATIC_AGREEMENT::FRIENDSHIP:	{sAgreement2 = CLoc::GetString("FRIENDSHIP");		break;}
 						case DIPLOMATIC_AGREEMENT::COOPERATION:	{sAgreement2 = CLoc::GetString("COOPERATION");		break;}
-						case DIPLOMATIC_AGREEMENT::AFFILIATION:	{sAgreement2 = CLoc::GetString("AFFILIATION");		break;}
+						case DIPLOMATIC_AGREEMENT::ALLIANCE:	{sAgreement2 = CLoc::GetString("ALLIANCE");		break;}
 						case DIPLOMATIC_AGREEMENT::NAP:			{sAgreement2 = CLoc::GetString("NON_AGGRESSION");	break;}
 						case DIPLOMATIC_AGREEMENT::DEFENCEPACT:	{sAgreement2 = CLoc::GetString("DEFENCE_PACT");		break;}
 					}
@@ -509,7 +509,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 								break;
 							}
 						// Sign an Affiliation Treaty #36
-						case DIPLOMATIC_AGREEMENT::AFFILIATION:
+						case DIPLOMATIC_AGREEMENT::ALLIANCE:
 							{
 								sEventText = pToMajor->GetMoralObserver()->AddEvent(36, pToMajor->GetRaceMoralNumber(), pFromMajor->GetEmpireNameWithAssignedArticle());
 								sEventText2 = pFromMajor->GetMoralObserver()->AddEvent(36, pFromMajor->GetRaceMoralNumber(), pToMajor->GetEmpireNameWithAssignedArticle());
@@ -833,7 +833,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						// Sign Friendship/Cooperation Treaty #35
 						case DIPLOMATIC_AGREEMENT::COOPERATION: sEventText = pToMajor->GetMoralObserver()->AddEvent(35, pToMajor->GetRaceMoralNumber(), pFromRace->GetName());	break;
 						// Sign an Affiliation Treaty #36
-						case DIPLOMATIC_AGREEMENT::AFFILIATION: sEventText = pToMajor->GetMoralObserver()->AddEvent(36, pToMajor->GetRaceMoralNumber(), pFromRace->GetName());	break;
+						case DIPLOMATIC_AGREEMENT::ALLIANCE: sEventText = pToMajor->GetMoralObserver()->AddEvent(36, pToMajor->GetRaceMoralNumber(), pFromRace->GetName());	break;
 						// Sign a Membership #10
 						case DIPLOMATIC_AGREEMENT::MEMBERSHIP: sEventText = pToMajor->GetMoralObserver()->AddEvent(10, pToMajor->GetRaceMoralNumber() , pFromRace->GetName());	break;
 						}
@@ -858,7 +858,7 @@ void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDip
 						case DIPLOMATIC_AGREEMENT::TRADE:		sAgreement = CLoc::GetString("TRADE_AGREEMENT"); break;
 						case DIPLOMATIC_AGREEMENT::FRIENDSHIP:	sAgreement = CLoc::GetString("FRIENDSHIP"); break;
 						case DIPLOMATIC_AGREEMENT::COOPERATION:	sAgreement = CLoc::GetString("COOPERATION"); break;
-						case DIPLOMATIC_AGREEMENT::AFFILIATION:	sAgreement = CLoc::GetString("AFFILIATION"); break;
+						case DIPLOMATIC_AGREEMENT::ALLIANCE:	sAgreement = CLoc::GetString("ALLIANCE"); break;
 						case DIPLOMATIC_AGREEMENT::MEMBERSHIP:	sAgreement = CLoc::GetString("MEMBERSHIP"); break;
 					}
 					CString s = CLoc::GetString("WE_DECLINE_MIN_OFFER", FALSE, sAgreement, pFromRace->GetName());
@@ -1000,7 +1000,7 @@ void CDiplomacyController::SendToMinor(CBotEDoc* pDoc, CMinor* pToMinor, CDiplom
 			case DIPLOMATIC_AGREEMENT::TRADE:		{sAgreement = CLoc::GetString("TRADE_AGREEMENT_WITH_ARTICLE");	break;}
 			case DIPLOMATIC_AGREEMENT::FRIENDSHIP:	{sAgreement = CLoc::GetString("FRIENDSHIP_WITH_ARTICLE");		break;}
 			case DIPLOMATIC_AGREEMENT::COOPERATION:	{sAgreement = CLoc::GetString("COOPERATION_WITH_ARTICLE");		break;}
-			case DIPLOMATIC_AGREEMENT::AFFILIATION:	{sAgreement = CLoc::GetString("AFFILIATION_WITH_ARTICLE");		break;}
+			case DIPLOMATIC_AGREEMENT::ALLIANCE:	{sAgreement = CLoc::GetString("ALLIANCE_WITH_ARTICLE");		break;}
 			case DIPLOMATIC_AGREEMENT::MEMBERSHIP:	{sAgreement = CLoc::GetString("MEMBERSHIP_WITH_ARTICLE");		break;}
 			}
 			s = sEmpireName + " " + CLoc::GetString("OUR_MIN_OFFER", FALSE, pToMinor->GetName(), sAgreement);
@@ -1060,7 +1060,7 @@ void CDiplomacyController::ReceiveToMinor(CBotEDoc* pDoc, CMinor* pToMinor, CDip
 					case DIPLOMATIC_AGREEMENT::TRADE:		{sAgreement = CLoc::GetString("TRADE_AGREEMENT_WITH_ARTICLE");	break;}
 					case DIPLOMATIC_AGREEMENT::FRIENDSHIP:{sAgreement = CLoc::GetString("FRIENDSHIP_WITH_ARTICLE");		break;}
 					case DIPLOMATIC_AGREEMENT::COOPERATION:			{sAgreement = CLoc::GetString("COOPERATION_WITH_ARTICLE");		break;}
-					case DIPLOMATIC_AGREEMENT::AFFILIATION:			{sAgreement = CLoc::GetString("AFFILIATION_WITH_ARTICLE");		break;}
+					case DIPLOMATIC_AGREEMENT::ALLIANCE:			{sAgreement = CLoc::GetString("ALLIANCE_WITH_ARTICLE");		break;}
 					case DIPLOMATIC_AGREEMENT::MEMBERSHIP:			{sAgreement = CLoc::GetString("MEMBERSHIP_WITH_ARTICLE");		break;}
 					}
 					// nur Text bei Vertragsformen erstellen
@@ -1083,7 +1083,7 @@ void CDiplomacyController::ReceiveToMinor(CBotEDoc* pDoc, CMinor* pToMinor, CDip
 					// Sign Friendship/Cooperation Treaty #35
 					case DIPLOMATIC_AGREEMENT::COOPERATION: sEventText = pFromMajor->GetMoralObserver()->AddEvent(35, pFromMajor->GetRaceMoralNumber(), pToMinor->GetName());	break;
 					// Sign an Affiliation Treaty #36
-					case DIPLOMATIC_AGREEMENT::AFFILIATION: sEventText = pFromMajor->GetMoralObserver()->AddEvent(36, pFromMajor->GetRaceMoralNumber(), pToMinor->GetName());	break;
+					case DIPLOMATIC_AGREEMENT::ALLIANCE: sEventText = pFromMajor->GetMoralObserver()->AddEvent(36, pFromMajor->GetRaceMoralNumber(), pToMinor->GetName());	break;
 					// Sign a Membership #10
 					case DIPLOMATIC_AGREEMENT::MEMBERSHIP: sEventText = pFromMajor->GetMoralObserver()->AddEvent(10, pFromMajor->GetRaceMoralNumber() , pToMinor->GetName());	break;
 					}
@@ -1115,7 +1115,7 @@ void CDiplomacyController::ReceiveToMinor(CBotEDoc* pDoc, CMinor* pToMinor, CDip
 						case DIPLOMATIC_AGREEMENT::TRADE:		sAgreement = CLoc::GetString("TRADE_AGREEMENT"); break;
 						case DIPLOMATIC_AGREEMENT::FRIENDSHIP:	sAgreement = CLoc::GetString("FRIENDSHIP"); break;
 						case DIPLOMATIC_AGREEMENT::COOPERATION:	sAgreement = CLoc::GetString("COOPERATION"); break;
-						case DIPLOMATIC_AGREEMENT::AFFILIATION:	sAgreement = CLoc::GetString("AFFILIATION"); break;
+						case DIPLOMATIC_AGREEMENT::ALLIANCE:	sAgreement = CLoc::GetString("ALLIANCE"); break;
 						case DIPLOMATIC_AGREEMENT::MEMBERSHIP:	sAgreement = CLoc::GetString("MEMBERSHIP"); break;
 					}
 
@@ -1161,7 +1161,7 @@ std::vector<CString> CDiplomacyController::GetEnemiesFromContract(CBotEDoc* pDoc
 		if (it->first != pToRace->GetRaceID())
 		{
 			// hat die Rasse mit der anderen Rasse ein Bündnis oder einen Verteidigungspakt
-			if (pToRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::AFFILIATION || (pToRace->IsMajor() && dynamic_cast<CMajor*>(pToRace)->GetDefencePact(it->first)))
+			if (pToRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::ALLIANCE || (pToRace->IsMajor() && dynamic_cast<CMajor*>(pToRace)->GetDefencePact(it->first)))
 			{
 				// haben wir nicht schon Krieg mit dem anderen Major
 				if (pFromMajor->GetAgreement(it->first) != DIPLOMATIC_AGREEMENT::WAR)
@@ -1231,7 +1231,7 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 			else if (nAgreement == DIPLOMATIC_AGREEMENT::COOPERATION)
 				sEventText = pFromMajor->GetMoralObserver()->AddEvent(29, pFromMajor->GetRaceMoralNumber(), sParam);
 			// Declare War on an Empire with Affiliation #30
-			else if (nAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION)
+			else if (nAgreement == DIPLOMATIC_AGREEMENT::ALLIANCE)
 				sEventText = pFromMajor->GetMoralObserver()->AddEvent(30, pFromMajor->GetRaceMoralNumber(), sParam);
 
 			if (!sEventText.IsEmpty())
@@ -1312,7 +1312,7 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 		if (nAgreement == DIPLOMATIC_AGREEMENT::NONE)
 			sEventText = pEnemyMajor->GetMoralObserver()->AddEvent(31, pEnemyMajor->GetRaceMoralNumber(), sParam);
 		// Other Empire Declares War with an Affiliation (or Membership) #33
-		else if (nAgreement >= DIPLOMATIC_AGREEMENT::AFFILIATION)
+		else if (nAgreement >= DIPLOMATIC_AGREEMENT::ALLIANCE)
 			sEventText = pEnemyMajor->GetMoralObserver()->AddEvent(33, pEnemyMajor->GetRaceMoralNumber(), sParam);
 		// Other Empire Declares War with Treaty #32
 		else

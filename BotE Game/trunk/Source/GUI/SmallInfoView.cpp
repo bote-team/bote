@@ -393,7 +393,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 
 		s.Format("%s: ", CLoc::GetString("TARGET"));
 		if(pMajor->GetRaceID() == pShip->second->OwnerID() || pMajor->GetAgreement(pShip->second->OwnerID())
-			>= DIPLOMATIC_AGREEMENT::AFFILIATION)
+			>= DIPLOMATIC_AGREEMENT::ALLIANCE)
 		{
 			if(pShip->second->HasTarget())
 			{

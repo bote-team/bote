@@ -93,9 +93,9 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 			sOffer = read[3];
 			break;
 		}
-		case DIPLOMATIC_AGREEMENT::AFFILIATION:
+		case DIPLOMATIC_AGREEMENT::ALLIANCE:
 		{
-			sHeadline = CLoc::GetString("AFFILIATION_OFFER");
+			sHeadline = CLoc::GetString("ALLIANCE_OFFER");
 			sOffer = read[4];
 			break;
 		}
@@ -357,17 +357,17 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 			}
 			break;
 		}
-	case DIPLOMATIC_AGREEMENT::AFFILIATION:
+	case DIPLOMATIC_AGREEMENT::ALLIANCE:
 		{
 			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				sAnswer = read[4];
-				info.m_sHeadline = CLoc::GetString("ACCEPT_AFFILIATION");
+				info.m_sHeadline = CLoc::GetString("ACCEPT_ALLIANCE");
 			}
 			else
 			{
 				sAnswer = read[12];
-				info.m_sHeadline = CLoc::GetString("DECLINE_AFFILIATION");
+				info.m_sHeadline = CLoc::GetString("DECLINE_ALLIANCE");
 			}
 			break;
 		}
@@ -543,9 +543,9 @@ bool CGenDiploMessage::GenerateMinorOffer(CDiplomacyInfo& info)
 			sOfferText = read[3];
 			break;
 		}
-	case DIPLOMATIC_AGREEMENT::AFFILIATION:
+	case DIPLOMATIC_AGREEMENT::ALLIANCE:
 		{
-			sHeadline = CLoc::GetString("AFFILIATION_OFFER");
+			sHeadline = CLoc::GetString("ALLIANCE_OFFER");
 			sOfferText = read[4];
 			break;
 		}
@@ -689,16 +689,16 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 			}
 			break;
 		}
-	case DIPLOMATIC_AGREEMENT::AFFILIATION:
+	case DIPLOMATIC_AGREEMENT::ALLIANCE:
 		{
 			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				sAnswer = read[4];
-				info.m_sHeadline = CLoc::GetString("ACCEPT_AFFILIATION");
+				info.m_sHeadline = CLoc::GetString("ACCEPT_ALLIANCE");
 			}
 			else
 			{
-				info.m_sHeadline = CLoc::GetString("DECLINE_AFFILIATION");
+				info.m_sHeadline = CLoc::GetString("DECLINE_ALLIANCE");
 				sAnswer = read[10];
 			}
 			break;

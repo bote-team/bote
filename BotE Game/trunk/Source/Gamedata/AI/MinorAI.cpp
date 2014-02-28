@@ -135,7 +135,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 				nNeededRelation -= 10;
 		}
-		else if (info.m_nType == DIPLOMATIC_AGREEMENT::AFFILIATION)
+		else if (info.m_nType == DIPLOMATIC_AGREEMENT::ALLIANCE)
 		{
 			nNeededRelation = 85;
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::HOSTILE))
@@ -266,13 +266,13 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 			DIPLOMATIC_AGREEMENT::Typ nOffer = DIPLOMATIC_AGREEMENT::NONE;
 			if (nRandom > 120 && nAgreement < DIPLOMATIC_AGREEMENT::MEMBERSHIP && nOthersAgreement <= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 				nOffer = DIPLOMATIC_AGREEMENT::MEMBERSHIP;
-			else if (nRandom > 105 && nAgreement < DIPLOMATIC_AGREEMENT::AFFILIATION && nOthersAgreement <= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
-				nOffer = DIPLOMATIC_AGREEMENT::AFFILIATION;
+			else if (nRandom > 105 && nAgreement < DIPLOMATIC_AGREEMENT::ALLIANCE && nOthersAgreement <= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+				nOffer = DIPLOMATIC_AGREEMENT::ALLIANCE;
 			else if (nRandom > 90 && nAgreement < DIPLOMATIC_AGREEMENT::COOPERATION && nOthersAgreement <= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 				nOffer = DIPLOMATIC_AGREEMENT::COOPERATION;
 			else if (nRandom > 75 && nAgreement < DIPLOMATIC_AGREEMENT::FRIENDSHIP && nOthersAgreement <= DIPLOMATIC_AGREEMENT::COOPERATION)
 				nOffer = DIPLOMATIC_AGREEMENT::FRIENDSHIP;
-			else if (nRandom > 55 && nAgreement < DIPLOMATIC_AGREEMENT::TRADE && nOthersAgreement <= DIPLOMATIC_AGREEMENT::AFFILIATION)
+			else if (nRandom > 55 && nAgreement < DIPLOMATIC_AGREEMENT::TRADE && nOthersAgreement <= DIPLOMATIC_AGREEMENT::ALLIANCE)
 				nOffer = DIPLOMATIC_AGREEMENT::TRADE;
 			// nochmalige Sicherheitsabfrage
 			if (nAgreement >= nOffer)
@@ -639,9 +639,9 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 			sText = CLoc::GetString("CANCEL_COOPERATION", FALSE, pMinor->m_sName);
 			break;
 		}
-		case DIPLOMATIC_AGREEMENT::AFFILIATION:
+		case DIPLOMATIC_AGREEMENT::ALLIANCE:
 		{
-			sText = CLoc::GetString("CANCEL_AFFILIATION", FALSE, pMinor->m_sName);
+			sText = CLoc::GetString("CANCEL_ALLIANCE", FALSE, pMinor->m_sName);
 			break;
 		}
 		case DIPLOMATIC_AGREEMENT::MEMBERSHIP:

@@ -1035,7 +1035,7 @@ void CBotEDoc::GenerateGalaxy()
 		system.SetFullKnown(it->first);
 		system.SetColonyOwner(it->first);
 		system.CreatePlanets(it->first);
-		system.ChangeOwner(it->first, CSystem::OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME);
+		system.ChangeOwner(it->first, CSystem::OWNING_STATUS_COLONIZED_MEMBERSHIP_OR_HOME);
 		system.SetResourceStore(RESOURCES::TITAN, 1000);
 		system.SetResourceStore(RESOURCES::DERITIUM, 3);
 
@@ -2527,7 +2527,7 @@ void CBotEDoc::CalcSystemAttack()
 					// Wenn das System zurückerobert wird, dann gilt es als befreit
 					if (GetSystem(p.x, p.y).GetColonyOwner() == attacker)
 					{
-						new_owning_status = CSystem::OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME;
+						new_owning_status = CSystem::OWNING_STATUS_COLONIZED_MEMBERSHIP_OR_HOME;
 						CString param = GetSystem(p.x, p.y).GetName();
 						// Eventnachricht an den Eroberer (unser ehemaliges System wieder zurückerobert)
 						CString eventText(pMajor->GetMoralObserver()->AddEvent(14, pMajor->GetRaceMoralNumber(), param));
@@ -2645,7 +2645,7 @@ void CBotEDoc::CalcSystemAttack()
 							// eines ausgelöschten Majors erobert wurde!
 
 							// Sektor gilt nicht als erobert
-							new_owning_status = CSystem::OWNING_STATUS_COLONIZED_AFFILIATION_OR_HOME;
+							new_owning_status = CSystem::OWNING_STATUS_COLONIZED_MEMBERSHIP_OR_HOME;
 							// Der Angreifer gilt nun als Koloniebesitzer
 							GetSystem(p.x, p.y).SetColonyOwner(attacker);
 						}

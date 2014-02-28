@@ -184,7 +184,7 @@ bool CShipBottomView::CheckDisplayShip(const CShips *pShip, const CSystem *syste
 	CString rid = m_pPlayersRace->GetRaceID();
 	if (   pShip->OwnerID() != rid				// Schiff gehört anderer Rasse als der aktuellen
 		&& system->GetScanPower(rid) < stealthPower		// Scanpower im Sektor ist kleiner stealthpower des Schiffs
-		&& m_pPlayersRace->GetAgreement(pShip->OwnerID()) < DIPLOMATIC_AGREEMENT::AFFILIATION) // Diplomatie ist kleiner "Affiliation"
+		&& m_pPlayersRace->GetAgreement(pShip->OwnerID()) < DIPLOMATIC_AGREEMENT::ALLIANCE) // Diplomatie ist kleiner "Affiliation"
 			return false;
 	return true;
 }

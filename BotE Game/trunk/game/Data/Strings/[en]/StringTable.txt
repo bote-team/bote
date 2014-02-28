@@ -141,8 +141,8 @@ Trade
 Friendship
 [BTN_COOPERATION]
 Co-operation
-[BTN_AFFILIATION]
-Affiliation
+[BTN_ALLIANCE]
+Alliance
 [BTN_MEMBERSHIP]
 Membership
 [BTN_NAP]
@@ -894,8 +894,8 @@ Friendship Treaty
 Friendship
 [COOPERATION]
 Co-operation
-[AFFILIATION]
-Affiliation
+[ALLIANCE]
+Alliance
 [MEMBERSHIP]
 Membership
 [NON_AGGRESSION]
@@ -928,8 +928,8 @@ Trade offer
 Friendship offer
 [COOPERATION_OFFER]
 Co-operation offer
-[AFFILIATION_OFFER]
-Affiliation offer
+[ALLIANCE_OFFER]
+Alliance offer
 [MEMBERSHIP_OFFER]
 Membership offer
 [NON_AGGRESSION_OFFER]
@@ -948,8 +948,8 @@ a trade agreement
 a friendship agreement
 [COOPERATION_WITH_ARTICLE]
 a co-operation
-[AFFILIATION_WITH_ARTICLE]
-an affiliation
+[ALLIANCE_WITH_ARTICLE]
+an alliance
 [MEMBERSHIP_WITH_ARTICLE]
 a membership
 [NON_AGGRESSION_WITH_ARTICLE]
@@ -974,10 +974,10 @@ Friendship offer declined
 Co-operation treaty accepted
 [DECLINE_COOPERATION]
 Co-operation treaty declined
-[ACCEPT_AFFILIATION]
-Affiliation treaty accepted
-[DECLINE_AFFILIATION]
-Affiliation treaty declined
+[ACCEPT_ALLIANCE]
+Alliance treaty accepted
+[DECLINE_ALLIANCE]
+Alliance treaty declined
 [ACCEPT_MEMBERSHIP]
 Membership offer accepted
 [DECLINE_MEMBERSHIP]
@@ -1089,7 +1089,7 @@ The § offer us a friendship treaty
 [MIN_OFFER_COOP]
 The § offer us a co-operation
 [MIN_OFFER_AFFI]
-The § offer us an affiliation
+The § offer us an alliance
 [MIN_OFFER_MEMBER]
 The § offer us a membership
 [MIN_OFFER_WAR]
@@ -1146,8 +1146,8 @@ The § terminated our trade agreement with them
 The § terminated our friendship treaty with them
 [CANCEL_COOPERATION]
 The § terminated our co-operation treaty with them
-[CANCEL_AFFILIATION]
-The § terminated our affiliation treaty with them
+[CANCEL_ALLIANCE]
+The § terminated our alliance treaty with them
 [CANCEL_MEMBERSHIP]
 The § terminated their membership treaty with us
 [CORRUPTION_SUCCESS]
@@ -2299,7 +2299,7 @@ Eliminate all opponents
 [RIVALS_LEFT]
 Remaining opponents:
 [SIGNED_HIGH_AGREEMENTS]
-signed contracts (min. affiliation)
+signed contracts (min. alliance)
 [CONQUERED_SYSTEMS]
 conquered systems
 [RESEARCHED_SPECIALS]

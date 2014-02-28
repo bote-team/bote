@@ -405,7 +405,7 @@ CString CShip::GetCurrentTargetAsString(const boost::shared_ptr<const CRace>& fo
 {
 	AssertBotE(for_race);
 	CString target;
-	if(for_race == m_Owner || for_race->GetAgreement(m_Owner->GetRaceID()) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
+	if(for_race == m_Owner || for_race->GetAgreement(m_Owner->GetRaceID()) >= DIPLOMATIC_AGREEMENT::ALLIANCE)
 	{
 		if(HasTarget())
 		{

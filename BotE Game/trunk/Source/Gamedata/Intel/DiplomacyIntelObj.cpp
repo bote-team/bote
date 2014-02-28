@@ -149,7 +149,7 @@ void CDiplomacyIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param
 							case DIPLOMATIC_AGREEMENT::TRADE:			{s = CLoc::GetString("TRADE_AGREEMENT_WITH_ARTICLE"); break;}
 							case DIPLOMATIC_AGREEMENT::FRIENDSHIP:		{s = CLoc::GetString("FRIENDSHIP_WITH_ARTICLE"); break;}
 							case DIPLOMATIC_AGREEMENT::COOPERATION:		{s = CLoc::GetString("COOPERATION_WITH_ARTICLE"); break;}
-							case DIPLOMATIC_AGREEMENT::AFFILIATION:		{s = CLoc::GetString("AFFILIATION_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::ALLIANCE:		{s = CLoc::GetString("ALLIANCE_WITH_ARTICLE"); break;}
 							case DIPLOMATIC_AGREEMENT::MEMBERSHIP:		{s = CLoc::GetString("MEMBERSHIP_WITH_ARTICLE"); break;}
 							default: s = "";
 							}

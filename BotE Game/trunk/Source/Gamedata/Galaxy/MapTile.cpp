@@ -348,7 +348,7 @@ short CMapTile::GetScanPower(const CString& sRace, bool bWith_ships) const
 		const CRaceController* pCtrl = pDoc->GetRaceCtrl();
 		const CRace* pRace = pCtrl->GetRace(sRace);
 		for(std::map<CString, CShipMap>::const_iterator it = m_Ships.begin(); it != m_Ships.end(); ++it) {
-			if(pRace->GetRaceID() == it->first || pRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
+			if(pRace->GetRaceID() == it->first || pRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::ALLIANCE)
 			{
 				scan_power_due_to_ship_number += it->second.GetSize();
 				for(CShipMap::const_iterator itt = it->second.begin(); itt != it->second.end(); ++itt)
@@ -443,7 +443,7 @@ void CMapTile::PutScannedSquare(unsigned range, const int power,
 	// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor befindet,
 	// dann wird die Scanleistung um 20% erhöht.
 	if(patrolship) {
-		if(race_id == OwnerID() || race.GetAgreement(OwnerID()) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
+		if(race_id == OwnerID() || race.GetAgreement(OwnerID()) >= DIPLOMATIC_AGREEMENT::ALLIANCE)
 			boni = 1.2f;
 	}
 	if(bBetterScanner) {
@@ -524,7 +524,7 @@ bool CMapTile::ShouldDrawShip(const CMajor& our_race, const CString& their_race_
 		return true;
 	if(GetNeededScanPower(their_race_id) < GetScanPower(our_id))
 		return true;
-	return our_race.GetAgreement(their_race_id) >= DIPLOMATIC_AGREEMENT::AFFILIATION;
+	return our_race.GetAgreement(their_race_id) >= DIPLOMATIC_AGREEMENT::ALLIANCE;
 }
 
 bool CMapTile::ShouldDrawOutpost(const CMajor& our_race, const CString& their_race_id) const {
@@ -537,7 +537,7 @@ bool CMapTile::ShouldDrawOutpost(const CMajor& our_race, const CString& their_ra
 		return true;
 	if(GetScanPower(our_id) > 0)
 		return true;
-	return our_race.GetAgreement(their_race_id) >= DIPLOMATIC_AGREEMENT::AFFILIATION;
+	return our_race.GetAgreement(their_race_id) >= DIPLOMATIC_AGREEMENT::ALLIANCE;
 }
 
 /// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor

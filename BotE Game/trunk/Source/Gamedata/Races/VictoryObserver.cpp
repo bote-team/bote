@@ -354,7 +354,7 @@ void CVictoryObserver::Observe(void)
 				if (it->first != it2->first)
 				{
 					int nAgreement = it->second->GetAgreement(it2->first);
-					if (nAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION || nAgreement == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
+					if (nAgreement == DIPLOMATIC_AGREEMENT::ALLIANCE || nAgreement == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 						nHighAgreements++;
 				}
 			if (nHighAgreements > 0)

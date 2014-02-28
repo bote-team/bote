@@ -184,7 +184,7 @@ namespace {
 		const SectorSettings old_settings(settings);
 
 		const CSector::DISCOVER_STATUS from_disc_status = sector.GetDiscoverStatus(from);
-		if (agreement >= DIPLOMATIC_AGREEMENT::AFFILIATION) {
+		if (agreement >= DIPLOMATIC_AGREEMENT::ALLIANCE) {
 			settings.scanpower = max(settings.scanpower, sector.GetScanPower(from, false));
 		}
 

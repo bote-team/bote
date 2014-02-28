@@ -232,7 +232,7 @@ void CMinor::CalcAcceptancePoints(CBotEDoc* pDoc)
 			nAccPoints += 10;
 		else if (nAgreement == DIPLOMATIC_AGREEMENT::COOPERATION)
 			nAccPoints += 20;
-		else if (nAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION)
+		else if (nAgreement == DIPLOMATIC_AGREEMENT::ALLIANCE)
 			nAccPoints += 30;
 		else if (nAgreement == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 		{
@@ -332,9 +332,9 @@ bool CMinor::CanAcceptOffer(CBotEDoc* pDoc, const CString& sMajorID, short nType
 		}
 	}
 
-	if ((nType == DIPLOMATIC_AGREEMENT::COOPERATION || nType == DIPLOMATIC_AGREEMENT::AFFILIATION || nType == DIPLOMATIC_AGREEMENT::MEMBERSHIP) && nOthersAgreement > DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+	if ((nType == DIPLOMATIC_AGREEMENT::COOPERATION || nType == DIPLOMATIC_AGREEMENT::ALLIANCE || nType == DIPLOMATIC_AGREEMENT::MEMBERSHIP) && nOthersAgreement > DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 		return false;
-	if (nType == DIPLOMATIC_AGREEMENT::TRADE && nOthersAgreement > DIPLOMATIC_AGREEMENT::AFFILIATION)
+	if (nType == DIPLOMATIC_AGREEMENT::TRADE && nOthersAgreement > DIPLOMATIC_AGREEMENT::ALLIANCE)
 		return false;
 	if (nType == DIPLOMATIC_AGREEMENT::FRIENDSHIP && nOthersAgreement > DIPLOMATIC_AGREEMENT::COOPERATION)
 		return false;
@@ -368,7 +368,7 @@ void CMinor::CheckDiplomaticConsistence(CBotEDoc* pDoc)
 			case DIPLOMATIC_AGREEMENT::TRADE: {s = CLoc::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_sName);	break;}
 			case DIPLOMATIC_AGREEMENT::FRIENDSHIP: {s = CLoc::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);	break;}
 			case DIPLOMATIC_AGREEMENT::COOPERATION: {s = CLoc::GetString("CANCEL_COOPERATION", FALSE, m_sName);	break;}
-			case DIPLOMATIC_AGREEMENT::AFFILIATION: {s = CLoc::GetString("CANCEL_AFFILIATION", FALSE, m_sName);	break;}
+			case DIPLOMATIC_AGREEMENT::ALLIANCE: {s = CLoc::GetString("CANCEL_ALLIANCE", FALSE, m_sName);	break;}
 			case DIPLOMATIC_AGREEMENT::MEMBERSHIP: {s = CLoc::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);	break;}
 			}
 			// Krieg bleibt weiterhin bestehen
@@ -405,8 +405,8 @@ void CMinor::CheckDiplomaticConsistence(CBotEDoc* pDoc)
 					s = CLoc::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);
 				else if (nAgreement == DIPLOMATIC_AGREEMENT::COOPERATION)
 					s = CLoc::GetString("CANCEL_COOPERATION", FALSE, m_sName);
-				else if (nAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION)
-					s = CLoc::GetString("CANCEL_AFFILIATION", FALSE, m_sName);
+				else if (nAgreement == DIPLOMATIC_AGREEMENT::ALLIANCE)
+					s = CLoc::GetString("CANCEL_ALLIANCE", FALSE, m_sName);
 				else if (nAgreement == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 					s = CLoc::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);
 
@@ -422,7 +422,7 @@ void CMinor::CheckDiplomaticConsistence(CBotEDoc* pDoc)
 				}
 			}
 		}
-		else if (nMajorsAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION)
+		else if (nMajorsAgreement == DIPLOMATIC_AGREEMENT::ALLIANCE)
 		{
 			for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
 			{
@@ -436,8 +436,8 @@ void CMinor::CheckDiplomaticConsistence(CBotEDoc* pDoc)
 					s = CLoc::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);
 				else if (nAgreement == DIPLOMATIC_AGREEMENT::COOPERATION)
 					s = CLoc::GetString("CANCEL_COOPERATION", FALSE, m_sName);
-				else if (nAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION)
-					s = CLoc::GetString("CANCEL_AFFILIATION", FALSE, m_sName);
+				else if (nAgreement == DIPLOMATIC_AGREEMENT::ALLIANCE)
+					s = CLoc::GetString("CANCEL_ALLIANCE", FALSE, m_sName);
 
 				if (!s.IsEmpty())
 				{
@@ -520,9 +520,9 @@ void CMinor::PerhapsCancelAgreement(CBotEDoc* pDoc)
 				sText = CLoc::GetString("CANCEL_COOPERATION", FALSE, m_sName);
 				break;
 			}
-			case DIPLOMATIC_AGREEMENT::AFFILIATION:
+			case DIPLOMATIC_AGREEMENT::ALLIANCE:
 			{
-				sText = CLoc::GetString("CANCEL_AFFILIATION", FALSE, m_sName);
+				sText = CLoc::GetString("CANCEL_ALLIANCE", FALSE, m_sName);
 				break;
 			}
 			case DIPLOMATIC_AGREEMENT::MEMBERSHIP:

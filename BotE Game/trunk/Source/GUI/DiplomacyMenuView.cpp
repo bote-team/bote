@@ -359,9 +359,9 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 					else
 						button->SetState(BUTTON_STATE::DEACTIVATED);
 				}
-				else if (button->GetText() == CLoc::GetString("BTN_AFFILIATION"))
+				else if (button->GetText() == CLoc::GetString("BTN_ALLIANCE"))
 				{
-					if (!bAlienDiplomacy && pPlayer->GetAgreement(m_sClickedOnRace) < DIPLOMATIC_AGREEMENT::AFFILIATION && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::AFFILIATION)
+					if (!bAlienDiplomacy && pPlayer->GetAgreement(m_sClickedOnRace) < DIPLOMATIC_AGREEMENT::ALLIANCE && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::ALLIANCE)
 					{
 						if (button->GetState() != BUTTON_STATE::ACTIVATED)
 							button->SetState(BUTTON_STATE::NORMAL);
@@ -381,7 +381,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				}
 				else if (button->GetText() == CLoc::GetString("BTN_DEFENCE"))
 				{
-					if (!bAlienDiplomacy && (pPlayer->GetDefencePact(m_sClickedOnRace) != true && pPlayer->GetAgreement(m_sClickedOnRace) != DIPLOMATIC_AGREEMENT::WAR && pPlayer->GetAgreement(m_sClickedOnRace) != DIPLOMATIC_AGREEMENT::AFFILIATION) && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::DEFENCEPACT)
+					if (!bAlienDiplomacy && (pPlayer->GetDefencePact(m_sClickedOnRace) != true && pPlayer->GetAgreement(m_sClickedOnRace) != DIPLOMATIC_AGREEMENT::WAR && pPlayer->GetAgreement(m_sClickedOnRace) != DIPLOMATIC_AGREEMENT::ALLIANCE) && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::DEFENCEPACT)
 					{
 						if (button->GetState() != BUTTON_STATE::ACTIVATED)
 							button->SetState(BUTTON_STATE::NORMAL);
@@ -477,7 +477,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				// Handelsvertrag Button
 				if (button->GetText() == CLoc::GetString("BTN_TRADECONTRACT"))
 				{
-					if (!bAlienDiplomacy && pPlayer->GetAgreement(m_sClickedOnRace) < DIPLOMATIC_AGREEMENT::TRADE && status <= DIPLOMATIC_AGREEMENT::AFFILIATION && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::TRADE)
+					if (!bAlienDiplomacy && pPlayer->GetAgreement(m_sClickedOnRace) < DIPLOMATIC_AGREEMENT::TRADE && status <= DIPLOMATIC_AGREEMENT::ALLIANCE && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::TRADE)
 					{
 						if (button->GetState() != BUTTON_STATE::ACTIVATED)
 							button->SetState(BUTTON_STATE::NORMAL);
@@ -505,9 +505,9 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 					else
 						button->SetState(BUTTON_STATE::DEACTIVATED);
 				}
-				else if (button->GetText() == CLoc::GetString("BTN_AFFILIATION"))
+				else if (button->GetText() == CLoc::GetString("BTN_ALLIANCE"))
 				{
-					if (!bAlienDiplomacy && pPlayer->GetAgreement(m_sClickedOnRace) < DIPLOMATIC_AGREEMENT::AFFILIATION && status <= DIPLOMATIC_AGREEMENT::FRIENDSHIP && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::AFFILIATION)
+					if (!bAlienDiplomacy && pPlayer->GetAgreement(m_sClickedOnRace) < DIPLOMATIC_AGREEMENT::ALLIANCE && status <= DIPLOMATIC_AGREEMENT::FRIENDSHIP && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::ALLIANCE)
 					{
 						if (button->GetState() != BUTTON_STATE::ACTIVATED)
 							button->SetState(BUTTON_STATE::NORMAL);
@@ -527,7 +527,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				}
 				else if (button->GetText() == CLoc::GetString("BTN_WAR"))
 				{
-					if (pPlayer->GetAgreement(m_sClickedOnRace) != DIPLOMATIC_AGREEMENT::WAR && status <= DIPLOMATIC_AGREEMENT::AFFILIATION && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::WAR)
+					if (pPlayer->GetAgreement(m_sClickedOnRace) != DIPLOMATIC_AGREEMENT::WAR && status <= DIPLOMATIC_AGREEMENT::ALLIANCE && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::WAR)
 					{
 						if (button->GetState() != BUTTON_STATE::ACTIVATED)
 							button->SetState(BUTTON_STATE::NORMAL);
@@ -537,7 +537,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				}
 				else if (button->GetText() == CLoc::GetString("BTN_CORRUPTION"))
 				{
-					if (!bAlienDiplomacy && (status >= DIPLOMATIC_AGREEMENT::AFFILIATION || (pPlayer->GetAgreement(m_sClickedOnRace) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP && status >= DIPLOMATIC_AGREEMENT::TRADE)) && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::CORRUPTION)
+					if (!bAlienDiplomacy && (status >= DIPLOMATIC_AGREEMENT::ALLIANCE || (pPlayer->GetAgreement(m_sClickedOnRace) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP && status >= DIPLOMATIC_AGREEMENT::TRADE)) && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::CORRUPTION)
 					{
 						if (button->GetState() != BUTTON_STATE::ACTIVATED)
 							button->SetState(BUTTON_STATE::NORMAL);
@@ -1416,7 +1416,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					if (pRace->GetAgreement(pPlayer->GetRaceID()) < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 					{
 						for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-							if (it->first != pPlayer->GetRaceID() && pRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
+							if (it->first != pPlayer->GetRaceID() && pRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::ALLIANCE)
 							{
 								m_OutgoingInfo.m_sCorruptedRace = it->first;
 								break;
@@ -1583,12 +1583,12 @@ CString CDiplomacyMenuView::PrintDiplomacyStatus(const CString& sOurRace, const 
 			color.SetFromCOLORREF(RGB(37,159,250));
 			return status;
 		}
-	case DIPLOMATIC_AGREEMENT::AFFILIATION:
+	case DIPLOMATIC_AGREEMENT::ALLIANCE:
 		{
 			if (pRace->IsMajor() && pOurRace->GetAgreementDuration(sRace) != 0)
-				status.Format("%s (%d)",CLoc::GetString("AFFILIATION"), pOurRace->GetAgreementDuration(sRace));
+				status.Format("%s (%d)",CLoc::GetString("ALLIANCE"), pOurRace->GetAgreementDuration(sRace));
 			else
-				status = CLoc::GetString("AFFILIATION");
+				status = CLoc::GetString("ALLIANCE");
 			color.SetFromCOLORREF(RGB(29,29,248));
 			return status;
 		}
@@ -1892,7 +1892,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 							break;
 						// Bündnisangebot
 						case 3:
-							m_OutgoingInfo.m_nType = DIPLOMATIC_AGREEMENT::AFFILIATION;
+							m_OutgoingInfo.m_nType = DIPLOMATIC_AGREEMENT::ALLIANCE;
 							break;
 						// Nichtangriffspaktangebot
 						case 4:
@@ -1949,7 +1949,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 							break;
 						// Bündnisangebot
 						case 3:
-							m_OutgoingInfo.m_nType = DIPLOMATIC_AGREEMENT::AFFILIATION;
+							m_OutgoingInfo.m_nType = DIPLOMATIC_AGREEMENT::ALLIANCE;
 							break;
 						// Mitgliedschaftsangebot
 						case 4:
@@ -2097,7 +2097,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					{
 						for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 						{
-							if (it->first != pPlayer->GetRaceID() && pClickedRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
+							if (it->first != pPlayer->GetRaceID() && pClickedRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::ALLIANCE)
 							{
 								m_OutgoingInfo.m_sCorruptedRace = it->first;
 								CalcDeviceRect(rect);
@@ -2480,7 +2480,7 @@ void CDiplomacyMenuView::CreateButtons()
 	m_DiplomacyMajorOfferButtons.Add(new CMyButton(CPoint(200,140) , CSize(160,40), CLoc::GetString("BTN_TRADECONTRACT"), fileN, fileI, fileA));
 	m_DiplomacyMajorOfferButtons.Add(new CMyButton(CPoint(400,140) , CSize(160,40), CLoc::GetString("BTN_FRIENDSHIP"), fileN, fileI, fileA));
 	m_DiplomacyMajorOfferButtons.Add(new CMyButton(CPoint(200,190) , CSize(160,40), CLoc::GetString("BTN_COOPERATION"), fileN, fileI, fileA));
-	m_DiplomacyMajorOfferButtons.Add(new CMyButton(CPoint(400,190) , CSize(160,40), CLoc::GetString("BTN_AFFILIATION"), fileN, fileI, fileA));
+	m_DiplomacyMajorOfferButtons.Add(new CMyButton(CPoint(400,190) , CSize(160,40), CLoc::GetString("BTN_ALLIANCE"), fileN, fileI, fileA));
 	m_DiplomacyMajorOfferButtons.Add(new CMyButton(CPoint(200,240) , CSize(160,40), CLoc::GetString("BTN_NAP"), fileN, fileI, fileA));
 	m_DiplomacyMajorOfferButtons.Add(new CMyButton(CPoint(200,340) , CSize(160,40), CLoc::GetString("BTN_WAR"), fileN, fileI, fileA));
 	m_DiplomacyMajorOfferButtons.Add(new CMyButton(CPoint(200,290) , CSize(160,40), CLoc::GetString("BTN_PRESENT"), fileN, fileI, fileA));
@@ -2491,7 +2491,7 @@ void CDiplomacyMenuView::CreateButtons()
 	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(200,165) , CSize(160,40), CLoc::GetString("BTN_TRADECONTRACT"), fileN, fileI, fileA));
 	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(400,165) , CSize(160,40), CLoc::GetString("BTN_FRIENDSHIP"), fileN, fileI, fileA));
 	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(200,215) , CSize(160,40), CLoc::GetString("BTN_COOPERATION"), fileN, fileI, fileA));
-	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(400,215) , CSize(160,40), CLoc::GetString("BTN_AFFILIATION"), fileN, fileI, fileA));
+	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(400,215) , CSize(160,40), CLoc::GetString("BTN_ALLIANCE"), fileN, fileI, fileA));
 	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(200,265) , CSize(160,40), CLoc::GetString("BTN_MEMBERSHIP"), fileN, fileI, fileA));
 	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(400,265) , CSize(160,40), CLoc::GetString("BTN_WAR"), fileN, fileI, fileA));
 	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(200,315) , CSize(160,40), CLoc::GetString("BTN_PRESENT"), fileN, fileI, fileA));
