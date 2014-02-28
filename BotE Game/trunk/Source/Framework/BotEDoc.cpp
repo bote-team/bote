@@ -3673,17 +3673,6 @@ void CBotEDoc::CalcShipOrders()
 			//SHIP_ORDER::ASSIGN_FLAGSHIP is executed immediately now as opposed to at turn change
 			AssertBotE(false);
 		}
-		else if (current_order == SHIP_ORDER::TRAIN_SHIP)
-		{
-			// Checken ob der Befehl noch Gültigkeit hat
-			if (pSystem->Majorized() && pSystem->OwnerID() == y->second->OwnerID())
-			{
-				// Wenn ein Schiff mit Veteranenstatus (Level 4) in der Trainingsflotte ist, dann verdoppelt sich der Erfahrungsgewinn
-				// für die niedrigstufigen Schiffe
-				int XP = pSystem->GetProduction()->GetShipTraining();
-				y->second->ApplyTraining(XP);
-			}
-		}
 		else if (current_order == SHIP_ORDER::ENCLOAK)
 		{
 			AssertBotE(y->second->CanCloak(true));
@@ -3962,6 +3951,16 @@ void CBotEDoc::CalcShipMovement()
 			y->second->RepairCommand(port, bFasterShieldRecharge, ships_from_fleets);
 		else
 			y->second->TraditionalRepair(port, bFasterShieldRecharge);
+
+		// Checken ob Training Gültigkeit hat
+		if (system.Majorized() && system.OwnerID() == y->second->OwnerID())
+		{
+			// Wenn ein Schiff mit Veteranenstatus (Level 4) in der Trainingsflotte ist,
+			// dann verdoppelt sich der Erfahrungsgewinn für die niedrigstufigen Schiffe
+			const int XP = system.GetProduction()->GetShipTraining();
+			if(XP > 0)
+				y->second->ApplyTraining(XP);
+		}
 
 		// wenn eine Anomalie vorhanden, deren m?gliche Auswirkungen auf das Schiff berechnen
 		if (system.GetAnomaly())

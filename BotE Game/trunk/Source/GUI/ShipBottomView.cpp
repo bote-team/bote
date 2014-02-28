@@ -78,9 +78,6 @@ void CShipBottomView::OnNewRound()
 
 static bool ShipCanHaveOrder(const CShips& ships, SHIP_ORDER::Typ order, const CSystem* system = NULL) {
 	switch(order) {
-		case SHIP_ORDER::TRAIN_SHIP:
-			return system->GetSunSystem() && system->OwnerID() == ships.OwnerID()
-				&& system->GetProduction()->GetShipTraining() > 0 && ships.CanHaveOrder(order, true);
 		case SHIP_ORDER::REPAIR:
 			return ships.CanHaveOrder(SHIP_ORDER::REPAIR, true)
 				&& system->GetShipPort(ships.OwnerID());
@@ -405,12 +402,6 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(*m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::SENTRY_SHIP_ORDER))
 	{
 		DrawSmallButton("BTN_SENTRY_SHIP_ORDER",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::SENTRY_SHIP_ORDER);
-		counter++;
-	}
-	// trainieren
-	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::TRAIN_SHIP, &system))
-	{
-		DrawSmallButton("BTN_TRAIN_SHIP",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::TRAIN_SHIP);
 		counter++;
 	}
 	// Systemangriff

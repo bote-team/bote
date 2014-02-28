@@ -379,6 +379,7 @@ namespace SHIP_ORDER
 		CREATE_FLEET        = 12,
 		TRANSPORT			= 13,
 		FOLLOW_SHIP			= 14,
+		//no longer used: train ship
 		TRAIN_SHIP			= 15,
 		WAIT_SHIP_ORDER		= 16,
 		SENTRY_SHIP_ORDER	= 17,
