@@ -1443,8 +1443,10 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 						m_pDoc->m_ShipMap.Add(ship);
 					}
 				}
-				AssertBotE(!ship->HasFleet());
 			}
+			if(!ship)
+				return FALSE;
+			AssertBotE(!ship->HasFleet());
 
 			// Haben wir das alles überstanden, so können wir jetzt ein Schiff/Station sabotieren
 			// eine Station wird entweder beschädigt oder mit geringerer Wahrscheinlichkeit komplett zerstört
