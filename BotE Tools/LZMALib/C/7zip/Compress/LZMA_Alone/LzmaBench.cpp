@@ -75,7 +75,7 @@ class CBenchRandomGenerator
 public:
   UInt32 BufferSize;
   Byte *Buffer;
-  CBenchRandomGenerator(): Buffer(0) {} 
+  CBenchRandomGenerator(): RG(), Pos(0), Rep0(0), BufferSize(0), Buffer(0) {}
   ~CBenchRandomGenerator() { Free(); }
   void Free() 
   { 
