@@ -242,7 +242,18 @@ public:
   STDMETHOD(Read)(void *data, UInt32 size, UInt32 *processedSize);
   #endif
 
-  CDecoder(): _outSizeDefined(false) {}
+  CDecoder():
+	_rangeDecoder(),
+	_lenDecoder(),
+	_repMatchLenDecoder(),
+	_posStateMask(0),
+	_state(),
+	_remainLen(0),
+	_outSize(0),
+	_outSizeDefined(false)
+	{
+		memset(_reps, 0, sizeof(_reps));
+	}
   virtual ~CDecoder() {}
 };
 
