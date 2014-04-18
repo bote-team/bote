@@ -37,7 +37,7 @@ struct CSwitchResult
   bool WithMinus;
   UStringVector PostStrings;
   int PostCharIndex;
-  CSwitchResult(): ThereIs(false) {};
+  CSwitchResult(): ThereIs(false), WithMinus(false), PostCharIndex(0) {};
 };
   
 class CParser
