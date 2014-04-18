@@ -152,6 +152,9 @@ class CBenchmarkInStream:
   UInt32 Pos;
   UInt32 Size;
 public:
+
+	CBenchmarkInStream() : Data(NULL), Pos(0), Size(0) {}
+
   MY_UNKNOWN_IMP
   void Init(const Byte *data, UInt32 size)
   {
