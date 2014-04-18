@@ -57,7 +57,7 @@
 				PrecompiledHeaderFile=".\Release/AloneLZMA.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
+				ProgramDataBaseFileName="lib-release\BotE_LZMA.pdb"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 			/>
@@ -74,7 +74,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\BotE_LZMA.lib"
+				OutputFile="lib-release\BotE_LZMA.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -134,7 +134,7 @@
 				PrecompiledHeaderFile=".\Debug/AloneLZMA.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
+				ProgramDataBaseFileName="lib-debug\BotE_LZMA.pdb"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -152,7 +152,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\BotE_LZMA_Dbg.lib"
+				OutputFile="lib-debug\BotE_LZMA.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -1006,11 +1006,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\Windows\Defs.h"
+				RelativePath="..\..\..\Common\Defs.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\Common\Defs.h"
+				RelativePath="..\..\..\Windows\Defs.h"
 				>
 			</File>
 			<File
