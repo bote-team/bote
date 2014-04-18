@@ -51,6 +51,9 @@ class COutStreamRam:
 {
   size_t Size;
 public:
+
+	COutStreamRam() : Size(0), Data(NULL), Pos(0), Overflow(false) {}
+
   Byte *Data;
   size_t Pos;
   bool Overflow;
