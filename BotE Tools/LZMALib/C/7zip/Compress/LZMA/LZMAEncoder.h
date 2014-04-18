@@ -152,11 +152,8 @@ class CPriceTableEncoder: public CEncoder
 public:
 	CPriceTableEncoder() : _tableSize(0)
 	{
-		for(int i = 0; i < kNumSymbolsTotal; ++i)
-		{
-			memset(_prices[i], 0, sizeof(_prices[i]));
-		}
-	memset(_counters, 0, sizeof(_counters));
+		memset(_prices, 0, sizeof(_prices[0][0]) * kNumPosStatesEncodingMax * kNumSymbolsTotal);
+		memset(_counters, 0, sizeof(_counters));
 	}
 
   void SetTableSize(UInt32 tableSize) { _tableSize = tableSize;  }
