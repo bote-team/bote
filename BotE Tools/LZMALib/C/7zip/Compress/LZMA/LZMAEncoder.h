@@ -148,7 +148,17 @@ class CPriceTableEncoder: public CEncoder
   UInt32 _prices[kNumPosStatesEncodingMax][kNumSymbolsTotal];
   UInt32 _tableSize;
   UInt32 _counters[kNumPosStatesEncodingMax];
+
 public:
+	CPriceTableEncoder() : _tableSize(0)
+	{
+		for(int i = 0; i < kNumSymbolsTotal; ++i)
+		{
+			memset(_prices[i], 0, sizeof(_prices[i]));
+		}
+	memset(_counters, 0, sizeof(_counters));
+	}
+
   void SetTableSize(UInt32 tableSize) { _tableSize = tableSize;  }
   UInt32 GetPrice(UInt32 symbol, UInt32 posState) const { return _prices[posState][symbol]; }
   void UpdateTable(UInt32 posState)
