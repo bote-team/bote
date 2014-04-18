@@ -96,7 +96,7 @@ class CLiteralEncoder
   int _numPosBits;
   UInt32 _posMask;
 public:
-  CLiteralEncoder(): _coders(0) {}
+  CLiteralEncoder(): _coders(0), _numPrevBits(0), _numPosBits(0), _posMask(0) {}
   ~CLiteralEncoder()  { Free(); }
   void Free()
   { 
