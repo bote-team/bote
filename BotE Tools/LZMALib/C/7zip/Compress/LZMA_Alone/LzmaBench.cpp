@@ -181,7 +181,7 @@ class CBenchmarkOutStream:
 public:
   UInt32 Pos;
   Byte *Buffer;
-  CBenchmarkOutStream(): _f(0), Buffer(0) {} 
+  CBenchmarkOutStream(): BufferSize(0), _f(0), Pos(0), Buffer(0) {}
   virtual ~CBenchmarkOutStream() { delete []Buffer; }
   void Init(FILE *f, UInt32 bufferSize) 
   {
