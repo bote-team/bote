@@ -20,6 +20,9 @@ public:
   UInt64 Low;
   UInt32 Range;
   COutBuffer Stream;
+
+  CEncoder() : _cacheSize(0), _cache(0), Low(0), Range(0), Stream() {}
+
   bool Create(UInt32 bufferSize) { return Stream.Create(bufferSize); }
 
   void SetStream(ISequentialOutStream *stream) { Stream.SetStream(stream); }
