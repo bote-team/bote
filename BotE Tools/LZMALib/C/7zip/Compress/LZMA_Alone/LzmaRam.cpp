@@ -19,6 +19,9 @@ class CInStreamRam:
   size_t Size;
   size_t Pos;
 public:
+
+	CInStreamRam() : Data(NULL), Size(0), Pos(0) {}
+
   MY_UNKNOWN_IMP
   void Init(const Byte *data, size_t size)
   {
