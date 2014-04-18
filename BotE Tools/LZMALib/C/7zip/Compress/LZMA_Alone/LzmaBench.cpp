@@ -43,6 +43,9 @@ class CBitRandomGenerator
   UInt32 Value;
   int NumBits;
 public:
+
+	CBitRandomGenerator() : RG(), Value(0), NumBits(0) {}
+
   void Init()
   {
     Value = 0;
