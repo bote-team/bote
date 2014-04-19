@@ -7,7 +7,7 @@ Hello
 
 The current version reflects the current progress of the project.
 Features of the current version may be changed in the final
-version. For improvement suggestions we are very grateful.
+version. We highly appreciate your suggestions for improvement.
 If you find a bug, please let us know. In the following text, 
 this project/application will be abbreviated by "BotE".
 
