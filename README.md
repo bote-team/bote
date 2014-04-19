@@ -7,7 +7,7 @@ Hello
 
 The current version reflects the current progress of the project.
 Features of the current version may be changed in the final
-version. For improvement suggestions we are am very grateful.
+version. For improvement suggestions we are very grateful.
 If you find a bug, please let us know. In the following text, 
 this project/application will be abbreviated by "BotE".
 
@@ -652,4 +652,4 @@ Some race descriptions:	Jerron http://www.annor.de and http://www.weltenbastler.
 
 --------------------------------------------------------------------
 
-Copyright by Sir Pustekuchen ©2004-2013
+Copyright by Sir Pustekuchen ©2004-2014
