@@ -8,3 +8,5 @@ UpgradeLog.XML
 _UpgradeReport_Files
 *.sav
 BotE.log
+BotE Game/trunk/DevBotE*.exe
+BotE Game/trunk/game/Data/Ships/[en]/ShipEditor_V1.7.exe
