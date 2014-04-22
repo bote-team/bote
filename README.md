@@ -8,7 +8,7 @@ Hello
 The current version reflects the current progress of the project.
 Features of the current version may be changed in the final
 version. We highly appreciate your suggestions for improvement.
-If you find a bug, please let us know. In the following text, 
+If you find a bug, please let us know. In the following text,
 this project/application will be abbreviated by "BotE".
 
 Have fun,
@@ -48,63 +48,63 @@ or Linux with WINE
      used freely for PRIVATE USE and by private citizens only. All
      other uses, including COMMERCIAL USE by members of any type of
      corporation, are strictly forbidden. PUBLIC USE is also not
-     allowed unless specifically approved by the copyright holder. 
+     allowed unless specifically approved by the copyright holder.
 
-§2 - As copyright holder my person always has to be mentioned explicitly 
-     and no other person may be mentioned additionally except for 
-     copyrighted content which is owned by the respective 
+§2 - As copyright holder my person always has to be mentioned explicitly
+     and no other person may be mentioned additionally except for
+     copyrighted content which is owned by the respective
      copyright holders. Their Terms of Use are fully applied here in
-     this context. 
+     this context.
 
 §3 - BotE source code is under "Microsoft Reciprocal License (Ms-RL)"
      license.
 
-§4 - Changes to the source code are permitted as long as my person is 
-     mentioned as the author of the project (see §2) and the 
-     changes made are not violating §3. 
+§4 - Changes to the source code are permitted as long as my person is
+     mentioned as the author of the project (see §2) and the
+     changes made are not violating §3.
 
-§5 - Any modifications of this application are permitted, if 
-     they do not violate §2-3 or the copyright terms of third parties. 
+§5 - Any modifications of this application are permitted, if
+     they do not violate §2-3 or the copyright terms of third parties.
 
 §6 - It is not permitted to use BotE to enrich yourself financially by
-     any means. 
+     any means.
 
-§7 - It is not permitted to use BotE for any commercial 
-     purposes. 
+§7 - It is not permitted to use BotE for any commercial
+     purposes.
 
-§8 - It is forbidden to use any of the pictures, graphics 
-     and designs depicted in BotE for commercial 
-     projects or to distribute them. Exceptions need the 
-     permission of the copyright holders. 
+§8 - It is forbidden to use any of the pictures, graphics
+     and designs depicted in BotE for commercial
+     projects or to distribute them. Exceptions need the
+     permission of the copyright holders.
 
-§9 - This software may not be offered by third parties (for example 
-     freeware/shareware sites) on the Internet on their own, i.e. 
-     without the knowledge or consent of the copyright holders. 
-     Doing so neglecting this rule means those persons take full 
+§9 - This software may not be offered by third parties (for example
+     freeware/shareware sites) on the Internet on their own, i.e.
+     without the knowledge or consent of the copyright holders.
+     Doing so neglecting this rule means those persons take full
      responsibility for the provision of the download. The author of
      this software reserves the right to the sole dissemination to
-     other sources (for example: download portals). 
+     other sources (for example: download portals).
 
-Derived and non-derived images from external authors and websites 
-inherit the copyright license given by those authors on their websites. 
-Do not use anything provided with the BotE download without checking 
-its copyright license on the respective original author's website 
-beforehand. In case of doubt whether the image is from an external 
-author and in case of no explicit copyright information given to a 
-specific image in our release, please ask for copyright clarification 
-or search the author for yourself and do not use the picture until 
-copyright has been cleared for your intended use BEFORE reusing it for 
-example uploading it on a website. In this readme.txt, you will find 
-the internet addresses for all images (sometimes only for groups of 
-images, not each specific image file). Some images are Creative Commons 
-or even public domain so please check the given author's homepage for 
+Derived and non-derived images from external authors and websites
+inherit the copyright license given by those authors on their websites.
+Do not use anything provided with the BotE download without checking
+its copyright license on the respective original author's website
+beforehand. In case of doubt whether the image is from an external
+author and in case of no explicit copyright information given to a
+specific image in our release, please ask for copyright clarification
+or search the author for yourself and do not use the picture until
+copyright has been cleared for your intended use BEFORE reusing it for
+example uploading it on a website. In this readme.txt, you will find
+the internet addresses for all images (sometimes only for groups of
+images, not each specific image file). Some images are Creative Commons
+or even public domain so please check the given author's homepage for
 the latest copyright details.
 
 All graphics and multimedia contents are protected by their respective
 copyright holders.
 
 Parts of the Heyoun race skin menus feature design elements rebuilt
-from scratch from artwork of the Star Trek Customizable Card Game 
+from scratch from artwork of the Star Trek Customizable Card Game
 (ST-CCG) TM by Decipher, Inc.
 No copyright infringement intended.
 
@@ -114,9 +114,9 @@ background images were googled on the web. Also, no copyright
 infringement intended.
 
 
-For playback of music and sound effects, the FMOD Sound System is 
-used in BotE. 
-FMOD Sound System, copyright © Firelight Technologies Pty, Ltd., 
+For playback of music and sound effects, the FMOD Sound System is
+used in BotE.
+FMOD Sound System, copyright © Firelight Technologies Pty, Ltd.,
 1994-2010
 
 © 2004-2013 Sir Pustekuchen
@@ -125,7 +125,7 @@ FMOD Sound System, copyright © Firelight Technologies Pty, Ltd.,
 
 1.5 Terms of use
 
-Neither copyright holders, nor someone else can be made 
+Neither copyright holders, nor someone else can be made
 responsible for any damage to your system caused or possibly
 caused by BotE. You are only allowed to use BotE, if you accept
 this point and all other points mentioned in 1.4.
@@ -134,7 +134,7 @@ this point and all other points mentioned in 1.4.
 
 1.7 Credits
 
-Producer: 
+Producer:
   Sir Pustekuchen
 
 Idea:
@@ -224,7 +224,7 @@ Wiki:
 ---------------------------------------------------
 
 Ship graphics:
-  Major race ships:  
+  Major race ships:
 	Atrocities
 	magicmot
   Minor race ships:
@@ -240,7 +240,7 @@ Background music:
   Rotharian Star Network: MarkySpark "Blood Throne Battle V" http://www.newgrounds.com/audio/listen/370234
   Cartare Union: Sandman "Cirrus March" http://botf2.star-trek-games.com/memberlist.php?mode=viewprofile&u=4284
   Omega-Alliance: Kenneth L. Welch "Starlight Requiem v2r" http://homepage.mac.com/klwelch/music.html
-  
+
 other music:
   Lose game: Kevin MacLeod - "For the Fallen"
   Win game: Eric Fu-Wah James "Finale" http://www.myspace.com/ericjames/
@@ -265,7 +265,7 @@ Major Races:
   Omega-Alliance: 	Andrew Kincaid http://redfishimagery.com/
 
 Minor Races:
-Albert Feliu http://albertfeliu.com/ : 
+Albert Feliu http://albertfeliu.com/ :
 	Adryl
 	Athari
 	Chewark
@@ -289,7 +289,7 @@ Arild Anfinnsen http://www.arildwiro.com/ :
 	Nundosa
 	Zhordanians
 
-Artur Grzegorczyn http://www.madgameart.blogspot.com/ : 
+Artur Grzegorczyn http://www.madgameart.blogspot.com/ :
 	Nynjan
 	Riejson
 
@@ -422,7 +422,7 @@ Petr Nasirov http://5k3d.com/ :
 	Hazeti
 	Phorath
 
-Piotr Slomowicz http://www.piotrslomowicz.com/ : 
+Piotr Slomowicz http://www.piotrslomowicz.com/ :
 	Enerans
 	Malodans
 
@@ -610,8 +610,8 @@ Galaxy backgrounds:
 
 
 Anomalies: (some of the following were created by Sir Pustekuchen using Paint.NET out of the radioactive nebula image)
-	Radioactive nebula: Star Trek Supremacy http://startreksupremacy.com/ 
-	Neutron star: Star Trek 
+	Radioactive nebula: Star Trek Supremacy http://startreksupremacy.com/
+	Neutron star: Star Trek
 	Quasar: Star Trek Supremacy
 	Radiopulsar: Star Trek Supremacy
 	X-ray pulsar: Star Trek Supremacy
@@ -629,7 +629,7 @@ Anomalies: (some of the following were created by Sir Pustekuchen using Paint.NE
 
 
 Symbols and other small graphics:
-  Small resources icons: 
+  Small resources icons:
 	nemesis5
 	YoT-project
   Research symbols:
