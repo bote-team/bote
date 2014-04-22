@@ -16,7 +16,7 @@ the BotE-crew
 Homepage: http://www.birth-of-the-empires.de
 
 
-BotE is a turn-based 4X strategy game set in space in the style of classics such as Microprose's Master of Orion 2 or ST: Birth of the Federation, playable in single- or multiplayer mode (LAN, internet). Goal is to gain control and supremacy over the galaxy, either by diplomatic or military means. Divergent victory conditions can be set before starting.
+BotE is a turn-based 4X strategy game set in space in the style of classics such as Microprose's Master of Orion 2 or ST: Birth of the Federation, playable in single- or multiplayer mode (LAN, Internet). Goal is to gain control and supremacy over the galaxy, either by diplomatic or military means. Divergent victory conditions can be set before starting.
 
 People having played the mentioned Microprose games above will find BotE very familiar in terms of gameplay and controls. Choose one of six major empires and lead it up its way from a single star system in the beginnings of space flight to a full-blown galactic power challenged to keep either peace or its power in the galaxy. Opponents can either be taken by human players or a challenging AI. Main features are a complete resource management and trading on a planetary system level, aliens and random events, diplomatic interactions, intel actions like espionage and sabotage, ship battles and invasions, bribery and intergalactic warfare.
 
@@ -95,7 +95,7 @@ specific image in our release, please ask for copyright clarification
 or search the author for yourself and do not use the picture until
 copyright has been cleared for your intended use BEFORE reusing it for
 example uploading it on a website. In this readme.txt, you will find
-the internet addresses for all images (sometimes only for groups of
+the Internet addresses for all images (sometimes only for groups of
 images, not each specific image file). Some images are Creative Commons
 or even public domain so please check the given author's homepage for
 the latest copyright details.
