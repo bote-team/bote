@@ -156,7 +156,7 @@ void CSectorAI::CalculateTerraformSectors(int x, int y)
 			&& !m_pDoc->GetSystem(x, y).GetPlanet(j)->GetInhabited())
 			pop += (BYTE)m_pDoc->GetSystem(x, y).GetPlanet(j)->GetMaxHabitant();
 
-	if (pop > 5)
+	if (pop >= 3)
 	{
 		// Eintrag für die jeweilige Rasse machen.
 		map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
