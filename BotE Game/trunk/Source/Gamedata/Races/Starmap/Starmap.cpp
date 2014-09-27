@@ -49,20 +49,7 @@ CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICal
 	InitSomeMembers();
 
 	// Standard-Rangemap
-	m_RangeMap.range = new unsigned char [49];
-	m_RangeMap.w = m_RangeMap.h = 7;
-	m_RangeMap.x0 = m_RangeMap.y0 = 3;
-
-	unsigned char rangeMap[] =
-		{0, 0, 1, 1, 1, 0, 0,
-		 0, 1, 2, 2, 2, 1, 0,
-		 1, 2, 3, 3, 3, 2, 1,
-		 1, 2, 3, 3, 3, 2, 1,
-		 1, 2, 3, 3, 3, 2, 1,
-		 0, 1, 2, 2, 2, 1, 0,
-		 0, 0, 1, 1, 1, 0, 0};
-
-	memcpy(m_RangeMap.range, rangeMap, 49 * sizeof(unsigned char));
+	CRangeMaps::CalcRangeMap(m_RangeMap, 0);
 
 	pathMap.resize(STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT);
 }
