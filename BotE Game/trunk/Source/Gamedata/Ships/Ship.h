@@ -27,7 +27,7 @@
 #include "BeamWeapons.h"
 #include "Shield.h"
 #include "Hull.h"
-#include "Races/Starmap.h"
+#include "Races/Starmap/Starmap.h"
 #include "Troops/TroopInfo.h"
 #include "General/InGameEntity.h"
 #include "ShipHistory.h"

@@ -790,13 +790,17 @@
 						>
 					</File>
 					<File
-						RelativePath=".\Source\Gamedata\Races\Starmap.cpp"
-						>
-					</File>
-					<File
 						RelativePath=".\Source\Gamedata\Races\VictoryObserver.cpp"
 						>
 					</File>
+					<Filter
+						Name="Starmap"
+						>
+						<File
+							RelativePath=".\Source\Gamedata\Races\Starmap\Starmap.cpp"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="Ships"
@@ -1555,13 +1559,17 @@
 						>
 					</File>
 					<File
-						RelativePath=".\Source\Gamedata\Races\Starmap.h"
-						>
-					</File>
-					<File
 						RelativePath=".\Source\Gamedata\Races\VictoryObserver.h"
 						>
 					</File>
+					<Filter
+						Name="Starmap"
+						>
+						<File
+							RelativePath=".\Source\Gamedata\Races\Starmap\Starmap.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="Ships"

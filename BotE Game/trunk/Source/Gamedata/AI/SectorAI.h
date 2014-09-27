@@ -8,7 +8,7 @@
 #pragma once
 #include "afx.h"
 #include "Constants.h"
-#include "Races\Starmap.h"
+#include "Races/Starmap/Starmap.h"
 #include <map>
 #include <vector>
 #include <utility>
