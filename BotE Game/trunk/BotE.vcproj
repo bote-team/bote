@@ -797,6 +797,10 @@
 						Name="Starmap"
 						>
 						<File
+							RelativePath=".\Source\Gamedata\Races\Starmap\RangeMaps.cpp"
+							>
+						</File>
+						<File
 							RelativePath=".\Source\Gamedata\Races\Starmap\Starmap.cpp"
 							>
 						</File>
@@ -1565,6 +1569,10 @@
 					<Filter
 						Name="Starmap"
 						>
+						<File
+							RelativePath=".\Source\Gamedata\Races\Starmap\RangeMaps.h"
+							>
+						</File>
 						<File
 							RelativePath=".\Source\Gamedata\Races\Starmap\Starmap.h"
 							>

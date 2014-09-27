@@ -22,6 +22,8 @@
 #include <map>
 #include <vector>
 
+#include "RangeMaps.h"
+
 class CSystem;
 
 #if _MSC_VER > 1000
@@ -114,25 +116,6 @@ struct BaseSector
 		return points > other.points;
 	}
 
-};
-
-struct RangeMap
-{
-	RangeMap() :
-		range(NULL),
-		w(0), h(0),
-		x0(0), y0(0)
-	{
-	}
-
-	unsigned char *range;		///< Array, das die Reichweitenmatrix zeilenweise enthält
-	int w;						///< Anzahl der Spalten der Matrix
-	int h;						///< Anzahl Zeilen der Matrix
-
-	/// nullbasierter Index einer Spalte; die Matrix wird so ausgerichtet, dass diese Spalte über dem Sektor eines Außenpostens steht
-	int x0;
-	/// nullbasierter Index einer Zeile; die Matrix wird so ausgerichtet, dass diese Zeile über dem Sektor eines Außenpostens steht
-	int y0;
 };
 
 /**
@@ -234,11 +217,6 @@ public:
 	Sector GetSelection() const {return m_Selection;}
 
 	/**
-	 * Setzt die für nachfolgend hinzugefügte Außenposten zu verwendende RangeMap.
-	 */
-	void SetRangeMap(unsigned char rangeMap[], char w, char h, char x0, char y0);
-
-	/**
 	 * Fügt im angegebenen Sektor einen Außenposten hinzu.
 	 */
 	void AddBase(const Sector& sector, BYTE propTech);
@@ -324,10 +302,6 @@ public:
 	static CPoint NearestPort(const std::vector<CSystem>& systems, const CPoint& start, const CString& owned_by);
 
 private:
-	/// Diese Funktion berechnet die Reichweitenkarte anhand der aktuellen Techstufe <code>propTech</code> und schreibt
-	/// das Ergebnis in den Parameter <code>rangeMap</code>. Zusätzlich werden Referenzen auf paar Hilfsvariablen
-	/// übergeben.
-	void CalcRangeMap(BYTE propTech);
 
 	/// @return Eintrag der gesetzten RangeMap an der Stelle (x, y), wobei (0, 0) die Außenpostenposition ist
 	unsigned char GetRangeMapValue(char x, char y);
