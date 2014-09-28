@@ -49,7 +49,7 @@ CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICal
 	InitSomeMembers();
 
 	// Standard-Rangemap
-	CRangeMaps::CalcRangeMap(m_RangeMap, 0);
+	CRangeMaps::CalcRangeMap(m_RangeMap, 0, CRangeMaps::CLASSIC);
 
 	pathMap.resize(STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT);
 }
@@ -130,7 +130,7 @@ void CStarmap::SetFullRangeMap(int nRange/* = SM_RANGE_NEAR*/, const std::vector
 				m_Range.at(CoordsToIndex(x, y)) = nRange;
 }
 
-void CStarmap::AddBase(const Sector &sector, BYTE propTech)
+void CStarmap::AddBase(const Sector &sector, BYTE propTech, CRangeMaps::EXPANSION_SPEED speed)
 {
 	AssertBotE(sector.on_map());
 
@@ -139,7 +139,7 @@ void CStarmap::AddBase(const Sector &sector, BYTE propTech)
 	if (!IsBase(sector)) m_lBases.push_back(sector);
 
 	// --- Map mit Entfernungen aktualisieren ---
-	CRangeMaps::CalcRangeMap(m_RangeMap, propTech);
+	CRangeMaps::CalcRangeMap(m_RangeMap, propTech, speed);
 
 	// lokale Rangemap durchlaufen
 	for (char x = -m_RangeMap.x0; x < m_RangeMap.w - m_RangeMap.x0; x++)

@@ -72,6 +72,7 @@ END_MESSAGE_MAP()
 CBotEDoc::CBotEDoc() :
 	m_iRound(1),
 	m_fDifficultyLevel(1.0f),
+	m_ExpansionSpeed(CRangeMaps::CLASSIC),
 	m_fStardate(121000.0f),
 	m_ptKO(0, 0),
 	m_Systems(),
@@ -217,6 +218,7 @@ void CBotEDoc::Serialize(CArchive& ar)
 	{
 		// ZU ERLEDIGEN: Hier Code zum Speichern einfügen
 		ar << m_iRound;
+		ar << m_ExpansionSpeed;
 		ar << m_fStardate;
 		//not here...MYTRACE("general")(MT::LEVEL_INFO, "Stardate: %f", m_fStardate);
 		ar << m_ptKO;
@@ -251,6 +253,8 @@ void CBotEDoc::Serialize(CArchive& ar)
 		int number;
 		// ZU ERLEDIGEN: Hier Code zum Laden einfügen
 		ar >> m_iRound;
+		ar >> number;
+		m_ExpansionSpeed = static_cast<CRangeMaps::EXPANSION_SPEED>(number);
 		ar >> m_fStardate;
 		ar >> m_ptKO;
 		ar >> STARMAP_SECTORS_HCOUNT;
@@ -348,6 +352,7 @@ void CBotEDoc::SerializeBeginGameData(CArchive& ar)
 
 		// Forschungsmodifikator
 		ar << CResearchInfo::m_dResearchSpeedFactor;
+		ar << m_ExpansionSpeed;
 	}
 	// Empfangen auf Clientseite
 	else
@@ -372,6 +377,8 @@ void CBotEDoc::SerializeBeginGameData(CArchive& ar)
 
 		// Forschungsmodifikator
 		ar >> CResearchInfo::m_dResearchSpeedFactor;
+		ar >> number;
+		m_ExpansionSpeed = static_cast<CRangeMaps::EXPANSION_SPEED>(number);
 	}
 
 	CMoralObserver::SerializeStatics(ar);
@@ -800,6 +807,16 @@ void CBotEDoc::PrepareData()
 		// Forschungsgeschwindigkeitsmodifikator setzen
 		CResearchInfo::m_dResearchSpeedFactor = 1.25;
 		CIniLoader::GetInstance()->ReadValue("Special", "RESEARCHSPEED", CResearchInfo::m_dResearchSpeedFactor);
+
+		CString speed = "CLASSIC";
+		CIniLoader::GetInstance()->ReadValue("Special", "EXPANSIONSPEED", speed);
+		m_ExpansionSpeed = CRangeMaps::CLASSIC;
+		if(speed == "SLOW")
+			m_ExpansionSpeed = CRangeMaps::SLOW;
+		else if(speed == "MEDIUM")
+			m_ExpansionSpeed = CRangeMaps::MEDIUM;
+		else if(speed == "FAST")
+			m_ExpansionSpeed = CRangeMaps::FAST;
 
 		MYTRACE("general")(MT::LEVEL_INFO, "Preparing game data ready...\n");
 		/*
@@ -2211,7 +2228,7 @@ void CBotEDoc::GenerateStarmap(const CString& sOnlyForRaceID)
 				|| system->GetShipPort(pMajor->GetRaceID()))
 			{
 				pMajor->GetStarmap()->AddBase(Sector(system->GetCo()),
-					pMajor->GetEmpire()->GetResearch()->GetPropulsionTech());
+					pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(), m_ExpansionSpeed);
 			}
 
 			if (system->GetSunSystem())

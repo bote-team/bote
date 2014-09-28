@@ -32,6 +32,8 @@ protected: // Nur aus Serialisierung erzeugen
 	CGraphicPool *m_pGraphicPool;		///< Objekt verwaltet Grafiken für BotE
 	USHORT m_iRound;					///< aktuelle Rundenanzahl
 	float m_fDifficultyLevel;			///< der Schwierigkeitsgrad eines Spiels
+	CRangeMaps::EXPANSION_SPEED m_ExpansionSpeed; //how fast do we get movement range for our ships
+	//slow expansion is meant for small maps, faster for large maps (with few systems)
 	float m_fStardate;					///< Startrek Sternzeit
 	CPoint m_ptKO;						///< Koordinaten des aktuell angeklickten Sektors
 

@@ -35,10 +35,18 @@ class CRangeMaps
 
 public:
 
+	enum EXPANSION_SPEED
+	{
+		SLOW,
+		CLASSIC,
+		MEDIUM,
+		FAST
+	};
+
 	/// Diese Funktion berechnet die Reichweitenkarte anhand der aktuellen Techstufe <code>propTech</code> und schreibt
 	/// das Ergebnis in den Parameter <code>rangeMap</code>. Zusätzlich werden Referenzen auf paar Hilfsvariablen
 	/// übergeben.
-	static void CalcRangeMap(RangeMap& range_map, BYTE propTech);
+	static void CalcRangeMap(RangeMap& range_map, BYTE propTech, EXPANSION_SPEED speed);
 
 private:
 

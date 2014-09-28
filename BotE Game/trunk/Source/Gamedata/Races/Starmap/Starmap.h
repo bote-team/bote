@@ -219,7 +219,7 @@ public:
 	/**
 	 * Fügt im angegebenen Sektor einen Außenposten hinzu.
 	 */
-	void AddBase(const Sector& sector, BYTE propTech);
+	void AddBase(const Sector& sector, BYTE propTech, CRangeMaps::EXPANSION_SPEED speed);
 
 	/**
 	 * @return <code>TRUE</code>, wenn im angegebenen Sektor ein Außenposten hinzugefügt wurde, sonst <code>FALSE</code>.
