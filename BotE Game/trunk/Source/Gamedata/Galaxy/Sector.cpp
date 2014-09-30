@@ -269,24 +269,32 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 		// Es konnte ein Sektor für eine Minorrace generiert werden
 		if (bMinor)
 		{
-			float currentHabitants = 0.0f;
-			USHORT random = rand()%3+1;
-			// Solange Planeten generieren, bis mind. eine zufällige Anzahl Bevölkerung darauf leben
-			do
+			while(true)
 			{
-				this->CreatePlanets();
-				currentHabitants = this->GetCurrentHabitants();
-				if (currentHabitants > 20.000f)
-					break;
-				// Wenn schon Bevölkerung vorhanden ist und die maximale Bevölkerungsanzahl hoch genug ist,
-				// so wird abgebrochen
-				if (currentHabitants > 0.0f)
+				float currentHabitants = 0.0f;
+				USHORT random = rand()%3+1;
+				// Solange Planeten generieren, bis mind. eine zufällige Anzahl Bevölkerung darauf leben
+				do
 				{
-					const float maxHabitants = GetMaxHabitants();
-					if (maxHabitants > (40.000f + random * 7))
+					this->CreatePlanets();
+					currentHabitants = this->GetCurrentHabitants();
+					if (currentHabitants > 20.000f)
 						break;
-				}
-			} while (currentHabitants <= (15.000f / random));
+					// Wenn schon Bevölkerung vorhanden ist und die maximale Bevölkerungsanzahl hoch genug ist,
+					// so wird abgebrochen
+					if (currentHabitants > 0.0f)
+					{
+						const float maxHabitants = GetMaxHabitants();
+						if (maxHabitants > (40.000f + random * 7))
+							break;
+					}
+				} while (currentHabitants <= (15.000f / random));
+
+				//ensure every major race can build type 2 shipyard so all minor ships can be build
+				const boost::shared_ptr<CMinor>& minor = boost::dynamic_pointer_cast<CMinor>(m_HomeOf);
+				if(!minor->GetSpaceflightNation() || GetMaxHabitants() >= 30.0f)
+					break;
+			}
 		}
 		else
 		{
