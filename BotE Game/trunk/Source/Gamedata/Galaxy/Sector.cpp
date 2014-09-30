@@ -196,6 +196,14 @@ float CSector::GetCurrentHabitants() const
 	return currentHabitants;
 }
 
+float CSector::GetMaxHabitants() const
+{
+	float maxHabitants = 0.0f;
+	for(const_iterator it = begin(); it != end(); ++it)
+		maxHabitants += it->GetCurrentHabitant();
+	return maxHabitants;
+}
+
 /// Diese Funktion berechnet die vorhandenen Rohstoffe der Planeten im Sektor. Übergebn wird dafür ein Feld für
 /// die Ressourcen <code>res</code>.
 void CSector::GetAvailableResources(BOOLEAN bResources[RESOURCES::DERITIUM + 1], BOOLEAN bOnlyColonized/* = true */) const
@@ -274,9 +282,7 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 				// so wird abgebrochen
 				if (currentHabitants > 0.0f)
 				{
-					float maxHabitants = 0.0f;
-					for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
-						maxHabitants += m_Planets.at(i).GetMaxHabitant();
+					const float maxHabitants = GetMaxHabitants();
 					if (maxHabitants > (40.000f + random * 7))
 						break;
 				}
@@ -370,9 +376,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 							continue;
 
 						// maximale Bevölkerung prüfen
-						float fMaxHabitants = 0.0f;
-						for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
-							fMaxHabitants += m_Planets.at(i).GetMaxHabitant();
+						const float fMaxHabitants = GetMaxHabitants();
 						if (fMaxHabitants > 65.000f || fMaxHabitants < 45.000f)
 							continue;
 

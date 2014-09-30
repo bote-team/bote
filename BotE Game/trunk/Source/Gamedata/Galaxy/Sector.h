@@ -108,6 +108,8 @@ public:
 	/// Funktion gibt alle Einwohner aller Planeten in dem Sektor zurück.
 	float GetCurrentHabitants() const;
 
+	float GetMaxHabitants() const;
+
 	/// Diese Funktion berechnet die vorhandenen Rohstoffe der Planeten im Sektor. Übergebn wird dafür ein Feld für
 	/// die Ressourcen <code>res</code>.
 	void GetAvailableResources(BOOLEAN bResources[RESOURCES::DERITIUM + 1], BOOLEAN bOnlyColonized = true) const;

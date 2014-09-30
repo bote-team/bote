@@ -236,14 +236,8 @@ void CSystemAI::CalcPriorities()
 	if (m_pDoc->GetSystem(ko.x, ko.y).GetAssemblyList()->GetAssemblyListEntry(0) != 0)
 		return;
 
-	double dMaxHab = 0.0;
 	const CSector& sector = m_pDoc->GetSystem(ko.x, ko.y);
-	for(CSector::const_iterator it = sector.begin(); it != sector.end(); ++it)
-		if (it->GetCurrentHabitant() > 0.0)
-			dMaxHab += it->GetMaxHabitant();
-	// wenn die Maximale Anzahl an Einwohnern 1.25 mal größer als die aktuelle Anzahl der Einwoher ist, dann
-	// werden Gebäudebauprioritäten verdoppelt
-	dMaxHab	= max(1.0, dMaxHab);
+	const double dMaxHab = max(1.0,sector.GetMaxHabitants());
 
 	// zuallererst werden erstmal alle Prioritäten berechnet
 	// Nahrung
