@@ -568,10 +568,11 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 
 	// Jetzt noch die angesammelten AcceptancePoints der corruptedMajor verringern.
 	// Somit haben wir hier die Möglichkeit, diese Punkte durch Bestechung zu verringern.
-	// Bis jetzt wird der Wert noch durch nichts modifiziert.
-	// zum Algorithmus:
-	// Ich berechne nCredits/15 und ziehe den erhaltenen Wert von den AcceptancePoints ab
-	pMinor->SetAcceptancePoints(info.m_sCorruptedRace, -nCredits / 15);
+	const int acceptance = pMinor->GetAcceptancePoints(pCorruptedMajor->GetRaceID())
+		- pMinor->GetAcceptancePoints(pFromMajor->GetRaceID());
+	const float acceptance_ratio= acceptance / 5000.0f;
+	const int acceptance_reduction = -nCredits / 15 * (1- acceptance_ratio);
+	pMinor->SetAcceptancePoints(info.m_sCorruptedRace, acceptance_reduction);
 
 	// Der Betrag der Credits kanns zwischen 0 und ca. 13.000 liegen.
 	// Dieser zusätzliche Betrag kann die Bestechung erleichtern.
@@ -602,6 +603,9 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 	case 4: // sehr viel (sehr bestechlich)
 			nCorruptionValue = 80;	break;
 	}
+
+	//106 so that it is impossible for a minor with maximum acceptance and relation to leave its current major
+	nCorruptionValue += acceptance_ratio * (106 - nCorruptionValue);
 
 	short nValue = 0;
 
