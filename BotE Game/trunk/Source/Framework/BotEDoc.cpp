@@ -1057,18 +1057,56 @@ void CBotEDoc::GenerateGalaxy()
 		system.SetResourceStore(RESOURCES::DERITIUM, 3);
 
 		// Zwei Sonnensysteme in unmittelbarer Umgebung des Heimatsystems anlegen
-		BYTE nextSunSystems = 0;
-		while (nextSunSystems < 2)
+		int nearbysystems = 2;
+		CIniLoader::GetInstance()->ReadValue("Special", "NEARBYSYSTEMS", nearbysystems);
+		nearbysystems = max(min(nearbysystems, 8), 0);
+		const CPoint temp1[] = {
+			CPoint(raceKO.x - 1, raceKO.y - 1),
+			CPoint(raceKO.x, raceKO.y - 1),
+			CPoint(raceKO.x + 1, raceKO.y - 1),
+			CPoint(raceKO.x - 1, raceKO.y),
+			CPoint(raceKO.x + 1, raceKO.y),
+			CPoint(raceKO.x - 1, raceKO.y + 1),
+			CPoint(raceKO.x, raceKO.y + 1),
+			CPoint(raceKO.x + 1, raceKO.y + 1)
+		};
+		std::vector<CPoint> inner(temp1, temp1 + sizeof(temp1) / sizeof(temp1[0]));
+		const CPoint temp2[] = {
+			CPoint(raceKO.x - 2, raceKO.y - 2),
+			CPoint(raceKO.x - 1, raceKO.y - 2),
+			CPoint(raceKO.x, raceKO.y - 2),
+			CPoint(raceKO.x + 1, raceKO.y - 2),
+			CPoint(raceKO.x + 2, raceKO.y - 2),
+			CPoint(raceKO.x - 2, raceKO.y - 1),
+			CPoint(raceKO.x + 2, raceKO.y - 1),
+			CPoint(raceKO.x - 2, raceKO.y),
+			CPoint(raceKO.x + 2, raceKO.y),
+			CPoint(raceKO.x - 2, raceKO.y + 1),
+			CPoint(raceKO.x + 2, raceKO.y + 1),
+			CPoint(raceKO.x - 2, raceKO.y + 2),
+			CPoint(raceKO.x - 1, raceKO.y + 2),
+			CPoint(raceKO.x, raceKO.y + 2),
+			CPoint(raceKO.x + 1, raceKO.y + 2),
+			CPoint(raceKO.x + 2, raceKO.y + 2),
+		};
+		std::vector<CPoint> outer(temp2, temp2 + sizeof(temp2) / sizeof(temp2[0]));
+
+		while (nearbysystems > 0)
 		{
-			// Punkt mit Koordinaten zwischen -1 und +1 generieren
-			CPoint dist(rand()%3 - 1, rand()%3 - 1);
-			CPoint pt(raceKO.x + dist.x, raceKO.y + dist.y);
-			if (pt.x < STARMAP_SECTORS_HCOUNT && pt.x > -1 && pt.y < STARMAP_SECTORS_VCOUNT && pt.y > -1)
-				if (!GetSystem(pt.x, pt.y).GetSunSystem())
-				{
-					GetSystem(pt.x, pt.y).GenerateSector(100, nMinorDensity);
-					nextSunSystems++;
-				}
+			AssertBotE(!inner.empty() || !outer.empty());
+			std::vector<CPoint>* candidates = &inner;
+			if(inner.empty())
+				candidates = &outer;
+			const int index = rand() % candidates->size();
+			const CPoint p = candidates->at(index);
+			candidates->erase(candidates->begin() + index);
+			if(!IsOnMap(p.x, p.y))
+				continue;
+			nearbysystems--;
+			CSystem& system = GetSystem(p.x, p.y);
+			if(system.GetSunSystem())
+				continue;
+			system.GenerateSector(100, nMinorDensity);
 		};
 
 		// In einem Radius von einem Feld um das Hauptsystem die Sektoren scannen
