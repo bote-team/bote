@@ -200,7 +200,7 @@ float CSector::GetMaxHabitants() const
 {
 	float maxHabitants = 0.0f;
 	for(const_iterator it = begin(); it != end(); ++it)
-		maxHabitants += it->GetCurrentHabitant();
+		maxHabitants += it->GetMaxHabitant();
 	return maxHabitants;
 }
 
