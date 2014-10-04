@@ -61,15 +61,19 @@ private:
 	BOOL m_bInvertMouse;
 	BOOL m_bHideMenu;
 
-	// Special (Ingame)
-	CEdit m_edtRandomSeed;
+	//Galaxy
+	CEdit m_edtNearbysystems;
 	CSliderCtrl m_ctrlStarDensity;
 	CSliderCtrl m_ctrlMinorDensity;
 	CSliderCtrl m_ctrlAnomalyDensity;
-	CSliderCtrl m_ctrlAlienFrequency;
 	CComboBox m_comboGalaxysize;
 	CComboBox m_comboGalaxyshape;
+
+	// Special (Ingame)
+	CEdit m_edtRandomSeed;
+	CSliderCtrl m_ctrlAlienFrequency;
 	BOOL m_bRandomEvents;
+	CComboBox m_comboExpansionspeed;
 
 	// Victory Conditions
 	BOOL m_bVCElimination;

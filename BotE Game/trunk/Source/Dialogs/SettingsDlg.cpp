@@ -71,6 +71,8 @@ void CSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_VC_SABOTAGE, m_bVCSabotage);
 	DDX_Check(pDX, IDC_CHECK_SHOWEVENTPICTURES, m_bShowEventPictures);
 	DDX_Check(pDX, IDC_CHECK_RANDOMEVENTS, m_bRandomEvents);
+	DDX_Control(pDX, IDC_EDIT_NEARBYSYSTEMS, m_edtNearbysystems);
+	DDX_Control(pDX, IDC_COMBOEXPANSIONSPEED, m_comboExpansionspeed);
 }
 
 
@@ -129,6 +131,14 @@ BOOL CSettingsDlg::OnInitDialog()
 		pCtrl->SetWindowText(m_sDifficulty);
 
 	//Galaxy
+	int nearbysystems = 2;
+	if (!pIni->ReadValue("Galaxy", "NEARBYSYSTEMS", nearbysystems))
+		AssertBotE(false);
+	nearbysystems = max(min(nearbysystems, 8), 0);
+	CString sNearbysystems;
+	sNearbysystems.Format("%i", nearbysystems);
+	m_edtNearbysystems.SetWindowText(sNearbysystems);
+
 	int nStarDensity = 35;
 	if (!pIni->ReadValue("Galaxy", "STARDENSITY", nStarDensity))
 		AssertBotE(false);
@@ -270,6 +280,19 @@ BOOL CSettingsDlg::OnInitDialog()
 		AssertBotE(false);
 	m_bRandomEvents = bRandomEvents;
 
+	m_comboExpansionspeed.AddString("SLOW");
+	m_comboExpansionspeed.AddString("MEDIUM");
+	m_comboExpansionspeed.AddString("CLASSIC");
+	m_comboExpansionspeed.AddString("FAST");
+	CString speed;
+	if (!pIni->ReadValue("Special", "EXPANSIONSPEED", speed))
+		AssertBotE(false);
+	const int found = m_comboExpansionspeed.FindString(-1, speed);
+	if(found == CB_ERR)
+		m_comboExpansionspeed.SetCurSel(2);
+	else
+		m_comboExpansionspeed.SetCurSel(found);
+
 	// Victory Conditions
 	bool bVCElimination = true;
 	if (!pIni->ReadValue("Victory_Conditions", "Elimination", bVCElimination))
@@ -399,20 +422,23 @@ void CSettingsDlg::OnOK()
 	// Special (Ingame)
 	m_edtRandomSeed.GetWindowText(s);
 	pIni->WriteValue("Special", "RANDOMSEED", s);
+	s.Format("%d", m_ctrlAlienFrequency.GetPos());
+	pIni->WriteValue("Special", "ALIENENTITIES", s);
+	m_bRandomEvents == TRUE ? s = "ON" : s = "OFF";
+	pIni->WriteValue("Special", "RANDOMEVENTS", s);
+	m_comboExpansionspeed.GetLBText(m_comboExpansionspeed.GetCurSel(), s);
+	pIni->WriteValue("Special", "EXPANSIONSPEED", s);
+
+	//Galaxy
+	m_edtNearbysystems.GetWindowText(s);
+	pIni->WriteValue("Galaxy", "NEARBYSYSTEMS", s);
 	s.Format("%d", m_ctrlStarDensity.GetPos());
 	pIni->WriteValue("Galaxy", "STARDENSITY", s);
 	s.Format("%d", m_ctrlMinorDensity.GetPos());
 	pIni->WriteValue("Galaxy", "MINORDENSITY", s);
 	s.Format("%d", m_ctrlAnomalyDensity.GetPos());
 	pIni->WriteValue("Galaxy", "ANOMALYDENSITY", s);
-	s.Format("%d", m_ctrlAlienFrequency.GetPos());
-	pIni->WriteValue("Special", "ALIENENTITIES", s);
-	m_bRandomEvents == TRUE ? s = "ON" : s = "OFF";
-	pIni->WriteValue("Special", "RANDOMEVENTS", s);
-	s.Format("%d", m_comboGalaxyshape.GetCurSel());
-	pIni->WriteValue("Galaxy", "GENERATIONMODE", s);
 
-	//Galaxysize
 	int choosen=m_comboGalaxysize.GetCurSel();
 	if(choosen==0)
 	{
@@ -442,6 +468,8 @@ void CSettingsDlg::OnOK()
 		s.Format("%d",30);
 		pIni->WriteValue("Galaxy", "MAPSIZEV", s);
 	}
+	s.Format("%d", m_comboGalaxyshape.GetCurSel());
+	pIni->WriteValue("Galaxy", "GENERATIONMODE", s);
 
 	// Victory Conditions
 	m_bVCElimination == TRUE ? s = "ON" : s = "OFF";

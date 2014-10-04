@@ -134,6 +134,7 @@
 #define IDC_STATIC_DEUTERIUM            1082
 #define IDC_STATIC_DURANIUM             1083
 #define IDC_STATIC_CRYSTAL              1084
+#define IDC_COMBOEXPANSIONSPEED         1084
 #define IDC_STATIC_PRODUCTION8          1085
 #define IDC_STATIC_IRIDIUM              1085
 #define IDC_SLIDER_PRODUCTION3          1086
@@ -149,6 +150,7 @@
 #define IDC_BUTTON3                     1094
 #define IDC_BUTTON_CLEAR_INGORED_BUILDINGS 1094
 #define IDC_EDIT_IGNORED_BUILDING       1095
+#define IDC_EDIT_NEARBYSYSTEMS          1096
 #define ID_OPTIONEN                     32773
 #define ID_INFORMATION                  32774
 #define ID_DATENBANK                    32775
@@ -176,7 +178,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        192
 #define _APS_NEXT_COMMAND_VALUE         32792
-#define _APS_NEXT_CONTROL_VALUE         1096
+#define _APS_NEXT_CONTROL_VALUE         1097
 #define _APS_NEXT_SYMED_VALUE           107
 #endif
 #endif
