@@ -861,7 +861,7 @@ std::vector<std::string> CBotEDoc::GetForcedMinors() const
 {
 	std::vector<std::string> result;
 	CString forced_minors;
-	if(CIniLoader::GetInstance()->ReadValue("Special", "MINORS", forced_minors))
+	if(CIniLoader::GetInstance()->ReadValue("Galaxy", "MINORS", forced_minors))
 	{
 		const std::string minors(CStrToStr(forced_minors));
 		std::string::const_iterator s = minors.begin();
@@ -898,13 +898,13 @@ void CBotEDoc::GenerateGalaxy()
 	// Galaxiengröße festlegen
 	CIniLoader* pIni = CIniLoader::GetInstance();
 
-	int nMapHeight = STARMAP_SECTORS_VCOUNT;
-	if (pIni->ReadValue("Special", "MAPSIZEV", nMapHeight))
-		STARMAP_SECTORS_VCOUNT = nMapHeight;
-
 	int nMapWidth = STARMAP_SECTORS_HCOUNT;
-	if (pIni->ReadValue("Special", "MAPSIZEH", nMapWidth))
+	if (pIni->ReadValue("Galaxy", "MAPSIZEH", nMapWidth))
 		STARMAP_SECTORS_HCOUNT = nMapWidth;
+
+	int nMapHeight = STARMAP_SECTORS_VCOUNT;
+	if (pIni->ReadValue("Galaxy", "MAPSIZEV", nMapHeight))
+		STARMAP_SECTORS_VCOUNT = nMapHeight;
 
 	// Vektoren für Sektoren und Systeme anlegen
 	AllocateSystems();
@@ -912,7 +912,7 @@ void CBotEDoc::GenerateGalaxy()
 	///////////////////////////////////////////////////////////////////////
 	// Galaxieform anpassen
 	int nGenerationMode = 0; // 0 == Standard  sonst Pattern verwenden
-	pIni->ReadValue("Special", "GENERATIONMODE", nGenerationMode);
+	pIni->ReadValue("Galaxy", "GENERATIONMODE", nGenerationMode);
 
 	std::vector<std::vector<bool>> nGenField(STARMAP_SECTORS_HCOUNT, std::vector<bool>(STARMAP_SECTORS_VCOUNT, true));
 	if (nGenerationMode != 0)
@@ -1028,9 +1028,9 @@ void CBotEDoc::GenerateGalaxy()
 	int nStarDensity = 35;
 	int nMinorDensity = 30;
 	int nAnomalyDensity = 9;
-	CIniLoader::GetInstance()->ReadValue("Special", "STARDENSITY", nStarDensity);
-	CIniLoader::GetInstance()->ReadValue("Special", "MINORDENSITY", nMinorDensity);
-	CIniLoader::GetInstance()->ReadValue("Special", "ANOMALYDENSITY", nAnomalyDensity);
+	CIniLoader::GetInstance()->ReadValue("Galaxy", "STARDENSITY", nStarDensity);
+	CIniLoader::GetInstance()->ReadValue("Galaxy", "MINORDENSITY", nMinorDensity);
+	CIniLoader::GetInstance()->ReadValue("Galaxy", "ANOMALYDENSITY", nAnomalyDensity);
 	// Bei anderen Galaxieformen die Sternendichte verdoppeln, damit mehr Systeme generiert werden.
 	// Sonst ist die Galaxie doch arg leer.
 	if (nGenerationMode != 0)
@@ -1058,7 +1058,7 @@ void CBotEDoc::GenerateGalaxy()
 
 		// Zwei Sonnensysteme in unmittelbarer Umgebung des Heimatsystems anlegen
 		int nearbysystems = 2;
-		CIniLoader::GetInstance()->ReadValue("Special", "NEARBYSYSTEMS", nearbysystems);
+		CIniLoader::GetInstance()->ReadValue("Galaxy", "NEARBYSYSTEMS", nearbysystems);
 		nearbysystems = max(min(nearbysystems, 8), 0);
 		const CPoint temp1[] = {
 			CPoint(raceKO.x - 1, raceKO.y - 1),

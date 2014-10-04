@@ -128,14 +128,40 @@ BOOL CSettingsDlg::OnInitDialog()
 	if (pCtrl)
 		pCtrl->SetWindowText(m_sDifficulty);
 
-	//Galaxysize
+	//Galaxy
+	int nStarDensity = 35;
+	if (!pIni->ReadValue("Galaxy", "STARDENSITY", nStarDensity))
+		AssertBotE(false);
+	m_ctrlStarDensity.SetPos(nStarDensity);
+
+	int nMinorDensity = 30;
+	if (!pIni->ReadValue("Galaxy", "MINORDENSITY", nMinorDensity))
+		AssertBotE(false);
+	m_ctrlMinorDensity.SetPos(nMinorDensity);
+
+	int nAnomalyDensity = 9;
+	if (!pIni->ReadValue("Galaxy", "ANOMALYDENSITY", nAnomalyDensity))
+		AssertBotE(false);
+	m_ctrlAnomalyDensity.SetPos(nAnomalyDensity);
+
+	//Galaxyshape
+	m_comboGalaxyshape.AddString("irregular");
+	m_comboGalaxyshape.AddString("elliptic");
+	m_comboGalaxyshape.AddString("spiral");
+	m_comboGalaxyshape.AddString("ring");
+	m_comboGalaxyshape.AddString("lenticular");
+	m_comboGalaxyshape.AddString("islands");
+    int genMode=0;
+	pIni->ReadValue("Galaxy", "GENERATIONMODE", genMode);
+	m_comboGalaxyshape.SetCurSel(genMode);
+
 	m_comboGalaxysize.AddString("TINY 15x10");
 	m_comboGalaxysize.AddString("SMALL 20x15");
 	m_comboGalaxysize.AddString("CLASSIC 30x20");
 	m_comboGalaxysize.AddString("HUGE 40x30");
 	int sizeh=30,sizev=20;
-	pIni->ReadValue("Special", "MAPSIZEH", sizeh);
-	pIni->ReadValue("Special", "MAPSIZEV", sizev);
+	pIni->ReadValue("Galaxy", "MAPSIZEH", sizeh);
+	pIni->ReadValue("Galaxy", "MAPSIZEV", sizev);
 	if(sizeh==15&&sizev==10)
 	{
 		m_comboGalaxysize.SetCurSel(0);
@@ -159,19 +185,6 @@ BOOL CSettingsDlg::OnInitDialog()
 		m_comboGalaxysize.AddString(s);
 		m_comboGalaxysize.SetCurSel(3);
 	}
-
-	//Galaxyshape
-	m_comboGalaxyshape.AddString("irregular");
-	m_comboGalaxyshape.AddString("elliptic");
-	m_comboGalaxyshape.AddString("spiral");
-	m_comboGalaxyshape.AddString("ring");
-	m_comboGalaxyshape.AddString("lenticular");
-	m_comboGalaxyshape.AddString("islands");
-    int genMode=0;
-	pIni->ReadValue("Special", "GENERATIONMODE", genMode);
-	m_comboGalaxyshape.SetCurSel(genMode);
-
-
 
 
 	// Audio
@@ -246,21 +259,6 @@ BOOL CSettingsDlg::OnInitDialog()
 	CString sRandomSeed;
 	sRandomSeed.Format("%d", nRandomSeed);
 	m_edtRandomSeed.SetWindowText(sRandomSeed);
-
-	int nStarDensity = 35;
-	if (!pIni->ReadValue("Special", "STARDENSITY", nStarDensity))
-		AssertBotE(false);
-	m_ctrlStarDensity.SetPos(nStarDensity);
-
-	int nMinorDensity = 30;
-	if (!pIni->ReadValue("Special", "MINORDENSITY", nMinorDensity))
-		AssertBotE(false);
-	m_ctrlMinorDensity.SetPos(nMinorDensity);
-
-	int nAnomalyDensity = 9;
-	if (!pIni->ReadValue("Special", "ANOMALYDENSITY", nAnomalyDensity))
-		AssertBotE(false);
-	m_ctrlAnomalyDensity.SetPos(nAnomalyDensity);
 
 	float nAlienFrequency = 0;
 	if (!pIni->ReadValue("Special", "ALIENENTITIES", nAlienFrequency))
@@ -402,47 +400,47 @@ void CSettingsDlg::OnOK()
 	m_edtRandomSeed.GetWindowText(s);
 	pIni->WriteValue("Special", "RANDOMSEED", s);
 	s.Format("%d", m_ctrlStarDensity.GetPos());
-	pIni->WriteValue("Special", "STARDENSITY", s);
+	pIni->WriteValue("Galaxy", "STARDENSITY", s);
 	s.Format("%d", m_ctrlMinorDensity.GetPos());
-	pIni->WriteValue("Special", "MINORDENSITY", s);
+	pIni->WriteValue("Galaxy", "MINORDENSITY", s);
 	s.Format("%d", m_ctrlAnomalyDensity.GetPos());
-	pIni->WriteValue("Special", "ANOMALYDENSITY", s);
+	pIni->WriteValue("Galaxy", "ANOMALYDENSITY", s);
 	s.Format("%d", m_ctrlAlienFrequency.GetPos());
 	pIni->WriteValue("Special", "ALIENENTITIES", s);
 	m_bRandomEvents == TRUE ? s = "ON" : s = "OFF";
 	pIni->WriteValue("Special", "RANDOMEVENTS", s);
 	s.Format("%d", m_comboGalaxyshape.GetCurSel());
-	pIni->WriteValue("Special", "GENERATIONMODE", s);
+	pIni->WriteValue("Galaxy", "GENERATIONMODE", s);
 
 	//Galaxysize
 	int choosen=m_comboGalaxysize.GetCurSel();
 	if(choosen==0)
 	{
 		s.Format("%d",15);
-		pIni->WriteValue("Special", "MAPSIZEH", s);//Tiny
+		pIni->WriteValue("Galaxy", "MAPSIZEH", s);//Tiny
 		s.Format("%d",10);
-		pIni->WriteValue("Special", "MAPSIZEV", s);
+		pIni->WriteValue("Galaxy", "MAPSIZEV", s);
 	}
 	else if(choosen==1)
 	{
 		s.Format("%d",20);
-		pIni->WriteValue("Special", "MAPSIZEH", s);//Small
+		pIni->WriteValue("Galaxy", "MAPSIZEH", s);//Small
 		s.Format("%d",15);
-		pIni->WriteValue("Special", "MAPSIZEV", s);
+		pIni->WriteValue("Galaxy", "MAPSIZEV", s);
 	}
 	else if(choosen==2)
 	{
 		s.Format("%d",30);
-		pIni->WriteValue("Special", "MAPSIZEH", s);//Classic
+		pIni->WriteValue("Galaxy", "MAPSIZEH", s);//Classic
 		s.Format("%d",20);
-		pIni->WriteValue("Special", "MAPSIZEV", s);
+		pIni->WriteValue("Galaxy", "MAPSIZEV", s);
 	}
 	else if(choosen==3)
 	{
 		s.Format("%d",40);
-		pIni->WriteValue("Special", "MAPSIZEH", s);//Huge
+		pIni->WriteValue("Galaxy", "MAPSIZEH", s);//Huge
 		s.Format("%d",30);
-		pIni->WriteValue("Special", "MAPSIZEV", s);
+		pIni->WriteValue("Galaxy", "MAPSIZEV", s);
 	}
 
 	// Victory Conditions

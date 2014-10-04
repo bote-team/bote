@@ -45,20 +45,25 @@ CIniLoader::CIniLoader(void)
 		WriteValue("Control", "INVERTMOUSE", "OFF");
 		WriteValue("Control", "HIDEMENUBAR", "OFF");
 
+		WriteValue("Galaxy", "STARDENSITY", "35");
+		WriteValue("Galaxy", "MINORDENSITY", "30");
+		WriteValue("Galaxy", "ANOMALYDENSITY", "9");
+		WriteValue("Galaxy", "GENERATIONMODE", "0");
+		WriteValue("Galaxy", "MAPSIZEH", "30");
+		WriteValue("Galaxy", "MAPSIZEV", "20");
+		WriteValue("Galaxy", "NEARBYSYSTEMS", "2");
+		WriteValue("Galaxy", "MINORS", "");
+
 		WriteValue("Special", "VERSION", CString(VERSION_INFORMATION.c_str()));
 		WriteValue("Special", "RANDOMSEED", "-1");
-		WriteValue("Special", "STARDENSITY", "35");
-		WriteValue("Special", "MINORDENSITY", "30");
-		WriteValue("Special", "ANOMALYDENSITY", "9");
-		WriteValue("Special", "GENERATIONMODE", "0");
-		WriteValue("Special", "MAPSIZEV", "20");
-		WriteValue("Special", "MAPSIZEH", "30");
+
 		const int aliens = CSettingsDlg::max_alien_frequency / 6;
 		CString s;
 		s.Format("%i", aliens);
 		WriteValue("Special", "ALIENENTITIES", s);
 		WriteValue("Special", "RANDOMEVENTS", "ON");
 		WriteValue("Special", "RESEARCHSPEED", "1.25");
+		WriteValue("Special", "EXPANSIONSPEED", "CLASSIC");
 
 		WriteValue("Victory_Conditions", "Elimination", "ON");
 		WriteValue("Victory_Conditions", "Diplomacy", "OFF");
