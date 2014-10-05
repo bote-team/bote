@@ -366,6 +366,12 @@ BOOL CSettingsDlg::OnInitDialog()
 		pWnd = GetDlgItem(IDC_CHECK_RANDOMEVENTS);
 		if (pWnd)
 			pWnd->EnableWindow(FALSE);
+		pWnd = GetDlgItem(IDC_EDIT_NEARBYSYSTEMS);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
+		pWnd = GetDlgItem(IDC_COMBOEXPANSIONSPEED);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
 	}
 
 	UpdateData(false);
