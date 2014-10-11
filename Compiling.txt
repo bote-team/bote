@@ -1,0 +1,26 @@
+The build process is now (2014-10-11):  see https://github.com/bote-team/bote/commit/dfae1b4c63931ae4b993bf2202cb40d3836e377a (with additions by Reginald)
+
+1. build lzma lib project (BotE Tools\LZMALib\C\7zip\Compress\LZMA_Alone\AloneLZMA.sln)
+   1a) "Debug"__ (bitte immer "Neu erstellen"/"New building!"): generates BotE Tools\LZMALib\C\7zip\Compress\LZMA_Alone\lib-debug\BotE_LZMA.lib
+   1b) "Release" (bitte immer "Neu erstellen"/"New building!"): generates BotE Tools\LZMALib\C\7zip\Compress\LZMA_Alone\lib-relase\BotE_LZMA.lib
+
+2. build network lib project (BotE Tools\NetworkLib\BotE Network.sln)
+   2a) "Debug"__ (bitte immer "Neu erstellen"/"New building!"): generates BotE Tools\NetworkLib\lib-debug\BotE_Network.lib
+   2b) "Release" (bitte immer "Neu erstellen"/"New building!"): generates BotE Tools\NetworkLib\lib-release\BotE_Network.lib
+
+3. build BotE itself (BotE Game\trunk\Bote.sln)
+   3a) "Debug"__ (bitte immer "Neu erstellen"/"New building!"): generates BotE Game\trunk\Debug\Bote.exe (about 8 MB, "Debug" needs much longer time to execute everything)
+   3b) "Release" (bitte immer "Neu erstellen"/"New building!"): generates BotE Game\trunk\Release\Bote.exe (about 3.6 MB...original Bote.exe is shrinked additional)
+
+In the long run, we should merge the three into a single sln (while keeping
+them in single projects).
+This has the following effects:
+- we can computer independently debug into lzma lib
+- cppcheck and memory checker tools can improve lzma lib
+- the linker warnings about missing debug info are gone - we are at 0 :)
+- compilation with VS2010 (and possibly newer) is supposed to work.
+To compile with VS2010 (or newer), one has to use the upgrade assistant
+for the three projects mentioned above and compile them in said order.
+No guarantee that there won't be any further problems; however, when
+I last tried vc10 the lzma lib being compiled with vc8 seemed to be
+the only problem.
