@@ -54,6 +54,9 @@ protected: // Nur aus Serialisierung erzeugen
 	bool m_bRoundEndPressed;			///< Wurde der Rundenendebutton gedrückt
 	bool m_bDontExit;					///< hartes Exit verhindern, wenn Spiel beginnt
 	bool m_bGameLoaded;					///< wurde im Dialog ein zu ladendes Spiel ausgewählt
+	bool m_bTutorialLoaded;				///< wurde im Dialog ein Tutorial-Spiel ausgewählt
+	static const int m_bTutorialBoxNumber = 25;	///< Maximale Anzahl von Tutorialboxen im Tutorial-Spiel
+	bool m_bTutorialBoxAlreadyShown[m_bTutorialBoxNumber]; ///< wurde im Tutorial-Spiel schon die entsprechende Messagebox angezeigt
 
 	CRaceController* m_pRaceCtrl;		///< Rassencontroller für alle Rassen des Spiels
 	CClientWorker* m_pClientWorker;

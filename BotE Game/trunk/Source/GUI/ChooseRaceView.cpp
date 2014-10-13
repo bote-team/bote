@@ -104,7 +104,7 @@ void CChooseRaceView::OnDraw(CDC* dc)
 
 	CString sVersion = "Birth of the Empires Alpha7 V";
 	sVersion += CString(VERSION_INFORMATION.c_str());
-	sVersion += "\n© by Sir Pustekuchen 2013";
+	sVersion += "\n© by Sir Pustekuchen 2014";
 	g.DrawString(CComBSTR(sVersion), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(static_cast<Gdiplus::ARGB>(Color::WhiteSmoke)));
 
 	// Umrandung für die Buttons zeichnen
@@ -180,6 +180,13 @@ void CChooseRaceView::OnDraw(CDC* dc)
 			g.DrawImage(graphic, 575, 207, 100, 100);
 	}
 
+	if ((pDoc->m_bTutorialLoaded) && (!(pDoc->m_bTutorialBoxAlreadyShown[0])))
+	{	
+		pDoc->m_bTutorialBoxAlreadyShown[0] = true;
+		CString msg;
+		msg = CLoc::GetString("TNEWGAME");
+		AfxMessageBox(msg, MB_ICONINFORMATION | MB_OK);
+	}
 	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
@@ -491,7 +498,6 @@ void CChooseRaceView::OnBnStartGameClicked()
 		if (!server.IsPlayedByClient(race))
 			server.SetPlayByServer(race,TRUE,FALSE);
 	}
-
 	// Spiel starten; veranlasst die Clients, auf die nächste Seite zu wechseln
 	pDoc->PrepareData();
 	server.BeginGame(pDoc);
@@ -522,6 +528,7 @@ void CChooseRaceView::OnBnCancelClicked()
 	resources::pMainFrame->SelectStartMenuView(VIEWS::START_VIEW);
 	pDoc->m_ShipMap.Reset();
 	pDoc->GetRaceCtrl()->ReInit();
+	if (pDoc->m_bTutorialLoaded) { pDoc->m_bTutorialBoxAlreadyShown[0] = false; }
 }
 
 void CChooseRaceView::AddChatMsg(const CString& name, const CString& msg)

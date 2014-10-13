@@ -555,6 +555,13 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 
 	pOldPen->DeleteObject();
 
+	if ((pDoc->m_bTutorialLoaded) && (!(pDoc->m_bTutorialBoxAlreadyShown[1])))
+	{	
+		pDoc->m_bTutorialBoxAlreadyShown[1] = true;
+		CString msg;
+		msg = CLoc::GetString("TGALAXYMAP");
+		AfxMessageBox(msg, MB_ICONINFORMATION | MB_OK);
+	}
 	g.ReleaseHDC(pDC.GetSafeHdc());
 }
 

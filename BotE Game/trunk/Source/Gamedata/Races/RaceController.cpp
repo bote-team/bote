@@ -442,7 +442,7 @@ bool CRaceController::InitAlienEntities(int nSource/* = RACESOURCE_DATAFILE*/)
 			if (m_mRaces.find(pAlien->GetRaceID()) != m_mRaces.end())
 			{
 				CString s;
-				s.Format("Error in file AlienEntities.data!\nThe race-ID %s exists more then one time!", pAlien->GetRaceID());
+				s.Format("Error in file AlienEntities.data!\nThe race-ID %s exists more than one time!", pAlien->GetRaceID());
 				AfxMessageBox(s);
 			}
 			else

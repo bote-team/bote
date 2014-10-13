@@ -84,7 +84,8 @@ CBotEDoc::CBotEDoc() :
 	m_ptCurrentCombatSector(-1, -1),
 	m_bCombatCalc(false),
 	m_nCombatOrder(COMBAT_ORDER::NONE),
-	m_bNewGame(true)
+	m_bNewGame(true),
+	m_bTutorialLoaded(false)
 {
 	resources::pDoc = this;
 

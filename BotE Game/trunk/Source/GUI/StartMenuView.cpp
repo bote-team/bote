@@ -32,6 +32,7 @@
 
 #define MP_JOIN		6
 #define MP_CREATE	7
+#define TUTORIAL	8
 
 // CStartMenuView
 
@@ -75,6 +76,7 @@ BEGIN_MESSAGE_MAP(CStartMenuView, CFormView)
 	ON_BN_CLICKED(EXITGAME, OnBnClickedExit)
 	ON_BN_CLICKED(MP_CREATE, OnBnClickedCreateMP)
 	ON_BN_CLICKED(MP_JOIN, OnBnClickedJoinMP)
+	ON_BN_CLICKED(TUTORIAL, OnBnClickedTutorial)
 
 	ON_MESSAGE(WM_USERMSG, CStartMenuView::OnUserMsg)
 	ON_WM_ERASEBKGND()
@@ -146,7 +148,7 @@ void CStartMenuView::OnDraw(CDC* dc)
 
 	CString sVersion = "Birth of the Empires Alpha7 V";
 	sVersion += CString(VERSION_INFORMATION.c_str());
-	sVersion += "\n© by Sir Pustekuchen 2013";
+	sVersion += "\n© by Sir Pustekuchen 2014";
 	g.DrawString(CComBSTR(sVersion), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(static_cast<Gdiplus::ARGB>(Color::WhiteSmoke)));
 
 	// Hintergrundbild langsam einblenden
@@ -235,6 +237,7 @@ void CStartMenuView::OnInitialUpdate()
 	m_btLoadGame.Create(_T(CLoc::GetString("LOADGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 2, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 2 + nButtonSizeY), this, LOADGAME);
 	m_btOptions.Create(_T(CLoc::GetString("SETTINGS")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 3, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 3 + nButtonSizeY), this, OPTIONS);
 	m_btExit.Create(_T(CLoc::GetString("LEAVE")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 4, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 4 + nButtonSizeY), this, EXITGAME);
+	m_btTutorial.Create(_T(CLoc::GetString("TUTORIAL")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 5, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 5 + nButtonSizeY), this, TUTORIAL);
 
 	m_btMPServer.Create(_T(CLoc::GetString("CREATEGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 1, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 1 + nButtonSizeY), this, MP_CREATE);
 	m_btMPClient.Create(_T(CLoc::GetString("JOINGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 2, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 2 + nButtonSizeY), this, MP_JOIN);
@@ -260,6 +263,8 @@ void CStartMenuView::OnInitialUpdate()
 	resources::pMainFrame->AddToTooltip(GetDlgItem(OPTIONS), sTooltip);
 	sTooltip = CHTMLStringBuilder::GetHTMLColor(CLoc::GetString("LEAVETT"), _T("silver"));
 	resources::pMainFrame->AddToTooltip(GetDlgItem(EXITGAME), sTooltip);
+	sTooltip = CHTMLStringBuilder::GetHTMLColor(CLoc::GetString("TUTORIALTT"), _T("silver"));
+	resources::pMainFrame->AddToTooltip(GetDlgItem(TUTORIAL), sTooltip);
 
 	sTooltip = CHTMLStringBuilder::GetHTMLColor(CLoc::GetString("CREATEGAMETT"), _T("silver"));
 	resources::pMainFrame->AddToTooltip(GetDlgItem(MP_CREATE), sTooltip);
@@ -352,6 +357,22 @@ void CStartMenuView::OnBnClickedExit()
 	server.Stop();
 
 	AfxGetApp()->GetMainWnd()->PostMessage(WM_CLOSE);
+}
+
+void CStartMenuView::OnBnClickedTutorial()
+{
+	int i;
+	CBotEDoc* pDoc = resources::pDoc;
+	AssertBotE(pDoc);
+	pDoc->m_bGameLoaded = false;
+	pDoc->m_bTutorialLoaded = true;
+	for (i=0; i<(pDoc->m_bTutorialBoxNumber); i++)
+	{	
+		pDoc->m_bTutorialBoxAlreadyShown[i] = false;
+	}
+
+	m_pNewGameView->SetMode(MODE_SERVER);
+	m_pNewGameView->StartServer(false);
 }
 
 LRESULT CStartMenuView::OnUserMsg(WPARAM wParam, LPARAM lParam)
@@ -489,12 +510,14 @@ void CStartMenuView::ShowMPButtons(bool bShow)
 		m_btLoadGame.ShowWindow(SW_HIDE);
 		m_btOptions.ShowWindow(SW_HIDE);
 		m_btExit.ShowWindow(SW_HIDE);
+		m_btTutorial.ShowWindow(SW_HIDE);
 
 		m_btNewGame.EnableWindow(FALSE);
 		m_btMultiplayer.EnableWindow(FALSE);
 		m_btLoadGame.EnableWindow(FALSE);
 		m_btOptions.EnableWindow(FALSE);
 		m_btExit.EnableWindow(FALSE);
+		m_btTutorial.EnableWindow(FALSE);
 
 		m_btMPServer.ShowWindow(SW_SHOW);
 		m_btMPClient.ShowWindow(SW_SHOW);
@@ -509,12 +532,14 @@ void CStartMenuView::ShowMPButtons(bool bShow)
 		m_btLoadGame.ShowWindow(SW_SHOW);
 		m_btOptions.ShowWindow(SW_SHOW);
 		m_btExit.ShowWindow(SW_SHOW);
+		m_btTutorial.ShowWindow(SW_SHOW);
 
 		m_btNewGame.EnableWindow(TRUE);
 		m_btMultiplayer.EnableWindow(TRUE);
 		m_btLoadGame.EnableWindow(TRUE);
 		m_btOptions.EnableWindow(TRUE);
 		m_btExit.EnableWindow(TRUE);
+		m_btTutorial.EnableWindow(TRUE);
 
 		m_btMPServer.ShowWindow(SW_HIDE);
 		m_btMPClient.ShowWindow(SW_HIDE);

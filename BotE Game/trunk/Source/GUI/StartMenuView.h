@@ -36,6 +36,7 @@ protected:
 	CRoundButton2 m_btLoadGame;
 	CRoundButton2 m_btOptions;
 	CRoundButton2 m_btExit;
+	CRoundButton2 m_btTutorial;
 
 	CRoundButton2 m_btMPClient;
 	CRoundButton2 m_btMPServer;
@@ -76,6 +77,7 @@ protected:
 	afx_msg void OnBnClickedExit();
 	afx_msg void OnBnClickedCreateMP();
 	afx_msg void OnBnClickedJoinMP();
+	afx_msg void OnBnClickedTutorial();
 
 	afx_msg LRESULT OnUserMsg(WPARAM wParam, LPARAM lParam);
 

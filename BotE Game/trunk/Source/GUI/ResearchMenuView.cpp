@@ -76,6 +76,13 @@ void CResearchMenuView::OnDraw(CDC* dc)
 		DrawUniqueResearchMenue(&g);
 	// ************** DIE FORSCHUNGSANSICHT ZEICHNEN ist hier zu Ende **************
 	g.ReleaseHDC(pDC->GetSafeHdc());
+	if ((pDoc->m_bTutorialLoaded) && (!(pDoc->m_bTutorialBoxAlreadyShown[3])))
+	{	
+		pDoc->m_bTutorialBoxAlreadyShown[3] = true;
+		CString msg;
+		msg = CLoc::GetString("TRESEARCHMENU");
+		AfxMessageBox(msg, MB_ICONINFORMATION | MB_OK);
+	}
 }
 
 // CResearchMenuView diagnostics
