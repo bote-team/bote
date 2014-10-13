@@ -233,17 +233,17 @@ void CStartMenuView::OnInitialUpdate()
 
 	// Create a push button.
 	m_btNewGame.Create(_T(CLoc::GetString("NEWGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos, nXPos + nButtonSizeX, nYPos + nButtonSizeY), this, NEWGAME);
-	m_btMultiplayer.Create(_T(CLoc::GetString("MULTIPLAYER")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + nGab + nButtonSizeY, nXPos + nButtonSizeX, nYPos + nGab + nButtonSizeY + nButtonSizeY), this, MULTIPLAYER);
+	m_btMultiplayer.Create(_T(CLoc::GetString("MULTIPLAYER")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 1, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 1 + nButtonSizeY), this, MULTIPLAYER);
 	m_btLoadGame.Create(_T(CLoc::GetString("LOADGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 2, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 2 + nButtonSizeY), this, LOADGAME);
-	m_btOptions.Create(_T(CLoc::GetString("SETTINGS")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 3, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 3 + nButtonSizeY), this, OPTIONS);
-	m_btExit.Create(_T(CLoc::GetString("LEAVE")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 4, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 4 + nButtonSizeY), this, EXITGAME);
-	m_btTutorial.Create(_T(CLoc::GetString("TUTORIAL")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 5, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 5 + nButtonSizeY), this, TUTORIAL);
+	m_btTutorial.Create(_T(CLoc::GetString("TUTORIAL")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 3, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 3 + nButtonSizeY), this, TUTORIAL);
+	m_btOptions.Create(_T(CLoc::GetString("SETTINGS")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 4, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 4 + nButtonSizeY), this, OPTIONS);
+	m_btExit.Create(_T(CLoc::GetString("LEAVE")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 5, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 5 + nButtonSizeY), this, EXITGAME);
 
 	m_btMPServer.Create(_T(CLoc::GetString("CREATEGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 1, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 1 + nButtonSizeY), this, MP_CREATE);
 	m_btMPClient.Create(_T(CLoc::GetString("JOINGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 2, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 2 + nButtonSizeY), this, MP_JOIN);
 
 	// Buttonstyle zuweisen
-	for (int i = NEWGAME; i <= MP_CREATE; i++)
+	for (int i = NEWGAME; i <= TUTORIAL; i++)
 	{
 		CRoundButton2* pBtn = dynamic_cast<CRoundButton2*>(GetDlgItem(i));
 		if (!pBtn)
@@ -361,15 +361,14 @@ void CStartMenuView::OnBnClickedExit()
 
 void CStartMenuView::OnBnClickedTutorial()
 {
-	int i;
 	CBotEDoc* pDoc = resources::pDoc;
 	AssertBotE(pDoc);
 	pDoc->m_bGameLoaded = false;
 	pDoc->m_bTutorialLoaded = true;
-	for (i=0; i<(pDoc->m_bTutorialBoxNumber); i++)
+	/*for (int i = 0; i<(pDoc->m_bTutorialBoxNumber); i++)
 	{	
 		pDoc->m_bTutorialBoxAlreadyShown[i] = false;
-	}
+	}*/
 
 	m_pNewGameView->SetMode(MODE_SERVER);
 	m_pNewGameView->StartServer(false);
