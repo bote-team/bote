@@ -94,6 +94,7 @@ BEGIN_MESSAGE_MAP(CBotEApp, CWinApp)
 	ON_COMMAND(ID_HELP_WIKI, &CBotEApp::OnHelpWiki)
 	ON_COMMAND(ID_HELP_README, &CBotEApp::OnOpenReadme)
 	ON_COMMAND(ID_HELP_CREDITS, &CBotEApp::OnOpenCredits)
+	ON_COMMAND(ID_HELP_CONTROLS, &CBotEApp::OnOpenControls)
 
 	ON_THREAD_MESSAGE(WM_INITVIEWS, CBotEApp::InitViews)
 	ON_THREAD_MESSAGE(WM_UPDATEVIEWS, CBotEApp::UpdateViews)
@@ -286,6 +287,13 @@ void CBotEApp::OnOpenReadme()
         SW_SHOW);
 }
 
+void CBotEApp::OnOpenControls()
+{
+	// TODO: Add your command handler code here
+	CString msg;
+	msg = "Use mousewheel to zoom in and out of galaxy map. With pressed-down left mouse button you can move around the map in all directions. \n\nTo move ships around click on the race symbol on the upper right corner of a sector in question. Then click on a ship at the bottom view and hover again over a sector on galaxy map you wish to fly into. Click on it and course is plotted. \nUse 'n' key to select next unoccupied ship of yours. \n\nIn system view use the arrow keys left and right to quickly switch systems when you have more than one colony. You can alternatively use your xtra mouse buttons when you have a gamer mouse. \nDouble-clicking on the build queue list on the bottom right part of the system buildmenu screen will erase that entry from the build queue. \n\nOn empire menu screen clicking on a message and pressing 'del' key will delete the message from the list to make it more clear.";
+	AfxMessageBox(msg, MB_ICONINFORMATION | MB_OK);
+}
 void CBotEApp::OnOpenCredits()
 {
 	// TODO: Add your command handler code here

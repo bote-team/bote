@@ -126,6 +126,8 @@ public:
 	//sets the new seed only if the new one is different than the passed value.
 	static void RandomSeed(const int* OnlyIfDifferentThan = NULL);
 
+	void GenerateTutorialBox(CString s); 
+
 	/// Funktion gibt den Schwierigkeitsgrad des Spiels zurück.
 	float GetDifficultyLevel(void) const {return m_fDifficultyLevel;}
 

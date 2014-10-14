@@ -78,10 +78,9 @@ void CResearchMenuView::OnDraw(CDC* dc)
 	g.ReleaseHDC(pDC->GetSafeHdc());
 	if ((pDoc->m_bTutorialLoaded) && (!(pDoc->m_bTutorialBoxAlreadyShown[3])))
 	{	
+		Invalidate(FALSE);
 		pDoc->m_bTutorialBoxAlreadyShown[3] = true;
-		CString msg;
-		msg = CLoc::GetString("TRESEARCHMENU");
-		AfxMessageBox(msg, MB_ICONINFORMATION | MB_OK);
+		pDoc->GenerateTutorialBox("TRESEARCHMENU");
 	}
 }
 

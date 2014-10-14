@@ -90,6 +90,7 @@ BEGIN
     POPUP "Help"
     BEGIN
         MENUITEM "About BotE...",               ID_APP_ABOUT
+		MENUITEM "Controls...",					ID_HELP_CONTROLS
         MENUITEM "Manual...",                   ID_HELP_MANUAL
         MENUITEM "Online Wiki...",              ID_HELP_WIKI
         MENUITEM SEPARATOR

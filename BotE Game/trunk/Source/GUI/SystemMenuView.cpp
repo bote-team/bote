@@ -130,15 +130,14 @@ void CSystemMenuView::OnDraw(CDC* dc)
 	else if (m_bySubMenu == 4)
 		DrawSystemTradeMenue(&g);
 	DrawButtonsUnderSystemView(&g);
-	if ((pDoc->m_bTutorialLoaded) && (!(pDoc->m_bTutorialBoxAlreadyShown[2])))
-	{	
-		pDoc->m_bTutorialBoxAlreadyShown[2] = true;
-		CString msg;
-		msg = CLoc::GetString("TSYSTEMBUILDMENU");
-		AfxMessageBox(msg, MB_ICONINFORMATION | MB_OK);
-	}
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
+	if ((pDoc->m_bTutorialLoaded) && (!(pDoc->m_bTutorialBoxAlreadyShown[2])))
+	{	
+		Invalidate(FALSE);
+		pDoc->m_bTutorialBoxAlreadyShown[2] = true;
+		pDoc->GenerateTutorialBox("TSYSTEMBUILDMENU");
+	}
 }
 
 

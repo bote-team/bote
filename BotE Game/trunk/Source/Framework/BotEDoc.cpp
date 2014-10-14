@@ -5594,7 +5594,8 @@ void CBotEDoc::AllocateSystems()
 	CStarmap::AllocateStatics();
 }
 
-void CBotEDoc::RandomSeed(const int* OnlyIfDifferentThan) {
+void CBotEDoc::RandomSeed(const int* OnlyIfDifferentThan) 
+{
 	const CIniLoader* pIni = CIniLoader::GetInstance();
 	int nSeed = pIni->ReadValueDefault("Special", "RANDOMSEED", -1);
 	if(OnlyIfDifferentThan && *OnlyIfDifferentThan == nSeed)
@@ -5605,4 +5606,11 @@ void CBotEDoc::RandomSeed(const int* OnlyIfDifferentThan) {
 	// sonst festen vorgegeben Seed verwenden
 	srand(nSeed);
 	MYTRACE("general")(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
+}
+
+void CBotEDoc::GenerateTutorialBox(CString s) 
+{
+	CString msg;
+	msg = CLoc::GetString(s);
+	AfxMessageBox(msg, MB_ICONINFORMATION | MB_OK);
 }

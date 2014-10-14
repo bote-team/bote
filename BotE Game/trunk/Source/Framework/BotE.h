@@ -57,4 +57,5 @@ private:
 	afx_msg void OnHelpWiki();
 	afx_msg void OnOpenReadme();
 	afx_msg void OnOpenCredits();
+	afx_msg void OnOpenControls();
 };

@@ -198,6 +198,12 @@ void CDiplomacyMenuView::OnDraw(CDC* dc)
 	// ************** DIE DIPLOMATIEANSICHT ZEICHNEN ist hier zu Ende **************
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
+	if ((pDoc->m_bTutorialLoaded) && (!(pDoc->m_bTutorialBoxAlreadyShown[4])))
+	{	
+		Invalidate(FALSE);
+		pDoc->m_bTutorialBoxAlreadyShown[4] = true;
+		pDoc->GenerateTutorialBox("TDIPLOMACYMENU");
+	}
 }
 
 // CDiplomacyMenuView diagnostics

@@ -170,6 +170,7 @@
 #define ID_HELP_WIKI                    32789
 #define ID_ENERGYBUILDINGS_AUTOON       32790
 #define ID_MENU_ENERGY_BUILDINGS_AUTO_ONOFF 32791
+#define ID_HELP_CONTROLS                32792
 
 // Next default values for new objects
 // 

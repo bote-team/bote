@@ -180,14 +180,13 @@ void CChooseRaceView::OnDraw(CDC* dc)
 			g.DrawImage(graphic, 575, 207, 100, 100);
 	}
 
+	g.ReleaseHDC(pDC->GetSafeHdc());
 	if ((pDoc->m_bTutorialLoaded) && (!(pDoc->m_bTutorialBoxAlreadyShown[0])))
 	{	
+		Invalidate(FALSE);
 		pDoc->m_bTutorialBoxAlreadyShown[0] = true;
-		CString msg;
-		msg = CLoc::GetString("TNEWGAME");
-		AfxMessageBox(msg, MB_ICONINFORMATION | MB_OK);
+		pDoc->GenerateTutorialBox("TNEWGAME");
 	}
-	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
 void CChooseRaceView::OnInitialUpdate()
