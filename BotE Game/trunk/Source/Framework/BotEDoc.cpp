@@ -82,11 +82,11 @@ CBotEDoc::CBotEDoc() :
 	m_bRoundEndPressed(false),
 	m_bDontExit(false),
 	m_bGameLoaded(false),
+	m_bTutorialLoaded(false),
 	m_ptCurrentCombatSector(-1, -1),
 	m_bCombatCalc(false),
 	m_nCombatOrder(COMBAT_ORDER::NONE),
-	m_bNewGame(true),
-	m_bTutorialLoaded(false)
+	m_bNewGame(true)
 {
 	memset(&m_bTutorialBoxAlreadyShown, 0, m_bTutorialBoxNumber * sizeof(bool));
 	resources::pDoc = this;
