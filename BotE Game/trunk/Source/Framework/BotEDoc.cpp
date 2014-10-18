@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "resources.h"
+#include "MyDialog.h"
 #include "BotE.h"
 #include "BotEDoc.h"
 #include "LZMA_BotE.h"
@@ -5611,6 +5612,12 @@ void CBotEDoc::RandomSeed(const int* OnlyIfDifferentThan)
 void CBotEDoc::GenerateTutorialBox(CString s) 
 {
 	CString msg;
+	//CTutorialBox TutorialBox;
 	msg = CLoc::GetString(s);
-	AfxMessageBox(msg, MB_ICONINFORMATION | MB_OK);
+	MyDialog *dlg;
+	dlg = new MyDialog;
+	dlg->Create(IDD_DIALOG3,AfxGetMainWnd());
+	dlg->ShowWindow(1);
+	//AfxMessageBox(msg, MB_ICONINFORMATION | MB_OK);
+	//TutorialBox.ModelessBox(msg);
 }

@@ -55,4 +55,31 @@
 #include <gdiplus.h>				// GDI+ Verwendung
 using namespace Gdiplus;
 #pragma comment(lib, "gdiplus.lib")
-
+/*//////////////////////////////////////////////////////////////////////////
+// ivo setyadi [12/10/2008 Development]
+// a simple (or semi) modeless AfxMessageBox using MFC thread
+// usage: 
+// CTutorialBox my; 
+// my.ModelessBox("your message");
+class CTutorialBox
+{
+public:	
+	void ModelessBox( CString str) 
+	{
+		char *buffer=new char[65536]; 
+		lstrcpy(buffer,str);		 				
+ 		AfxBeginThread(showMessage, (LPVOID *) buffer,   THREAD_PRIORITY_NORMAL) ;
+	}	
+	
+	static UINT showMessage(LPVOID lParam)  
+	{  
+		if(lParam == NULL)
+			AfxEndThread(NULL);
+		
+		char *pStr = (char *) lParam;
+		AfxMessageBox(pStr);  		
+		delete pStr; // don't forget
+		
+		return TRUE;
+	}  
+};*/

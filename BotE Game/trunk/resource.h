@@ -171,14 +171,16 @@
 #define ID_ENERGYBUILDINGS_AUTOON       32790
 #define ID_MENU_ENERGY_BUILDINGS_AUTO_ONOFF 32791
 #define ID_HELP_CONTROLS                32792
+#define IDD_DIALOG3                     192
+#define ID_DIALOG_NEW                   32793
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        192
-#define _APS_NEXT_COMMAND_VALUE         32792
+#define _APS_NEXT_RESOURCE_VALUE        193
+#define _APS_NEXT_COMMAND_VALUE         32794
 #define _APS_NEXT_CONTROL_VALUE         1097
 #define _APS_NEXT_SYMED_VALUE           107
 #endif

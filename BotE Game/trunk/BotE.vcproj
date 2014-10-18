@@ -1011,6 +1011,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Source\Dialogs\MyDialog.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Source\Dialogs\NewGamePage.cpp"
 					>
 				</File>
@@ -1293,6 +1297,10 @@
 				</File>
 				<File
 					RelativePath=".\Source\Dialogs\ManagerSettingsDlg.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Source\Dialogs\MyDialog.h"
 					>
 				</File>
 				<File
