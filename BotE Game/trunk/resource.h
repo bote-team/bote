@@ -23,6 +23,7 @@
 #define IDD_MANAGER_SETTINGS_DLG        190
 #define IDD_MANAGER_SETTINGSDLG         190
 #define IDR_MENU_ENERGY_BUILDINGS       191
+#define IDD_DIALOG3                     192
 #define IDC_CLIENT                      1001
 #define IDC_SERVER                      1002
 #define IDC_HOSTIP                      1003
@@ -151,6 +152,7 @@
 #define IDC_BUTTON_CLEAR_INGORED_BUILDINGS 1094
 #define IDC_EDIT_IGNORED_BUILDING       1095
 #define IDC_EDIT_NEARBYSYSTEMS          1096
+#define IDC_EDIT1                       1097
 #define ID_OPTIONEN                     32773
 #define ID_INFORMATION                  32774
 #define ID_DATENBANK                    32775
@@ -171,7 +173,6 @@
 #define ID_ENERGYBUILDINGS_AUTOON       32790
 #define ID_MENU_ENERGY_BUILDINGS_AUTO_ONOFF 32791
 #define ID_HELP_CONTROLS                32792
-#define IDD_DIALOG3                     192
 #define ID_DIALOG_NEW                   32793
 
 // Next default values for new objects
@@ -181,7 +182,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        193
 #define _APS_NEXT_COMMAND_VALUE         32794
-#define _APS_NEXT_CONTROL_VALUE         1097
+#define _APS_NEXT_CONTROL_VALUE         1098
 #define _APS_NEXT_SYMED_VALUE           107
 #endif
 #endif
