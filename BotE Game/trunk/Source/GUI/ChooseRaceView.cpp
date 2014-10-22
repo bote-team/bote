@@ -527,7 +527,11 @@ void CChooseRaceView::OnBnCancelClicked()
 	resources::pMainFrame->SelectStartMenuView(VIEWS::START_VIEW);
 	pDoc->m_ShipMap.Reset();
 	pDoc->GetRaceCtrl()->ReInit();
-	if (pDoc->m_bTutorialLoaded) { pDoc->m_bTutorialBoxAlreadyShown[0] = false; }
+	if (pDoc->m_bTutorialLoaded) 
+	{	
+		pDoc->m_bTutorialBoxAlreadyShown[0] = false;
+		pDoc->m_bTutorialLoaded = false;
+	}
 }
 
 void CChooseRaceView::AddChatMsg(const CString& name, const CString& msg)

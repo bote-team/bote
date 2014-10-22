@@ -8,13 +8,16 @@
 #include "BotEDoc.h"
 
 
-// CChatDlg-Dialogfeld
+// MyDialog-Dialogfeld
 
-//IMPLEMENT_DYNAMIC(CChatDlg, CDialog)
+//IMPLEMENT_DYNAMIC(MyDialog, CDialog)
 
 MyDialog::MyDialog(CWnd* pParent /*=NULL*/)
 	: CDialog(MyDialog::IDD, pParent)
 {
+	//CEdit* pEdit;
+	//pEdit = (CEdit*)GetDlgItem(IDC_EDIT1);
+	//pEdit->SetSel(strtest.GetLength(), -1);
 }
 
 
