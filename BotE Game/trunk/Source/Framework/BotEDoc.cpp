@@ -5618,7 +5618,6 @@ void CBotEDoc::GenerateTutorialBox(CString s)
 	dlg = new MyDialog;
 	dlg->Create(IDD_DIALOG3,AfxGetMainWnd());
 	dlg->SetDlgItemText(IDC_EDIT1, msg);
-	//CenterWindow(GetDlgItem(NULL,IDD_DIALOG3));
 	dlg->ShowWindow(1);
 	//AfxMessageBox(msg, MB_ICONINFORMATION | MB_OK);
 	//TutorialBox.ModelessBox(msg);

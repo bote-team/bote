@@ -25,7 +25,7 @@ public:
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
-
+	BOOL OnInitDialog();
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(MyDialog)

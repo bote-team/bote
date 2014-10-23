@@ -185,6 +185,7 @@ void CChooseRaceView::OnDraw(CDC* dc)
 	{	
 		Invalidate(FALSE);
 		pDoc->m_bTutorialBoxAlreadyShown[0] = true;
+		pDoc->m_bTutorialBoxAlreadyShown[7] = true; //deactivate ship order tutorial for once
 		pDoc->GenerateTutorialBox("TNEWGAME");
 	}
 }

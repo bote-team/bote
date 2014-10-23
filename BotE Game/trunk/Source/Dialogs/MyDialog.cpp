@@ -20,6 +20,15 @@ MyDialog::MyDialog(CWnd* pParent /*=NULL*/)
 	//pEdit->SetSel(strtest.GetLength(), -1);
 }
 
+BOOL MyDialog::OnInitDialog()
+{
+   CDialog::OnInitDialog();
+
+   CenterWindow();
+
+   return TRUE;
+}
+
 
 BEGIN_MESSAGE_MAP(MyDialog, CDialog)
 //	ON_BN_CLICKED(IDC_SEND, &CChatDlg::OnBnClickedSend)

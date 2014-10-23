@@ -80,6 +80,7 @@ void CResearchMenuView::OnDraw(CDC* dc)
 	{	
 		Invalidate(FALSE);
 		pDoc->m_bTutorialBoxAlreadyShown[3] = true;
+		pDoc->m_bTutorialBoxAlreadyShown[7] = false; //activate ship order tutorial
 		pDoc->GenerateTutorialBox("TRESEARCHMENU");
 	}
 }

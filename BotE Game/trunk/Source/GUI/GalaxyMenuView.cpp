@@ -562,6 +562,12 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		pDoc->m_bTutorialBoxAlreadyShown[1] = true;
 		pDoc->GenerateTutorialBox("TGALAXYMAP");
 	}
+	if ((pDoc->m_bTutorialLoaded) && (!(pDoc->m_bTutorialBoxAlreadyShown[7])))
+	{	
+		Invalidate(FALSE);
+		pDoc->m_bTutorialBoxAlreadyShown[7] = true;
+		pDoc->GenerateTutorialBox("TSHIPORDER");
+	}
 }
 
 void CGalaxyMenuView::OnInitialUpdate()
