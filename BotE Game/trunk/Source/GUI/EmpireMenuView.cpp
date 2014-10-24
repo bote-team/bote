@@ -139,7 +139,7 @@ void CEmpireMenuView::OnDraw(CDC* dc)
 		DrawEmpireVictoryMenue(&g);
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
-	if (pDoc->CheckTutorialShown(5))
+	if (pDoc->CheckTutorialShown(CBotEDoc::EMPIREMENU))
 	{	
 		Invalidate(FALSE);
 		pDoc->GenerateTutorialBox("TEMPIREMENU");

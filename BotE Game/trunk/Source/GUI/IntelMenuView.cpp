@@ -115,7 +115,7 @@ void CIntelMenuView::OnDraw(CDC* dc)
 	DrawIntelMainButtons(&g, pMajor);
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
-	if (pDoc->CheckTutorialShown(6))
+	if (pDoc->CheckTutorialShown(CBotEDoc::INTELMENU))
 	{	
 		Invalidate(FALSE);
 		pDoc->GenerateTutorialBox("TINTELMENU");

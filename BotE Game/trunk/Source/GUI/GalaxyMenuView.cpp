@@ -556,12 +556,12 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	pOldPen->DeleteObject();
 
 	g.ReleaseHDC(pDC.GetSafeHdc());
-	if (pDoc->CheckTutorialShown(1))
+	if (pDoc->CheckTutorialShown(CBotEDoc::GALAXYMAP))
 	{	
 		Invalidate(FALSE);
 		pDoc->GenerateTutorialBox("TGALAXYMAP");
 	}
-	if (pDoc->CheckTutorialShown(7))	
+	if (pDoc->CheckTutorialShown(CBotEDoc::SHIPORDER))	
 	{	
 		Invalidate(FALSE);
 		pDoc->GenerateTutorialBox("TSHIPORDER");

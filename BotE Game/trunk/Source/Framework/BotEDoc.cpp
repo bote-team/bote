@@ -88,7 +88,7 @@ CBotEDoc::CBotEDoc() :
 	m_nCombatOrder(COMBAT_ORDER::NONE),
 	m_bNewGame(true)
 {
-	memset(&m_bTutorialBoxAlreadyShown, 0, m_bTutorialBoxNumber * sizeof(bool));
+	memset(&m_bTutorialBoxAlreadyShown, 0, count * sizeof(bool));
 	resources::pDoc = this;
 
 	//Init MT with single log file

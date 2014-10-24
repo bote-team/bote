@@ -56,9 +56,8 @@ protected: // Nur aus Serialisierung erzeugen
 	bool m_bDontExit;					///< hartes Exit verhindern, wenn Spiel beginnt
 	bool m_bGameLoaded;					///< wurde im Dialog ein zu ladendes Spiel ausgewählt
 	bool m_bTutorialLoaded;				///< wurde im Dialog ein Tutorial-Spiel ausgewählt
-	static const int m_bTutorialBoxNumber = 10;	///< Maximale Anzahl von Tutorialboxen im Tutorial-Spiel
-	//enum TUTORIAL_TEXTS {NEWGAME, GALAXYMAP, SYSTEMBUILDMENU, RESEARCHMENU, DIPLOMACYMENU, EMPIREMENU, INTELMENU, SHIPORDER} tutorial_texts;
-	bool m_bTutorialBoxAlreadyShown[m_bTutorialBoxNumber]; ///< wurde im Tutorial-Spiel schon die entsprechende Messagebox angezeigt
+	enum TUTORIAL_TEXTS {NEWGAME, GALAXYMAP, SYSTEMBUILDMENU, RESEARCHMENU, DIPLOMACYMENU, EMPIREMENU, INTELMENU, SHIPORDER, count} tutorial_texts;
+	bool m_bTutorialBoxAlreadyShown[count]; ///< wurde im Tutorial-Spiel schon die entsprechende Messagebox angezeigt
 
 	CRaceController* m_pRaceCtrl;		///< Rassencontroller für alle Rassen des Spiels
 	CClientWorker* m_pClientWorker;

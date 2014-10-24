@@ -198,7 +198,7 @@ void CDiplomacyMenuView::OnDraw(CDC* dc)
 	// ************** DIE DIPLOMATIEANSICHT ZEICHNEN ist hier zu Ende **************
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
-	if (pDoc->CheckTutorialShown(4))	
+	if (pDoc->CheckTutorialShown(CBotEDoc::DIPLOMACYMENU))	
 	{	
 		Invalidate(FALSE);
 		pDoc->GenerateTutorialBox("TDIPLOMACYMENU");

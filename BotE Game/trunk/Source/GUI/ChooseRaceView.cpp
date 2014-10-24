@@ -181,10 +181,10 @@ void CChooseRaceView::OnDraw(CDC* dc)
 	}
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
-	if (pDoc->CheckTutorialShown(0))
+	if (pDoc->CheckTutorialShown(CBotEDoc::NEWGAME))
 	{	
 		Invalidate(FALSE);
-		pDoc->m_bTutorialBoxAlreadyShown[7] = true; //deactivate ship order tutorial for once
+		pDoc->m_bTutorialBoxAlreadyShown[CBotEDoc::SHIPORDER] = true; //deactivate ship order tutorial for once
 		pDoc->GenerateTutorialBox("TNEWGAME");
 	}
 }
