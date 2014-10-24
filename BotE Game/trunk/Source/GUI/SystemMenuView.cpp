@@ -132,10 +132,9 @@ void CSystemMenuView::OnDraw(CDC* dc)
 	DrawButtonsUnderSystemView(&g);
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
-	if ((pDoc->m_bTutorialLoaded) && (!(pDoc->m_bTutorialBoxAlreadyShown[2])))
+	if (pDoc->CheckTutorialShown(2))
 	{	
 		Invalidate(FALSE);
-		pDoc->m_bTutorialBoxAlreadyShown[2] = true;
 		pDoc->GenerateTutorialBox("TSYSTEMBUILDMENU");
 	}
 }

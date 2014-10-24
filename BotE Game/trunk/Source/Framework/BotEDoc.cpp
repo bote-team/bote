@@ -5609,6 +5609,15 @@ void CBotEDoc::RandomSeed(const int* OnlyIfDifferentThan)
 	MYTRACE("general")(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
 }
 
+bool CBotEDoc::CheckTutorialShown(int param)
+{
+if ((m_bTutorialLoaded) && (!(m_bTutorialBoxAlreadyShown[param])))
+{	
+	m_bTutorialBoxAlreadyShown[param] = true;
+	return true;
+}
+else return false;
+}
 void CBotEDoc::GenerateTutorialBox(CString s) 
 {
 	CString msg;

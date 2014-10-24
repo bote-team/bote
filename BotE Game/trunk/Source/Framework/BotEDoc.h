@@ -23,6 +23,7 @@ class CMainFrame;
 class CSectorAI;
 class CAIPrios;
 
+
 class CBotEDoc : public CDocument, public network::CPeerData
 {
 protected: // Nur aus Serialisierung erzeugen
@@ -55,7 +56,8 @@ protected: // Nur aus Serialisierung erzeugen
 	bool m_bDontExit;					///< hartes Exit verhindern, wenn Spiel beginnt
 	bool m_bGameLoaded;					///< wurde im Dialog ein zu ladendes Spiel ausgewählt
 	bool m_bTutorialLoaded;				///< wurde im Dialog ein Tutorial-Spiel ausgewählt
-	static const int m_bTutorialBoxNumber = 25;	///< Maximale Anzahl von Tutorialboxen im Tutorial-Spiel
+	static const int m_bTutorialBoxNumber = 10;	///< Maximale Anzahl von Tutorialboxen im Tutorial-Spiel
+	//enum TUTORIAL_TEXTS {NEWGAME, GALAXYMAP, SYSTEMBUILDMENU, RESEARCHMENU, DIPLOMACYMENU, EMPIREMENU, INTELMENU, SHIPORDER} tutorial_texts;
 	bool m_bTutorialBoxAlreadyShown[m_bTutorialBoxNumber]; ///< wurde im Tutorial-Spiel schon die entsprechende Messagebox angezeigt
 
 	CRaceController* m_pRaceCtrl;		///< Rassencontroller für alle Rassen des Spiels
@@ -126,6 +128,7 @@ public:
 	//sets the new seed only if the new one is different than the passed value.
 	static void RandomSeed(const int* OnlyIfDifferentThan = NULL);
 
+	bool CheckTutorialShown(int param);
 	void GenerateTutorialBox(CString s); 
 
 	/// Funktion gibt den Schwierigkeitsgrad des Spiels zurück.

@@ -76,10 +76,9 @@ void CResearchMenuView::OnDraw(CDC* dc)
 		DrawUniqueResearchMenue(&g);
 	// ************** DIE FORSCHUNGSANSICHT ZEICHNEN ist hier zu Ende **************
 	g.ReleaseHDC(pDC->GetSafeHdc());
-	if ((pDoc->m_bTutorialLoaded) && (!(pDoc->m_bTutorialBoxAlreadyShown[3])))
+	if (pDoc->CheckTutorialShown(3))
 	{	
 		Invalidate(FALSE);
-		pDoc->m_bTutorialBoxAlreadyShown[3] = true;
 		pDoc->m_bTutorialBoxAlreadyShown[7] = false; //activate ship order tutorial
 		pDoc->GenerateTutorialBox("TRESEARCHMENU");
 	}
