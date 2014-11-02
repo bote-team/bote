@@ -120,7 +120,8 @@ void CSanity::CheckShipUniqueness(const CShips& ship, std::set<CString>& already
 
 void CSanity::SanityCheckSectorAndSystem(const CSystem& system)
 {
-	AssertBotE(system.CheckSanity());
+	const bool ok = system.CheckSanity();
+	AssertBotE(ok);
 }
 
 void CSanity::SanityCheckRacePtrUseCounts(const CBotEDoc& doc)
