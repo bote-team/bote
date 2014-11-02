@@ -87,28 +87,9 @@ void CMenuChooseView::OnNewRound()
 	}
 
 	// Bewertung Gesamt berechnen
-	m_fMark = 0.0f;
-	int nPlace = 1;
-	float fValue, fAverage, fFirst, fLast;
-	CString sRaceID = pMajor->GetRaceID();
-	CStatistics *cs = pDoc->GetStatistics();
-
-	cs->GetDemographicsBSP(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	m_fMark += (float)(nPlace);
-
-	cs->GetDemographicsProductivity(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	m_fMark += (float)(nPlace);
-
-	cs->GetDemographicsMilitary(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	m_fMark += (float)(nPlace);
-
-	cs->GetDemographicsResearch(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	m_fMark += (float)(nPlace);
-
-	cs->GetDemographicsMoral(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	m_fMark += (float)(nPlace);
-
-	m_fMark /= 5.0f;
+	const CString& sRaceID = pMajor->GetRaceID();
+	const CStatistics& cs = *pDoc->GetStatistics();
+	m_fMark = cs.GetMark(sRaceID);
 }
 
 /////////////////////////////////////////////////////////////////////////////

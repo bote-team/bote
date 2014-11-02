@@ -38,6 +38,16 @@ void CStatistics::Serialize(CArchive &ar)
 		ar << m_mShipPowers.size();
 		for (map<CString, UINT>::const_iterator it = m_mShipPowers.begin(); it != m_mShipPowers.end(); ++it)
 			ar << it->first << it->second;
+		ar << m_Marks.size();
+		for (std::map<CStatistics::DEMO_TYPE, std::map<CString, float>>::const_iterator it = m_Marks.begin();
+			it != m_Marks.end(); ++it)
+		{
+			ar << it->first;
+			ar << it->second.size();
+			for(std::map<CString, float>::const_iterator itt = it->second.begin(); itt != it->second.end();
+				++itt)
+				ar << itt->first << itt->second;
+		}
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
@@ -57,6 +67,24 @@ void CStatistics::Serialize(CArchive &ar)
 			ar >> value;
 			m_mShipPowers[key] = value;
 		}
+
+		m_Marks.clear();
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; ++i)
+		{
+			int key;
+			ar >> key;
+			size_t inner_map_size = 0;
+			ar >> inner_map_size;
+			for(size_t j = 0; j < inner_map_size; ++j)
+			{
+				CString inner_key;
+				ar >> inner_key;
+				float value;
+				ar >> value;
+				m_Marks[static_cast<CStatistics::DEMO_TYPE>(key)][inner_key] = value;
+			}
+		}
 	}
 }
 //////////////////////////////////////////////////////////////////////
@@ -75,6 +103,8 @@ void CStatistics::CalcStats(CBotEDoc* pDoc)
 	this->CalcAverageResourceStorages(pDoc);
 
 	this->CalcShipPowers(pDoc);
+
+	this->CalcMarks();
 }
 
 /// Funktion ermittelt die Demographiewerte einer bestimmten Rasse.
@@ -84,7 +114,7 @@ void CStatistics::CalcStats(CBotEDoc* pDoc)
 /// @param [out] fAverage Durchschnittswert
 /// @param [out] fFirst bester Wert
 /// @param [out] fLast schlechtester Wert
-void CStatistics::GetDemographicsBSP(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
+void CStatistics::GetDemographicsBSP(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast)
 {
 	CBotEDoc* pDoc = resources::pDoc;
 	AssertBotE(pDoc);
@@ -96,8 +126,10 @@ void CStatistics::GetDemographicsBSP(const CString& sRaceID, int& nPlace, float&
 			if (pDoc->GetSystem(x,y).Majorized())
 				mMap[pDoc->GetSystem(x,y).OwnerID()] += pDoc->GetSystem(x,y).GetProduction()->GetCreditsProd();
 
+	std::map<CString, float> marks;
 			MYTRACE("general")(MT::LEVEL_INFO, "Demographics - BSP: multiply with 5 ");
-	CalcDemoValues(sRaceID, &mMap, nPlace, fValue, fAverage, fFirst, fLast);
+	CalcDemoValues(sRaceID, &mMap, marks, nPlace, fValue, fAverage, fFirst, fLast);
+	m_Marks[CStatistics::BSP] = marks;
 }
 
 /// Funktion ermittelt die Demographiewerte einer bestimmten Rasse.
@@ -107,7 +139,7 @@ void CStatistics::GetDemographicsBSP(const CString& sRaceID, int& nPlace, float&
 /// @param [out] fAverage Durchschnittswert
 /// @param [out] fFirst bester Wert
 /// @param [out] fLast schlechtester Wert
-void CStatistics::GetDemographicsProductivity(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
+void CStatistics::GetDemographicsProductivity(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast)
 {
 	CBotEDoc* pDoc = resources::pDoc;
 	AssertBotE(pDoc);
@@ -126,7 +158,10 @@ void CStatistics::GetDemographicsProductivity(const CString& sRaceID, int& nPlac
 			}
 
 			MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Productivity: 1:1");
-	CalcDemoValues(sRaceID, &mMap, nPlace, fValue, fAverage, fFirst, fLast);
+
+	std::map<CString, float> marks;
+	CalcDemoValues(sRaceID, &mMap, marks, nPlace, fValue, fAverage, fFirst, fLast);
+	m_Marks[CStatistics::PRODUCTIVITY] = marks;
 }
 
 /// Funktion ermittelt die Demographiewerte einer bestimmten Rasse.
@@ -136,7 +171,7 @@ void CStatistics::GetDemographicsProductivity(const CString& sRaceID, int& nPlac
 /// @param [out] fAverage Durchschnittswert
 /// @param [out] fFirst bester Wert
 /// @param [out] fLast schlechtester Wert
-void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
+void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast)
 {
 	CBotEDoc* pDoc = resources::pDoc;
 	AssertBotE(pDoc);
@@ -161,7 +196,9 @@ void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, f
 	}
 
 MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Military: divide by 10");
-	CalcDemoValues(sRaceID, &mMap, nPlace, fValue, fAverage, fFirst, fLast);
+	std::map<CString, float> marks;
+	CalcDemoValues(sRaceID, &mMap, marks, nPlace, fValue, fAverage, fFirst, fLast);
+	m_Marks[CStatistics::MILITARY] = marks;
 }
 
 /// Funktion ermittelt die Demographiewerte einer bestimmten Rasse.
@@ -171,7 +208,7 @@ MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Military: divide by 10");
 /// @param [out] fAverage Durchschnittswert
 /// @param [out] fFirst bester Wert
 /// @param [out] fLast schlechtester Wert
-void CStatistics::GetDemographicsResearch(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
+void CStatistics::GetDemographicsResearch(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast)
 {
 	CBotEDoc* pDoc = resources::pDoc;
 	AssertBotE(pDoc);
@@ -184,7 +221,9 @@ void CStatistics::GetDemographicsResearch(const CString& sRaceID, int& nPlace, f
 				mMap[pDoc->GetSystem(x,y).OwnerID()] += pDoc->GetSystem(x,y).GetProduction()->GetResearchProd();
 
 	MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Research: multiply with 5");
-	CalcDemoValues(sRaceID, &mMap, nPlace, fValue, fAverage, fFirst, fLast);
+	std::map<CString, float> marks;
+	CalcDemoValues(sRaceID, &mMap, marks, nPlace, fValue, fAverage, fFirst, fLast);
+	m_Marks[CStatistics::RESEARCH] = marks;
 }
 
 /// Funktion ermittelt die Demographiewerte einer bestimmten Rasse.
@@ -194,7 +233,7 @@ void CStatistics::GetDemographicsResearch(const CString& sRaceID, int& nPlace, f
 /// @param [out] fAverage Durchschnittswert
 /// @param [out] fFirst bester Wert
 /// @param [out] fLast schlechtester Wert
-void CStatistics::GetDemographicsMoral(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
+void CStatistics::GetDemographicsMoral(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast)
 {
 	CBotEDoc* pDoc = resources::pDoc;
 	AssertBotE(pDoc);
@@ -214,11 +253,13 @@ void CStatistics::GetDemographicsMoral(const CString& sRaceID, int& nPlace, floa
 		it->second /= mCount[it->first];
 
 	MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Moral: 1:1");
-	CalcDemoValues(sRaceID, &mMap, nPlace, fValue, fAverage, fFirst, fLast);
+	std::map<CString, float> marks;
+	CalcDemoValues(sRaceID, &mMap, marks, nPlace, fValue, fAverage, fFirst, fLast);
+	m_Marks[CStatistics::MORAL] = marks;
 }
 
 /// Funktion gibt die aktuellen Spielpunkte einer Rasse zurück.
-int CStatistics::GetGamePoints(const CString& sRaceID, int nCurrentRound, float fDifficultyLevel) const
+int CStatistics::GetGamePoints(const CString& sRaceID, int nCurrentRound, float fDifficultyLevel)
 {
 	int nGamePoints = 0;
 
@@ -337,6 +378,19 @@ UINT CStatistics::GetShipPower(const CString& sRaceID) const
 	return 0;
 }
 
+float CStatistics::GetMark(const CString& race) const
+{
+	float result = 0;
+	for (std::map<CStatistics::DEMO_TYPE, std::map<CString, float>>::const_iterator it = m_Marks.begin();
+		it != m_Marks.end(); ++it)
+	{
+		const std::map<CString, float>::const_iterator itt = it->second.find(race);
+		result += itt->second;
+	}
+	result /= (CStatistics::MORAL + 1);
+	return result;
+}
+
 //////////////////////////////////////////////////////////////////////
 // private Funktionen
 //////////////////////////////////////////////////////////////////////
@@ -415,6 +469,11 @@ void CStatistics::CalcShipPowers(CBotEDoc* pDoc)
 		m_mShipPowers[it->first] = pDoc->GetSectorAI()->GetCompleteDanger(it->first);
 }
 
+static bool Compare(const std::pair<CString, float>& left, const std::pair<CString, float>& right)
+{
+	return left.second > right.second;
+}
+
 /// @param sRaceID ID der gewünschten Rasse
 /// @param pmMap auszuwertende Map
 /// @param [out] nPlace Platzierung
@@ -422,49 +481,62 @@ void CStatistics::CalcShipPowers(CBotEDoc* pDoc)
 /// @param [out] fAverage Durchschnittswert
 /// @param [out] fFirst bester Wert
 /// @param [out] fLast schlechtester Wert
-void CStatistics::CalcDemoValues(const CString& sRaceID, const std::map<CString, float>* pmMap, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
+void CStatistics::CalcDemoValues(const CString& sRaceID, const std::map<CString, float>* pmMap, std::map<CString, float>& marks, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
 {
 	nPlace = 1;
 	fValue = fAverage = fFirst = fLast = 0.0f;
 
-	std::vector<float> vSortedVec;
+	std::vector<std::pair<CString, float>> vSortedVec;
 	for (std::map<CString, float>::const_iterator it = pmMap->begin(); it != pmMap->end(); ++it)
-		vSortedVec.push_back(it->second);
-	std::sort(vSortedVec.begin(), vSortedVec.end());
-	std::reverse(vSortedVec.begin(), vSortedVec.end());
+		vSortedVec.push_back(*it);
+	std::sort(vSortedVec.begin(), vSortedVec.end(), Compare);
 
 	if (vSortedVec.empty())
 		return;
+
+	for(std::vector<std::pair<CString, float>>::const_iterator it = vSortedVec.begin();
+			it != vSortedVec.end(); ++it)
+		marks[it->first] = it - vSortedVec.begin() + 1;
 
 	// Platz ermitteln
 	std::map<CString, float>::const_iterator it = pmMap->find(sRaceID);
 	if (it == pmMap->end())
 		return;
 
-	for (UINT i = 0; i < vSortedVec.size(); i++)
-		if (vSortedVec[i] == it->second)
-		{
-			nPlace = ++i;
-			break;
-		}
+	nPlace = marks[sRaceID];
 
 	// Durchschnitt ermitteln
 	for (UINT i = 0; i < vSortedVec.size(); i++)
-		fAverage += vSortedVec[i];
+		fAverage += vSortedVec[i].second;
 	fAverage /= vSortedVec.size();
 
 	// eigener Wert
 	fValue = it->second;
 
 	// bester Wert
-	fFirst = vSortedVec.front();
+	fFirst = vSortedVec.front().second;
 
 	// schlechtester Wert
-	fLast = vSortedVec.back();
+	fLast = vSortedVec.back().second;
 
 	MYTRACE("general")(MT::LEVEL_INFO, "First: %f ", fFirst);
 	MYTRACE("general")(MT::LEVEL_INFO, "Average: %f ", fAverage);
 	MYTRACE("general")(MT::LEVEL_INFO, "Last: %f", fLast);
 	MYTRACE("general")(MT::LEVEL_INFO, "Value (own): %f ", fValue);
 	MYTRACE("general")(MT::LEVEL_INFO, "Place: %i \n", nPlace);
+}
+
+void CStatistics::CalcMarks()
+{
+	// Bewertung Gesamt berechnen
+	int nPlace = 1;
+	float fValue, fAverage, fFirst, fLast;
+	CString sRaceID;
+
+	GetDemographicsBSP(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
+	GetDemographicsProductivity(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
+	GetDemographicsMilitary(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
+	GetDemographicsResearch(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
+	GetDemographicsMoral(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
+
 }

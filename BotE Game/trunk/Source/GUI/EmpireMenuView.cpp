@@ -949,12 +949,10 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 
 	fontBrush.SetColor(normalColor);
 	fontFormat.SetAlignment(StringAlignmentCenter);
-	float fMark = 0.0f;
 	int nPlace = 1;
 	float fValue, fAverage, fFirst, fLast = 0.0;
 	pDoc->GetStatistics()->GetDemographicsBSP(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
 	s.Format("%d", nPlace);
-	fMark += nPlace;
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(330,250,70,25), &fontFormat, &fontBrush);
 	s.Format("%.0lf", fValue * 5.0);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(400,250,125,25), &fontFormat, &fontBrush);
@@ -975,7 +973,6 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 
 	pDoc->GetStatistics()->GetDemographicsProductivity(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
 	s.Format("%d", nPlace);
-	fMark += nPlace;
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(330,320,70,25), &fontFormat, &fontBrush);
 	s.Format("%.0lf", fValue);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(400,320,125,25), &fontFormat, &fontBrush);
@@ -996,7 +993,6 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 
 	pDoc->GetStatistics()->GetDemographicsMilitary(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
 	s.Format("%d", nPlace);
-	fMark += nPlace;
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(330,390,70,25), &fontFormat, &fontBrush);
 	s.Format("%.0lf", fValue / 10);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(400,390,125,25), &fontFormat, &fontBrush);
@@ -1017,7 +1013,6 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 
 	pDoc->GetStatistics()->GetDemographicsResearch(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
 	s.Format("%d", nPlace);
-	fMark += nPlace;
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(330,460,70,25), &fontFormat, &fontBrush);
 	s.Format("%.0lf", fValue * 2.0);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(400,460,125,25), &fontFormat, &fontBrush);
@@ -1038,7 +1033,6 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 
 	pDoc->GetStatistics()->GetDemographicsMoral(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
 	s.Format("%d", nPlace);
-	fMark += nPlace;
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(330,530,70,25), &fontFormat, &fontBrush);
 	s.Format("%.0lf", fValue);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(400,530,125,25), &fontFormat, &fontBrush);
@@ -1080,7 +1074,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	// Punktestand/Note oben in der Mitte groß zeichnen
-	fMark /= 5;
+	const float fMark = pDoc->GetStatistics()->GetMark(pMajor->GetRaceID());
 	s.Format("%s: %.1lf", CLoc::GetString("RATING"), fMark);
 	g->DrawString(CComBSTR(s), -1, &font, RectF(0,65,m_TotalSize.cx,50), &fontFormat, &fontBrush);
 
