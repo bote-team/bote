@@ -56,7 +56,7 @@ protected: // Nur aus Serialisierung erzeugen
 	bool m_bDontExit;					///< hartes Exit verhindern, wenn Spiel beginnt
 	bool m_bGameLoaded;					///< wurde im Dialog ein zu ladendes Spiel ausgewählt
 	bool m_bTutorialLoaded;				///< wurde im Dialog ein Tutorial-Spiel ausgewählt
-	enum TUTORIAL_TEXTS {NEWGAME, GALAXYMAP, SYSTEMBUILDMENU, RESEARCHMENU, DIPLOMACYMENU, EMPIREMENU, INTELMENU, SHIPORDER, count} tutorial_texts;
+	enum TUTORIAL_TEXTS {NEWGAME, GALAXYMAP, SYSTEMBUILDMENU, RESEARCHMENU, DIPLOMACYMENU, EMPIREMENU, INTELMENU, SHIPORDER, count};
 	bool m_bTutorialBoxAlreadyShown[count]; ///< wurde im Tutorial-Spiel schon die entsprechende Messagebox angezeigt
 
 	CRaceController* m_pRaceCtrl;		///< Rassencontroller für alle Rassen des Spiels
