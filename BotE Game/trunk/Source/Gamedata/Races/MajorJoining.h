@@ -1,0 +1,40 @@
+#pragma once
+
+#include <vector>
+
+class CStatistics;
+class CRaceController;
+class CShipMap;
+class CSystem;
+
+class CMajorJoining
+{
+private:
+	/// Konstruktor private, damit man sich keine Instanzen holen kann.
+	CMajorJoining(void);
+
+	/// Den Kopierkonstruktor schützen um zu vermeiden, dass das Objekt unbeabsichtigt kopiert wird.
+	CMajorJoining(const CMajorJoining& cc);
+
+
+public:
+	/// Standarddestruktor
+	~CMajorJoining(void);
+
+	/// Funktion liefert die einzige Instanz dieser Klasse (Singleton).
+	/// @return Instanz dieser Klasse
+	static CMajorJoining* GetInstance(void);
+
+	void Calculate(int turn, const CStatistics& stats, CRaceController& race_ctrl,
+		CShipMap& ships, std::vector<CSystem>& systems);
+
+	void Serialize(CArchive& ar);
+
+private:
+
+	bool ShouldHappenNow(int turn);
+
+	bool m_bOccured;
+	const int m_StartTurn;
+	const int m_EndTurn;
+};

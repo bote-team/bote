@@ -45,6 +45,7 @@
 #include "SettingsDlg.h"
 #include "AssertBotE.h"
 #include "Races/Alien.h"
+#include "Races/MajorJoining.h"
 
 
 #ifdef _DEBUG
@@ -311,6 +312,7 @@ void CBotEDoc::Serialize(CArchive& ar)
 	m_GenShipName.Serialize(ar);
 	m_GlobalBuildings.Serialize(ar);
 	m_Statistics.Serialize(ar);
+	CMajorJoining::GetInstance()->Serialize(ar);
 
 	m_pRaceCtrl->Serialize(ar);
 	m_pClientWorker->Serialize(ar, false);
@@ -1393,6 +1395,8 @@ void CBotEDoc::NextRound()
 	CRandomEventCtrl* pRandomEventCtrl = CRandomEventCtrl::GetInstance();
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		pRandomEventCtrl->CalcEvents(it->second);
+
+	CMajorJoining::GetInstance()->Calculate(m_iRound, m_Statistics, *m_pRaceCtrl, m_ShipMap, m_Systems);
 
 	this->CalcSystemAttack();
 	this->CalcIntelligence();

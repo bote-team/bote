@@ -1084,6 +1084,10 @@ Der § mit § ist abgelaufen
 Der Verteidigungspakt mit § ist abgelaufen
 [TRYED_CORRUPTION]
 § hat versucht die § zu bestechen
+[MAJOR_JOINING_PART_ONE]
+Um das Überleben ihrer Rasse zu sichern, haben sich § entschieden, § vollständig beizutreten.
+[MAJOR_JOINING_PART_TWO]
+Im Vertrag von § wurde vereinbart, dass § alle ihre Systeme, Schiffe, Basen und Soldaten übernehmen.
 
 // Angebote von Minorraces
 [MIN_OFFER_TRADE]

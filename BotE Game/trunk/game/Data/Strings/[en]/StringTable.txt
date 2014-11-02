@@ -1084,6 +1084,10 @@ has declared war on us
 Defense pact with the § expired
 [TRYED_CORRUPTION]
 § tried to bribe the §
+[MAJOR_JOINING_PART_ONE]
+To ensure the survival of their kind, § decided to completely join §.
+[MAJOR_JOINING_PART_TWO]
+In the treaty of § it was agreed, that § take over all of their systems, ships, bases and soldiers.
 
 // offers by minors
 [MIN_OFFER_TRADE]

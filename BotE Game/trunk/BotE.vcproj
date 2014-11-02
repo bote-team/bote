@@ -758,6 +758,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Source\Gamedata\Races\MajorJoining.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Source\Gamedata\Races\Minor.cpp"
 						>
 					</File>
@@ -1536,6 +1540,10 @@
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Races\major.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Races\MajorJoining.h"
 						>
 					</File>
 					<File
