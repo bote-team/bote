@@ -186,13 +186,14 @@ void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, f
 	// Es werden alle Schiffe aller Rassen betrachtet
 	for(CShipMap::const_iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end(); ++i)
 	{
+		if(i->second->IsStation() || i->second->Owner()->IsMinor())
+			continue;
 		// Stationen und Alienschiffe werden nicht mit einbezogen
 		if (!i->second->IsStation() && !i->second->IsAlien())
 			mMap[i->second->OwnerID()] += i->second->GetCompleteOffensivePower() + i->second->GetCompleteOffensivePower() / 2;
 		// Schiffe in der Flotte beachten
 		for(CShips::const_iterator j = i->second->begin(); j != i->second->end(); ++j)
-			if (!j->second->IsStation() && !j->second->IsAlien())
-				mMap[j->second->OwnerID()] += j->second->GetCompleteOffensivePower() + j->second->GetCompleteOffensivePower() / 2;
+			mMap[j->second->OwnerID()] += j->second->GetCompleteOffensivePower() + j->second->GetCompleteOffensivePower() / 2;
 	}
 
 MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Military: divide by 10");
