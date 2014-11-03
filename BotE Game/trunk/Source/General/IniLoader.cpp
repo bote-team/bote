@@ -62,7 +62,7 @@ CIniLoader::CIniLoader(void)
 		s.Format("%i", aliens);
 		WriteValue("Special", "ALIENENTITIES", s);
 		WriteValue("Special", "RANDOMEVENTS", "ON");
-		WriteValue("Special", "MAJORJOINING", "OFF");
+		WriteValue("Special", "MAJORJOINING", "0");
 		WriteValue("Special", "RESEARCHSPEED", "1.25");
 		WriteValue("Special", "EXPANSIONSPEED", "CLASSIC");
 

@@ -34,7 +34,9 @@ private:
 
 	bool ShouldHappenNow(int turn);
 
-	bool m_bOccured;
-	const int m_StartTurn;
-	const int m_EndTurn;
+	int m_TimesOccured;
+	int m_StartTurn;
+	const int m_RisingTurns;
+	const int m_Pause;
+	const int m_Randomize_by;
 };

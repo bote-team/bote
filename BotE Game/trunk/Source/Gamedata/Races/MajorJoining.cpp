@@ -19,9 +19,11 @@
 //////////////////////////////////////////////////////////////////////
 
 CMajorJoining::CMajorJoining(void) :
-	m_bOccured(false),
-	m_StartTurn(200),
-	m_EndTurn(300)
+	m_TimesOccured(0),
+	m_StartTurn(160),
+	m_RisingTurns(140),
+	m_Pause(80),
+	m_Randomize_by(20)
 {
 }
 
@@ -45,19 +47,32 @@ void CMajorJoining::Serialize(CArchive& ar)
 {
 	if(ar.IsStoring())
 	{
-		ar << m_bOccured;
+		ar << m_TimesOccured;
+		ar << m_StartTurn;
 	}
 	else
-		ar >> m_bOccured;
+	{
+		ar >> m_TimesOccured;
+		ar >> m_StartTurn;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 
+static int randomize_by(int amount)
+{
+	const int sign = ((rand() % 2) == 0) ? 1 : -1;
+	return  sign * (rand() % (amount + 1));
+}
+
 void CMajorJoining::Calculate(int turn, const CStatistics& stats, CRaceController& race_ctrl,
 		CShipMap& ships, std::vector<CSystem>& systems)
 {
+	if(turn == 2)
+		m_StartTurn += randomize_by(m_Randomize_by);
+
 	if(!ShouldHappenNow(turn))
 		return;
 
@@ -87,6 +102,9 @@ void CMajorJoining::Calculate(int turn, const CStatistics& stats, CRaceControlle
 	if(!best || !worst || best == worst)
 		return;
 	AssertBotE(best->GetRaceID() != worst->GetRaceID());
+
+	m_TimesOccured++;
+	m_StartTurn = turn + m_Pause + randomize_by(m_Randomize_by);
 
 	for(CShipMap::iterator it = ships.begin(); it != ships.end(); ++it)
 	{
@@ -143,17 +161,19 @@ void CMajorJoining::Calculate(int turn, const CStatistics& stats, CRaceControlle
 
 bool CMajorJoining::ShouldHappenNow(int turn)
 {
-	if(m_bOccured)
-		return false;
-	if(!CIniLoader::GetInstance()->ReadValueDefault("Special", "MAJORJOINING", false))
+
+	const int times = CIniLoader::GetInstance()->ReadValueDefault("Special", "MAJORJOINING", 0);
+	if(m_TimesOccured >= times)
 		return false;
 	if(turn < m_StartTurn)
 		return false;
-	if(turn > m_EndTurn)
+	if(turn > m_StartTurn + m_RisingTurns)
+	{
+		AssertBotE(false);
 		return true;
+	}
 
 	const int prob = 100.0f *
-		(pow(2.0f, pow((turn -  m_StartTurn) / static_cast<float>(m_EndTurn - m_StartTurn), 2.0f)) - 1);
-	m_bOccured = rand() % 100 < prob;
-	return m_bOccured;
+		(pow(2.0f, pow((turn -  m_StartTurn) / static_cast<float>(m_RisingTurns), 3.0f)) - 1);
+	return rand() % 100 < prob;
 }
