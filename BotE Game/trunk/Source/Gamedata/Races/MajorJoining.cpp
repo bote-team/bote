@@ -20,7 +20,7 @@
 
 CMajorJoining::CMajorJoining(void) :
 	m_TimesOccured(0),
-	m_StartTurn(160),
+	m_StartTurn(120),
 	m_RisingTurns(140),
 	m_Pause(80),
 	m_Randomize_by(20)
