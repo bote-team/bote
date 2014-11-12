@@ -1772,12 +1772,12 @@ CString CGalaxyMenuView::CreateTooltip(void)
 		const boost::shared_ptr<CShips>& current = pDoc->CurrentShip()->second;
 		if(m_bShipMove && ShouldShowWinningChance(*pMajor, current, *pSector))
 		{
-			std::vector<const CShips*> involved_ships;
-			involved_ships.push_back(current.get());
+			std::vector<boost::shared_ptr<CShips>> involved_ships;
+			involved_ships.push_back(current);
 			const std::map<CString, CShipMap>& attacked = pSector->ShipsInSector();
 			for(std::map<CString, CShipMap>::const_iterator it = attacked.begin(); it != attacked.end(); ++it)
 				for(CShipMap::const_iterator itt = it->second.begin(); itt != it->second.end(); ++itt)
-					involved_ships.push_back(itt->second.get());
+					involved_ships.push_back(itt->second);
 
 			std::set<const CRace*> dummy1;
 			std::set<const CRace*> dummy2;

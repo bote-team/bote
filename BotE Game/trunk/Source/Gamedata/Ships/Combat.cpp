@@ -583,7 +583,7 @@ bool CCombat::CheckShipStayInCombat(int i)
 
 // Funktion zum Berechnen der groben prozentualen Siegchance einer Rasse. Die Siegchance liegt zwischen 0 und 1.
 
-double CCombat::GetWinningChance(const CRace& OurRace, const std::vector<const CShips*>& vInvolvedShips, const CRaceController& races, std::set<const CRace*>& friends, std::set<const CRace*>& enemies, const CAnomaly* const pAnomaly, bool include_fleet)
+double CCombat::GetWinningChance(const CRace& OurRace, const std::vector<boost::shared_ptr<CShips>>& vInvolvedShips, const CRaceController& races, std::set<const CRace*>& friends, std::set<const CRace*>& enemies, const CAnomaly* const pAnomaly, bool include_fleet)
 {
 	double dWinningChance	= 0.5;
 	double dOurStrenght		= 0.0;
@@ -606,10 +606,10 @@ double CCombat::GetWinningChance(const CRace& OurRace, const std::vector<const C
 			bCanUseTorpedos = false;
 	}
 
-	for(std::vector<const CShips*>::const_iterator it = vInvolvedShips.begin(); it != vInvolvedShips.end();
+	for(std::vector<boost::shared_ptr<CShips>>::const_iterator it = vInvolvedShips.begin(); it != vInvolvedShips.end();
 		++it)
 	{
-		const CShips* const pShip = *it;
+		const boost::shared_ptr<const CShips>& pShip = *it;
 
 		double dOffensive = pShip->GetCompleteOffensivePower(true, bCanUseTorpedos, include_fleet);
 		double dDefensive = pShip->GetCompleteDefensivePower(bCanUseShields, true, include_fleet) / 2.0;
@@ -657,10 +657,10 @@ double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& v
 	AssertBotE(pOurRace);
 	AssertBotE(pmRaces);
 
-	std::vector<const CShips*> ships;
+	std::vector<boost::shared_ptr<CShips>> ships;
 	ships.reserve(vInvolvedShips.GetSize());
 	for (int i = 0; i < vInvolvedShips.GetSize(); i++)
-		ships.push_back(vInvolvedShips.GetAt(i));
+		ships.push_back(vInvolvedShips.GetAt(i)->shared_from_this());
 
 	return GetWinningChance(*pOurRace, ships, *pmRaces, sFriends, sEnemies, pAnomaly, false);
 }
