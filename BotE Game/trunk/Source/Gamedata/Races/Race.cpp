@@ -169,6 +169,16 @@ void CRace::Serialize(CArchive &ar)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 
+bool CRace::IsEnemyOf(const CString& other) const
+{
+	if(other == m_sID)
+		return false;
+	const DIPLOMATIC_AGREEMENT::Typ agreement = GetAgreement(other);
+	if (agreement >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+		return false;
+	return agreement != DIPLOMATIC_AGREEMENT::NAP;
+}
+
 /// Funktion zum setzen der Rasseneigenschaften
 /// @param nProp Rasseneigenschaft
 /// @return <code>true</code>, wenn die Rasse die Eigenschaft besitzt, sonst <code>false</code>

@@ -20,6 +20,7 @@
 #include "ImageStone/ImageStone.h"
 #include "Graphic\memdc.h"
 #include "Ships/Ships.h"
+#include "Ships/Combat.h"
 #include "General/Loc.h"
 
 BOOLEAN CGalaxyMenuView::m_bDrawTradeRoute = FALSE;
@@ -1658,6 +1659,28 @@ void CGalaxyMenuView::CenterOnScrollSector()
 	m_pPlayersRace->GetStarmap()->m_Selection = Sector(m_ptScrollToSector.x, m_ptScrollToSector.y);
 }
 
+static bool ShouldShowWinningChance(const CMajor& player, const boost::shared_ptr<CShips>& attacking,
+	const CSector& sector)
+{
+	if(attacking->OwnerID() != player.GetRaceID() || attacking->IsStation())
+		return false;
+	const std::map<CString, CShipMap>& defend = sector.ShipsInSector();
+	for(std::map<CString, CShipMap>::const_iterator it = defend.begin(); it != defend.end(); ++it)
+	{
+		if(player.IsEnemyOf(it->first))
+			if(sector.ShouldDrawOutpost(player, it->first) || sector.ShouldDrawShip(player, it->first))
+				return true;
+	}
+	return false;
+}
+
+static void AddShipAndFleet(const boost::shared_ptr<CShips>& ships, CArray<CShips*>& arr)
+{
+	arr.Add(ships.get());
+	for(CShipMap::const_iterator it = ships->begin(); it != ships->end(); ++it)
+		arr.Add(it->second.get());
+}
+
 ///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
 /// @return	der erstellte Tooltip-Text
 CString CGalaxyMenuView::CreateTooltip(void)
@@ -1749,6 +1772,37 @@ CString CGalaxyMenuView::CreateTooltip(void)
 			sGame = CHTMLStringBuilder::GetHTMLHeader(sGame, _T("h5"));
 
 			sTip += sGame;
+		}
+
+		//draw estimated winning chance
+		//const CSector& marked_sector = pDoc->CurrentSystem();
+		const boost::shared_ptr<CShips>& current = pDoc->CurrentShip()->second;
+		if(m_bShipMove && ShouldShowWinningChance(*pMajor, current, *pSector))
+		{
+			CArray<CShips*> involved_ships;
+			AddShipAndFleet(current, involved_ships);
+			const std::map<CString, CShipMap>& attacked = pSector->ShipsInSector();
+			for(std::map<CString, CShipMap>::const_iterator it = attacked.begin(); it != attacked.end(); ++it)
+				for(CShipMap::const_iterator itt = it->second.begin(); itt != it->second.end(); ++itt)
+					AddShipAndFleet(itt->second, involved_ships);
+
+			std::set<const CRace*> dummy1;
+			std::set<const CRace*> dummy2;
+			double chance = CCombat::GetWinningChance(pMajor, involved_ships,
+				pDoc->GetRaceCtrl(), dummy1, dummy2, pSector->GetAnomaly().get());
+			chance = min(0.99, chance);
+			chance = max(0.01, chance);
+
+			sTip += CHTMLStringBuilder::GetHTMLStringNewLine();
+			sTip += CHTMLStringBuilder::GetHTMLStringHorzLine();
+			sTip += CHTMLStringBuilder::GetHTMLStringNewLine();
+			sTip += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+			CString str;
+			str.Format("%s: %.0lf%%", CLoc::GetString("WINNING_CHANCE"), chance * 100);
+			str = CHTMLStringBuilder::GetHTMLColor(str);
+			str = CHTMLStringBuilder::GetHTMLHeader(str, _T("h5"));
+			sTip += str;
 		}
 
 		return sTip;

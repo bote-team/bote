@@ -71,6 +71,11 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Funktionen
+
+	//whether these 2 races can fight each other according to diplomatic status
+	//@return true is yes
+	bool IsEnemyOf(const CString& other) const;
+
 	/// Funktion zum Erfragen der Rasseneigenschaften
 	/// @param nProp Rasseneigenschaft
 	/// @return <code>true</code>, wenn die Rasse die Eigenschaft besitzt, sonst <code>false</code>
