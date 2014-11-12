@@ -1692,7 +1692,7 @@ CString CGalaxyMenuView::CreateTooltip(void)
 			sTip.Format("%s", pSector->GetAnomaly()->GetMapName(CPoint(ko.x,ko.y)));
 		else
 			sTip = pDoc->GetSystem(ko.x, ko.y).CoordsName(pSector->GetKnown(pMajor->GetRaceID()),
-			pDoc->GetRaceCtrl()->GetRaceSafe(pMajor->GetRaceID()));
+				pDoc->GetRaceCtrl()->GetRaceSafe(pMajor->GetRaceID()));
 
 		sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
 		sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h5"));
