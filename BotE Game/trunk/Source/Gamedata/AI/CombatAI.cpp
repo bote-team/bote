@@ -113,7 +113,7 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShips*>& vInvolvedShips, const C
 		// Ist die Beziehung nicht ausreichend, dann die Schiffstärken im Sektor beachten und Gewinnchance ermitteln
 		set<const CRace*> sFriends;
 		set<const CRace*> sEnemies;
-		double dWinningChance = CCombat::GetWinningChance(pRace1.get(), vInvolvedShips, pmRaces, sFriends, sEnemies, pAnomaly);
+		double dWinningChance = CCombat::GetWinningChance(pRace1.get(), vInvolvedShips, pmRaces, sFriends, sEnemies, pAnomaly, false);
 
 		if (dWinningChance > 0.75)
 			mCombatOrders[*it] = COMBAT_ORDER::AUTOCOMBAT;

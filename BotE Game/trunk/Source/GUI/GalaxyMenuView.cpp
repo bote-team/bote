@@ -1782,9 +1782,7 @@ CString CGalaxyMenuView::CreateTooltip(void)
 			std::set<const CRace*> dummy1;
 			std::set<const CRace*> dummy2;
 			double chance = CCombat::GetWinningChance(*pMajor, involved_ships,
-				*pDoc->GetRaceCtrl(), dummy1, dummy2, pSector->GetAnomaly().get(), true);
-			chance = min(0.99, chance);
-			chance = max(0.01, chance);
+				*pDoc->GetRaceCtrl(), dummy1, dummy2, pSector->GetAnomaly().get(), true, true);
 
 			sTip += CHTMLStringBuilder::GetHTMLStringNewLine();
 			sTip += CHTMLStringBuilder::GetHTMLStringHorzLine();

@@ -583,7 +583,7 @@ bool CCombat::CheckShipStayInCombat(int i)
 
 // Funktion zum Berechnen der groben prozentualen Siegchance einer Rasse. Die Siegchance liegt zwischen 0 und 1.
 
-double CCombat::GetWinningChance(const CRace& OurRace, const std::vector<boost::shared_ptr<CShips>>& vInvolvedShips, const CRaceController& races, std::set<const CRace*>& friends, std::set<const CRace*>& enemies, const CAnomaly* const pAnomaly, bool include_fleet)
+double CCombat::GetWinningChance(const CRace& OurRace, const std::vector<boost::shared_ptr<CShips>>& vInvolvedShips, const CRaceController& races, std::set<const CRace*>& friends, std::set<const CRace*>& enemies, const CAnomaly* const pAnomaly, bool include_fleet, bool limit)
 {
 	double dWinningChance	= 0.5;
 	double dOurStrenght		= 0.0;
@@ -649,10 +649,16 @@ double CCombat::GetWinningChance(const CRace& OurRace, const std::vector<boost::
 	else if (dEnemyStrenght > 0.0)
 		dWinningChance = dOurStrenght / dEnemyStrenght / 2.0;
 
+	if(limit)
+	{
+		dWinningChance = min(0.99, dWinningChance);
+		dWinningChance = max(0.01, dWinningChance);
+	}
+
 	return dWinningChance;
 }
 
-double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& vInvolvedShips, const CRaceController* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies, const CAnomaly* pAnomaly)
+double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& vInvolvedShips, const CRaceController* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies, const CAnomaly* pAnomaly, bool limit)
 {
 	AssertBotE(pOurRace);
 	AssertBotE(pmRaces);
@@ -662,7 +668,7 @@ double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& v
 	for (int i = 0; i < vInvolvedShips.GetSize(); i++)
 		ships.push_back(vInvolvedShips.GetAt(i)->shared_from_this());
 
-	return GetWinningChance(*pOurRace, ships, *pmRaces, sFriends, sEnemies, pAnomaly, false);
+	return GetWinningChance(*pOurRace, ships, *pmRaces, sFriends, sEnemies, pAnomaly, false, limit);
 }
 
 // Funktion überprüft, ob die Rassen in einem Kampf sich gegeneinander aus diplomatischen Gründen

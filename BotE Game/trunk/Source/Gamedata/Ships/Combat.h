@@ -72,8 +72,8 @@ public:
 	/**
 	* Funktion zum Berechnen der groben prozentualen Siegchance einer Rasse. Die Siegchance liegt zwischen 0 und 1.
 	*/
-	static double GetWinningChance(const CRace& OurRace, const std::vector<boost::shared_ptr<CShips>>& vInvolvedShips, const CRaceController& races, std::set<const CRace*>& friends, std::set<const CRace*>& enemies, const CAnomaly* const pAnomaly, bool include_fleet);
-	static double GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& vInvolvedShips, const CRaceController* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies, const CAnomaly* pAnomaly);
+	static double GetWinningChance(const CRace& OurRace, const std::vector<boost::shared_ptr<CShips>>& vInvolvedShips, const CRaceController& races, std::set<const CRace*>& friends, std::set<const CRace*>& enemies, const CAnomaly* const pAnomaly, bool include_fleet, bool limit);
+	static double GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& vInvolvedShips, const CRaceController* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies, const CAnomaly* pAnomaly, bool limit);
 
 	/**
 	* Funktion überprüft, ob die Rassen in einem Kampf sich gegeneinander aus diplomatischen Gründen
