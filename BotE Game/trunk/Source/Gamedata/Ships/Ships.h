@@ -167,6 +167,12 @@ public:
 	//// Funktion berechnet die Geschwindigkeit der Flotte.
 	unsigned GetSpeed(bool consider_fleet) const;
 
+	unsigned GetCompleteOffensivePower(bool bBeams = true, bool bTorpedos = true,
+		bool include_fleet = false) const;
+
+	unsigned GetCompleteDefensivePower(bool bShields = true, bool bHull = true,
+		bool include_fleet = false) const;
+
 	//// Funktion berechnet die Reichweite der Flotte.
 	SHIP_RANGE::Typ GetRange(bool consider_fleet) const;
 

@@ -385,6 +385,30 @@ unsigned CShips::GetSpeed(bool consider_fleet) const
 	return speed;
 }
 
+unsigned CShips::GetCompleteOffensivePower(bool bBeams, bool bTorpedos,
+		bool include_fleet) const
+{
+	unsigned power = CShip::GetCompleteOffensivePower(bBeams, bTorpedos);
+	if(include_fleet)
+	{
+		for(CShips::const_iterator it = begin(); it != end(); ++it)
+			power += it->second->GetCompleteOffensivePower(bBeams, bTorpedos, false);
+	}
+	return power;
+}
+
+unsigned CShips::GetCompleteDefensivePower(bool bShields, bool bHull,
+		bool include_fleet) const
+{
+	unsigned power = CShip::GetCompleteDefensivePower(bShields, bHull);
+	if(include_fleet)
+	{
+		for(CShips::const_iterator it = begin(); it != end(); ++it)
+			power += it->second->GetCompleteDefensivePower(bShields, bHull, false);
+	}
+	return power;
+}
+
 // Funktion berechnet die Reichweite der Flotte.
 SHIP_RANGE::Typ CShips::GetRange(bool consider_fleet) const
 {

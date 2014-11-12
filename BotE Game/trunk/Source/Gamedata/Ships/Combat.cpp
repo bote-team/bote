@@ -582,11 +582,9 @@ bool CCombat::CheckShipStayInCombat(int i)
 }
 
 // Funktion zum Berechnen der groben prozentualen Siegchance einer Rasse. Die Siegchance liegt zwischen 0 und 1.
-double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& vInvolvedShips, const CRaceController* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies, const CAnomaly* pAnomaly)
-{
-	AssertBotE(pOurRace);
-	AssertBotE(pmRaces);
 
+double CCombat::GetWinningChance(const CRace& OurRace, const std::vector<const CShips*>& vInvolvedShips, const CRaceController& races, std::set<const CRace*>& friends, std::set<const CRace*>& enemies, const CAnomaly* const pAnomaly, bool include_fleet)
+{
 	double dWinningChance	= 0.5;
 	double dOurStrenght		= 0.0;
 	double dEnemyStrenght	= 0.0;
@@ -594,8 +592,8 @@ double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& v
 	double dEnemyOffensive	= 0.0;
 
 	// beteiligte Rassen berechnen
-	sFriends.clear();
-	sEnemies.clear();
+	friends.clear();
+	enemies.clear();
 
 	// Anomalien beachten
 	bool bCanUseShields = true;
@@ -608,36 +606,36 @@ double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& v
 			bCanUseTorpedos = false;
 	}
 
-	for (int i = 0; i < vInvolvedShips.GetSize(); i++)
+	for(std::vector<const CShips*>::const_iterator it = vInvolvedShips.begin(); it != vInvolvedShips.end();
+		++it)
 	{
-		const CShips* pShip = vInvolvedShips[i];
+		const CShips* const pShip = *it;
 
-		double dOffensive = pShip->GetCompleteOffensivePower(true, bCanUseTorpedos);
-		double dDefensive = pShip->GetCompleteDefensivePower(bCanUseShields) / 2.0;
+		double dOffensive = pShip->GetCompleteOffensivePower(true, bCanUseTorpedos, include_fleet);
+		double dDefensive = pShip->GetCompleteDefensivePower(bCanUseShields, true, include_fleet) / 2.0;
 
-		if (pShip->OwnerID() == pOurRace->GetRaceID())
+		if (pShip->OwnerID() == OurRace.GetRaceID())
 		{
-			sFriends.insert(pOurRace);
+			friends.insert(&OurRace);
 			dOurOffensive += dOffensive;
 			dOurStrenght += dOffensive + dDefensive;
 		}
 		else
 		{
-			if (pmRaces->find(pShip->OwnerID()) == pmRaces->end())
-				continue;
+			AssertBotE(races.find(pShip->OwnerID()) != races.end());
 
-			const CRace* pOtherRace  = pShip->Owner().get();
+			const CRace* const pOtherRace  = pShip->Owner().get();
 			AssertBotE(pOtherRace);
 
-			if (CheckDiplomacyStatus(pOurRace, pOtherRace))
+			if (CheckDiplomacyStatus(&OurRace, pOtherRace))
 			{
-				sEnemies.insert(pOtherRace);
+				enemies.insert(pOtherRace);
 				dEnemyOffensive += dOffensive;
 				dEnemyStrenght += dOffensive + dDefensive;
 			}
 			else
 			{
-				sFriends.insert(pOtherRace);
+				friends.insert(pOtherRace);
 				dOurOffensive += dOffensive;
 				dOurStrenght += dOffensive + dDefensive;
 			}
@@ -652,6 +650,19 @@ double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& v
 		dWinningChance = dOurStrenght / dEnemyStrenght / 2.0;
 
 	return dWinningChance;
+}
+
+double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& vInvolvedShips, const CRaceController* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies, const CAnomaly* pAnomaly)
+{
+	AssertBotE(pOurRace);
+	AssertBotE(pmRaces);
+
+	std::vector<const CShips*> ships;
+	ships.reserve(vInvolvedShips.GetSize());
+	for (int i = 0; i < vInvolvedShips.GetSize(); i++)
+		ships.push_back(vInvolvedShips.GetAt(i));
+
+	return GetWinningChance(*pOurRace, ships, *pmRaces, sFriends, sEnemies, pAnomaly, false);
 }
 
 // Funktion überprüft, ob die Rassen in einem Kampf sich gegeneinander aus diplomatischen Gründen
