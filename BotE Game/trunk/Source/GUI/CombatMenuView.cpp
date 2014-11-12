@@ -107,7 +107,7 @@ void CCombatMenuView::OnNewRound()
 		m_EnemyShipsCursor[i]->SetState(BUTTON_STATE::DEACTIVATED);
 
 	m_bInOrderMenu = false;
-	m_vInvolvedShips.RemoveAll();
+	m_Ships.clear();
 	m_sFriends.clear();
 	m_sEnemies.clear();
 	m_nPageFriends = 0;
@@ -173,22 +173,22 @@ void CCombatMenuView::OnDraw(CDC* dc)
 	}
 
 	// beteiligte Schiff sammeln
-	m_vInvolvedShips.RemoveAll();
+	m_Ships.clear();
 	for(CShipMap::iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end(); ++i)
 	{
 		if (i->second->GetCo() != pDoc->m_ptCurrentCombatSector)
 			continue;
 
-		m_vInvolvedShips.Add(i->second.get());
+		m_Ships.push_back(i->second);
 		// Wenn das Schiff eine Flotte anführt, dann auch die Zeiger auf die Schiffe in der Flotte reingeben
 
 		for(CShips::iterator j =  i->second->begin(); j !=  i->second->end(); ++j)
-			m_vInvolvedShips.Add(j->second.get());
+			m_Ships.push_back(j->second);
 	}
 
 	// grobe prozentuale Kampfchance und beteiligte Rassen berechnen
 	const boost::shared_ptr<const CAnomaly>& pAnomaly = pDoc->GetSystem(pDoc->m_ptCurrentCombatSector.x, pDoc->m_ptCurrentCombatSector.y).GetAnomaly();
-	m_dWinningChance = CCombat::GetWinningChance(pMajor, m_vInvolvedShips, pDoc->GetRaceCtrl(), m_sFriends, m_sEnemies, pAnomaly.get());
+	m_dWinningChance = CCombat::GetWinningChance(*pMajor, m_Ships, *pDoc->GetRaceCtrl(), m_sFriends, m_sEnemies, pAnomaly.get(), false);
 
 	m_dWinningChance = min(0.99, m_dWinningChance);
 	m_dWinningChance = max(0.01, m_dWinningChance);
@@ -514,9 +514,9 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	int nRow = 0;
 	int nCol = 0;
 	int nCounter = 0;
-	for (int i = 0; i < m_vInvolvedShips.GetSize(); i++)
+	for(std::vector<boost::shared_ptr<CShips>>::const_iterator it = m_Ships.begin(); it != m_Ships.end(); ++it)
 	{
-		CShips* pShip = m_vInvolvedShips[i];
+		boost::shared_ptr<CShips> pShip = *it;
 		if (m_nShipType != -1 && pShip->GetShipType() != m_nShipType)
 			continue;
 
@@ -538,7 +538,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 		}
 
 		CPoint pt(50 + 225 * nCol, 255 + 65 * nRow);
-		bool bMarked = pShip == m_pMarkedShip;
+		bool bMarked = pShip.get() == m_pMarkedShip;
 		pShip->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, false, false, normalColor, normalColor, Gdiplus::Font(CComBSTR(fontName), fontSize));
 		// aktueller Schiffsbefehl anzeigen
 		if (pShip->OwnerID() == pMajor->GetRaceID())
@@ -555,7 +555,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 				g->DrawImage(graphic, pt.x, pt.y + 40, 30, 30);
 		}
 
-		m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip));
+		m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip.get()));
 		nRow++;
 
 		if (nRow%9 == 0)
@@ -575,9 +575,9 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	nRow = 0;
 	nCol = 0;
 	nCounter = 0;
-	for (int i = 0; i < m_vInvolvedShips.GetSize(); i++)
+	for(std::vector<boost::shared_ptr<CShips>>::const_iterator it = m_Ships.begin(); it != m_Ships.end(); ++it)
 	{
-		CShips* pShip = m_vInvolvedShips[i];
+		boost::shared_ptr<CShips> pShip = *it;
 		if (m_nShipType != -1 && pShip->GetShipType() != m_nShipType)
 			continue;
 
@@ -599,9 +599,9 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 		}
 
 		CPoint pt(750 + 225 * nCol, 255 + 65 * nRow);
-		bool bMarked = pShip == m_pMarkedShip;
+		bool bMarked = pShip.get() == m_pMarkedShip;
 		pShip->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, false, false, normalColor, normalColor, Gdiplus::Font(CComBSTR(fontName), fontSize));
-		m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip));
+		m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip.get()));
 		nRow++;
 
 		if (nRow%9 == 0)
@@ -861,9 +861,10 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		if (m_CombatTacticButtons[i]->GetRect().PtInRect(point))
 		{
 			// allen eigenen Schiffen den geklickten Befehl geben
-			for (int j = 0; j < m_vInvolvedShips.GetSize(); j++)
+			for(std::vector<boost::shared_ptr<CShips>>::const_iterator it = m_Ships.begin();
+				it != m_Ships.end(); ++it)
 			{
-				CShips* pShip = m_vInvolvedShips[j];
+				boost::shared_ptr<CShips> pShip = *it;
 				if (m_nShipType != -1 && pShip->GetShipType() != m_nShipType)
 					continue;
 
@@ -897,9 +898,10 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 			if (pShip->OwnerID() != pMajor->GetRaceID())
 				return;
 			// aktuell eingestellten Befehl an alle Schiffe dieser Klasse übergeben
-			for (int j = 0; j < m_vInvolvedShips.GetSize(); j++)
+			for(std::vector<boost::shared_ptr<CShips>>::const_iterator it = m_Ships.begin();
+				it != m_Ships.end(); ++it)
 			{
-				CShips* pShip2 = m_vInvolvedShips[j];
+				boost::shared_ptr<CShips> pShip2 = *it;
 
 				if (pShip2->OwnerID() != pMajor->GetRaceID() || pShip2->GetCo() != pDoc->m_ptCurrentCombatSector || pShip2->GetShipClass() != pShip->GetShipClass())
 					continue;

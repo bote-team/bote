@@ -77,7 +77,7 @@ private:
 
 	std::set<const CRace*> m_sFriends;
 	std::set<const CRace*> m_sEnemies;
-	CArray<CShips*> m_vInvolvedShips;
+	std::vector<boost::shared_ptr<CShips>> m_Ships;
 	double m_dWinningChance;
 
 	int m_nPageFriends;							///< Seite für alle befeundeten Schiffe in der Befehlsansicht
