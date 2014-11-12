@@ -159,7 +159,7 @@ void CMajorJoining::Calculate(int turn, const CStatistics& stats, CRaceControlle
 	}
 }
 
-bool CMajorJoining::ShouldHappenNow(int turn)
+bool CMajorJoining::ShouldHappenNow(int turn) const
 {
 
 	const int times = CIniLoader::GetInstance()->ReadValueDefault("Special", "MAJORJOINING", 0);

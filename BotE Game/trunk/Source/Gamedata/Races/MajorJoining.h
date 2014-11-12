@@ -32,7 +32,7 @@ public:
 
 private:
 
-	bool ShouldHappenNow(int turn);
+	bool ShouldHappenNow(int turn) const;
 
 	int m_TimesOccured;
 	int m_StartTurn;
