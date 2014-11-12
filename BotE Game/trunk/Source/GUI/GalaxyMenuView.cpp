@@ -1674,13 +1674,6 @@ static bool ShouldShowWinningChance(const CMajor& player, const boost::shared_pt
 	return false;
 }
 
-static void AddShipAndFleet(const boost::shared_ptr<CShips>& ships, CArray<CShips*>& arr)
-{
-	arr.Add(ships.get());
-	for(CShipMap::const_iterator it = ships->begin(); it != ships->end(); ++it)
-		arr.Add(it->second.get());
-}
-
 ///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
 /// @return	der erstellte Tooltip-Text
 CString CGalaxyMenuView::CreateTooltip(void)
@@ -1779,17 +1772,17 @@ CString CGalaxyMenuView::CreateTooltip(void)
 		const boost::shared_ptr<CShips>& current = pDoc->CurrentShip()->second;
 		if(m_bShipMove && ShouldShowWinningChance(*pMajor, current, *pSector))
 		{
-			CArray<CShips*> involved_ships;
-			AddShipAndFleet(current, involved_ships);
+			std::vector<const CShips*> involved_ships;
+			involved_ships.push_back(current.get());
 			const std::map<CString, CShipMap>& attacked = pSector->ShipsInSector();
 			for(std::map<CString, CShipMap>::const_iterator it = attacked.begin(); it != attacked.end(); ++it)
 				for(CShipMap::const_iterator itt = it->second.begin(); itt != it->second.end(); ++itt)
-					AddShipAndFleet(itt->second, involved_ships);
+					involved_ships.push_back(itt->second.get());
 
 			std::set<const CRace*> dummy1;
 			std::set<const CRace*> dummy2;
-			double chance = CCombat::GetWinningChance(pMajor, involved_ships,
-				pDoc->GetRaceCtrl(), dummy1, dummy2, pSector->GetAnomaly().get());
+			double chance = CCombat::GetWinningChance(*pMajor, involved_ships,
+				*pDoc->GetRaceCtrl(), dummy1, dummy2, pSector->GetAnomaly().get(), true);
 			chance = min(0.99, chance);
 			chance = max(0.01, chance);
 
