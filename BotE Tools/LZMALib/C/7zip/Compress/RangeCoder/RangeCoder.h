@@ -106,7 +106,7 @@ public:
     }
   }
 
-  UInt64 GetProcessedSize() {  return Stream.GetProcessedSize() + _cacheSize + 4; }
+  UInt64 GetProcessedSize() const {  return Stream.GetProcessedSize() + _cacheSize + 4; }
 };
 
 class CDecoder
@@ -200,7 +200,7 @@ public:
     return symbol;
   }
 
-  UInt64 GetProcessedSize() {return Stream.GetProcessedSize(); }
+  UInt64 GetProcessedSize() const {return Stream.GetProcessedSize(); }
 };
 
 }}
