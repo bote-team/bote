@@ -3,13 +3,16 @@
 
 #pragma warning (disable: 4244)
 
+#include <cassert>
+
 namespace network
 {
-	CBeginGame::CBeginGame() : CMessage(MSGID_BEGINGAME), m_nSize(0), m_pData(NULL)
+	CBeginGame::CBeginGame() : CMessage(MSGID_BEGINGAME), m_nSize(0), m_pDeletableData(NULL), m_pElseData(NULL)
 	{
 	}
 
-	CBeginGame::CBeginGame(CPeerData *pDoc) : CMessage(MSGID_BEGINGAME), m_nSize(0), m_pData(NULL)
+	CBeginGame::CBeginGame(CPeerData *pDoc) : CMessage(MSGID_BEGINGAME), m_nSize(0),
+		m_pDeletableData(NULL), m_pElseData(NULL)
 	{
 		ASSERT(pDoc);
 
@@ -19,12 +22,22 @@ namespace network
 		pDoc->SerializeBeginGameData(ar);
 		ar.Flush();
 		m_nSize = memFile.GetLength();
-		m_pData = memFile.Detach();
+		m_pElseData = memFile.Detach();
 	}
 
 	CBeginGame::~CBeginGame()
 	{
-		if (m_pData) delete[] m_pData;
+		assert(!m_pDeletableData || !m_pElseData);
+		if (m_pDeletableData)
+		{
+			delete[] m_pDeletableData;
+			m_pDeletableData = NULL;
+		}
+		if(m_pElseData)
+		{
+			free(m_pElseData);
+			m_pElseData = NULL;
+		}
 	}
 
 	void CBeginGame::Serialize(CArchive &ar)
@@ -32,20 +45,26 @@ namespace network
 		if (ar.IsStoring())
 		{
 			ar << m_nSize;
-			ar.Write(m_pData, m_nSize);
+			assert(m_pElseData && !m_pDeletableData);
+			ar.Write(m_pElseData, m_nSize);
 		}
 		else
 		{
 			ar >> m_nSize;
-			if (m_pData) delete[] m_pData;
-			m_pData = new BYTE[m_nSize];
-			ar.Read(m_pData, m_nSize);
+			if (m_pDeletableData)
+			{
+				delete[] m_pDeletableData;
+				m_pDeletableData = NULL;
+			}
+			m_pDeletableData = new BYTE[m_nSize];
+			ar.Read(m_pDeletableData, m_nSize);
 		}
 	}
 
 	void CBeginGame::DeserializeToDoc(CPeerData *pDoc)
 	{
-		CMemFile memFile(m_pData, m_nSize);
+		assert(!m_pElseData && m_pDeletableData);
+		CMemFile memFile(m_pDeletableData, m_nSize);
 		CArchive ar(&memFile, CArchive::load);
 		pDoc->SerializeBeginGameData(ar);
 		ar.Flush();

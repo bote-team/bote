@@ -39,7 +39,9 @@ namespace network
 		BYTE m_nID;				///< ID der zu übertragenden Nachricht
 		int m_nRequestId;		///< ID des Requests/der Response, <code>-1</code> wenn das Paket weder Request noch Response enthält
 		UINT m_nSize;			///< Länge des Puffers, der die Daten der Nachricht enthält
-		BYTE *m_pData;			///< serialisierte Daten der zu übertragenden Nachricht, evtl. komprimiert
+		///< serialisierte Daten der zu übertragenden Nachricht, evtl. komprimiert
+		BYTE *m_pDeletableData;//allocated with new[]
+		BYTE *m_pElseData;//got from CMemFile::Detach()
 
 	private:
 		/**
@@ -47,6 +49,8 @@ namespace network
 		 * müssen. Zur Verwendung in <code>Receive()</code> gedacht.
 		 */
 		CPacket();
+
+		BYTE* Data() const;
 
 	public:
 		/**

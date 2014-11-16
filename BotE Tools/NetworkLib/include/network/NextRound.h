@@ -24,7 +24,9 @@ namespace network
 	{
 		PLAYER m_pPlayers[RACE_COUNT];				///< Welches Volk spielt mit? Computer oder Mensch?
 		UINT m_nSize;								///< Größe des Puffers <code>m_pData</code>
-		BYTE *m_pData;								///< serialisierte Daten des Dokuments
+		///< serialisierte Daten des Dokuments
+		BYTE *m_pDeletableData;//allocated with new[]
+		BYTE *m_pElseData;//got from CMemFile::Detach()
 
 	public:
 		CNextRound();

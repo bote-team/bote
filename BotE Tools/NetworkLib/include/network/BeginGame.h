@@ -26,8 +26,9 @@ namespace network
 	{
 	private:
 		UINT m_nSize;									///< Größe des Puffers <code>m_pData</code>
-		BYTE *m_pData;									///< serialisierte Daten des Dokuments
-
+		///< serialisierte Daten des Dokuments
+		BYTE *m_pDeletableData;//allocated with new[]
+		BYTE *m_pElseData;//got from CMemFile::Detach()
 	public:
 		CBeginGame();
 

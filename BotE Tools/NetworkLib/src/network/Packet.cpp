@@ -5,14 +5,24 @@
 
 #pragma warning (disable: 4244 4267 4018)
 
+#include <cassert>
+
 namespace network
 {
 
-	CPacket::CPacket() : m_nFlags(0), m_nID(MSGID_NONE), m_nRequestId(-1), m_nSize(0), m_pData(NULL)
+	CPacket::CPacket() : m_nFlags(0), m_nID(MSGID_NONE), m_nRequestId(-1), m_nSize(0),
+		m_pDeletableData(NULL), m_pElseData(NULL)
 	{
 	}
 
-	CPacket::CPacket(CMessage *pMessage, int nRequestId, BOOL bRequest) : m_nFlags(0), m_nRequestId(nRequestId)
+	BYTE* CPacket::Data() const
+	{
+		assert(!m_pDeletableData || !m_pElseData);
+		return m_pDeletableData ? m_pDeletableData : m_pElseData;
+	}
+
+	CPacket::CPacket(CMessage *pMessage, int nRequestId, BOOL bRequest) : m_nFlags(0),
+		m_nRequestId(nRequestId), m_pDeletableData(NULL), m_pElseData(NULL)
 	{
 		ASSERT(pMessage);
 		ASSERT(nRequestId >= -1);
@@ -36,7 +46,7 @@ namespace network
 		{
 			// Puffer von memFile übernehmen
 			m_nSize = memFile.GetLength();
-			m_pData = memFile.Detach();
+			m_pElseData = memFile.Detach();
 		}
 		else
 		{
@@ -60,19 +70,30 @@ namespace network
 			free(pIn);
 
 			// Puffer von out übernehmen
-			m_pData = out.Detach();
+			m_pElseData = out.Detach();
 		}
 	}
 
 	CPacket::~CPacket()
 	{
-		if (m_pData) delete[] m_pData;
+		assert(!m_pDeletableData || !m_pElseData);
+		if (m_pDeletableData)
+		{
+			delete[] m_pDeletableData;
+			m_pDeletableData = NULL;
+		}
+		if(m_pElseData)
+		{
+			free(m_pElseData);
+			m_pElseData = NULL;
+		}
 	}
 
 	BOOL CPacket::Send(CAsyncSocket &socket, int &nError)
 	{
 		nError = 0;
-		if (!m_pData) return TRUE;
+		if(!Data())
+			return TRUE;
 
 		// Header zusammenstellen
 		UINT nHeaderSize = 2 * sizeof(BYTE) + sizeof(UINT) + sizeof(int) + PACKET_CAPTURE_LEN;
@@ -110,7 +131,7 @@ namespace network
 
 		// Timer zurücksetzen, Daten versenden
 		UINT nSize = m_nSize;
-		p = m_pData;
+		p = Data();
 		deadline = clock() + SEND_TIMEOUT * CLOCKS_PER_SEC;
 		while (nSize)
 		{
@@ -243,8 +264,8 @@ namespace network
 		p += sizeof(pPacket->m_nSize);
 
 		// Daten lesen; warten, bis Daten vollständig sind
-		pPacket->m_pData = new BYTE[pPacket->m_nSize];
-		p = pPacket->m_pData;
+		pPacket->m_pDeletableData = new BYTE[pPacket->m_nSize];
+		p = pPacket->m_pDeletableData;
 
 		int nDataSize = pPacket->m_nSize;
 		clock_t deadline = clock() + RECEIVE_TIMEOUT * CLOCKS_PER_SEC;
@@ -312,7 +333,7 @@ namespace network
 			TRACE("decompressing: %u -> ", m_nSize);
 			clock_t time = clock();
 #endif
-			VERIFY(Decompress(m_pData, m_nSize, memFile));
+			VERIFY(Decompress(Data(), m_nSize, memFile));
 #ifdef _DEBUG
 			UINT nSize = memFile.GetLength();
 			time = clock() - time;
@@ -324,7 +345,7 @@ namespace network
 		else
 		{
 			// Daten liegen unkomprimiert vor
-			memFile.Attach(m_pData, m_nSize);
+			memFile.Attach(Data(), m_nSize);
 		}
 
 		// passendes Nachrichten-Objekt erzeugen

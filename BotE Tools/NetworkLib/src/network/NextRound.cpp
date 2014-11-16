@@ -3,15 +3,17 @@
 
 #pragma warning (disable: 4244)
 
+#include <cassert>
+
 namespace network
 {
-	CNextRound::CNextRound() : CMessage(MSGID_NEXTROUND), m_nSize(0), m_pData(NULL)
+	CNextRound::CNextRound() : CMessage(MSGID_NEXTROUND), m_nSize(0), m_pDeletableData(NULL), m_pElseData(NULL)
 	{
 		memset(m_pPlayers, 0, RACE_COUNT * sizeof(*m_pPlayers));
 	}
 
 	CNextRound::CNextRound(CPeerData *pDoc)
-		: CMessage(MSGID_NEXTROUND), m_nSize(0), m_pData(NULL)
+		: CMessage(MSGID_NEXTROUND), m_nSize(0), m_pDeletableData(NULL), m_pElseData(NULL)
 	{
 		ASSERT(pDoc);
 		memset(m_pPlayers, 0, RACE_COUNT * sizeof(*m_pPlayers));
@@ -23,12 +25,22 @@ namespace network
 		pDoc->SerializeNextRoundData(ar);
 		ar.Flush();
 		m_nSize = memFile.GetLength();
-		m_pData = memFile.Detach();
+		m_pElseData = memFile.Detach();
 	}
 
 	CNextRound::~CNextRound()
 	{
-		if (m_pData) delete[] m_pData;
+		assert(!m_pDeletableData || !m_pElseData);
+		if(m_pDeletableData)
+		{
+			delete[] m_pDeletableData;
+			m_pDeletableData = NULL;
+		}
+		if(m_pElseData)
+		{
+			free(m_pElseData);
+			m_pElseData = NULL;
+		}
 	}
 
 	void CNextRound::Serialize(CArchive &ar)
@@ -38,7 +50,8 @@ namespace network
 			for (int i = 0; i < RACE_COUNT; i++)
 				ar << (BYTE)m_pPlayers[i];
 			ar << m_nSize;
-			ar.Write(m_pData, m_nSize);
+			assert(m_pElseData && !m_pDeletableData);
+			ar.Write(m_pElseData, m_nSize);
 		}
 		else
 		{
@@ -51,9 +64,13 @@ namespace network
 					m_pPlayers[i] = (PLAYER)player;
 			}
 			ar >> m_nSize;
-			if (m_pData) delete[] m_pData;
-			m_pData = new BYTE[m_nSize];
-			ar.Read(m_pData, m_nSize);
+			if(m_pDeletableData)
+			{
+				delete[] m_pDeletableData;
+				m_pDeletableData = NULL;
+			}
+			m_pDeletableData = new BYTE[m_nSize];
+			ar.Read(m_pDeletableData, m_nSize);
 		}
 	}
 
@@ -89,7 +106,8 @@ namespace network
 
 	void CNextRound::DeserializeToDoc(CPeerData *pDoc)
 	{
-		CMemFile memFile(m_pData, m_nSize);
+		assert(!m_pElseData && m_pDeletableData);
+		CMemFile memFile(m_pDeletableData, m_nSize);
 		CArchive ar(&memFile, CArchive::load);
 		pDoc->SerializeNextRoundData(ar);
 		ar.Flush();
