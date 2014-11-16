@@ -151,10 +151,10 @@ void CPPDrawManager::AlphaBitBlt(HDC hDestDC, int nDestX, int nDestY, DWORD dwWi
 			::BitBlt (hDestDC, nDestX, nDestY, dwWidth, dwHeight, hTempDC, 0, 0, SRCCOPY);
 			::SelectObject (hTempDC, hOldTempBmp);
 
-			delete lpbiDest;
+			delete[] lpbiDest;
 			::DeleteObject(hDestDib);
 		} //if
-		delete lpbiSrc;
+		delete[] lpbiSrc;
 		::DeleteObject(hSrcDib);
 	} //if
 
@@ -1059,10 +1059,10 @@ void CPPDrawManager::DrawShadow(HDC hDestDC, int nDestX, int nDestY, DWORD dwWid
 			::BitBlt (hDestDC, nDestX, nDestY, dwWidth, dwHeight, hTempDC, 0, 0, SRCCOPY);
 			::SelectObject (hTempDC, hOldTempBmp);
 
-			delete lpbiDest;
+			delete[] lpbiDest;
 			::DeleteObject(hDestDib);
 		} //if
-		delete lpbiSrc;
+		delete[] lpbiSrc;
 		::DeleteObject(hSrcDib);
 	} //if
 	::DeleteDC(hTempDC);
