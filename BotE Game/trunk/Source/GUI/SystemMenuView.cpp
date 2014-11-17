@@ -187,11 +187,18 @@ void CSystemMenuView::OnInitialUpdate()
 	// Kleine Buttons unter der Bauliste/Assemblylist
 	BuyButton.SetRect(r.left+750,r.top+625,r.left+870,r.top+655);
 	DeleteButton.SetRect(r.left+900,r.top+625,r.left+1020,r.top+655);
+	OkayButton.SetRect(0, 0, 0, 0);
+	CancelButton.SetRect(0, 0, 0, 0);
 	// Kleine Buttons unter der Gebäudebeschreibungs/Informations-Ansicht
 	BuildingInfoButton.SetRect(r.left+30,r.top+625,r.left+150,r.top+655);
 	BuildingDescriptionButton.SetRect(r.left+165,r.top+625,r.left+285,r.top+655);
 	// Kleiner Umschaltbutton in der Arbeitermenüansicht
 	ChangeWorkersButton.SetRect(r.left+542,r.top+645,r.left+662,r.top+675);
+	for (int i = WORKER::FOOD_WORKER; i <= WORKER::RESEARCH_WORKER; i++)
+	{
+		for (int j = 0; j < 200; j++)
+			Timber[i][j].SetRect(0,0,0,0);
+	}
 	// Handelsrouten und Globales Lager Ansicht
 	m_iGlobalStoreageQuantity = 1;
 

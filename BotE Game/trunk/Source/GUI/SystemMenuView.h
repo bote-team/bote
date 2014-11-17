@@ -140,7 +140,7 @@ private:
 	CRect BuildingInfoButton;				// Rechteck für den Gebäudeinfobutton
 	CRect BuildingDescriptionButton;		// Rechteck für den Gebäudebeschreibungsbutton
 	CRect ChangeWorkersButton;				// Rechteck für den Button für Umschaltung zwischen "normalen" und RES-Arbeitern
-	CRect Timber[5][200];					// Die Balken die die Arbeiterzuweisung anzeigen 5 Stück a max. 200 Arbeiter
+	CRect Timber[WORKER::RESEARCH_WORKER + 1][200];					// Die Balken die die Arbeiterzuweisung anzeigen 5 Stück a max. 200 Arbeiter
 
 	BYTE m_bySubMenu;						// Welcher Button wurde gedrückt (0 für Baumenü, 1 für Arbeiter usw.)
 	BOOLEAN m_bClickedOnBuyButton;			// Wurde auf den "kaufen" Button in der Bauansicht geklickt
