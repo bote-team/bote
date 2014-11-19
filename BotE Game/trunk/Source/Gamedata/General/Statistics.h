@@ -13,6 +13,7 @@
 #include <map>
 #include <list>
 #include "Constants.h"
+#include <vector>
 
 // forward declaration
 class CBotEDoc;
@@ -108,6 +109,7 @@ public:
 	void GetTopSystems(int nLimit, std::list<CPoint>& lSystems) const;
 
 	float GetMark(const CString& race) const;
+	std::vector<std::pair<CString, float>> GetSortedMarks() const;
 
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
 	void Reset(void);

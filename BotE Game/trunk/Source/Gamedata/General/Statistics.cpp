@@ -508,3 +508,13 @@ void CStatistics::CalcMarks()
 	CalcMarksForDemoType(m_Research.places, m_Marks, false);
 	CalcMarksForDemoType(m_Moral.places, m_Marks, true);
 }
+
+std::vector<std::pair<CString, float>> CStatistics::GetSortedMarks() const
+{
+	std::vector<std::pair<CString, float>> sorted_marks;
+	for(std::map<CString, float>::const_iterator it = m_Marks.begin(); it != m_Marks.end(); ++it)
+		sorted_marks.push_back(*it);
+	std::sort(sorted_marks.begin(), sorted_marks.end(), Compare);
+	std::reverse(sorted_marks.begin(), sorted_marks.end());
+	return sorted_marks;
+}

@@ -64,6 +64,9 @@ public:
 	const boost::shared_ptr<const CRace> GetRaceSafe(const CString& sID) const;
 	boost::shared_ptr<CRace> GetRaceSafe(const CString& sID);
 
+	CMajor* GetMajor(const CString& sId);
+	const CMajor* GetMajor(const CString& sId) const;
+
 	const boost::shared_ptr<const CMajor> GetMajorSafe(const CString& sID) const;
 	boost::shared_ptr<CMajor> GetMajorSafe(const CString& sID);
 

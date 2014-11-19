@@ -68,49 +68,58 @@ static int randomize_by(int amount)
 }
 
 void CMajorJoining::Calculate(int turn, const CStatistics& stats, CRaceController& race_ctrl,
-		CShipMap& ships, std::vector<CSystem>& systems)
+		CShipMap& ships, std::vector<CSystem>& systems, float difficulty)
 {
 	if(turn == 2)
 		m_StartTurn += randomize_by(m_Randomize_by);
 
-	if(!ShouldHappenNow(turn))
-		return;
+	const std::vector<std::pair<CString, float>>& marks = stats.GetSortedMarks();
 
-	const std::map<CString, CMajor*>& majors = *race_ctrl.GetMajors();
-	CMajor* best = NULL;
-	CMajor* worst = NULL;
-	float best_mark = FLT_MAX;
-	float worst_mark = 1.0f;
-	for(std::map<CString, CMajor*>::const_iterator it = majors.begin(); it != majors.end(); ++it)
+	const CMajor* best_ai = NULL;
+	const CMajor* worst_ai = NULL;
+	int count_of_ais = 0;
+	int count_of_humans = 0;
+	float human_average_mark = 0.0f;
+	std::vector<std::pair<CMajor*, float>> majors;
+	for(std::vector<std::pair<CString, float>>::const_iterator it = marks.begin(); it != marks.end(); ++it)
 	{
-		if(it->second->AHumanPlays())
-			continue;
-
-		const float mark = stats.GetMark(it->first);
-		if(mark < best_mark)
+		CMajor& major = *race_ctrl.GetMajor(it->first);
+		majors.push_back(std::pair<CMajor*, float>(&major, it->second));
+		if(major.AHumanPlays())
 		{
-			best_mark = mark;
-			best = it->second;
+			++count_of_humans;
+			human_average_mark += it->second;
 		}
-		if(mark > worst_mark)
+		else
 		{
-			worst_mark = mark;
-			worst = it->second;
+			++count_of_ais;
+			if(!best_ai)
+				best_ai = &major;
+			else
+				worst_ai = &major;
 		}
 	}
-
-	if(!best || !worst || best == worst)
+	AssertBotE(count_of_humans >= 1);
+	human_average_mark /= count_of_humans;
+	if(count_of_ais < 2)
 		return;
-	AssertBotE(best->GetRaceID() != worst->GetRaceID());
+	AssertBotE(best_ai && worst_ai && best_ai != worst_ai);
+	AssertBotE(best_ai->GetRaceID() != worst_ai->GetRaceID());
+
+	if(turn >= 20)
+		CalcStartTurnChangeDueToHumansStrength(human_average_mark, majors.size(), difficulty);
+
+	if(!ShouldHappenNow(turn))
+		return;
 
 	m_TimesOccured++;
 	m_StartTurn = turn + m_Pause + randomize_by(m_Randomize_by);
 
 	for(CShipMap::iterator it = ships.begin(); it != ships.end(); ++it)
 	{
-		if(it->second->OwnerID() == worst->GetRaceID())
+		if(it->second->OwnerID() == worst_ai->GetRaceID())
 		{
-			it->second->SetOwner(best->GetRaceID());
+			it->second->SetOwner(best_ai->GetRaceID());
 			it->second->SetIsShipFlagShip(FALSE);
 			it->second->UnsetCurrentOrder();
 			it->second->SetCombatTacticAccordingToType();
@@ -120,42 +129,42 @@ void CMajorJoining::Calculate(int turn, const CStatistics& stats, CRaceControlle
 
 	for(std::vector<CSystem>::iterator it = systems.begin(); it != systems.end(); ++it)
 	{
-		if(!it->Majorized() || it->OwnerID() != worst->GetRaceID())
+		if(!it->Majorized() || it->OwnerID() != worst_ai->GetRaceID())
 			continue;
 
 		const bool taken = it->Taken();
 		it->ChangeOwner(
-			best->GetRaceID(),
+			best_ai->GetRaceID(),
 			taken ? CSystem::OWNING_STATUS_TAKEN : CSystem::OWNING_STATUS_COLONIZED_MEMBERSHIP_OR_HOME,
 			false);
-		it->SetFullKnown(best->GetRaceID());
+		it->SetFullKnown(best_ai->GetRaceID());
 		boost::shared_ptr<CRace> home_of = it->HomeOf();
 		if(home_of && home_of->IsMinor())
 		{
 			boost::shared_ptr<CMinor> minor = boost::dynamic_pointer_cast<CMinor>(home_of);
-			minor->SetOwner(race_ctrl.GetMajorSafe(best->GetRaceID()));
+			minor->SetOwner(race_ctrl.GetMajorSafe(best_ai->GetRaceID()));
 
 			if(!taken)
 			{
-				minor->SetRelation(best->GetRaceID(), minor->GetRelation(worst->GetRaceID()));
-				minor->SetAgreement(best->GetRaceID(), DIPLOMATIC_AGREEMENT::MEMBERSHIP);
+				minor->SetRelation(best_ai->GetRaceID(), minor->GetRelation(worst_ai->GetRaceID()));
+				minor->SetAgreement(best_ai->GetRaceID(), DIPLOMATIC_AGREEMENT::MEMBERSHIP);
 			}
 		}
 	}
 
 	CEmpireNews message1;
-	CString sMsgText = CLoc::GetString("MAJOR_JOINING_PART_ONE", false, worst->GetRaceNameWithArticle(),
-		best->GetRaceNameWithArticle());
+	CString sMsgText = CLoc::GetString("MAJOR_JOINING_PART_ONE", false, worst_ai->GetRaceNameWithArticle(),
+		best_ai->GetRaceNameWithArticle());
 	message1.CreateNews(sMsgText,EMPIRE_NEWS_TYPE::DIPLOMACY);
 	CEmpireNews message2;
-	sMsgText = CLoc::GetString("MAJOR_JOINING_PART_TWO", false, worst->GetHomesystemName(),
-		best->GetRaceNameWithArticle());
+	sMsgText = CLoc::GetString("MAJOR_JOINING_PART_TWO", false, worst_ai->GetHomesystemName(),
+		best_ai->GetRaceNameWithArticle());
 	message2.CreateNews(sMsgText,EMPIRE_NEWS_TYPE::DIPLOMACY);
 
-	for(std::map<CString, CMajor*>::const_iterator it = majors.begin(); it != majors.end(); ++it)
+	for(std::vector<std::pair<CMajor*, float>>::const_iterator it = majors.begin(); it != majors.end(); ++it)
 	{
-		it->second->GetEmpire()->AddMsg(message1);
-		it->second->GetEmpire()->AddMsg(message2);
+		it->first->GetEmpire()->AddMsg(message1);
+		it->first->GetEmpire()->AddMsg(message2);
 	}
 }
 
@@ -168,12 +177,44 @@ bool CMajorJoining::ShouldHappenNow(int turn) const
 	if(turn < m_StartTurn)
 		return false;
 	if(turn > m_StartTurn + m_RisingTurns)
-	{
-		AssertBotE(false);
 		return true;
-	}
 
 	const int prob = 100.0f *
 		(pow(2.0f, pow((turn -  m_StartTurn) / static_cast<float>(m_RisingTurns), 3.0f)) - 1);
 	return rand() % 100 < prob;
+}
+
+void CMajorJoining::CalcStartTurnChangeDueToHumansStrength(float human_average_mark, int count_of_majors,
+		float difficulty)
+{
+	AssertBotE(1.0f <= human_average_mark && human_average_mark <= count_of_majors);
+
+	float fraction = 0.0f;
+	int turn_change = 0;
+	if(difficulty == DIFFICULTIES::EASY)
+	{
+		fraction = 0.15f;
+		turn_change = 1;
+	}
+	else if (difficulty == DIFFICULTIES::NORMAL)
+	{
+		fraction = 0.3f;
+		turn_change = 1;
+	}
+	else if (difficulty == DIFFICULTIES::HARD)
+	{
+		fraction = 0.45f;
+		turn_change = 2;
+	}
+	else if (difficulty == DIFFICULTIES::IMPOSSIBLE)
+	{
+		fraction = 0.6f;
+		turn_change = 2;
+	}
+
+	if(human_average_mark > fraction * count_of_majors)
+		return;
+
+	m_StartTurn -= turn_change;
+	m_StartTurn = max(m_StartTurn, 1);
 }

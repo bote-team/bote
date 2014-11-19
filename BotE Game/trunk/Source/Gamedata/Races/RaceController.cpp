@@ -137,6 +137,16 @@ boost::shared_ptr<CRace> CRaceController::GetRaceSafe(const CString& sID)
 	return it->second;
 }
 
+CMajor* CRaceController::GetMajor(const CString& sId)
+{
+	return dynamic_cast<CMajor*>(GetRace(sId));
+}
+
+const CMajor* CRaceController::GetMajor(const CString& sId) const
+{
+	return dynamic_cast<const CMajor*>(GetRace(sId));
+}
+
 const boost::shared_ptr<const CMajor> CRaceController::GetMajorSafe(const CString& sID) const
 {
 	return boost::dynamic_pointer_cast<const CMajor>(GetRaceSafe(sID));

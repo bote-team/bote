@@ -26,12 +26,13 @@ public:
 	static CMajorJoining* GetInstance(void);
 
 	void Calculate(int turn, const CStatistics& stats, CRaceController& race_ctrl,
-		CShipMap& ships, std::vector<CSystem>& systems);
+		CShipMap& ships, std::vector<CSystem>& systems, float difficulty);
 
 	void Serialize(CArchive& ar);
 
 private:
 
+	void CalcStartTurnChangeDueToHumansStrength(float human_average_mark, int count_of_majors, float difficulty);
 	bool ShouldHappenNow(int turn) const;
 
 	int m_TimesOccured;

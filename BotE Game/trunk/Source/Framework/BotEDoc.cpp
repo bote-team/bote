@@ -1398,7 +1398,8 @@ void CBotEDoc::NextRound()
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		pRandomEventCtrl->CalcEvents(it->second);
 
-	CMajorJoining::GetInstance()->Calculate(m_iRound, m_Statistics, *m_pRaceCtrl, m_ShipMap, m_Systems);
+	CMajorJoining::GetInstance()->Calculate(m_iRound, m_Statistics, *m_pRaceCtrl, m_ShipMap,
+		m_Systems, m_fDifficultyLevel);
 
 	this->CalcSystemAttack();
 	this->CalcIntelligence();
