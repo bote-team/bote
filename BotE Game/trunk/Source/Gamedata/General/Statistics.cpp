@@ -482,31 +482,31 @@ void CStatistics::InternalCalcDemographics(DEMOGRAPHICS_STORAGE& store, const st
 	store.last = vSortedVec.back().second;
 }
 
-void CStatistics::CalcMarksForDemoType(const std::map<CString, int>& places, std::map<CString, float>& marks,
+void CStatistics::CalcMarksForDemoType(const DEMOGRAPHICS_STORAGE& store, std::map<CString, float>& marks,
 	bool do_average)
 {
-	if(!do_average)
+	const int count_of_majors = store.values.size();
+
+	for(std::map<CString, float>::const_iterator it = store.values.begin(); it != store.values.end(); ++it)
 	{
-		for(std::map<CString, int>::const_iterator it = places.begin(); it != places.end(); ++it)
-			insert_or_increase(marks, it->second, it->first);
-	}
-	else
-	{
-		for(std::map<CString, int>::const_iterator it = places.begin(); it != places.end(); ++it)
-		{
-			float& mark = marks[it->first];
-			mark = (mark + it->second) / (CStatistics::MORAL + 1.0f);
-		}
+		const double first = store.first;
+		const double last = store.last;
+		float mark = 1.0f;
+		if(!Equals(first, last))
+			mark = (it->second - last) / (first - last) * (1.0f - count_of_majors) + count_of_majors;
+		insert_or_increase(marks, mark, it->first);
+		if(do_average)
+			marks[it->first] /= (CStatistics::MORAL + 1.0f);
 	}
 }
 
 void CStatistics::CalcMarks()
 {
-	CalcMarksForDemoType(m_Bsp.places, m_Marks, false);
-	CalcMarksForDemoType(m_Productivity.places, m_Marks, false);
-	CalcMarksForDemoType(m_Military.places, m_Marks, false);
-	CalcMarksForDemoType(m_Research.places, m_Marks, false);
-	CalcMarksForDemoType(m_Moral.places, m_Marks, true);
+	CalcMarksForDemoType(m_Bsp, m_Marks, false);
+	CalcMarksForDemoType(m_Productivity, m_Marks, false);
+	CalcMarksForDemoType(m_Military, m_Marks, false);
+	CalcMarksForDemoType(m_Research, m_Marks, false);
+	CalcMarksForDemoType(m_Moral, m_Marks, true);
 }
 
 std::vector<std::pair<CString, float>> CStatistics::GetSortedMarks() const

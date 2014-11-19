@@ -131,8 +131,6 @@ private:
 
 	void CalcDemographicsSystem(const CBotEDoc& doc);
 	void CalcDemographicsMilitary(const CBotEDoc& doc);
-	void CalcMarksForDemoType(const std::map<CString, int>& places, std::map<CString, float>& marks,
-		bool do_average);
 
 	void CalcMarks();
 
@@ -220,6 +218,9 @@ private:
 			}
 		}
 	};
+
+	void CalcMarksForDemoType(const DEMOGRAPHICS_STORAGE& store, std::map<CString, float>& marks,
+		bool do_average);
 
 	void InternalCalcDemographics(DEMOGRAPHICS_STORAGE& store, const std::map<CString, float>& m);
 
