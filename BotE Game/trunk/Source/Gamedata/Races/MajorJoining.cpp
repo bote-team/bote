@@ -85,7 +85,7 @@ void CMajorJoining::Calculate(int turn, const CStatistics& stats, CRaceControlle
 	{
 		CMajor& major = *race_ctrl.GetMajor(it->first);
 		majors.push_back(std::pair<CMajor*, float>(&major, it->second));
-		if(major.AHumanPlays())
+		if(major.IsHumanPlayer())
 		{
 			++count_of_humans;
 			human_average_mark += it->second;

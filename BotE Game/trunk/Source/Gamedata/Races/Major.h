@@ -76,11 +76,14 @@ public:
 	const CString& GetPrefix(void) const {return m_sPrefix;}
 
 	/// Funktion gibt an, ob die Rasse von einem menschlichen Spieler oder vom Computer gespielt wird.
-	/// @return <code>true</code> wenn von einem menschlichen Spieler, ansonsten <code>false</code>
+	/// @return <code>true</code> if controlled by a human player or a human player lets the ai
+	/// play during autoturn
 	bool IsHumanPlayer(void) const {return m_bPlayer;}
 
 	//in addition to that this major belongs to a human player, consider whether autoturns is active
 	//if yes, let the ai us play
+	///@ return true only if this major is really played by a human, as opposed to a human side
+	///being ai controlled while autoturn is active
 	bool AHumanPlays() const;
 
 	bool CanBuildShip(SHIP_TYPE::Typ type,const BYTE researchLevels[6], const CShipInfo& info) const;
