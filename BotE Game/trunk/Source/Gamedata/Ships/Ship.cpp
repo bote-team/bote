@@ -1094,6 +1094,15 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info) const
 	case 1:	sMovement += CLoc::GetString("MISERABLE");	break;
 	default:sMovement += CLoc::GetString("NONE");
 	}
+
+	//show capacity
+	if(m_iStorageRoom > 0)
+	{
+		sMovement += CHTMLStringBuilder::GetHTMLStringNewLine();
+		CString s;
+		s.Format("%s: %u", CLoc::GetString("PLACE"), m_iStorageRoom);
+		sMovement += s;
+	}
 	sMovement = CHTMLStringBuilder::GetHTMLColor(sMovement);
 	sMovement = CHTMLStringBuilder::GetHTMLHeader(sMovement, _T("h5"));
 	sMovement = CHTMLStringBuilder::GetHTMLCenter(sMovement);
