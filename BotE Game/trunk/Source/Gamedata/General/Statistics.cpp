@@ -39,15 +39,8 @@ void CStatistics::Serialize(CArchive &ar)
 		for (map<CString, UINT>::const_iterator it = m_mShipPowers.begin(); it != m_mShipPowers.end(); ++it)
 			ar << it->first << it->second;
 		ar << m_Marks.size();
-		for (std::map<CStatistics::DEMO_TYPE, std::map<CString, float>>::const_iterator it = m_Marks.begin();
-			it != m_Marks.end(); ++it)
-		{
-			ar << it->first;
-			ar << it->second.size();
-			for(std::map<CString, float>::const_iterator itt = it->second.begin(); itt != it->second.end();
-				++itt)
-				ar << itt->first << itt->second;
-		}
+		for(std::map<CString, float>::const_iterator it = m_Marks.begin(); it != m_Marks.end(); ++it)
+			ar << it->first << it ->second;
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
@@ -72,27 +65,26 @@ void CStatistics::Serialize(CArchive &ar)
 		ar >> mapSize;
 		for (size_t i = 0; i < mapSize; ++i)
 		{
-			int key;
+			CString key;
 			ar >> key;
-			size_t inner_map_size = 0;
-			ar >> inner_map_size;
-			for(size_t j = 0; j < inner_map_size; ++j)
-			{
-				CString inner_key;
-				ar >> inner_key;
-				float value;
-				ar >> value;
-				m_Marks[static_cast<CStatistics::DEMO_TYPE>(key)][inner_key] = value;
-			}
+			float value;
+			ar >> value;
+			m_Marks.insert(std::pair<CString, float>(key, value));
 		}
 	}
+
+	m_Bsp.Serialize(ar);
+	m_Productivity.Serialize(ar);
+	m_Military.Serialize(ar);
+	m_Research.Serialize(ar);
+	m_Moral.Serialize(ar);
 }
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 /// Funktion zum Berechnen aller Statistiken.
 /// @param pDoc Zeiger auf das Dokument
-void CStatistics::CalcStats(CBotEDoc* pDoc)
+void CStatistics::CalcStats(const CBotEDoc* const pDoc)
 {
 	AssertBotE(pDoc);
 
@@ -104,7 +96,52 @@ void CStatistics::CalcStats(CBotEDoc* pDoc)
 
 	this->CalcShipPowers(pDoc);
 
+	this->CalcDemographicsSystem(*pDoc);
+	this->CalcDemographicsMilitary(*pDoc);
+
 	this->CalcMarks();
+}
+
+static void insert_or_increase(std::map<CString, float>& m, float value, const CString& id)
+{
+	std::map<CString, float>::iterator found = m.find(id);
+	if(found == m.end())
+		m[id] = value;
+	else
+		found->second += value;
+}
+
+void CStatistics::CalcDemographicsSystem(const CBotEDoc& doc)
+{
+	std::map<CString, float> bsp;
+	std::map<CString, float> productivity;
+	std::map<CString, float> research;
+	std::map<CString, float> moral;
+	std::map<CString, float> count;
+	const std::vector<CSystem>& systems = doc.m_Systems;
+	for(std::vector<CSystem>::const_iterator it = systems.begin(); it != systems.end(); ++it)
+	{
+		if(!it->Majorized())
+			continue;
+
+		const CSystemProd& prod = *it->GetProduction();
+		insert_or_increase(bsp, prod.GetCreditsProd(), it->OwnerID());
+		float fResProd = 0.0f;
+		for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
+			fResProd += prod.GetResourceProd(i);
+		fResProd /= 2.5;
+		insert_or_increase(productivity, prod.GetIndustryProd() + fResProd, it->OwnerID());
+		insert_or_increase(research, prod.GetResearchProd(), it->OwnerID());
+		insert_or_increase(moral, it->GetMoral(), it->OwnerID());
+		insert_or_increase(count, 1, it->OwnerID());
+	}
+	for (std::map<CString, float>::iterator it = moral.begin(); it != moral.end(); ++it)
+		it->second /= count[it->first];
+
+	InternalCalcDemographics(m_Bsp, bsp);
+	InternalCalcDemographics(m_Productivity, productivity);
+	InternalCalcDemographics(m_Research, research);
+	InternalCalcDemographics(m_Moral, moral);
 }
 
 /// Funktion ermittelt die Demographiewerte einer bestimmten Rasse.
@@ -116,20 +153,11 @@ void CStatistics::CalcStats(CBotEDoc* pDoc)
 /// @param [out] fLast schlechtester Wert
 void CStatistics::GetDemographicsBSP(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast)
 {
-	CBotEDoc* pDoc = resources::pDoc;
-	AssertBotE(pDoc);
-
-	std::map<CString, float> mMap;
-	// es werden alle Creditseinnahmen aller Systeme betrachtet
-	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (pDoc->GetSystem(x,y).Majorized())
-				mMap[pDoc->GetSystem(x,y).OwnerID()] += pDoc->GetSystem(x,y).GetProduction()->GetCreditsProd();
-
-	std::map<CString, float> marks;
-			MYTRACE("general")(MT::LEVEL_INFO, "Demographics - BSP: multiply with 5 ");
-	CalcDemoValues(sRaceID, &mMap, marks, nPlace, fValue, fAverage, fFirst, fLast);
-	m_Marks[CStatistics::BSP] = marks;
+	nPlace = m_Bsp.places[sRaceID];
+	fValue = m_Bsp.values[sRaceID];
+	fAverage = m_Bsp.average;
+	fFirst = m_Bsp.first;
+	fLast = m_Bsp.last;
 }
 
 /// Funktion ermittelt die Demographiewerte einer bestimmten Rasse.
@@ -141,27 +169,32 @@ void CStatistics::GetDemographicsBSP(const CString& sRaceID, int& nPlace, float&
 /// @param [out] fLast schlechtester Wert
 void CStatistics::GetDemographicsProductivity(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast)
 {
-	CBotEDoc* pDoc = resources::pDoc;
-	AssertBotE(pDoc);
+	nPlace = m_Productivity.places[sRaceID];
+	fValue = m_Productivity.values[sRaceID];
+	fAverage = m_Productivity.average;
+	fFirst = m_Productivity.first;
+	fLast = m_Productivity.last;
+}
 
-	std::map<CString, float> mMap;
-	// Es wird die komplette Industrieproduktion und Ressourcenproduktion aller Rassen betrachtet
-	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (pDoc->GetSystem(x,y).Majorized())
-			{
-				float fResProd = 0.0f;
-				for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
-					fResProd += pDoc->GetSystem(x,y).GetProduction()->GetResourceProd(i);
-				fResProd /= 2.5;
-				mMap[pDoc->GetSystem(x,y).OwnerID()] += pDoc->GetSystem(x,y).GetProduction()->GetIndustryProd() + fResProd;
-			}
+void CStatistics::CalcDemographicsMilitary(const CBotEDoc& doc)
+{
+	std::map<CString, float> military;
+	// Map mit allen vorhandenen Majors und einem NULL Wert füllen, so dass auch Majors ohne Militär in der
+	// Liste aufgeführt sind
+	const std::map<CString, CMajor*>& pmMajors = *doc.GetRaceCtrl()->GetMajors();
+	for (std::map<CString, CMajor*>::const_iterator it = pmMajors.begin(); it != pmMajors.end(); ++it)
+		military[it->first] = 0.0f;
 
-			MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Productivity: 1:1");
-
-	std::map<CString, float> marks;
-	CalcDemoValues(sRaceID, &mMap, marks, nPlace, fValue, fAverage, fFirst, fLast);
-	m_Marks[CStatistics::PRODUCTIVITY] = marks;
+	// Es werden alle Schiffe aller Rassen betrachtet
+	for(CShipMap::const_iterator i = doc.m_ShipMap.begin(); i != doc.m_ShipMap.end(); ++i)
+	{
+		// Stationen und Alienschiffe werden nicht mit einbezogen
+		if(i->second->IsStation() || i->second->Owner()->IsMinor())
+			continue;
+		const unsigned power = i->second->GetCompleteOffensivePower(true, true, true);
+		insert_or_increase(military, power + power / 2, i->second->OwnerID());
+	}
+	InternalCalcDemographics(m_Military, military);
 }
 
 /// Funktion ermittelt die Demographiewerte einer bestimmten Rasse.
@@ -173,32 +206,11 @@ void CStatistics::GetDemographicsProductivity(const CString& sRaceID, int& nPlac
 /// @param [out] fLast schlechtester Wert
 void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast)
 {
-	CBotEDoc* pDoc = resources::pDoc;
-	AssertBotE(pDoc);
-
-	std::map<CString, float> mMap;
-	// Map mit allen vorhandenen Majors und einem NULL Wert füllen, so dass auch Majors ohne Militär in der
-	// Liste aufgeführt sind
-	std::map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-	for (std::map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-		mMap[it->first] = 0.0f;
-
-	// Es werden alle Schiffe aller Rassen betrachtet
-	for(CShipMap::const_iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end(); ++i)
-	{
-		// Stationen und Alienschiffe werden nicht mit einbezogen
-		if(i->second->IsStation() || i->second->Owner()->IsMinor())
-			continue;
-		mMap[i->second->OwnerID()] += i->second->GetCompleteOffensivePower() + i->second->GetCompleteOffensivePower() / 2;
-		// Schiffe in der Flotte beachten
-		for(CShips::const_iterator j = i->second->begin(); j != i->second->end(); ++j)
-			mMap[j->second->OwnerID()] += j->second->GetCompleteOffensivePower() + j->second->GetCompleteOffensivePower() / 2;
-	}
-
-MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Military: divide by 10");
-	std::map<CString, float> marks;
-	CalcDemoValues(sRaceID, &mMap, marks, nPlace, fValue, fAverage, fFirst, fLast);
-	m_Marks[CStatistics::MILITARY] = marks;
+	nPlace = m_Military.places[sRaceID];
+	fValue = m_Military.values[sRaceID];
+	fAverage = m_Military.average;
+	fFirst = m_Military.first;
+	fLast = m_Military.last;
 }
 
 /// Funktion ermittelt die Demographiewerte einer bestimmten Rasse.
@@ -210,20 +222,11 @@ MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Military: divide by 10");
 /// @param [out] fLast schlechtester Wert
 void CStatistics::GetDemographicsResearch(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast)
 {
-	CBotEDoc* pDoc = resources::pDoc;
-	AssertBotE(pDoc);
-
-	std::map<CString, float> mMap;
-	// Es wird die komplette Industrieproduktion aller Rassen betrachtet
-	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (pDoc->GetSystem(x,y).Majorized())
-				mMap[pDoc->GetSystem(x,y).OwnerID()] += pDoc->GetSystem(x,y).GetProduction()->GetResearchProd();
-
-	MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Research: multiply with 5");
-	std::map<CString, float> marks;
-	CalcDemoValues(sRaceID, &mMap, marks, nPlace, fValue, fAverage, fFirst, fLast);
-	m_Marks[CStatistics::RESEARCH] = marks;
+	nPlace = m_Research.places[sRaceID];
+	fValue = m_Research.values[sRaceID];
+	fAverage = m_Research.average;
+	fFirst = m_Research.first;
+	fLast = m_Research.last;
 }
 
 /// Funktion ermittelt die Demographiewerte einer bestimmten Rasse.
@@ -235,27 +238,11 @@ void CStatistics::GetDemographicsResearch(const CString& sRaceID, int& nPlace, f
 /// @param [out] fLast schlechtester Wert
 void CStatistics::GetDemographicsMoral(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast)
 {
-	CBotEDoc* pDoc = resources::pDoc;
-	AssertBotE(pDoc);
-
-	std::map<CString, float> mMap;
-	std::map<CString, int> mCount;
-	// Es wird die komplette Industrieproduktion aller Rassen betrachtet
-	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (pDoc->GetSystem(x,y).Majorized())
-			{
-				mMap[pDoc->GetSystem(x,y).OwnerID()] += pDoc->GetSystem(x,y).GetMoral();
-				mCount[pDoc->GetSystem(x,y).OwnerID()] += 1;
-			}
-
-	for (std::map<CString, float>::iterator it = mMap.begin(); it != mMap.end(); ++it)
-		it->second /= mCount[it->first];
-
-	MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Moral: 1:1");
-	std::map<CString, float> marks;
-	CalcDemoValues(sRaceID, &mMap, marks, nPlace, fValue, fAverage, fFirst, fLast);
-	m_Marks[CStatistics::MORAL] = marks;
+	nPlace = m_Moral.places[sRaceID];
+	fValue = m_Moral.values[sRaceID];
+	fAverage = m_Moral.average;
+	fFirst = m_Moral.first;
+	fLast = m_Moral.last;
 }
 
 /// Funktion gibt die aktuellen Spielpunkte einer Rasse zurück.
@@ -263,20 +250,11 @@ int CStatistics::GetGamePoints(const CString& sRaceID, int nCurrentRound, float 
 {
 	int nGamePoints = 0;
 
-	int nPlace;
-	float fValue, fAverage, fFirst, fLast;
-
-	GetDemographicsBSP(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	nGamePoints += (int)(fValue * 5);
-
-	GetDemographicsProductivity(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	nGamePoints += (int)(fValue);
-
-	GetDemographicsMilitary(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	nGamePoints += (int)(fValue / 10);
-
-	GetDemographicsResearch(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	nGamePoints += (int)(fValue * 2);
+	AssertBotE(!m_Bsp.values.empty());
+	nGamePoints += (int)(m_Bsp.values[sRaceID] * 5);
+	nGamePoints += (int)(m_Productivity.values[sRaceID]);
+	nGamePoints += (int)(m_Military.values[sRaceID] / 10);
+	nGamePoints += (int)(m_Research.values[sRaceID] * 2);
 
 	// aller 10 Runden verringert sich die Punktzahl um 1%
 	float fTemp = nCurrentRound / 10.0;
@@ -380,15 +358,9 @@ UINT CStatistics::GetShipPower(const CString& sRaceID) const
 
 float CStatistics::GetMark(const CString& race) const
 {
-	float result = 0;
-	for (std::map<CStatistics::DEMO_TYPE, std::map<CString, float>>::const_iterator it = m_Marks.begin();
-		it != m_Marks.end(); ++it)
-	{
-		const std::map<CString, float>::const_iterator itt = it->second.find(race);
-		result += itt->second;
-	}
-	result /= (CStatistics::MORAL + 1);
-	return result;
+	std::map<CString, float>::const_iterator it = m_Marks.find(race);
+	AssertBotE(it != m_Marks.end());
+	return it->second;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -397,7 +369,7 @@ float CStatistics::GetMark(const CString& race) const
 
 /// Funktion zum Berechnen des universumweiten Techdurchschnittlevels.
 /// @param pDoc Zeiger auf das Dokument
-void CStatistics::CalcAverageTechLevel(CBotEDoc* pDoc)
+void CStatistics::CalcAverageTechLevel(const CBotEDoc* const pDoc)
 {
 	// Wieviel Imperien gibt es noch? Hier anhand der Anzahl der Systeme geschaut
 	USHORT nRaces = 0;
@@ -426,7 +398,7 @@ void CStatistics::CalcAverageTechLevel(CBotEDoc* pDoc)
 
 /// Funktion zum Berechnen der durchschnittlichen Befüllung der Ressourcenlager.
 /// @param pDoc Zeiger auf das Dokument
-void CStatistics::CalcAverageResourceStorages(CBotEDoc* pDoc)
+void CStatistics::CalcAverageResourceStorages(const CBotEDoc* const pDoc)
 {
 	// Wieviel Imperien gibt es noch? Hier anhand der Anzahl der Systeme geschaut
 	USHORT nRaces = 0;
@@ -457,11 +429,17 @@ void CStatistics::Reset(void)
 		m_nAverageResourceStorages[i] = 0;
 
 	m_mShipPowers.clear();
+	m_Marks.clear();
+	m_Bsp.clear();
+	m_Productivity.clear();
+	m_Military.clear();
+	m_Research.clear();
+	m_Moral.clear();
 }
 
 /// Funktion zum Berechnen der gesamten militärischen Schiffsstärken aller Rassen.
 /// @param pDoc Zeiger auf das Dokument
-void CStatistics::CalcShipPowers(CBotEDoc* pDoc)
+void CStatistics::CalcShipPowers(const CBotEDoc* const pDoc)
 {
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 
@@ -474,69 +452,59 @@ static bool Compare(const std::pair<CString, float>& left, const std::pair<CStri
 	return left.second > right.second;
 }
 
-/// @param sRaceID ID der gewünschten Rasse
-/// @param pmMap auszuwertende Map
-/// @param [out] nPlace Platzierung
-/// @param [out] fValue eigener Wert
-/// @param [out] fAverage Durchschnittswert
-/// @param [out] fFirst bester Wert
-/// @param [out] fLast schlechtester Wert
-void CStatistics::CalcDemoValues(const CString& sRaceID, const std::map<CString, float>* pmMap, std::map<CString, float>& marks, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
+void CStatistics::InternalCalcDemographics(DEMOGRAPHICS_STORAGE& store, const std::map<CString, float>& m)
 {
-	nPlace = 1;
-	fValue = fAverage = fFirst = fLast = 0.0f;
+	store.values = m;
 
 	std::vector<std::pair<CString, float>> vSortedVec;
-	for (std::map<CString, float>::const_iterator it = pmMap->begin(); it != pmMap->end(); ++it)
+	for (std::map<CString, float>::const_iterator it = m.begin(); it != m.end(); ++it)
 		vSortedVec.push_back(*it);
 	std::sort(vSortedVec.begin(), vSortedVec.end(), Compare);
 
-	if (vSortedVec.empty())
-		return;
+	AssertBotE(!vSortedVec.empty());
 
+	int current_rank = 1;
+	float better_value = vSortedVec.begin()->second;
+	//// Durchschnitt ermitteln, calculate ranks
 	for(std::vector<std::pair<CString, float>>::const_iterator it = vSortedVec.begin();
 			it != vSortedVec.end(); ++it)
-		marks[it->first] = it - vSortedVec.begin() + 1;
+	{
+		if(it->second < better_value)
+			current_rank++;
+		store.places[it->first] = current_rank;
+		store.average += it->second;
+		better_value = it->second;
+	}
+	store.average /= vSortedVec.size();
+	//// bester Wert
+	store.first = vSortedVec.front().second;
+	//// schlechtester Wert
+	store.last = vSortedVec.back().second;
+}
 
-	// Platz ermitteln
-	std::map<CString, float>::const_iterator it = pmMap->find(sRaceID);
-	if (it == pmMap->end())
-		return;
-
-	nPlace = marks[sRaceID];
-
-	// Durchschnitt ermitteln
-	for (UINT i = 0; i < vSortedVec.size(); i++)
-		fAverage += vSortedVec[i].second;
-	fAverage /= vSortedVec.size();
-
-	// eigener Wert
-	fValue = it->second;
-
-	// bester Wert
-	fFirst = vSortedVec.front().second;
-
-	// schlechtester Wert
-	fLast = vSortedVec.back().second;
-
-	MYTRACE("general")(MT::LEVEL_INFO, "First: %f ", fFirst);
-	MYTRACE("general")(MT::LEVEL_INFO, "Average: %f ", fAverage);
-	MYTRACE("general")(MT::LEVEL_INFO, "Last: %f", fLast);
-	MYTRACE("general")(MT::LEVEL_INFO, "Value (own): %f ", fValue);
-	MYTRACE("general")(MT::LEVEL_INFO, "Place: %i \n", nPlace);
+void CStatistics::CalcMarksForDemoType(const std::map<CString, int>& places, std::map<CString, float>& marks,
+	bool do_average)
+{
+	if(!do_average)
+	{
+		for(std::map<CString, int>::const_iterator it = places.begin(); it != places.end(); ++it)
+			insert_or_increase(marks, it->second, it->first);
+	}
+	else
+	{
+		for(std::map<CString, int>::const_iterator it = places.begin(); it != places.end(); ++it)
+		{
+			float& mark = marks[it->first];
+			mark = (mark + it->second) / (CStatistics::MORAL + 1.0f);
+		}
+	}
 }
 
 void CStatistics::CalcMarks()
 {
-	// Bewertung Gesamt berechnen
-	int nPlace = 1;
-	float fValue, fAverage, fFirst, fLast;
-	CString sRaceID;
-
-	GetDemographicsBSP(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	GetDemographicsProductivity(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	GetDemographicsMilitary(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	GetDemographicsResearch(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	GetDemographicsMoral(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-
+	CalcMarksForDemoType(m_Bsp.places, m_Marks, false);
+	CalcMarksForDemoType(m_Productivity.places, m_Marks, false);
+	CalcMarksForDemoType(m_Military.places, m_Marks, false);
+	CalcMarksForDemoType(m_Research.places, m_Marks, false);
+	CalcMarksForDemoType(m_Moral.places, m_Marks, true);
 }

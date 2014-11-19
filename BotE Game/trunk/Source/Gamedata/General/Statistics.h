@@ -48,7 +48,7 @@ public:
 	// zum Schreiben der Membervariablen
 	/// Funktion zum Berechnen aller Statistiken.
 	/// @param pDoc Zeiger auf das Dokument
-	void CalcStats(CBotEDoc* pDoc);
+	void CalcStats(const CBotEDoc* const pDoc);
 
 	/// Funktion ermittelt die Demographiewerte einer bestimmten Rasse.
 	/// @param sRaceID gewünschte Rasse
@@ -117,29 +117,20 @@ private:
 
 	/// Funktion zum Berechnen des universumweiten Techdurchschnittlevels.
 	/// @param pDoc Zeiger auf das Dokument
-	void CalcAverageTechLevel(CBotEDoc* pDoc);
+	void CalcAverageTechLevel(const CBotEDoc* const pDoc);
 
 	/// Funktion zum Berechnen der durchschnittlichen Befüllung der Ressourcenlager.
 	/// @param pDoc Zeiger auf das Dokument
-	void CalcAverageResourceStorages(CBotEDoc* pDoc);
+	void CalcAverageResourceStorages(const CBotEDoc* const pDoc);
 
 	/// Funktion zum Berechnen der gesamten militärischen Schiffsstärken aller Rassen.
 	/// @param pDoc Zeiger auf das Dokument
-	void CalcShipPowers(CBotEDoc* pDoc);
+	void CalcShipPowers(const CBotEDoc* const pDoc);
 
-	/// Funktion zum Berechnen des Militärs aller Rassen.
-	/// @param pDoc Zeiger auf das Dokument
-	void CalcMilitary(CBotEDoc* pDoc);
-
-	/// Funktion berechnet die einzelnen Demographiewerte.
-	/// @param sRaceID ID der gewünschten Rasse
-	/// @param pmMap auszuwertende Map
-	/// @param [out] nPlace Platzierung
-	/// @param [out] fValue eigener Wert
-	/// @param [out] fAverage Durchschnittswert
-	/// @param [out] fFirst bester Wert
-	/// @param [out] fLast schlechtester Wert
-	void CalcDemoValues(const CString& sRaceID, const std::map<CString, float>* pmMap, std::map<CString, float>& marks, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const;
+	void CalcDemographicsSystem(const CBotEDoc& doc);
+	void CalcDemographicsMilitary(const CBotEDoc& doc);
+	void CalcMarksForDemoType(const std::map<CString, int>& places, std::map<CString, float>& marks,
+		bool do_average);
 
 	void CalcMarks();
 
@@ -159,5 +150,82 @@ private:
 		MORAL
 	};
 
-	std::map<DEMO_TYPE, std::map<CString, float>> m_Marks;
+	struct DEMOGRAPHICS_STORAGE
+	{
+		DEMOGRAPHICS_STORAGE() :
+			average(0),
+			first(0),
+			last(0)
+		{}
+
+		std::map<CString, int> places;
+		std::map<CString, float> values;
+		float average;
+		float first;
+		float last;
+
+		void clear()
+		{
+			places.clear();
+			values.clear();
+		}
+
+		void Serialize(CArchive &ar)
+		{
+			if (ar.IsStoring())
+			{
+				ar << places.size();
+				for(std::map<CString, int>::const_iterator it = places.begin(); it != places.end(); ++it)
+					ar << it->first << it->second;
+
+				ar << values.size();
+				for(std::map<CString, float>::const_iterator it = values.begin(); it != values.end(); ++it)
+					ar << it->first << it->second;
+
+				ar << average;
+				ar << first;
+				ar << last;
+			}
+			else
+			{
+				unsigned size;
+
+				places.clear();
+				ar >> size;
+				for(unsigned i = 0; i < size; ++i)
+				{
+					CString key;
+					ar >> key;
+					int value;
+					ar >> value;
+					places.insert(std::pair<CString, int>(key, value));
+				}
+
+				values.clear();
+				ar >> size;
+				for(unsigned i = 0; i < size; ++i)
+				{
+					CString key;
+					ar >> key;
+					float value;
+					ar >> value;
+					values.insert(std::pair<CString, float>(key, value));
+				}
+
+				ar >> average;
+				ar >> first;
+				ar >> last;
+			}
+		}
+	};
+
+	void InternalCalcDemographics(DEMOGRAPHICS_STORAGE& store, const std::map<CString, float>& m);
+
+	std::map<CString, float> m_Marks;
+
+	DEMOGRAPHICS_STORAGE m_Bsp;
+	DEMOGRAPHICS_STORAGE m_Productivity;
+	DEMOGRAPHICS_STORAGE m_Military;
+	DEMOGRAPHICS_STORAGE m_Research;
+	DEMOGRAPHICS_STORAGE m_Moral;
 };

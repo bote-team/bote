@@ -823,6 +823,8 @@ void CBotEDoc::PrepareData()
 		else if(speed == "FAST")
 			m_ExpansionSpeed = CRangeMaps::FAST;
 
+		m_Statistics.CalcStats(this);
+
 		MYTRACE("general")(MT::LEVEL_INFO, "Preparing game data ready...\n");
 		/*
 		double habis = 0;
