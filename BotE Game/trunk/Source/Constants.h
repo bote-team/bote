@@ -41,6 +41,17 @@ inline bool Equals(double is, double should)
 	return should - ERROR_TOLERANCE < is && is < should + ERROR_TOLERANCE;
 }
 
+namespace DIFFICULTIES
+{
+
+	static const float BABY = 1.5f;
+	static const float EASY = 1.0f;
+	static const float NORMAL = 0.5f;
+	static const float HARD = 0.33f;
+	static const float IMPOSSIBLE = 0.2f;
+	static const float DEFAULT = NORMAL;
+
+}
 
 // ------------- View-IDs ------------------------------------------------------
 

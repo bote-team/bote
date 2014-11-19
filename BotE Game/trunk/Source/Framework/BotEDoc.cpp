@@ -603,17 +603,17 @@ void CBotEDoc::ResetIniSettings(void)
 	difficulty.MakeUpper();
 	MYTRACE("general")(MT::LEVEL_INFO, "relevant only at new game: Bote.ini: DIFFICULTY: %s", difficulty);
 	if (difficulty == "BABY")
-		m_fDifficultyLevel			= 1.5f;
+		m_fDifficultyLevel			= DIFFICULTIES::BABY;
 	else if (difficulty == "EASY")
-		m_fDifficultyLevel			= 1.0f;
+		m_fDifficultyLevel			= DIFFICULTIES::EASY;
 	else if (difficulty == "NORMAL")
-		m_fDifficultyLevel			= 0.5f;
+		m_fDifficultyLevel			= DIFFICULTIES::NORMAL;
 	else if (difficulty == "HARD")
-		m_fDifficultyLevel			= 0.33f;
+		m_fDifficultyLevel			= DIFFICULTIES::HARD;
 	else if (difficulty == "IMPOSSIBLE")
-		m_fDifficultyLevel			= 0.2f;
+		m_fDifficultyLevel			= DIFFICULTIES::IMPOSSIBLE;
 	else
-		m_fDifficultyLevel			= 0.5f;
+		m_fDifficultyLevel			= DIFFICULTIES::DEFAULT;
 	MYTRACE("general")(MT::LEVEL_INFO, "relevant only at new game: m_fDifficultyLevel: %f", m_fDifficultyLevel);
 
 	CSoundManager* pSoundManager = CSoundManager::GetInstance();
