@@ -223,6 +223,7 @@ void CBotEDoc::Serialize(CArchive& ar)
 		// ZU ERLEDIGEN: Hier Code zum Speichern einfügen
 		ar << m_iRound;
 		ar << m_ExpansionSpeed;
+		ar << m_fDifficultyLevel;
 		ar << m_fStardate;
 		//not here...MYTRACE("general")(MT::LEVEL_INFO, "Stardate: %f", m_fStardate);
 		ar << m_ptKO;
@@ -259,6 +260,7 @@ void CBotEDoc::Serialize(CArchive& ar)
 		ar >> m_iRound;
 		ar >> number;
 		m_ExpansionSpeed = static_cast<CRangeMaps::EXPANSION_SPEED>(number);
+		ar >> m_fDifficultyLevel;
 		ar >> m_fStardate;
 		ar >> m_ptKO;
 		ar >> STARMAP_SECTORS_HCOUNT;
@@ -358,6 +360,7 @@ void CBotEDoc::SerializeBeginGameData(CArchive& ar)
 		// Forschungsmodifikator
 		ar << CResearchInfo::m_dResearchSpeedFactor;
 		ar << m_ExpansionSpeed;
+		ar << m_fDifficultyLevel;
 	}
 	// Empfangen auf Clientseite
 	else
@@ -384,6 +387,7 @@ void CBotEDoc::SerializeBeginGameData(CArchive& ar)
 		ar >> CResearchInfo::m_dResearchSpeedFactor;
 		ar >> number;
 		m_ExpansionSpeed = static_cast<CRangeMaps::EXPANSION_SPEED>(number);
+		ar >> m_fDifficultyLevel;
 	}
 
 	CMoralObserver::SerializeStatics(ar);
@@ -598,24 +602,6 @@ void CBotEDoc::ResetIniSettings(void)
 	CIniLoader* pIni = CIniLoader::GetInstance();
 	AssertBotE(pIni);
 
-	CString difficulty = "EASY";
-	pIni->ReadValue("General", "DIFFICULTY", difficulty);
-	difficulty.MakeUpper();
-	MYTRACE("general")(MT::LEVEL_INFO, "relevant only at new game: Bote.ini: DIFFICULTY: %s", difficulty);
-	if (difficulty == "BABY")
-		m_fDifficultyLevel			= DIFFICULTIES::BABY;
-	else if (difficulty == "EASY")
-		m_fDifficultyLevel			= DIFFICULTIES::EASY;
-	else if (difficulty == "NORMAL")
-		m_fDifficultyLevel			= DIFFICULTIES::NORMAL;
-	else if (difficulty == "HARD")
-		m_fDifficultyLevel			= DIFFICULTIES::HARD;
-	else if (difficulty == "IMPOSSIBLE")
-		m_fDifficultyLevel			= DIFFICULTIES::IMPOSSIBLE;
-	else
-		m_fDifficultyLevel			= DIFFICULTIES::DEFAULT;
-	MYTRACE("general")(MT::LEVEL_INFO, "relevant only at new game: m_fDifficultyLevel: %f", m_fDifficultyLevel);
-
 	CSoundManager* pSoundManager = CSoundManager::GetInstance();
 	AssertBotE(pSoundManager);
 
@@ -809,12 +795,29 @@ void CBotEDoc::PrepareData()
 		m_VictoryObserver.Init();
 		m_VictoryObserver.Observe();
 
+		CString difficulty = "EASY";
+		const CIniLoader* const pIni = CIniLoader::GetInstance();
+		pIni->ReadValue("General", "DIFFICULTY", difficulty);
+		difficulty.MakeUpper();
+		if (difficulty == "BABY")
+			m_fDifficultyLevel			= DIFFICULTIES::BABY;
+		else if (difficulty == "EASY")
+			m_fDifficultyLevel			= DIFFICULTIES::EASY;
+		else if (difficulty == "NORMAL")
+			m_fDifficultyLevel			= DIFFICULTIES::NORMAL;
+		else if (difficulty == "HARD")
+			m_fDifficultyLevel			= DIFFICULTIES::HARD;
+		else if (difficulty == "IMPOSSIBLE")
+			m_fDifficultyLevel			= DIFFICULTIES::IMPOSSIBLE;
+		else
+			m_fDifficultyLevel			= DIFFICULTIES::DEFAULT;
+
 		// Forschungsgeschwindigkeitsmodifikator setzen
 		CResearchInfo::m_dResearchSpeedFactor = 1.25;
-		CIniLoader::GetInstance()->ReadValue("Special", "RESEARCHSPEED", CResearchInfo::m_dResearchSpeedFactor);
+		pIni->ReadValue("Special", "RESEARCHSPEED", CResearchInfo::m_dResearchSpeedFactor);
 
 		CString speed = "CLASSIC";
-		CIniLoader::GetInstance()->ReadValue("Special", "EXPANSIONSPEED", speed);
+		pIni->ReadValue("Special", "EXPANSIONSPEED", speed);
 		m_ExpansionSpeed = CRangeMaps::CLASSIC;
 		if(speed == "SLOW")
 			m_ExpansionSpeed = CRangeMaps::SLOW;

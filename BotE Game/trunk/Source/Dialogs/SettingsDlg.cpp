@@ -330,6 +330,9 @@ BOOL CSettingsDlg::OnInitDialog()
 		CWnd* pWnd = GetDlgItem(IDC_SLIDER_STARDENSITY);
 		if (pWnd)
 			pWnd->EnableWindow(FALSE);
+		pWnd = GetDlgItem(IDC_SLIDER_DIFFICULTY);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
 		pWnd = GetDlgItem(IDC_SLIDER_MINORDENSITY);
 		if (pWnd)
 			pWnd->EnableWindow(FALSE);
