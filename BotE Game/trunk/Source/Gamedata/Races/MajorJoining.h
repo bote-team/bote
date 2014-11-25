@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <set>
 
 class CStatistics;
 class CRaceController;
@@ -43,4 +44,5 @@ private:
 	const int m_RisingTurns;
 	const int m_Pause;
 	const int m_Randomize_by;
+	std::set<CString> m_Joined;
 };

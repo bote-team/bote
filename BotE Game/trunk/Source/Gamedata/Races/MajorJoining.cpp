@@ -24,7 +24,8 @@ CMajorJoining::CMajorJoining(void) :
 	m_StartTurn(120),
 	m_RisingTurns(140),
 	m_Pause(80),
-	m_Randomize_by(20)
+	m_Randomize_by(20),
+	m_Joined()
 {
 }
 
@@ -56,12 +57,23 @@ void CMajorJoining::Serialize(CArchive& ar)
 		ar << m_TimesOccured;
 		ar << m_TimesShouldOccur;
 		ar << m_StartTurn;
+		ar << m_Joined.size();
+		for(std::set<CString>::const_iterator it = m_Joined.begin(); it != m_Joined.end(); ++it)
+			ar << *it;
 	}
 	else
 	{
 		ar >> m_TimesOccured;
 		ar >> m_TimesShouldOccur;
 		ar >> m_StartTurn;
+		unsigned size;
+		ar >> size;
+		for(unsigned i = 0; i < size; ++i)
+		{
+			CString id;
+			ar >> id;
+			m_Joined.insert(id);
+		}
 	}
 }
 
@@ -101,17 +113,24 @@ void CMajorJoining::Calculate(int turn, const CStatistics& stats, CRaceControlle
 		else
 		{
 			++count_of_ais;
+			worst_ai = &major;
 			if(!best_ai)
-				best_ai = &major;
-			else
-				worst_ai = &major;
+			{
+				const std::set<CString>::const_iterator it = m_Joined.find(major.GetRaceID());
+				if(it == m_Joined.end()
+					//70% chance to look for another one that hasn't been joined yet
+					|| rand() % 100 >= 70)
+						best_ai = &major;
+			}
 		}
 	}
 	AssertBotE(count_of_humans >= 1);
 	human_average_mark /= count_of_humans;
 	if(count_of_ais < 2)
 		return;
-	AssertBotE(best_ai && worst_ai && best_ai != worst_ai);
+	if(!best_ai || best_ai == worst_ai)
+		return;
+	AssertBotE(worst_ai);
 	AssertBotE(best_ai->GetRaceID() != worst_ai->GetRaceID());
 
 	if(turn >= 20)
@@ -120,6 +139,7 @@ void CMajorJoining::Calculate(int turn, const CStatistics& stats, CRaceControlle
 	if(!ShouldHappenNow(turn))
 		return;
 
+	m_Joined.insert(best_ai->GetRaceID());
 	m_TimesOccured++;
 	m_StartTurn = turn + m_Pause + randomize_by(m_Randomize_by);
 
