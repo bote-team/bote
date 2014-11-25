@@ -390,6 +390,7 @@ void CBotEDoc::SerializeBeginGameData(CArchive& ar)
 		ar >> m_fDifficultyLevel;
 	}
 
+	CMajorJoining::GetInstance()->Serialize(ar);
 	CMoralObserver::SerializeStatics(ar);
 }
 
@@ -825,6 +826,8 @@ void CBotEDoc::PrepareData()
 			m_ExpansionSpeed = CRangeMaps::MEDIUM;
 		else if(speed == "FAST")
 			m_ExpansionSpeed = CRangeMaps::FAST;
+
+		CMajorJoining::GetInstance()->InitFromIni();
 
 		m_Statistics.CalcStats(this);
 

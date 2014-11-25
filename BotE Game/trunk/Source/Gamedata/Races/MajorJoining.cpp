@@ -20,6 +20,7 @@
 
 CMajorJoining::CMajorJoining(void) :
 	m_TimesOccured(0),
+	m_TimesShouldOccur(0),
 	m_StartTurn(120),
 	m_RisingTurns(140),
 	m_Pause(80),
@@ -39,6 +40,11 @@ CMajorJoining* CMajorJoining::GetInstance(void)
 	return &instance;
 }
 
+void CMajorJoining::InitFromIni()
+{
+	m_TimesShouldOccur = CIniLoader::GetInstance()->ReadValueDefault("Special", "MAJORJOINING", 0);
+}
+
 //////////////////////////////////////////////////////////////////////
 // serialization
 //////////////////////////////////////////////////////////////////////
@@ -48,11 +54,13 @@ void CMajorJoining::Serialize(CArchive& ar)
 	if(ar.IsStoring())
 	{
 		ar << m_TimesOccured;
+		ar << m_TimesShouldOccur;
 		ar << m_StartTurn;
 	}
 	else
 	{
 		ar >> m_TimesOccured;
+		ar >> m_TimesShouldOccur;
 		ar >> m_StartTurn;
 	}
 }
@@ -170,9 +178,7 @@ void CMajorJoining::Calculate(int turn, const CStatistics& stats, CRaceControlle
 
 bool CMajorJoining::ShouldHappenNow(int turn) const
 {
-
-	const int times = CIniLoader::GetInstance()->ReadValueDefault("Special", "MAJORJOINING", 0);
-	if(m_TimesOccured >= times)
+	if(m_TimesOccured >= m_TimesShouldOccur)
 		return false;
 	if(turn < m_StartTurn)
 		return false;

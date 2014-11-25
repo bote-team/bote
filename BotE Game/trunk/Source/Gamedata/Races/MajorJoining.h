@@ -25,6 +25,8 @@ public:
 	/// @return Instanz dieser Klasse
 	static CMajorJoining* GetInstance(void);
 
+	void InitFromIni();
+
 	void Calculate(int turn, const CStatistics& stats, CRaceController& race_ctrl,
 		CShipMap& ships, std::vector<CSystem>& systems, float difficulty);
 
@@ -36,6 +38,7 @@ private:
 	bool ShouldHappenNow(int turn) const;
 
 	int m_TimesOccured;
+	int m_TimesShouldOccur;
 	int m_StartTurn;
 	const int m_RisingTurns;
 	const int m_Pause;
