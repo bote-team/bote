@@ -749,6 +749,12 @@ private:
 					if(owner && !owner->IsHumanPlayer())
 						continue;
 				}
+				if(ship->second->IsAlien())
+				{
+					const boost::shared_ptr<CRace>& pAlien = ship->second->Owner();
+					if(pAlien->GetRaceID() == StrToCStr(KAMPFSTATION))
+						return false;
+				}
 				if(!ship->second->GetCloak() && m_pSystem->GetNeededScanPower(ship->second->OwnerID()) <= scan_power)
 					return true;
 			}
