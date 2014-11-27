@@ -168,6 +168,7 @@ private:
 		{
 			places.clear();
 			values.clear();
+			average = first = last = 0;
 		}
 
 		void Serialize(CArchive &ar)
