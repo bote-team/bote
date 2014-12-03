@@ -81,7 +81,6 @@ static network::RACE GetMappedClientID(const CString& sRaceID)
 	if (sRaceID == "MAJOR6")
 		return network::RACE_6;
 
-	AssertBotE(false);
 	return network::RACE_NONE;
 }
 
@@ -232,8 +231,7 @@ void CClientWorker::SetMajorToHumanOrAi(CMajor& major)
 {
 	const network::RACE client = GetMappedClientID(major.GetRaceID());
 	// wird das Imperium von einem Menschen oder vom Computer gespielt
-	AssertBotE(client != network::RACE_NONE);
-	major.SetHumanPlayer(server.IsPlayedByClient(client) ? true : false);
+	major.SetHumanPlayer(client != network::RACE_NONE && server.IsPlayedByClient(client) ? true : false);
 }
 
 void CClientWorker::SetMajorsToHumanOrAi(const std::map<CString, CMajor*>& Majors)
@@ -264,6 +262,8 @@ void CClientWorker::CreateButtons(std::vector<std::pair<CRoundButton2*, CString>
 	for (std::map<CString, CMajor*>::const_iterator it = majors.begin(); it != majors.end(); ++it)
 	{
 		const network::RACE nRace = GetMappedClientID(it->first);
+		if(nRace == network::RACE_NONE)
+			continue;
 
 		CRoundButton2* pBtn = new CRoundButton2();
 		pBtn->Create(it->second->GetEmpiresName(), WS_CHILD|WS_VISIBLE|BS_PUSHLIKE, CRect(), parent, nRace);
