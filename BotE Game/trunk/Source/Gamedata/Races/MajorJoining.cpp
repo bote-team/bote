@@ -95,7 +95,7 @@ void CMajorJoining::Calculate(int turn, const CStatistics& stats, CRaceControlle
 
 	const std::vector<std::pair<CString, float>>& marks = stats.GetSortedMarks();
 
-	const CMajor* best_ai = NULL;
+	CMajor* best_ai = NULL;
 	const CMajor* worst_ai = NULL;
 	int count_of_ais = 0;
 	int count_of_humans = 0;
@@ -142,6 +142,10 @@ void CMajorJoining::Calculate(int turn, const CStatistics& stats, CRaceControlle
 	m_Joined.insert(best_ai->GetRaceID());
 	m_TimesOccured++;
 	m_StartTurn = turn + m_Pause + randomize_by(m_Randomize_by);
+
+	const int credits = worst_ai->GetEmpire()->GetCredits();
+	if(credits > 0)
+		best_ai->GetEmpire()->SetCredits(credits);
 
 	for(CShipMap::iterator it = ships.begin(); it != ships.end(); ++it)
 	{
