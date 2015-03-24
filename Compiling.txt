@@ -1,16 +1,25 @@
 The build process is now (2014-10-11):  see https://github.com/bote-team/bote/commit/dfae1b4c63931ae4b993bf2202cb40d3836e377a (with additions by Reginald)
+English translations may not be exactly correct, I don't have an English version of MSVC here.
+The standard icons bar contains a control for switching MSVC (Visual Studio) between release and debug congiguration, that's what debug and release below refer to;
+if you want to be able to debug BotE and execute it as a player, you will have to perform the process for both of them individually (that is, twice).
+Given paths are which files to open and which controls to use in MSVC.
+The project files target MSVC9; if your MSVC version is newer (likely) you have to use the upgrade assistant.
 
-1. build lzma lib project (BotE Tools\LZMALib\C\7zip\Compress\LZMA_Alone\AloneLZMA.sln)
-   1a) "Debug"__ (bitte immer "Neu erstellen"/"New building!"): generates BotE Tools\LZMALib\C\7zip\Compress\LZMA_Alone\lib-debug\BotE_LZMA.lib
-   1b) "Release" (bitte immer "Neu erstellen"/"New building!"): generates BotE Tools\LZMALib\C\7zip\Compress\LZMA_Alone\lib-relase\BotE_LZMA.lib
+1. build lzma lib project (BotE Tools\LZMALib\C\7zip\Compress\LZMA_Alone\AloneLZMA.sln, Menü>"Datei">"Öffnen">"Projekt/Projektmappe" or menu>"File">"Open">"Project")
+   1a) "Debug"__ (Menü>"Erstellen">"Projektmappe neu erstellen" or menu>"build">"rebuild project"): generates BotE Tools\LZMALib\C\7zip\Compress\LZMA_Alone\lib-debug\BotE_LZMA.lib
+   1b) "Release" (Menü>"Erstellen">"Projektmappe neu erstellen" or menu>"build">"rebuild project"): generates BotE Tools\LZMALib\C\7zip\Compress\LZMA_Alone\lib-relase\BotE_LZMA.lib
 
 2. build network lib project (BotE Tools\NetworkLib\BotE Network.sln)
-   2a) "Debug"__ (bitte immer "Neu erstellen"/"New building!"): generates BotE Tools\NetworkLib\lib-debug\BotE_Network.lib
-   2b) "Release" (bitte immer "Neu erstellen"/"New building!"): generates BotE Tools\NetworkLib\lib-release\BotE_Network.lib
+   2a) "Debug"__ (as above): generates BotE Tools\NetworkLib\lib-debug\BotE_Network.lib
+   2b) "Release" (as above): generates BotE Tools\NetworkLib\lib-release\BotE_Network.lib
 
 3. build BotE itself (BotE Game\trunk\Bote.sln)
-   3a) "Debug"__ (bitte immer "Neu erstellen"/"New building!"): generates BotE Game\trunk\Debug\Bote.exe (about 8 MB, "Debug" needs much longer time to execute everything)
-   3b) "Release" (bitte immer "Neu erstellen"/"New building!"): generates BotE Game\trunk\Release\Bote.exe (about 3.6 MB...original Bote.exe is shrinked additional)
+   3a) "Debug"__ (as above): generates BotE Game\trunk\Debug\Bote.exe (about 8 MB, "Debug" needs much longer time to execute everything)
+   3b) "Release" (as above): generates BotE Game\trunk\Release\Bote.exe (about 3.6 MB...original Bote.exe is shrinked additional)
+
+An executable useful for playing should appear in \BotE Game\trunk\Release\, copy to \BotE Game\trunk\ and double click.
+
+-----------------------------------
 
 In the long run, we should merge the three into a single sln (while keeping
 them in single projects).
