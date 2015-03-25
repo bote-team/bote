@@ -142,7 +142,7 @@ void CMapTile::Serialize(CArchive &ar)
 			ar << it->first << it->second;
 
 		ar << m_bSunSystem;
-		bool anomaly = m_pAnomaly;
+		const bool anomaly = m_pAnomaly.get() != NULL;
 		ar << anomaly;
 		if(anomaly)
 			m_pAnomaly->Serialize(ar);

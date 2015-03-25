@@ -445,7 +445,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 			for (int i = 0; i < number; i++)
 			{
 				CPlanet planet;
-				const bool minor = GetMinorRace();
+				const bool minor = GetMinorRace().get() != NULL;
 				zone = planet.Create(m_sName, zone, i, minor);
 				m_Planets.push_back(planet);
 
