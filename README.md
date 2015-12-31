@@ -36,7 +36,7 @@ CPU with at least 1 GHz
 at least 256 MB RAM
 200 MB of free diskspace
 Soundcard
-WindowsXP(tm), Windows Vista(tm), Windows 7(tm), Windows 8(tm) operating system
+WindowsXP(tm), Windows Vista(tm), Windows 7(tm), Windows 8(tm), Windows 10(tm) operating system
 or Linux with WINE
 
 ========================
@@ -119,7 +119,7 @@ used in BotE.
 FMOD Sound System, copyright © Firelight Technologies Pty, Ltd.,
 1994-2010
 
-© 2004-2013 Sir Pustekuchen
+© 2004-2016 Sir Pustekuchen
 
 -------------------------------------------------------------------
 
@@ -652,4 +652,4 @@ Some race descriptions:	Jerron http://www.annor.de and http://www.weltenbastler.
 
 --------------------------------------------------------------------
 
-Copyright by Sir Pustekuchen ©2004-2014
+Copyright by Sir Pustekuchen ©2004-2016
