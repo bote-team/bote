@@ -1,7 +1,8 @@
-bote
-====
+#BotE
 
-Birth of the Empires (a turn-based 4X strategy game set in space)
+#####Birth of the Empires (a turn-based 4X strategy game set in space)
+
+***
 
 Hello
 
@@ -15,6 +16,7 @@ Have fun,
 the BotE-crew
 Homepage: http://www.birth-of-the-empires.de
 
+***
 
 BotE is a turn-based 4X strategy game set in space in the style of classics such as Microprose's Master of Orion 2 or ST: Birth of the Federation, playable in single- or multiplayer mode (LAN, Internet). Goal is to gain control and supremacy over the galaxy, either by diplomatic or military means. Divergent victory conditions can be set before starting.
 
@@ -28,9 +30,9 @@ Playing BotE will get much fun to you, completely free and for many hours, alone
 
 The upshot: A well-done game for turn-based strategy fans.
 
-=========================
+***
 
-System requirements
+##System requirements
 
 CPU with at least 1 GHz
 at least 256 MB RAM
@@ -39,9 +41,9 @@ Soundcard
 WindowsXP(tm), Windows Vista(tm), Windows 7(tm), Windows 8(tm), Windows 10(tm) operating system
 or Linux with WINE
 
-========================
+***
 
-1.4 Copyright
+##Copyright
 
 
 §1 - Birth of the Empires (BotE) represents a software which can be
@@ -121,535 +123,516 @@ FMOD Sound System, copyright © Firelight Technologies Pty, Ltd.,
 
 © 2004-2016 Sir Pustekuchen
 
--------------------------------------------------------------------
+***
 
-1.5 Terms of use
+##Terms of use
 
 Neither copyright holders, nor someone else can be made
 responsible for any damage to your system caused or possibly
 caused by BotE. You are only allowed to use BotE, if you accept
 this point and all other points mentioned in 1.4.
 
-==================================
+***
 
-1.7 Credits
+##Credits
 
-Producer:
-  Sir Pustekuchen
+####Producer:
+* Sir Pustekuchen
 
-Idea:
-  Sir Pustekuchen
+####Idea
+* Sir Pustekuchen
 
-Programming:
-  Sir Pustekuchen
-  CBot
-  Anonymissimus
-  Revisor
-  chrisfirefox
-  plotnik01
+####Programming
+* Sir Pustekuchen
+* CBot
+* Anonymissimus
+* Revisor
+* chrisfirefox
+* plotnik01
 
-Design & Graphics:
-  Sir Pustekuchen
-  Malle
-  Zunder
-  magicmot
-  nemesis5
-  pd
-  rainer
-  YOT-Project
-  other contributors (see further down below)
+####Design & Graphics
+* Sir Pustekuchen
+* Malle
+* Zunder
+* magicmot
+* nemesis5
+* pd
+* rainer
+* YOT-Project
+* other contributors (see further down below)
 
-Text:
-  Malle
-  Topper
-  Homeros
-  Sir Pustekuchen
-  Luther Sloan
-  Data
-  master130686
-  Grammaton Cleric
-  Kyle Katarn73
-  rainer
-  Amun
+####Text
+* Malle
+* Topper
+* Homeros
+* Sir Pustekuchen
+* Luther Sloan
+* Data
+* master130686
+* Grammaton Cleric
+* Kyle Katarn73
+* rainer
+* Amun
 
-Data:
-  Sir Pustekuchen
-  rainer
-  Scav
-  Malle
-  Alamar
+####Data
+* Sir Pustekuchen
+* rainer
+* Scav
+* Malle
+* Alamar
 
-Balancing & Testing:
-  master130686
-  Dennis0078
-  Andi47
-  Grammaton Cleric
-  Sir Pustekuchen
-  rainer
+####Balancing & Testing
+* master130686
+* Dennis0078
+* Andi47
+* Grammaton Cleric
+* Sir Pustekuchen
+* rainer
 
-Music:
-  Eric James
-  Sandman
-  reel2
-  George R Powell
-  Edgen
-  MarkySpark
-  Kevin MacLeod
+####Music
+* Eric James
+* Sandman
+* reel2
+* George R Powell
+* Edgen
+* MarkySpark
+* Kevin MacLeod
 
-Voices:
-  Kenneth_of_Borg
-  Kate Flanagan
-  Krista Flanagan
-  Mike Strobel
+####Voices
+* Kenneth_of_Borg
+* Kate Flanagan
+* Krista Flanagan
+* Mike Strobel
 
-English Translation:
-  Malle
-  Matress of Evil
-  denzil85
+####English Translation
+* Malle
+* Matress of Evil
+* denzil85
 
-Manual (german):
-  Gottesanbeter
-  rainer
-  Xenox
-  Malle
-  Sir Pustekuchen
+####Manual (german)
+* Gottesanbeter
+* rainer
+* Xenox
+* Malle
+* Sir Pustekuchen
 
-Wiki:
-  rainer
-  Dennis0078
-  Amun
+####Wiki
+* rainer
+* Dennis0078
+* Amun
 
 ---------------------------------------------------
-| special thanks go to the following persons      |
+|    special thanks go to the following persons   |
 ---------------------------------------------------
 
-Ship graphics:
-  Major race ships:
-	Atrocities
-	magicmot
-  Minor race ships:
-	Kevin Williams
-	Dieter Ludmann
-	and other artists (see corresponding credits file in ../Graphics/Ships/ folder)
+####Ship graphics
+
+#####Major race ships
+* Atrocities
+* magicmot
+
+#####Minor race ships
+* Kevin Williams
+* Dieter Ludmann
+* and other artists (see corresponding credits file in ../Graphics/Ships/ folder)
 
 
-Background music:
-  Coalition of Planets: Eric Fu-Wah James http://www.myspace.com/ericjames/
-  Heyoun Trade Union: reel2 "The Birth of a Legend" http://www.newgrounds.com/audio/listen/264050 + George R Powell "One Last Sunset" http://www.newgrounds.com/audio/listen/317246
-  Khaoron Empire: Edgen "STOGAM - The Battle Begins" http://www.newgrounds.com/audio/listen/163447
-  Rotharian Star Network: MarkySpark "Blood Throne Battle V" http://www.newgrounds.com/audio/listen/370234
-  Cartare Union: Sandman "Cirrus March" http://botf2.star-trek-games.com/memberlist.php?mode=viewprofile&u=4284
-  Omega-Alliance: Kenneth L. Welch "Starlight Requiem v2r" http://homepage.mac.com/klwelch/music.html
+####Background music
+* Coalition of Planets: Eric Fu-Wah James http://www.myspace.com/ericjames/
+* Heyoun Trade Union: reel2 "The Birth of a Legend" http://www.newgrounds.com/audio/listen/264050 + George R Powell "One Last Sunset" http://www.newgrounds.com/audio/listen/317246
+* Khaoron Empire: Edgen "STOGAM - The Battle Begins" http://www.newgrounds.com/audio/listen/163447
+* Rotharian Star Network: MarkySpark "Blood Throne Battle V" http://www.newgrounds.com/audio/listen/370234
+* Cartare Union: Sandman "Cirrus March" http://botf2.star-trek-games.com/memberlist.php?mode=viewprofile&u=4284
+* Omega-Alliance: Kenneth L. Welch "Starlight Requiem v2r" http://homepage.mac.com/klwelch/music.html
 
-other music:
-  Lose game: Kevin MacLeod - "For the Fallen"
-  Win game: Eric Fu-Wah James "Finale" http://www.myspace.com/ericjames/
-
-
-Fonts:
-  Coalition of Planets: League Gothic http://www.theleagueofmoveabletype.com/fonts/7-league-gothic (Open Font License, http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL&_sc=1 )
-  Heyoun: Liberation Serif https://fedorahosted.org/liberation-fonts/ (GPL v2 with Font-exception, see special license file)
-  Khaorons: Klingon Dagger (John Tackett aka K'mel)
-  Rotharians: Mandala http://www.aimwell.org/Fonts/fonts.html (GPL v3)
-  Cartare: Final Frontier (Allen R. Walden; free to distribute)
-  Omega-Alliance: LilyUPC http://www.microsoft.com/typography/fonts/family.aspx?FID=272
+####other music
+* Lose game: Kevin MacLeod - "For the Fallen"
+* Win game: Eric Fu-Wah James "Finale" http://www.myspace.com/ericjames/
 
 
-Character artwork:
-Major Races:
-  Coalition of Planets: Tim Appleby http://bdimonkey.wordpress.com/
-  Heyoun: 		Aaron Sims http://www.aaron-sims.com/
-  Khaorons: 		Baptiste Henry http://www.sewan.com/
-  Rotharians: 		Till Maginot http://blog.maginot.eu/index.php?seite=people&people=till&/
-  Cartare: 		Taehoon Oh http://www.taehoonoh.com/
-  Omega-Alliance: 	Andrew Kincaid http://redfishimagery.com/
+####Fonts
+* Coalition of Planets: League Gothic http://www.theleagueofmoveabletype.com/fonts/7-league-gothic (Open Font License, http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL&_sc=1 )
+* Heyoun: Liberation Serif https://fedorahosted.org/liberation-fonts/ (GPL v2 with Font-exception, see special license file)
+* Khaorons: Klingon Dagger (John Tackett aka K'mel)
+* Rotharians: Mandala http://www.aimwell.org/Fonts/fonts.html (GPL v3)
+* Cartare: Final Frontier (Allen R. Walden; free to distribute)
+* Omega-Alliance: LilyUPC http://www.microsoft.com/typography/fonts/family.aspx?FID=272
 
-Minor Races:
-Albert Feliu http://albertfeliu.com/ :
-	Adryl
-	Athari
-	Chewark
-	Minali
-	Nezaka
-	Sytaplet
 
-Alex [Brutikong] Velazquez :
-	Mozwar
+####Character artwork
+#####Major Races
+* Coalition of Planets: Tim Appleby http://bdimonkey.wordpress.com/
+* Heyoun: Aaron Sims http://www.aaron-sims.com/
+* Khaorons: Baptiste Henry http://www.sewan.com/
+* Rotharians: Till Maginot http://blog.maginot.eu/index.php?seite=people&people=till&/
+* Cartare: Taehoon Oh http://www.taehoonoh.com/
+* Omega-Alliance: Andrew Kincaid http://redfishimagery.com/
 
-Andrew Kincaid http://redfishimagery.com/ :
-	Aszrethans
-	Kelnorians
-	Krepraans
-	Remri
-	Templans
+#####Minor Races
+* Albert Feliu http://albertfeliu.com/
+ * Adryl
+ * Athari
+ * Chewark
+ * Minali
+ * Nezaka
+ * Sytaplet
 
-Arild Anfinnsen http://www.arildwiro.com/ :
-	Aldren
-	Ardren
-	Nundosa
-	Zhordanians
+* Alex [Brutikong] Velazquez
+ * Mozwar
 
-Artur Grzegorczyn http://www.madgameart.blogspot.com/ :
-	Nynjan
-	Riejson
+* Andrew Kincaid http://redfishimagery.com/
+ * Aszrethans
+ * Kelnorians
+ * Krepraans
+ * Remri
+ * Templans
 
-Baptiste Henry http://www.3dlinks.com/GalleryDisplay.cfm?ArtistID=3881/ :
-	Rurians
+* Arild Anfinnsen http://www.arildwiro.com/
+ * Aldren
+ * Ardren
+ * Nundosa
+ * Zhordanians
 
-Bojana Nedeljkovic :
-	Azorans
+* Artur Grzegorczyn http://www.madgameart.blogspot.com/
+ * Nynjan
+ * Riejson
 
-Can Tuncer http://www.cgcan.com/ :
-	Aleubites
-	Bentans
-	Urenglers
+* Baptiste Henry http://www.3dlinks.com/GalleryDisplay.cfm?ArtistID=3881/
+ * Rurians
 
-Ching Lau http://lauch3d.com/ :
-	Excalbians
+* Bojana Nedeljkovic
+ * Azorans
+
+* Can Tuncer http://www.cgcan.com/
+ * Aleubites
+ * Bentans
+ * Urenglers
+
+* Ching Lau http://lauch3d.com/
+ * Excalbians
 	
 
-Dmitriy Kuznetsov http://daemon3d.com/ :
-	Eptirel
-	Keraune
-	Klaanirans
-	Merdinians
-	Tacmacs
-	Wollones
+* Dmitriy Kuznetsov http://daemon3d.com/
+ * Eptirel
+ * Keraune
+ * Klaanirans
+ * Merdinians
+ * Tacmacs
+ * Wollones
 
-Dr. Markus Lutz http://www.marcus-lutz.de/ :
-	Alemnians
-	Antromel
-	Goboqon
-	Kyrians
-	Yaroborte
+* Dr. Markus Lutz http://www.marcus-lutz.de/
+ * Alemnians
+ * Antromel
+ * Goboqon
+ * Kyrians
+ * Yaroborte
 
-Jean-Marc Labal http://3djml.com/ :
-	Ehlenes
+* Jean-Marc Labal http://3djml.com/
+ * Ehlenes
 	
 
-Jean-Sébastien Rolhion http://www.designpicture.com/ :
-	(Aqindoan2)
-	Angoliths
-	Baon
-	Cains
-	Chamorans
-	Hiro'akkes
-	Karorr
-	Nacha'urr
-	Nuumbar
-	Okotai
-	Thremdomas
-	Vorians
-	Xegges
+* Jean-Sébastien Rolhion http://www.designpicture.com/
+ * Aqindoan2)
+ * Angoliths
+ * Baon
+ * Cains
+ * Chamorans
+ * Hiro'akkes
+ * Karorr
+ * Nacha'urr
+ * Nuumbar
+ * Okotai
+ * Thremdomas
+ * Vorians
+ * Xegges
 
-Julian Johnson Mortimer http://johnson-mortimer.co.uk/ :
-	Bandoleri
-	Bretarians
-	Callanec
-	Corvellians
-	Drizzi
-	Fallorans
-	Giradorn
-	Hakonians
-	Heraklete
-	Levans
-	Lokonor
-	Mardus
-	Miryads
-	Mureans
-	Nesaterians
-	Orlans
-	Osseti
-	Scytorians
-	Taltrades
-	Tarokans
-	Tarokese
-	Tarokians
-	Tarokohe
-	Tarokuri
-	Tarokytes
-	Torgoni
+* Julian Johnson Mortimer http://johnson-mortimer.co.uk/
+ * Bandoleri
+ * Bretarians
+ * Callanec
+ * Corvellians
+ * Drizzi
+ * Fallorans
+ * Giradorn
+ * Hakonians
+ * Heraklete
+ * Levans
+ * Lokonor
+ * Mardus
+ * Miryads
+ * Mureans
+ * Nesaterians
+ * Orlans
+ * Osseti
+ * Scytorians
+ * Taltrades
+ * Tarokans
+ * Tarokese
+ * Tarokians
+ * Tarokohe
+ * Tarokuri
+ * Tarokytes
+ * Torgoni
 
-Kevin Williams http://kwstarships.co.uk/ :
-	Xibren
+* Kevin Williams http://kwstarships.co.uk/
+ * Xibren
 
-Martin Aichner http://www.necs3dart.com/ :
-	Bao'begach
-	Bonerans
-	Droglith
-	Elay
-	Kanorre
-	Lisitans
-	Lukarians
-	Thom
-	Tuc
-	Viebaran
-	Vulmar
-	Xanthonans
-	Zarovianes
-	Zetarians
-	Zuringlians
+* Martin Aichner http://www.necs3dart.com/
+ * Bao'begach
+ * Bonerans
+ * Droglith
+ * Elay
+ * Kanorre
+ * Lisitans
+ * Lukarians
+ * Thom
+ * Tuc
+ * Viebaran
+ * Vulmar
+ * Xanthonans
+ * Zarovianes
+ * Zetarians
+ * Zuringlians
 
-Pascal Blanché http://www.3dluvr.com/pascalb/ :
-	Aihlinn
-	Andromedans
-	Aqindoan
-	Ankarans
-	Belamar
-	Berut
-	Bitorians
-	Bosniakes
-	Deshant
-	Kryorans
-	Miramari
-	Nordanians
-	Phiori
-	Sjapamarain
-	Skalatians
-	T'arada
+* Pascal Blanché http://www.3dluvr.com/pascalb/
+ * Aihlinn
+ * Andromedans
+ * Aqindoan
+ * Ankarans
+ * Belamar
+ * Berut
+ * Bitorians
+ * Bosniakes
+ * Deshant
+ * Kryorans
+ * Miramari
+ * Nordanians
+ * Phiori
+ * Sjapamarain
+ * Skalatians
+ * T'arada
 
-Paul Tosca http://paultosca.com/ :
-	Delarians
+* Paul Tosca http://paultosca.com/
+ * Delarians
 
-Peter König http://peterkonig.com/ :
-	Canovek
-	Einar
-	Pambuka
+* Peter König http://peterkonig.com/
+ * Canovek
+ * Einar
+ * Pambuka
 
-Petr Nasirov http://5k3d.com/ :
-	B'war
-	Dougtaeks
-	Hazeti
-	Phorath
+* Petr Nasirov http://5k3d.com/
+ * B'war
+ * Dougtaeks
+ * Hazeti
+ * Phorath
 
-Piotr Slomowicz http://www.piotrslomowicz.com/ :
-	Enerans
-	Malodans
+* Piotr Slomowicz http://www.piotrslomowicz.com/
+ * Enerans
+ * Malodans
 
-Robin [Overflow] Marshall :
-	Adamen
+* Robin [Overflow] Marshall
+ * Adamen
 
-Sebastien Sonet http://xxeb.net/ :
-	Bothasiori
-	Hungoma
-	Irdans
-	Janaians
-	Ta'ichu
-	Ventrakans
+* Sebastien Sonet http://xxeb.net/
+ * Bothasiori
+ * Hungoma
+ * Irdans
+ * Janaians
+ * Ta'ichu
+ * Ventrakans
 
-Steve Burke http://burkestudios.com/ :
-	Vikarmo
+* Steve Burke http://burkestudios.com/
+ * Vikarmo
 
-Taehoon Oh http://www.taehoonoh.com/ :
-	Storgor
-	Vawdor
-	Vorgor	
+* Taehoon Oh http://www.taehoonoh.com/
+ * Storgor
+ * Vawdor
+ * Vorgor	
 
-Tim Appleby http://badpolygon.com/ :
-	Brane
-	Kaetrophates
-	Sevar
+* Tim Appleby http://badpolygon.com/
+ * Brane
+ * Kaetrophates
+ * Sevar
 
-Timur Baysal http://www.taron.de/ :
-	Arcasans
-	Baflides
-	Brac
-	Deritians
-	Hanchac
-	Malingorr
-	Palan
-	Xyretians
+* Timur Baysal http://www.taron.de/
+ * Arcasans
+ * Baflides
+ * Brac
+ * Deritians
+ * Hanchac
+ * Malingorr
+ * Palan
+ * Xyretians
 
-Tyler Breon http://tylerbreon.com/ :
-	Ba'a
-	Kraetumir
-	Yimandar
+* Tyler Breon http://tylerbreon.com/
+ * Ba'a
+ * Kraetumir
+ * Yimandar
 
+####User Interface menu design
 
+* Coalition of Planets: Zunder
+* Heyoun Trade Union: Zunder (build menu and general design), Malle (finished remaining menus from that build menu design pattern)
+* Khaoron Empire: pd http://www.optisch-edel.de/fo/hbk/back2.jpg  (general design and main style element), Malle (created all menus using pd's design element)
+* Rotharian Star Network: Zunder
+* Cartare Union: nemesis5
+* Omega Alliance: magicmot
 
+####Buildings graphics
+* Jason Leader aka "ForeverZ": http://www.turbosquid.com/Search/Index.cfm/FuseAction/ProcessSmartSearch/istIncAuthor/ForeverZ/blAuthorExact/y
+* and other contributors, see complete list in separate credits file in folder ../Graphics/Buildings/
 
-User Interface menu design:
+####Troop graphics
+* Aaron (sharecg.com)
+* Andrew Kincaid
+* Arild Anfinnsen http://www.arildwiro.com/
+* Artur Grzegorczyn
+* Daniel Doerksen (deviantart.com)
+* Dennis0078 (BotE)
+* eRe4s3r (deviantart.com)
+* FeroxX-Gosu (deviantart.com)
+* Henry Baptiste
+* Kandzaemon (deviantart.com/)
+* Keith Thompson (deviantart.com)
+* magicmot (BotE)
+* Magneto1969_Stock (deviantart.com)
+* Nikolay Yeliseyev
+* Taehoon Oh
+* Till Maginot (http://blog.maginot.eu)
+* and other contributors, see complete list in separate credits file in folder ../Graphics/Troops/
 
-  Coalition of Planets: Zunder
-  Heyoun Trade Union: Zunder (build menu and general design), Malle (finished remaining menus from that build menu design pattern)
-  Khaoron Empire: pd http://www.optisch-edel.de/fo/hbk/back2.jpg  (general design and main style element), Malle (created all menus using pd's design element)
-  Rotharian Star Network: Zunder
-  Cartare Union: nemesis5
-  Omega Alliance: magicmot
+####Planet graphics
+#####Textures and renders
 
+* NASA http://www.jpl.nasa.gov/
+* www.celestiamotherlode.net , namely Tom Wilson aka "Fungun": http://www.geocities.com/fungun/
+* http://www.spiralgraphics.biz/packs/planet/index.htm
+* Earth system: http://planetpixelemporium.com/planets.html
+* Freeorion.org (all images from there are licensed under Creative Commons, see their website for further details)
+* Piratentunte http://www.worldranking.de/newsflash/planeten_grafiken_243_148.html
+* Wolfgang Sigl http://www.whiskeysierragrafics.com/
+* Sir Pustekuchen
+* Yesterday or Tomorrow  http://www.yot-project.net
+* San Monku http://www.sanmonku.net/
+* Fallen_Warrior http://www.battleclinic.com/docks/dock.php?id=881#881
+* Photoshop Planetenusertutorials
+* SavageDragon (from sharecg.com)
+* Tethys
+* Malle
+* From Deviantart.com users (To access the artist's website there just go to the deviantart website and enter the name below in the search box):
+ * KaizokuBG
+ * Fragile_stock
+ * Parad1gm
+ * Fune_Stock
+ * Tigg_stock
+ * Savage_Stock
+ * moonfishing_stock
+ * Bareck (Chris Emmons)
+ * Qzma
+ * WinterglowStock
+ * Superiorgamer
+ * tovasshiCC
+ * bmjewell_stock
+ * TerraSpaceStock
+ * TTOCloud
+ * s_Forge_Planet
+ * JerichoPro
+ * Hafunui
+ * AKLP
+ * GeoffJesterPemberton
+ * SparkStudios
+ * Somnicelestia
+ * Parasky
+ * XvendettashredX
+ * Acridx
+ * Amitabho
+ * PanDeVida85
+ * Andr0o
+ * The__archer
+ * Magneto1969_Stock
 
+Edited and adapted for the game by: Malle
 
-Buildings graphics:
-	Jason Leader aka "ForeverZ": http://www.turbosquid.com/Search/Index.cfm/FuseAction/ProcessSmartSearch/istIncAuthor/ForeverZ/blAuthorExact/y
-	and other contributors, see complete list in separate credits file in folder ../Graphics/Buildings/
+####Sun graphics (in system panel)
+* Star Trek Supremacy
 
+####Race logos
+* Coalition:	Hawksmont: http://hawksmont.com/wp-content/uploads/2007/05/globe24.jpg
+* Heyoun: 	Anders Sandberg: http://www.orionsarm.com/authors.html#AS
+* Khaoron: 	Netcades: http://www.netcades.com/learn/FuturisticWallpaper/images/Final2.gif
+* Rotharian: 	snecx.com: http://www.photoshop-tutorials.biz/author/SNECX.com/
+* Cartare: 	Wifislax 3.1: http://www.wifislax.com/index.php respectively http://www.photoshop-tutorials.biz/author/SNECX.com/
+* Omega: 	Andy: http://www.devcustoms.com/exposed-fossil-abstract.dev
 
+####Event screens
+* Erik Schumacher http://www.xkire.de/
+ * StartScreen
+* San Monku http://sanmonku.deviantart.com/art/Spaceship-86044999
+ * Colonization event
+* Steve Kilby: http://wittswallpapers.com/Kilby/kilby.html
+ * Blockade
+ * Bombardment
+ * First contact with an another race
+ * Failed invasion
+ * Successful invasion
+* eRe4s3r http://ere4s3r.deviantart.com/
+ * AlienEntity
+ * Combat menu background
+ * Gameover (when you lose a game)
+ * HullVirus
+ * Extinction of a race
+* matiiii http://matiiii.deviantart.com/art/Space-art-resource-psd-68887393
+ * Victory (when you win a game)
+* NASA http://mt360.files.wordpress.com/2008/11/larger-hubble-image.jpg
+ * Research success
 
-Troop graphics:
-  Aaron (sharecg.com)
-  Andrew Kincaid
-  Arild Anfinnsen http://www.arildwiro.com/
-  Artur Grzegorczyn
-  Daniel Doerksen (deviantart.com)
-  Dennis0078 (BotE)
-  eRe4s3r (deviantart.com)
-  FeroxX-Gosu (deviantart.com)
-  Henry Baptiste
-  Kandzaemon (deviantart.com/)
-  Keith Thompson (deviantart.com)
-  magicmot (BotE)
-  Magneto1969_Stock (deviantart.com)
-  Nikolay Yeliseyev
-  Taehoon Oh
-  Till Maginot (http://blog.maginot.eu)
-  and other contributors, see complete list in separate credits file in folder ../Graphics/Troops/
+####Galaxy backgrounds
+* Coalition: Courtesy NASA/JPL-Caltech http://photojournal.jpl.nasa.gov/jpeg/PIA01322.jpg
+* Heyoun: University of Colorado, University of Hawaii and NOAO/AURA/NSF http://www.noao.edu/image_gallery/html/im0849.html
+* Khaoron: Star Trek Supremacy fan game
+* Rotharian: moonchilde-stock (deviantart.com) http://moonchilde-stock.deviantart.com/art/Heart-of-Fire-Nebula-Stock-100596152
+* Cartare: NASA, H. Ford (JHU), G. Illingworth (UCSC/LO), M. Clampin (STScl), G. Hartig (STScl), the ACS Science Team and ESA, STScl-PRC02-11c http://teacherlink.ed.usu.edu/tlnasa/OtherPRINT/picture/OmegaNebulaM17.jpg
+* Omegan: moonchilde-stock (deviantart.com) http://moonchilde-stock.deviantart.com/art/The-Maelstrom-Nebula-Stock-122555462
 
+####Anomalies (some of the following were created by Sir Pustekuchen using Paint.NET out of the radioactive nebula image)
+* Radioactive nebula: Star Trek Supremacy http://startreksupremacy.com/
+* Neutron star: Star Trek
+* Quasar: Star Trek Supremacy
+* Radiopulsar: Star Trek Supremacy
+* X-ray pulsar: Star Trek Supremacy
+* Biphasic nebula: Star Trek Supremacy
+* Meaturean nebula: Star Trek Supremacy
+* Magnetar: Star Trek Supremacy
+* Torion gas nebula: Star Trek Supremacy
+* Continuum rip: Star Trek Supremacy
+* Gravitational Distortion: Star Trek Supremacy
+* Ion storm: Star Trek Supremacy
+* Deuterium nebula: Star Trek Supremacy
+* Black hole: NASA, Dana Berry / Skyworks Digital http://www.astronomie-heute.de/sixcms/media.php/976/Blackhole_1920.jpg
+* Wormhole: NASA http://www.nasa.gov/centers/goddard/images/content/255402main_BlackHole_print.jpg
 
+####Symbols and other small graphics
+* Small resources icons:
+ * nemesis5
+ * YoT-project
+* Research symbols:
+ * nemesis5
+ * voxelgeek
+ * see also separate credits file in folder ../Graphics/Research/
+* Thumbs-up clipart in combat menu:
+ * egore http://www.openclipart.org/user-detail/egore
+* Tactics icons in combat menu:
+ * vjeko1701
+* Trophy/Cup in Empire status menu:
+ * jadedreflection http://jaded-reflection.deviantart.com/art/Cup-03-85716437
+* Troops icon in system view and on laden transporters:
+ * Josh http://www.freeorion.org/forum/viewtopic.php?f=10&t=2033
+* Cloak icon on cloaked ships:
+ * Josh http://www.freeorion.org/forum/viewtopic.php?f=10&t=2033
 
-Planet graphics:
-  Textures and renders:
+####Some race descriptions
+* Jerron http://www.annor.de and http://www.weltenbastler.net
 
-	NASA http://www.jpl.nasa.gov/
-	www.celestiamotherlode.net , namely Tom Wilson aka "Fungun": http://www.geocities.com/fungun/
-	http://www.spiralgraphics.biz/packs/planet/index.htm
-	Earth system: http://planetpixelemporium.com/planets.html
-	Freeorion.org (all images from there are licensed under Creative Commons, see their website for further details)
-	Piratentunte http://www.worldranking.de/newsflash/planeten_grafiken_243_148.html
-	Wolfgang Sigl http://www.whiskeysierragrafics.com/
-	Sir Pustekuchen
-	Yesterday or Tomorrow  http://www.yot-project.net
-	San Monku http://www.sanmonku.net/
-	Fallen_Warrior http://www.battleclinic.com/docks/dock.php?id=881#881
-	Photoshop Planetenusertutorials
-	SavageDragon (from sharecg.com)
-	Tethys
-	Malle
-
-  From Deviantart.com users (To access the artist's website there just go to the deviantart website and enter the name below in the search box):
-
-	KaizokuBG
-	Fragile_stock
-	Parad1gm
-	Fune_Stock
-	Tigg_stock
-	Savage_Stock
-	moonfishing_stock
-	Bareck (Chris Emmons)
-	Qzma
-	WinterglowStock
-	Superiorgamer
-	tovasshiCC
-	bmjewell_stock
-	TerraSpaceStock
-	TTOCloud
-	s_Forge_Planet
-	JerichoPro
-	Hafunui
-	AKLP
-	GeoffJesterPemberton
-	SparkStudios
-	Somnicelestia
-	Parasky
-	XvendettashredX
-	Acridx
-	Amitabho
-	PanDeVida85
-	Andr0o
-	The__archer
-	Magneto1969_Stock
-
-  Edited and adapted for the game by: 	Malle
-
-
-Sun graphics (in system panel)
-	Star Trek Supremacy
-
-
-Race logos:
-  Coalition:	Hawksmont: http://hawksmont.com/wp-content/uploads/2007/05/globe24.jpg
-  Heyoun: 	Anders Sandberg: http://www.orionsarm.com/authors.html#AS
-  Khaoron: 	Netcades: http://www.netcades.com/learn/FuturisticWallpaper/images/Final2.gif
-  Rotharian: 	snecx.com: http://www.photoshop-tutorials.biz/author/SNECX.com/
-  Cartare: 	Wifislax 3.1: http://www.wifislax.com/index.php respectively http://www.photoshop-tutorials.biz/author/SNECX.com/
-  Omega: 	Andy: http://www.devcustoms.com/exposed-fossil-abstract.dev
-
-
-
-
-Event screens:
-        Erik Schumacher http://www.xkire.de/
-                StartScreen
-	San Monku http://sanmonku.deviantart.com/art/Spaceship-86044999
-		Colonization event
-	Steve Kilby: http://wittswallpapers.com/Kilby/kilby.html
-		Blockade
-		Bombardment
-		First contact with an another race
-		Failed invasion
-		Successful invasion
-	eRe4s3r http://ere4s3r.deviantart.com/
-                AlienEntity
-		Combat menu background
-		Gameover (when you lose a game)
-                HullVirus
-		Extinction of a race
-	matiiii http://matiiii.deviantart.com/art/Space-art-resource-psd-68887393
-		Victory (when you win a game)
-	NASA http://mt360.files.wordpress.com/2008/11/larger-hubble-image.jpg
-		Research success
-
-
-Galaxy backgrounds:
-	Coalition: Courtesy NASA/JPL-Caltech http://photojournal.jpl.nasa.gov/jpeg/PIA01322.jpg
-	Heyoun: University of Colorado, University of Hawaii and NOAO/AURA/NSF http://www.noao.edu/image_gallery/html/im0849.html
-	Khaoron: Star Trek Supremacy fan game
-	Rotharian: moonchilde-stock (deviantart.com) http://moonchilde-stock.deviantart.com/art/Heart-of-Fire-Nebula-Stock-100596152
-	Cartare: NASA, H. Ford (JHU), G. Illingworth (UCSC/LO), M. Clampin (STScl), G. Hartig (STScl), the ACS Science Team and ESA, STScl-PRC02-11c http://teacherlink.ed.usu.edu/tlnasa/OtherPRINT/picture/OmegaNebulaM17.jpg
-	Omegan: moonchilde-stock (deviantart.com) http://moonchilde-stock.deviantart.com/art/The-Maelstrom-Nebula-Stock-122555462
-
-
-
-Anomalies: (some of the following were created by Sir Pustekuchen using Paint.NET out of the radioactive nebula image)
-	Radioactive nebula: Star Trek Supremacy http://startreksupremacy.com/
-	Neutron star: Star Trek
-	Quasar: Star Trek Supremacy
-	Radiopulsar: Star Trek Supremacy
-	X-ray pulsar: Star Trek Supremacy
-	Biphasic nebula: Star Trek Supremacy
-	Meaturean nebula: Star Trek Supremacy
-	Magnetar: Star Trek Supremacy
-	Torion gas nebula: Star Trek Supremacy
-	Continuum rip: Star Trek Supremacy
-	Gravitational Distortion: Star Trek Supremacy
-	Ion storm: Star Trek Supremacy
-	Deuterium nebula: Star Trek Supremacy
-	Black hole: NASA, Dana Berry / Skyworks Digital http://www.astronomie-heute.de/sixcms/media.php/976/Blackhole_1920.jpg
-	Wormhole: NASA http://www.nasa.gov/centers/goddard/images/content/255402main_BlackHole_print.jpg
-
-
-
-Symbols and other small graphics:
-  Small resources icons:
-	nemesis5
-	YoT-project
-  Research symbols:
-        nemesis5
-        voxelgeek
-        see also separate credits file in folder ../Graphics/Research/
-  Thumbs-up clipart in combat menu:
-	egore http://www.openclipart.org/user-detail/egore
-  Tactics icons in combat menu:
-	vjeko1701
-  Trophy/Cup in Empire status menu:
-	jadedreflection http://jaded-reflection.deviantart.com/art/Cup-03-85716437
-  Troops icon in system view and on laden transporters:
-	Josh http://www.freeorion.org/forum/viewtopic.php?f=10&t=2033
-  Cloak icon on cloaked ships:
-	Josh http://www.freeorion.org/forum/viewtopic.php?f=10&t=2033
-
-
-Some race descriptions:	Jerron http://www.annor.de and http://www.weltenbastler.net
-
---------------------------------------------------------------------
+***
 
 Copyright by Sir Pustekuchen ©2004-2016
