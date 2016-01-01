@@ -130,7 +130,7 @@ FMOD Sound System, copyright © Firelight Technologies Pty, Ltd.,
 Neither copyright holders, nor someone else can be made
 responsible for any damage to your system caused or possibly
 caused by BotE. You are only allowed to use BotE, if you accept
-this point and all other points mentioned in 1.4.
+this point and all other points mentioned in the copyright.
 
 ***
 
