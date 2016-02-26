@@ -58,21 +58,21 @@ MAJOR3:3:0:Our secret service successfully conducted a diplomatic espionage miss
 MAJOR4:3:0:The Taq'rhiar successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ is in diplomatic contact with the $minor$.
 MAJOR5:3:0:The Cartare Order successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ is in diplomatic contact with the $minor$.
 MAJOR6:3:0:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ is in diplomatic contact with the $minor$.
-MAJOR1:3:1:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $agreement$ with the $minor$.
-MAJOR2:3:1:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $agreement$ with the $minor$.
-MAJOR3:3:1:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $agreement$ with the $minor$.
-MAJOR4:3:1:The Taq'rhiar successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $agreement$ with the $minor$.
-MAJOR5:3:1:The Cartare Order successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $agreement$ with the $minor$.
-MAJOR6:3:1:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $agreement$ with the $minor$.
-MAJOR1:3:2:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $agreement$ ($duration$) with the $minor$.
-MAJOR2:3:2:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $agreement$ ($duration$) with the $minor$.
-MAJOR3:3:2:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $agreement$ ($duration$) with the $minor$.
-MAJOR4:3:2:The Taq'rhiar successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $agreement$ ($duration$) with the $minor$.
-MAJOR5:3:2:The Cartare Order successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $agreement$ ($duration$) with the $minor$.
-MAJOR6:3:2:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $agreement$ ($duration$) with the $minor$.
-MAJOR1:3:3:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $relation$ towards the $minor$.
-MAJOR2:3:3:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $relation$ towards the $minor$.
-MAJOR3:3:3:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $relation$ towards the $minor$.
-MAJOR4:3:3:The Taq'rhiar successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $relation$ towards the $minor$.
-MAJOR5:3:3:The Cartare Order successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $relation$ towards the $minor$.
-MAJOR6:3:3:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $relation$ towards the $minor$.
+MAJOR1:3:1:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has $agreement$ with the $minor$.
+MAJOR2:3:1:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has $agreement$ with the $minor$.
+MAJOR3:3:1:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has $agreement$ with the $minor$.
+MAJOR4:3:1:The Taq'rhiar successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has $agreement$ with the $minor$.
+MAJOR5:3:1:The Cartare Order successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has $agreement$ with the $minor$.
+MAJOR6:3:1:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has $agreement$ with the $minor$.
+MAJOR1:3:2:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has $agreement$ ($duration$) with $major$.
+MAJOR2:3:2:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has $agreement$ ($duration$) with $major$.
+MAJOR3:3:2:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has $agreement$ ($duration$) with $major$.
+MAJOR4:3:2:The Taq'rhiar successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has $agreement$ ($duration$) with $major$.
+MAJOR5:3:2:The Cartare Order successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has $agreement$ ($duration$) with $major$.
+MAJOR6:3:2:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has $agreement$ ($duration$) with $major$.
+MAJOR1:3:3:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $relation$ attitude towards $major$.
+MAJOR2:3:3:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $relation$ attitude towards $major$.
+MAJOR3:3:3:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $relation$ attitude towards $major$.
+MAJOR4:3:3:The Taq'rhiar successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $relation$ attitude towards $major$.
+MAJOR5:3:3:The Cartare Order successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $relation$ attitude towards $major$.
+MAJOR6:3:3:Our secret service successfully conducted a diplomatic espionage mission. We could gather the fact, that $race$ has a $relation$ attitude towards $major$.
