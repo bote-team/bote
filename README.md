@@ -1,6 +1,6 @@
-#BotE
+# BotE
 
-#####Birth of the Empires (a turn-based 4X strategy game set in space)
+##### Birth of the Empires (a turn-based 4X strategy game set in space)
 
 ***
 
@@ -32,7 +32,7 @@ The upshot: A well-done game for turn-based strategy fans.
 
 ***
 
-##System requirements
+## System requirements
 
 CPU with at least 1 GHz
 at least 256 MB RAM
@@ -43,7 +43,7 @@ or Linux with WINE
 
 ***
 
-##Copyright
+## Copyright
 
 
 §1 - Birth of the Empires (BotE) represents a software which can be
@@ -121,11 +121,11 @@ used in BotE.
 FMOD Sound System, copyright © Firelight Technologies Pty, Ltd.,
 1994-2010
 
-© 2004-2016 Sir Pustekuchen
+© 2004-2017 Sir Pustekuchen
 
 ***
 
-##Terms of use
+## Terms of use
 
 Neither copyright holders, nor someone else can be made
 responsible for any damage to your system caused or possibly
@@ -134,15 +134,15 @@ this point and all other points mentioned in the copyright.
 
 ***
 
-##Credits
+## Credits
 
-####Producer:
+#### Producer:
 * Sir Pustekuchen
 
-####Idea
+#### Idea
 * Sir Pustekuchen
 
-####Programming
+#### Programming
 * Sir Pustekuchen
 * CBot
 * Anonymissimus
@@ -150,7 +150,7 @@ this point and all other points mentioned in the copyright.
 * chrisfirefox
 * plotnik01
 
-####Design & Graphics
+#### Design & Graphics
 * Sir Pustekuchen
 * Malle
 * Zunder
@@ -161,7 +161,7 @@ this point and all other points mentioned in the copyright.
 * YOT-Project
 * other contributors (see further down below)
 
-####Text
+#### Text
 * Malle
 * Topper
 * Homeros
@@ -174,14 +174,14 @@ this point and all other points mentioned in the copyright.
 * rainer
 * Amun
 
-####Data
+#### Data
 * Sir Pustekuchen
 * rainer
 * Scav
 * Malle
 * Alamar
 
-####Balancing & Testing
+#### Balancing & Testing
 * master130686
 * Dennis0078
 * Andi47
@@ -189,7 +189,7 @@ this point and all other points mentioned in the copyright.
 * Sir Pustekuchen
 * rainer
 
-####Music
+#### Music
 * Eric James
 * Sandman
 * reel2
@@ -198,25 +198,25 @@ this point and all other points mentioned in the copyright.
 * MarkySpark
 * Kevin MacLeod
 
-####Voices
+#### Voices
 * Kenneth_of_Borg
 * Kate Flanagan
 * Krista Flanagan
 * Mike Strobel
 
-####English Translation
+#### English Translation
 * Malle
 * Matress of Evil
 * denzil85
 
-####Manual (german)
+#### Manual (german)
 * Gottesanbeter
 * rainer
 * Xenox
 * Malle
 * Sir Pustekuchen
 
-####Wiki
+#### Wiki
 * rainer
 * Dennis0078
 * Amun
@@ -225,19 +225,19 @@ this point and all other points mentioned in the copyright.
 |    special thanks go to the following persons   |
 ---------------------------------------------------
 
-####Ship graphics
+#### Ship graphics
 
-#####Major race ships
+##### Major race ships
 * Atrocities
 * magicmot
 
-#####Minor race ships
+##### Minor race ships
 * Kevin Williams
 * Dieter Ludmann
 * and other artists (see corresponding credits file in ../Graphics/Ships/ folder)
 
 
-####Background music
+#### Background music
 * Coalition of Planets: Eric Fu-Wah James http://www.myspace.com/ericjames/
 * Heyoun Trade Union: reel2 "The Birth of a Legend" http://www.newgrounds.com/audio/listen/264050 + George R Powell "One Last Sunset" http://www.newgrounds.com/audio/listen/317246
 * Khaoron Empire: Edgen "STOGAM - The Battle Begins" http://www.newgrounds.com/audio/listen/163447
@@ -245,12 +245,12 @@ this point and all other points mentioned in the copyright.
 * Cartare Union: Sandman "Cirrus March" http://botf2.star-trek-games.com/memberlist.php?mode=viewprofile&u=4284
 * Omega-Alliance: Kenneth L. Welch "Starlight Requiem v2r" http://homepage.mac.com/klwelch/music.html
 
-####other music
+#### other music
 * Lose game: Kevin MacLeod - "For the Fallen"
 * Win game: Eric Fu-Wah James "Finale" http://www.myspace.com/ericjames/
 
 
-####Fonts
+#### Fonts
 * Coalition of Planets: League Gothic http://www.theleagueofmoveabletype.com/fonts/7-league-gothic (Open Font License, http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL&_sc=1 )
 * Heyoun: Liberation Serif https://fedorahosted.org/liberation-fonts/ (GPL v2 with Font-exception, see special license file)
 * Khaorons: Klingon Dagger (John Tackett aka K'mel)
@@ -259,8 +259,8 @@ this point and all other points mentioned in the copyright.
 * Omega-Alliance: LilyUPC http://www.microsoft.com/typography/fonts/family.aspx?FID=272
 
 
-####Character artwork
-#####Major Races
+#### Character artwork
+##### Major Races
 * Coalition of Planets: Tim Appleby http://bdimonkey.wordpress.com/
 * Heyoun: Aaron Sims http://www.aaron-sims.com/
 * Khaorons: Baptiste Henry http://www.sewan.com/
@@ -268,7 +268,7 @@ this point and all other points mentioned in the copyright.
 * Cartare: Taehoon Oh http://www.taehoonoh.com/
 * Omega-Alliance: Andrew Kincaid http://redfishimagery.com/
 
-#####Minor Races
+##### Minor Races
 * Albert Feliu http://albertfeliu.com/
  * Adryl
  * Athari
@@ -469,7 +469,7 @@ this point and all other points mentioned in the copyright.
  * Kraetumir
  * Yimandar
 
-####User Interface menu design
+#### User Interface menu design
 
 * Coalition of Planets: Zunder
 * Heyoun Trade Union: Zunder (build menu and general design), Malle (finished remaining menus from that build menu design pattern)
@@ -478,11 +478,11 @@ this point and all other points mentioned in the copyright.
 * Cartare Union: nemesis5
 * Omega Alliance: magicmot
 
-####Buildings graphics
+#### Buildings graphics
 * Jason Leader aka "ForeverZ": http://www.turbosquid.com/Search/Index.cfm/FuseAction/ProcessSmartSearch/istIncAuthor/ForeverZ/blAuthorExact/y
 * and other contributors, see complete list in separate credits file in folder ../Graphics/Buildings/
 
-####Troop graphics
+#### Troop graphics
 * Aaron (sharecg.com)
 * Andrew Kincaid
 * Arild Anfinnsen http://www.arildwiro.com/
@@ -501,8 +501,8 @@ this point and all other points mentioned in the copyright.
 * Till Maginot (http://blog.maginot.eu)
 * and other contributors, see complete list in separate credits file in folder ../Graphics/Troops/
 
-####Planet graphics
-#####Textures and renders
+#### Planet graphics
+##### Textures and renders
 
 * NASA http://www.jpl.nasa.gov/
 * www.celestiamotherlode.net , namely Tom Wilson aka "Fungun": http://www.geocities.com/fungun/
@@ -553,10 +553,10 @@ this point and all other points mentioned in the copyright.
 
 Edited and adapted for the game by: Malle
 
-####Sun graphics (in system panel)
+#### Sun graphics (in system panel)
 * Star Trek Supremacy
 
-####Race logos
+#### Race logos
 * Coalition:	Hawksmont: http://hawksmont.com/wp-content/uploads/2007/05/globe24.jpg
 * Heyoun: 	Anders Sandberg: http://www.orionsarm.com/authors.html#AS
 * Khaoron: 	Netcades: http://www.netcades.com/learn/FuturisticWallpaper/images/Final2.gif
@@ -564,7 +564,7 @@ Edited and adapted for the game by: Malle
 * Cartare: 	Wifislax 3.1: http://www.wifislax.com/index.php respectively http://www.photoshop-tutorials.biz/author/SNECX.com/
 * Omega: 	Andy: http://www.devcustoms.com/exposed-fossil-abstract.dev
 
-####Event screens
+#### Event screens
 * Erik Schumacher http://www.xkire.de/
  * StartScreen
 * San Monku http://sanmonku.deviantart.com/art/Spaceship-86044999
@@ -586,7 +586,7 @@ Edited and adapted for the game by: Malle
 * NASA http://mt360.files.wordpress.com/2008/11/larger-hubble-image.jpg
  * Research success
 
-####Galaxy backgrounds
+#### Galaxy backgrounds
 * Coalition: Courtesy NASA/JPL-Caltech http://photojournal.jpl.nasa.gov/jpeg/PIA01322.jpg
 * Heyoun: University of Colorado, University of Hawaii and NOAO/AURA/NSF http://www.noao.edu/image_gallery/html/im0849.html
 * Khaoron: Star Trek Supremacy fan game
@@ -594,7 +594,7 @@ Edited and adapted for the game by: Malle
 * Cartare: NASA, H. Ford (JHU), G. Illingworth (UCSC/LO), M. Clampin (STScl), G. Hartig (STScl), the ACS Science Team and ESA, STScl-PRC02-11c http://teacherlink.ed.usu.edu/tlnasa/OtherPRINT/picture/OmegaNebulaM17.jpg
 * Omegan: moonchilde-stock (deviantart.com) http://moonchilde-stock.deviantart.com/art/The-Maelstrom-Nebula-Stock-122555462
 
-####Anomalies (some of the following were created by Sir Pustekuchen using Paint.NET out of the radioactive nebula image)
+#### Anomalies (some of the following were created by Sir Pustekuchen using Paint.NET out of the radioactive nebula image)
 * Radioactive nebula: Star Trek Supremacy http://startreksupremacy.com/
 * Neutron star: Star Trek
 * Quasar: Star Trek Supremacy
@@ -611,7 +611,7 @@ Edited and adapted for the game by: Malle
 * Black hole: NASA, Dana Berry / Skyworks Digital http://www.astronomie-heute.de/sixcms/media.php/976/Blackhole_1920.jpg
 * Wormhole: NASA http://www.nasa.gov/centers/goddard/images/content/255402main_BlackHole_print.jpg
 
-####Symbols and other small graphics
+#### Symbols and other small graphics
 * Small resources icons:
  * nemesis5
  * YoT-project
@@ -630,9 +630,9 @@ Edited and adapted for the game by: Malle
 * Cloak icon on cloaked ships:
  * Josh http://www.freeorion.org/forum/viewtopic.php?f=10&t=2033
 
-####Some race descriptions
+#### Some race descriptions
 * Jerron http://www.annor.de and http://www.weltenbastler.net
 
 ***
 
-Copyright by Sir Pustekuchen ©2004-2016
+Copyright by Sir Pustekuchen © 2004-2017
