@@ -121,7 +121,7 @@ used in BotE.
 FMOD Sound System, copyright © Firelight Technologies Pty, Ltd.,
 1994-2010
 
-© 2004-2016 Sir Pustekuchen
+© 2004-2017 Sir Pustekuchen
 
 ====================================
 
@@ -645,4 +645,4 @@ Some race descriptions:	Jerron http://www.annor.de and http://www.weltenbastler.
 
 ====================================
 
-Copyright by Sir Pustekuchen ©2004-2016
+Copyright by Sir Pustekuchen © 2004-2017
